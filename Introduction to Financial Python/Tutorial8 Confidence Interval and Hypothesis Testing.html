@@ -62,6 +62,8 @@ Now we can talk about <strong>hypothesis testing</strong>. Hypothesis test is es
 Let's start from observing our sample:
 <pre class="prettyprint linenums">mean_1000 = np.mean(spy_log_return.tail(1000))
 std_1000 = np.std(spy_log_return.tail(1000))
+mean_10 = np.mean(spy_log_return.tail(10))
+std_10 = np.std(spy_log_return.tail(10))
 s = pd.Series([mean_10,std_10,mean_1000,std_1000],index = ['mean_10', 'std_10','mean_1000','std_1000'])
 print s
 </pre>
@@ -95,7 +97,9 @@ It's worth noting that st.norm.cdf will return the probability that a value take
 <img class="alignnone " src="http://napitupulu-jon.appspot.com/galleries/coursera-statistics/3w76.jpg" width="663" height="517" />
 If we use 95% confidence interval, we need a p-value less than 0.025 to reject the null hypothesis. However, now our p-value is 0.025659, which is greater than 0.025, thus we can't reject the null hypothesis. It's obviously less than 0.05, so we can still reject the null hypothesis with 90% confidence level.
 Now let's test the hypothesis that population mean = 0 again with a large sample, which has 1200 observations:
-<pre class="prettyprint linenums">z_score = np.sqrt(1200)*(mean_1200 - 0)/std_1000
+<pre class="prettyprint linenums">mean_1200 = np.mean(spy_log_return.tail(1200))
+std_1200 = np.std(spy_log_return.tail(1200))
+z_score = np.sqrt(1200)*(mean_1200 - 0)/std_1200
 print 'z-score = ',z_score
 p_value = (1 - st.norm.cdf(z_score))
 print 'p_value = ',p_value
