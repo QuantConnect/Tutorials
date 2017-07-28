@@ -1,0 +1,140 @@
+<h2>Introduction</h2>
+Last few chapters we introduced about the basic principles and mechanism of options trading. We already knew what an option contract is and basic relationship between call and options price. But how do these contracts traded in the exchange are being priced and where does the option premium come from? This tutorial will talk about a famous option pricing model: Black Scholes Merton Model.
+<h2>Determinants of  Option Price</h2>
+In different kinds of asset pricing model like bond pricing, <span class="s1">enterprise valuation, </span>the most commonly used valuation method is to calculate the present value of the expected cash flows of that asset. But options have some characteristics that are different from the common asset. For example, the options value depends on its underlying assets. In addition, the cash flows on options are not constant in each time period but depend on the occurrence of specific events which are not predictable. In fact, the value of the option is determined by lots of variables.
+<ol>
+ 	<li><strong>the underlying price:</strong> Change in the value of the underlying asset is the most important factor which affects the options price. For the call option, holders can earn profit from the price rising and put option holders earn profits from the price decline. Therefore, call options become more valuable as the underlying prices increase while the put options will become less valuable.</li>
+ 	<li><strong>The volatility of the underlying asset:</strong> In tuition, volatility is a measure of the degree of fluctuation of the underlying stock price. It is a forward volatility, which means it is a prediction of how much the stock price of the underlying will move in the future over a certain period of time. The higher the predicted volatility is, the higher the probability that the underlying price will move a lot. Thus the greater will the value of the option is both for calls and puts. We will further discuss the different type of volatilities in the subsequent tutorials.</li>
+ 	<li><strong>The strike price of the option:</strong> Call options gain profit when stock prices greater than the strike, it is easy to understand that the higher the strike price is for the call option, the fewer profits the holder can get, the less valuable of the call option. Thus for the put options, options with higher strike price are more valuable.</li>
+ 	<li><strong>Time to expiration: </strong>If the current date is t, the expiration date of the option contract is T. Then the time to expiration is T-t. For v=both call and put options, the longer time to expiration means there are more changes for the function of stocks prices, and higher probability for the option holders to gain profits from price movement.</li>
+ 	<li><strong><strong>The risk-free interest rate: </strong></strong>As interest rates increase, the expected return required by investors from the stock tends to increase. On the other hand, the present value of discounted cash flow will decrease. Thus the increase in interest rate will increase the call option price and will decrease the put option price.</li>
+ 	<li><strong>The dividend yield: </strong>After the dividends paid, the share price of the stock will decrease. During the options holding period, the decline in underlying price is unfavorable for call options holder. Therefore, the increase in dividend yield will decrease the price of call options and increase the price of put options.</li>
+</ol>
+<h2>Factors in the BSM model</h2>
+After we get an intuition about affecting factors of options price. Now we will introduce the BSM option pricing model. The Black-Scholes model for pricing stock options was developed by Fischer Black, Myron Scholes and Robert Merton in the early 1970’s.
+
+First, we introduce the factors in the model. For all the factors listed below, only volatility is not known.  There are many types of volatilities. Then which volatility should be used is a critical question in option pricing model. We will further discuss this part in the next few chapters.
+<table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2">Factors in the model</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> Stock Price</td>
+<td>S</td>
+</tr>
+<tr>
+<td> Strike Price</td>
+<td> K</td>
+</tr>
+<tr>
+<td> Time to Expiration</td>
+<td> T-t(should be converted to year)</td>
+</tr>
+<tr>
+<td> Interest Rates</td>
+<td> r</td>
+</tr>
+<tr>
+<td> Future Volatility of the underlying Stock</td>
+<td> σ</td>
+</tr>
+</tbody>
+</table>
+<div class="page" title="Page 58">
+<div class="layoutArea">
+<div class="column">
+<pre class="prettyprint linenums">class BsmModel:
+    def __init__(self, option_type, price, strike, interest_rate, expiry, volatility, dividend_yield=0):
+        self.s = price # Underlying asset price
+        self.k = strike # Option strike K
+        self.r = interest_rate # Continuous risk fee rate
+        self.q = dividend_yield # Dividend continuous rate
+        self.T = expiry # time to expiry (year)
+        self.sigma = volatility # Underlying volatility
+        self.type = option_type # option type "p" put option "c" call option
+</pre>
+There are some details we need to pay attention to about the input of BSM model. First, the model works in continuous time, rather than discrete time. Therefore the risk-free rate r has to be modified to continuous form.
+<h2>Assumptions</h2>
+The market assumptions behind the Black–Scholes formula for pricing European options are as follows:
+<ol>
+ 	<li>The volatility of the underlying assets is constant over time</li>
+ 	<li>The underlying asset price follows lognormal distribution, this means that the log-returns of stock are normally distributed</li>
+ 	<li>The underlying asset can be traded continuously</li>
+ 	<li>The underlying stock does not pay dividends during the option's life. But the basic Black-Scholes model was later adjusted for dividends, here we demonstrate the later version with dividend yields.</li>
+ 	<li>There are no transaction costs or taxes</li>
+ 	<li>All securities are perfectly divisible, meaning that it is possible to buy any fraction of a share</li>
+ 	<li>The risk-free rate of interest, r, is constant and the same for all maturities</li>
+</ol>
+</div>
+<h2>Equations</h2>
+The derivation of the Black-Scholes model is far too complicated to present here, we only show the formula here. The basic principle is based on the idea of creating a portfolio of the underlying asset and the riskless asset with the same cash flows and hence the same cost as the option being valued. Then we get the Black–Scholes–Merton differential equation. The solutions to the differential equation are the Black-Scholes-Merton formulas for the price of European call and put options
+
+\[c = S_0N(d_1)-Ke^{-rT}N(d_2)\]
+
+\[p =Ke^{-rT}N(-d_2)- S_0N(-d_1)\]
+
+\[d_1=\frac{ln(S_0/K)+(r+\sigma^2/2)T}{\sigma\sqrt{T}}\]
+<div class="column">
+
+\[d_2=\frac{ln(S_0/K)+(r-\sigma^2/2)T}{\sigma\sqrt{T}}=d_1-\sigma\sqrt{T}\]
+<div class="page" title="Page 359">
+<div class="layoutArea">
+<div class="column">
+
+N(x) is the cumulative probability distribution function for a variable with a standard normal distribution. It can be calculated by the integral of the probability density function of standard normal distribution from 0 to x. In Python, you can use the <code>norm.pdf(x)</code> in spicy.stats library. For the following chart, we plot the probability density curve of the standard normal distribution. For example, N(-1) is the area of the left hand of the red line under the curve.
+<pre class="prettyprint linenums">import scipy.stats as sp
+mu = 0
+variance = 1
+x = np.linspace(mu-3*variance,mu+3*variance, 100)
+y = [sp.norm.pdf(i) for i in x]
+plt.plot(x,y)
+d = [-1]
+plt.plot(d*100,np.linspace(0,sp.norm.pdf(d), 100))
+</pre>
+<img class="alignnone wp-image-2055" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/n-1-1-300x198.png" alt="" width="356" height="235" />
+Then in our BSM model class, we will calculate the European call and put option prices by using BSM formula.
+<pre class="prettyprint linenums">def n(self, d):
+    # cumulative probability distribution function of standard normal distribution
+    return norm.cdf(d)
+
+def dn(self, d):
+    # the first order derivative of n(d)
+    return norm.pdf(d)
+
+def d1(self):
+    d1 = (log(self.s / self.k) + (self.r - self.q + self.sigma ** 2 * 0.5) * self.T) / (self.sigma * sqrt(self.T))
+    return d1
+
+def d2(self):
+    d2 = (log(self.s / self.k) + (self.r - self.q - self.sigma ** 2 * 0.5) * self.T) / (self.sigma * sqrt(self.T))
+    return d2
+
+def bsm_price(self):
+    d1 = self.d1()
+    d2 = d1 - self.sigma * sqrt(self.T)
+    if self.type == 'c':
+        price = exp(-self.r*self.T) * (self.s * exp((self.r - self.q)*self.T) * self.n(d1) - self.k * self.n(d2))
+        return price
+    elif self.type == 'p':
+        price = exp(-self.r*self.T) * (self.k * self.n(-d2) - (self.s * exp((self.r - self.q)*self.T) * self.n(-d1)))
+        return price
+    else:
+        print "option type can only be c or p"
+
+a = BsmModel('c', 42, 35, 0.1, 90.0/365, 0.2)
+a.bsm_price()
+</pre>
+</div>
+For a call option which expires in 90 days and no dividends paid, the underlying price is $42, the strike is $35, the risk-free rate is 0.1, the volatility is 0.2. The price of this option is $6.157.
+
+</div>
+</div>
+</div>
+</div>
+<h2 class="page" title="Page 354"> Summary</h2>
+This tutorial discussed the factors affecting the options price and introduced a famous option pricing model including the input parameters, the assumptions and the formula.
+
+</div>
