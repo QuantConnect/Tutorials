@@ -1,7 +1,7 @@
 ![QuantConnect Logo](https://cdn.quantconnect.com/web/i/logo-small.png)
 # QuantConnect LEAN Tutorials
 
-[Tutorial Website][1] | [Documentation][2] | [Download LEAN][3] | ![Join the chat at https://www.quantconnect.com/slack](https://cdn.quantconnect.com/lean/i/slack-sm.png)
+[Tutorial Website][1] | [Documentation][2] | [Download LEAN][3] | [Slack Channel][8]
 ----------
 
 This repository is a collection of WordPress and Jupyter notebook tutorials for LEAN demonstrating financial concepts and LEAN. Tutorials are categorized into folders with each Category and Tutorial Series. The Jupyter notebook and the associated HTML webpage must use matching file names. The HTML is generated and displayed with wordpress.
@@ -28,3 +28,4 @@ Contributions are warmly very welcomed but we ask you read the existing code to 
 [5]: https://github.com/QuantConnect/Tutorials/issues
 [6]: https://groups.google.com/forum/#!forum/lean-engine
 [7]: https://github.com/QuantConnect/Lean/blob/master/CONTRIBUTING.md
+[8]: https://www.quantconnect.com/slack
