@@ -1,0 +1,86 @@
+<h2>Introduction</h2>
+In this chapter we are going to introduce some basic concepts in quantitative finance. We start with rate of return, mean and variance. You may think it's simple to calculate these values, however, there are number of different methods to calculate them. It's important to choose the appropriate calculation methods case by case.
+<h2>Rate of Return</h2>
+<h3>Single-period Return</h3>
+The single-period rate of return can be calculated as following:
+\[r = \frac{p_t}{p_0} - 1 = \frac{p_t - p_0}{p_0}\]
+Where \(r\) is the rate of return, \(p_t\) is the asset price at time \(t\), and \(p_0\) is the asset price at time 0.
+<pre class="prettyprint linenums">import numpy as np
+rate_return = 102.0/100 - 1
+print rate_return
+</pre>
+Let's say we bought a stock at $100, and half a year later it will grow to $102. A year later the price will come to $104. How to calculate our total return?
+Well, we can either deem it as a single-period:
+\[r = 104/100 - 1 = 0.04\]
+or as a two-stage period:
+\[ r = (1+r_1)*(1+r_2) - 1 = \frac{102}{100} * \frac{104}{102} -1 = 0.04\]
+Here we make calculations twice a year. It's called semi-annual compounding. How about quarterly compounding?
+Let's assume the stock prices at the end of each quarter are \(p_1, p_2, p_3, p_4\) respectively.
+\[r = (1+r_1)*(1+r_2)*(1+r_3)*(1+r_4) -1\]
+The rate of return we calculate here is called <strong>cumulative return</strong> or<strong> overall return</strong>. It measures the total return of this asset over a period of time.
+Now consider the following situation: we have two strategies: strategy A and strategy B. We backtested strategy A for 1 years and the cumulative return is 20%, while we backtested strategy B and the cumulative return is 65%. Which strategy has a high rate of return? Our commonly used method is to convert all the returns into <strong>compounding annual return</strong>, regardless of the investing horizon of each strategy. We can compare the returns of strategies with different time horizon now!
+\[(1+r)^3 = 1+0.65\]
+\[ r = \sqrt[3]{1.65} - 1\ = 0.18167\]
+Strategy A has an higher compounding annual return!
+<h3>Logarithm Return</h3>
+We introduced compounding annual return above, which is a kind of <strong>effective rate of return</strong>. You can regard it as a 'hypothetical return'. Strategy B might never have a 18.167% rate of rate annually during the 3-year backtesting period. However, if we assume that the strategy has a 18.167% rate of return every year, it has the same cumulative return over the 3 years.
+As we mentioned previously, if we assume a strategy is quarterly compounding, the relation between quarterly effective rate of return and annual return is:
+\[(1+\frac{r}{4})^4 = 1+r\]
+More generally, if the times of compounding in one year is \(n\) and the annual rate of return is \(r\), the relation is given by:
+\[(1+\frac{r}{n})^n = 1+r\]
+Now imagine the stock markets. The prices of your assets is changing every second, or even every millisecond. If the times of compounding, or n, approach to infinite, this is called <strong>continuous compounding</strong>. The calculation formula is given below:
+\[\lim_{n \to \infty }(1+\frac{r}{n})^n = e^r\]
+From the above limitation equation, we know that if we assume continuous compounding:
+\[e^r = 1 + r = \frac{p_t}{p_0}\]
+Then we take \(ln\) on both side of the equation:
+\[r = ln\frac{p_t}{p_0} = lnp_t - lnp_0\]
+Here we got the<strong> logarithmic return, </strong>or <strong>continuously compounded return</strong>.
+This is frequently used when calculating returns, because once we take logarithm of asset prices, we can calculate the logarithm return by simply doing a subtraction. Here we use Apple stock prices as a example:
+<pre class="prettyprint linenums">import quandl
+import numpy as np
+quandl.ApiConfig.api_key = 'zNXvSaz2oX5afVGKjf6o'
+aapl_table = quandl.get('WIKI/AAPL')
+aapl = aapl_table.loc['2017-3',['Open','Close']]
+aapl['log_price'] = np.log(aapl.Close)
+aapl['log_return'] = np.log_price.diff()
+print aapl
+</pre>
+Here we calculated the daily logarithmic return of Apple stock. Given that we know the daily logarithm return of in this month, we can calculate the monthly return by simply sum all the daily returns up.
+<pre class="prettyprint linenums">month_return = aapl.log_return.sum()
+print month_return
+</pre>
+It may sounds incorrect to sum up the daily returns, but we can prove that it's mathematically correct. Let's assume the stock prices in a period of time are represented by \([p_0, p_1, p_2, p_3.....p_n]\). Then the cumulative rate of return is given by:
+\[1+r = ln\frac{p_t}{p_0} = ln\frac{p_t}{p_{t-1}} + ln\frac{p_{t-1}}{p_{t-2}}+......+ln\frac{p_1}{p_0}\]
+According to the equation above, we can simple sum up each logarithmic return in a period to get the cumulative return. The convenience of this method is also one of the reasons why we use logarithmic return in quantitative finance.
+<h2>Mean</h2>
+<h3>Arithmetic Mean</h3>
+Mean is a measure of the central tendency of a data series. It capture the key character of the distribution of the data series. When we talk about mean, by default it refers to <strong>arithmetic mean</strong>. It's defined as the sum of the values divided by the number of observations:
+\[\mu = \frac{\sum_{i = 1}^{n}x_i}{n}\]
+Where \((x_1,x_2,x_3.....x_n)\) is our data series.
+In python we can use NumPy.mean() to do the calculation:
+<pre class="prettyprint linenums">print np.mean(aapl.log_price)
+</pre>
+<h3>Geometric Mean</h3>
+The geometric mean is an average that is useful for data series of positive numbers that are better interpreted according to their product, such as growth rate. It's calculated by:
+\[\bar{x} = \sqrt[n]{x_1x_2x_3...x_n}\]
+Let's calculate the geometric mean of a series of single-period return:
+\[1+\bar{r} = \sqrt[n]{\frac{p_t}{p_{t-1}}*\frac{p_{t-1}}{p_{t-2}}*...*\frac{p_2}{p_1}}\]
+\[(1+\bar{r}) = \sqrt[n]{\frac{p_t}{p_0}}\]
+Now the equation becomes the form which we are familiar with:
+\[(1+\bar{r})^n = \frac{p_t}{p_0}\]
+This is why we said it make sense when applied to growth rates.
+<h2>Variance and Standard Deviation</h2>
+<h3>Variance</h3>
+<strong>Variance</strong> is a measure of dispersion. In finance, most of the time variance is a synonym for risk. The higher the variance of an asset price is, the higher risk the asset bears. Variance is usually represented by \(\sigma\), and it's calculated by
+\[\sigma^2 = \frac{\sum_{i = 1}^{n}(x_i- \mu)^2}{n}\]
+In python we can use NumPy.var to calculate it:
+<pre class="prettyprint linenums">print np.var(aapl.log_price)
+</pre>
+<h3>Standard Deviation</h3>
+The most commonly used measure of dispersion in finance is <strong>standard deviation</strong>. It's usually represented by \(\sigma\). It's obvious to see the relation between standard deviation and variance:
+\[\sigma = \sqrt{\sigma^2} = \sqrt{\frac{\sum_{i = 1}^{n}(x_i- \mu)^2}{n}}\]
+NumPy also provides us a method to calculate standard deviation.
+<pre class="prettyprint linenums">print np.std(aapl.log_price)
+</pre>
+<h2>Summary</h2>
+We introduced different types of rate of return in this chapter, which could be a little bit tricky when we calculate them. Mean and standard deviation are also very important concepts when we conduct hypothesis test or measure the risk associated with a asset. We will use those comcepts intensively in our later chapter.
