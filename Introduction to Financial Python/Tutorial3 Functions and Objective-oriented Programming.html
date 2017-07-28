@@ -1,0 +1,112 @@
+<h2>Introduction</h2>
+In the last tutorial we introduced logical operations, for/while loop and list comprehension. We will introduce functions and objective-oriented programming in this chapter, which will enable us to build complex algorithms in more flexible ways.
+<h2>Functions</h2>
+A function is a reusable block of code. You can use a function to make a calculation, output a value, or do anything else you want. We can easily define our own function by using the keyword 'def'.
+<pre class="prettyprint linenums">def product(x,y):
+    return x*y
+product(2,3)
+product(5,10)
+</pre>
+The keyword 'def' is followed by the function name and the parenthesized list of formal parameters. The statements that form the body of the function start at the next line, and must be indented. Here the 'x' and 'y' are the two parameters. A function doesn't necessarily have parameters.
+<pre class="prettyprint linenums">def say_hi():
+    print 'Welcome to QuantConnect'
+say_hi()
+</pre>
+<h2>Built-in Function</h2>
+Here we introduce some commonly used Python built-in functions.
+range() is a function to create lists containing arithmetic progressions. It's often used in for loops. the arguments must be integers. If the step argument is omitted, it defaults to 1.
+<pre class="prettyprint linenums">range(10)
+range(1,11)
+range(1,11,2)
+</pre>
+Another useful function usually used together with range() to create a for loop is len(). This function returns the length of an object. The argument must be a sequence or a collection.
+<pre class="prettyprint linenums">tickers = ['AAPL','GOOG','IBM','FB','F','V', 'G', 'GE']
+print 'The length of tickers is {}'.format(len(tickers))
+for i in range(len(tickers)):
+    print tickers[i]
+</pre>
+map() is a function that applies a specific function to every item of a sequence or collection, and returns a list of the results.
+<pre class="prettyprint linenums">tickers = ['AAPL','GOOG','IBM','FB','F','V', 'G', 'GE']
+print map(len,tickers)
+</pre>
+The Lambda operator is a way to create small anonymous functions. These functions are throw-away functions, which means they are just needed where they have been created.For example:
+<pre class="prettyprint linenums">map(lambda x: x**2, range(10))
+</pre>
+map() can be applied to more than one list. The lists have to have the same length.
+<pre class="prettyprint linenums">map(lambda x, y: x+y, [1,2,3,4,5],[5,4,3,2,1])
+</pre>
+sort() returns a new sorted list from the items in a sequence or a collection.
+<pre class="prettyprint linenums">sorted([5,2,3,4,1])
+</pre>
+We can add a 'key' parameter to specify a function to be called on each list element prior to making comparisons. For example:
+<pre class="prettyprint linenums">price_list = [('AAPL',144.09),('GOOG',911.71),('MSFT',69),('FB',150),('WMT',75.32)]
+sorted(price_list, key = lambda x: x[1])
+</pre>
+By default the values are sorted by ascending order. We can change it to descending by adding an optional parameter 'reverse'.
+<pre class="prettyprint linenums">price_list = [('AAPL',144.09),('GOOG',911.71),('MSFT',69),('FB',150),('WMT',75.32)]
+sorted(price_list, key = lambda x: x[1],reverse = True)
+</pre>
+A list object also has a function list.sort(). This function takes the same 'key' and 'reverse' arguments as sorted, but we don't need to specify the sequence to be sorted.
+<pre class="prettyprint linenums">price_list = [('AAPL',144.09),('GOOG',911.71),('MSFT',69),('FB',150),('WMT',75.32)]
+price_list.sort(key = lambda x: x[1])
+print price_list
+</pre>
+<h2>Objective-oriented Programming</h2>
+Python is an objective-oriented programming language. It's important to understand the concept of 'Object' because almost every kind of data from QuantConnect API is an object.
+<h3>Class</h3>
+a class is a kind of data type, just like a string, float, or list. When we create an object of that data type, we call it an instance of a class.
+In python, everything is an object - everything is an instance of some class. The data values which we store inside an object are called properties, and the functions which are associated with the object are called methods. For example, as we mentioned above, a list is an object of 'list' class, and it has a method list.sort().
+We can create our own objects by defining a certain class. We would do this when it's helpful to group certain functions together.
+For example, we defined a class named stock here:
+<pre class="prettyprint linenums">class stock:
+    def __init__(self, ticker, open, close, volume):
+        self.ticker = ticker
+        self.open = open
+        self.close = close
+        self.volume = volume
+        self.rate_return = float(close)/open - 1
+
+    def update(self, open, close):
+        self.open = open
+        self.close = close
+        self.rate_return = float(self.close)/self.open - 1
+
+    def print_return(self):
+        print self.rate_return
+</pre>
+Here we defined a class named 'stock'. it has attributes 'ticker', 'open', 'close', 'volume' and 'rate_return'. Inside the class body, the first method is called __init__, which is a special method. When we create a new instance of the class, the __init__ method is immediately executed with all the parameters that we passed to the class object. The purpose of this method is thus to set up a new object using data that we have provided.
+This class also has methods 'update' and 'print_return'. Now we are going to create two stock objects,'apple' and 'google'.
+<pre class="prettyprint linenums">apple = stock('AAPL', 143.69, 144.09, 20109375)
+google = stock('GOOG', 898.7, 911.7, 1561616)
+</pre>
+Now we can access to the properties and call the functions associated with the stock class.
+<pre class="prettyprint linenums">apple.ticker
+google.print_return()
+google.update(912.8,913.4)
+google.print_return()
+</pre>
+By calling the stock.update() function, we updated the open and close price of the stock. Please notice that when we use the properties or call the methods inside a method, we need to specify them as self.property or self.method(), otherwise Python will deem them as global variables thus cause error.
+We can easily assign add a property to an object anywhere.
+<pre class="prettyprint linenums">apple.ceo = 'Tim Cook'
+apple.ceo
+</pre>
+We can check what properties are defined on an object using the dir() function:
+<pre class="prettyprint linenums">dir(apple)
+</pre>
+<h3>Inheritance</h3>
+Inheritance is a way of arranging objects in a hierarchy from the most general to the most specific. An object which inherits from another object is considered to be a subtype of that object. The subtype will inherit the methods. For example, we define a class named 'child', and it inherits 'stock':
+<pre class="prettyprint linenums">class child(stock):
+    def __init__(self,name):
+        self.name = name
+</pre>
+Then we create an object:
+<pre class="prettyprint linenums">aa = child('aa')
+aa.name
+aa.update(100,102)
+aa.open
+aa.close
+aa.print_return()
+</pre>
+As we can see above, the new class child inherited the methods from stock.
+<h2>Summary</h2>
+In this chapter we introduced functions and class. When we write a QC algorithm, we would define our algorithm as a class(QCAlgorithm). This means our algorithm inherited the QC API methods from QCAlgorithm class. It's essential to understand class and inheritance so that we can understand how a QC algorithm works. This is the last chapter of basic python part. In the next chapter we will introduce NumPy and a little bit Pandas, which enable us to conduct scientific calculation with Python.
