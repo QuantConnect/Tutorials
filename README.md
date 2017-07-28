@@ -1,4 +1,4 @@
-![QuantConnect Logo](https://cdn.quantconnect.com/web/i/logo.png)
+![QuantConnect Logo](https://cdn.quantconnect.com/web/i/logo-small.png)
 # QuantConnect LEAN Tutorials
 
 [Tutorial Website][1] | [Documentation][2] | [Download LEAN][3] | ![Join the chat at https://www.quantconnect.com/slack](https://cdn.quantconnect.com/lean/i/slack-sm.png)
