@@ -1,0 +1,53 @@
+<h2>Overview</h2>
+Tracking and managing orders is an important part of an algorithmic trading strategy. Intelligent order management encourages discipline and a deep understanding of your algorithm. Through the QuantConnect API you can get order fields, update their values and cancel pending orders. This can be useful for lowering trading costs and improving order fills.
+
+When you place a trade you receive an <code>OrderTicket</code> for you to access the order. This allows you to safely (asynchronously) update and cancel the order while in live trading. In live trading you cannot assume order updates are processed successfully as the brokerage may have already filled the trade.
+
+You can place several types of orders including:
+<table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2">Supported Order Types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td width="25%">Market Order</td>
+<td><code>MarketOrder("SPY", 100);</code></td>
+</tr>
+<tr>
+<td>Limit Order</td>
+<td><code>var ticket = LimitOrder("SPY", 100, 100.10m);</code></td>
+</tr>
+<tr>
+<td>Stop Market Order</td>
+<td><code>var ticket = StopMarketOrder("SPY", 100, 100.10m);</code></td>
+</tr>
+<tr>
+<td>Stop Limit Order</td>
+<td><code>var ticket = StopLimitOrder("SPY", 100, 100.12m, 99.5m);</code></td>
+</tr>
+<tr>
+<td>Market On Open Order</td>
+<td><code>var ticket = MarketOnOpen("SPY", 100);</code></td>
+</tr>
+<tr>
+<td>Market On Close Order</td>
+<td><code>var ticket = MarketOnClose("SPY", 100);</code></td>
+</tr>
+</tbody>
+</table>
+<h2>Updating Orders</h2>
+Once you have an order ticket you can use it to get order fields:
+<pre class="prettyprint linenums">var currentStopPrice = _ticket.Get(OrderField.StopPrice);</pre>
+Or update the order fields (LimitPrice, StopPrice, Tag or Quantity):
+<pre class="prettyprint linenums">_ticket.Update(new UpdateOrderFields
+{
+    LimitPrice = newLongLimit,
+    Tag = "Update #" + (longOrder.UpdateRequests.Count + 1)
+});</pre>
+You can also cancel your order if required:
+<pre class="prettyprint linenums">_ticket.Cancel();</pre>
+In the video below we demonstrate putting it all together to create a moving take-profit order which gradually decreases its profit target as time passes.
+
+[embedyt] https://www.youtube.com/watch?v=HykXfstdNW0[/embedyt]

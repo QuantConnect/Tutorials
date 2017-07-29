@@ -1,0 +1,429 @@
+<h2>Abstract</h2>
+We investigate two pairs trading methods and compare the results. Pairs trading involves in investigating the dependence structure between two highly correlated assets. With the assumption that mean reversion will occur, long or short positions are entered in the opposite direction when there is a price divergence. Typically the asset price distribution is modeled by a  Gaussian distribution of return series but the joint normal distribution may fail to catch some key features of the dependence of stock pairs' price like tail dependence. We investigate using copula theory to identify these trading opportunities.
+
+In this tutorial, we will discuss the basic framework of copula from the mathematical perspective and explain how to apply the approach in pairs trading. The implementation of the algorithm is based on based on the paper <em><a href="https://journals.co.za/content/jefs/6/1/EJC135921">Trading strategies with copulas</a> [ref]Stander Y, Marais D, Botha I. Trading strategies with copulas[J]. Journal of Economic and Financial Sciences, 2013, 6(1): 83-107. <a href="https://journals.co.za/content/jefs/6/1/EJC135921">Online Copy</a> [/ref] </em> from Stander Y, Marais D, Botha I(2013). We compare the performance of the copula pairs trading strategy with the co-integration pairs trading method based on the paper <em><a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2147012">Statistical arbitrage trading strategies and high-frequency trading</a></em> from Hanson T A, Hall J R. (2012)[ref]Hanson T A, Hall J R. Statistical arbitrage trading strategies and high-frequency trading[J]. 2012.[/ref]. The co-integration technique assumes a co-integration relationship between paired equities to identify profitable trading opportunities. The empirical results suggest that the copula-based strategy is more profitable than the traditional pairs trading techniques.
+<h2>Framework of Copula</h2>
+<h3>1. Definition</h3>
+Given a random vector \(X_1,X_2,...,X_p\), its marginal cumulative distribution functions (CDFs) are \(F_i(x) = P[X_i \leq x]\). By applying the probability integral transform to each component, the marginal distributions of \((U_1,U_2,...,U_p) = (F_1(X_1),F_2(X_2),...,F_p(X_p))\) are uniform (from <a href="https://en.wikipedia.org/wiki/Copula_(probability_theory)">Wikipedia</a>).
+
+Then the copula of \(X_1,X_2,...,X_p\) is defined as the joint cumulative distribution function of \(U_1,U_2,...,U_p\), for which the marginal distribution of each variable U is uniform as  \(U(0,1)\).
+
+\[C(u_1,u_2,...,u_p) = P[U_1\leq u_1,U_2\leq u_2,..., U_1\leq u_1]\]
+
+Copulas function contains all the dependency characteristics of the marginal distributions and will better describe the linear and non-linear relationship between variables, using probability. They allow the marginal distributions to be modeled independently from each other, and no assumption on the joint behavior of the marginals is required.[ref]Rad H, Low R K Y, Faff R. The profitability of pairs trading strategies: distance, cointegration and copula methods[J]. Quantitative Finance, 2016, 16(10): 1541-1558.<a href="http://www.tandfonline.com/doi/full/10.1080/14697688.2016.1164337?needAccess=true">online copy</a>[/ref]
+<h3>2. Bivariate Copulas</h3>
+Since this research focuses on bivariate copulas (for pairs trading we have 2 random variables) some probabilistic properties are specified.
+
+Let X and Y be two random variables with cumulative probability function \(F_1(X)\) and \(F_2(Y)\). \(U=F_1(X), V=F_2(Y)\) which are uniformly distributed.  Then the copula function is \(C(u,v)=P(U\leq u,V\leq v)\). Taking the partial derivative of the copula function over U and V would give the conditional distribution function as follows:
+
+\[P(U\leq u\mid V= v)=\frac{\partial C(u,v)}{\partial v}\]
+
+\[P(V\leq v\mid U= u)=\frac{\partial C(u,v)}{\partial u}\]
+<h3>3. Archimedean Copulas</h3>
+There are many copula functions that enable us to describe dependence structures between variables, other than the Gaussian assumption. Here we will focus three of these; the <em>Clayton</em>, <em>Gumbel</em> and <em>Frank</em> copula formulas from the Archimedean class.
+
+Archimedean copulas[ref]Mahfoud M, Michael M. Bivariate Archimedean copulas: an application to two stock market indices[J]. BMI Paper, 2012.  <a href="https://www.few.vu.nl/nl/Images/werkstuk-mahfoud_tcm243-277460.pdf">Online Copy</a>[/ref] are based on the Laplace transforms φ of univariate distribution functions. They are constructed by a particular generator function \(\phi\) [ref]LANDGRAF N, SCHOLTUS K, DIRIS D R B. High-Frequency copula-based pairs trading on US Goldmine Stocks[J]. 2016.[/ref].
+
+\[C(u,v)=\phi^{-1}( \phi(u),\phi(v) )\]
+
+The probability density function is:
+
+\[c(u,v)=\phi_{(2)}^{-1}(\phi(u)+\phi(v))\phi^{'}(u)\phi^{'}(v)\]
+
+Where \(\phi_{(2)}^{-1}\) is the inverse of the second derivative of the generator function.
+<table class="table qc-table">
+<thead>
+<tr>
+<th style="text-align: left;">Copula</th>
+<th style="text-align: center;">Copula function C(u,v;θ)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Clayton Copula</td>
+<td style="text-align: left;">\[(u^{-\theta}+v^{-\theta}-1)^{-1/\theta}\]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Gumbel Copula</td>
+<td style="text-align: left;">\[exp(-[(-\ln u)^{\theta}＋(-\ln v)^{\theta}]^{1/\theta})\]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Frank Copula</td>
+<td>\[-\theta^{-1}\ln\left[1+\frac{(exp(-\theta u)-1)(exp(-\theta v)-1)}{exp(-\theta)-1}\right]\]</td>
+</tr>
+</tbody>
+</table>
+&nbsp;
+
+Genest and MacKay (1986) [ref]Genest, C. and MacKay, J., 1986, The Joy of Copulas: Bivariate Distributions with Uniform Marginals, The American Statistician, 40, 280-283[/ref] proved that the relation between the copula generator function and Kendall rank correlation tau in the bivariate case can be given by:
+
+\[\tau=1+4\int_{0}^{1} \frac{\partial \phi (v)}{\partial \phi^{'}(v)}dv\]
+
+So we can easily estimate the parameter in Archimedean copulas if we know Kendall’s tau rank measure and the generator function. Please refer to step 3 to see the formulas.
+<h2>Part I: Copula Method</h2>
+ETFs have many different stock sectors and asset classes which provide us a wide range of pairs trading candidates. Our data set consists of daily data of the ETFs traded on the NASDAQ or the NYSE.
+
+We use the first 3 years of data to choose the best fitting copula and asset pair ("training formation period"). Next, we use a period of 5 years from 2011 to 2017 ("the trading period"), to execute the strategy. During the trading period we use a rolling 12 month window of data to get the copula parameters ("rolling formation period").
+<h3>Step 1: Selecting the Paired Stocks</h3>
+The general method of pair selection is based on both fundamental and statistical analysis.[ref]<strong>Jean Folger</strong>. Pairs Trading Example <a href="http://www.investopedia.com/university/guide-pairs-trading/pairs-trade-example.asp"> Online Copy</a>[/ref]
+<h4><strong>1) Assemble a list of potentially related pairs</strong></h4>
+Any random pairs could be correlated. It is possible that those variables are not causally related to each other, but because of a spurious relationship due to either coincidence or the presence of a certain third, unseen factor. Thus, it is important for us to start with a list of securities that have something in common. For this demonstration, we choose some of the most liquid ETFs traded on the Nasdaq or the NYSE.  The relationship for those potentially related pairs could be due to an index, sector or asset class overlap. e.g. GLD and DGL are two gold ETFs.
+<h4><strong>2) Filter the trading pair with statistical correlation</strong></h4>
+<div class="page" title="Page 12">
+<div class="section">
+<div class="layoutArea">
+<div class="column">
+
+To determine which stock pairs to include in the analysis, correlations between the pre-selected ETF pairs are analyzed. Below are three types of correlation measures we usually use in statistics:
+<table class="table qc-table">
+<thead>
+<tr>
+<th colspan="3">Correlation Measurement Techniques</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td width="33%">Pearson correlation</td>
+<td>\[r = \frac{\sum (x_i- \bar{x})(y_i- \bar{y})}{\sqrt{\sum (x_i- \bar{x})^2)\sum (y_i- \bar{y})^2)} }\]</td>
+</tr>
+<tr>
+<td>Kendall rank correlation</td>
+<td>\[\tau=\frac{n_c-n_d}{\frac{1}{2}n(n-1)}\]</td>
+</tr>
+<tr>
+<td>Spearman rank correlation</td>
+<td>\[\rho=1-\frac{6\sum d_i^2}{n(n^2-1)}\]</td>
+</tr>
+<tr>
+<td colspan="2"> \(n\) = number of value in each data set
+\(n_c\) = number of concordant
+\(n_d\) = number of discordant
+\(d_i\) = the difference between the ranks of corresponding values \(x_i\) and \(y_i\)</td>
+</tr>
+</tbody>
+</table>
+</div>
+We can get these coefficients in Python using functions from the stats library in SciPy. The correlations have been calculated using daily log stock price returns during the training formation period. We found the 3 correlation techniques give the paired ETFs the same correlation coefficient ranking. The Pearson correlation assumes that both variables should be normally distributed. Thus here we use Kendall rank as the correlation measure and choose the pairs with the highest Kendall rank correlation to implement the pairs trading.
+
+We get the daily historical closing price of our ETFs pair by using the History function and converting the prices to a log return series. Let \(P_x\) and \(P_y\) denote the historical stock price series for stock x and stock y. The log returns for the ETFs pair are given by:
+
+\[R_x = ln(\frac{P_{x,t}}{P_{x,t-1}}),   R_y = ln(\frac{P_{y,t}}{P_{y,t-1}})\]   t = 1,2,...,n where n is the number of price data
+<pre class="prettyprint linenums">def _pair_selection(self):    	
+    tick_syl =  [["SPY","AGG","XME","TNA","FAS","XLF","GLD","EWC","QLD"],["DIA","JNK","EWG","TLT","FAZ","XLU","DGL","EWA","QID"]]
+    logreturn={}         
+    for i in range(2):
+        syl = [self.AddSecurity(SecurityType.Equity, x, Resolution.Daily).Symbol for x in tick_syl[i]]
+        history = self.History(self.lookbackdays,Resolution.Daily)            
+        # generate the log return series of different ETFs
+        for j in range(len(tick_syl[i])):
+            close_price = []
+            for slice in history:
+                bar = slice[syl[j]]
+                close_price.append(bar.Close)
+            logreturn[tick_syl[i][j]] = np.diff(np.log([float(z) for z in close_price]))
+    # estimate coefficients of different correlation measures 
+    tau_coef,pr_coef,sr_coef= [],[],[]
+    for i in range(len(tick_syl[i])):
+        tik_x, tik_y= logreturn[tick_syl[0][i]], logreturn[tick_syl[1][i]]
+        tau_coef.append(kendalltau(tik_x, tik_y)[0]) 
+        pr_coef.append(pearsonr(tik_x, tik_y)[0]) 
+        sr_coef.append(spearmanr(tik_x, tik_y)[0]) 
+    index_max = tau_coef.index(max(tau_coef))	
+    self.ticker = [tick_syl[0][index_max],tick_syl[1][index_max]]
+</pre>
+<h3>Step 2: Estimating Marginal Distributions of log-return</h3>
+In order to construct the copula, we need to transform the log-return series \(R_x\) and \(R_y\) to two uniformly distributed values u and v. This can be done by estimating the marginal distribution functions of \(R_x\) and \(R_y\) and plugging the return values into a distribution function. As we make no assumptions about the distribution of the two log-return series, here we use the empirical distribution function to approach the marginal distribution \(F_1(R_x)\) and \(F_2(R_y)\). The Python ECDF function from the statsmodel library gives us the Empirical CDF as a step function.
+<h3>Step 3: Estimating Copula Parameters</h3>
+As discussed above, we estimate the copula parameter theta by the relationship between the copula and the dependence measure Kendall’s tau, for each of the Archimedean copulas.
+<table class="table qc-table">
+<thead>
+<tr>
+<th>Copula</th>
+<th style="text-align: center;">Kendall's tau</th>
+<th style="text-align: center;">parameter θ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clayton Copula</td>
+<td>\[\frac{\theta}{\theta +2}\]</td>
+<td>\[\theta=2\tau(1-\tau)^{-1}\]</td>
+</tr>
+<tr>
+<td>Gumbel Copula</td>
+<td>\[1-\theta^{-1}\]</td>
+<td>\[\theta=(1-\tau)^{-1}\]</td>
+</tr>
+<tr>
+<td>Frank Copula</td>
+<td>\[1+4[D_1(\theta)-1]/\theta\]</td>
+<td>\[arg min\left(\frac{\tau-1}{4}-\frac{D_1(\theta)-1}{\theta}\right)^2\]</td>
+</tr>
+<tr>
+<td colspan="3">\[D_1(\theta)=\frac{1}{\theta}\int_{0}^{\theta}\frac{t}{exp(t)-1}dt \]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<pre class="prettyprint linenums">def _parameter(self, family, tau):   	  	
+    if  family == 'clayton':
+        return 2*tau/(1-tau)        
+    elif family == 'frank':	
+        # debye = quad(integrand, sys.float_info.epsilon, theta)[0]/theta  is first order Debye function
+    	# frank_fun is the squared difference
+    	# Minimize the frank_fun would give the parameter theta for the frank copula 	    
+      integrand = lambda t: t/(np.exp(t)-1) 
+    	frank_fun = lambda theta: ((tau - 1)/4.0  - (quad(integrand, sys.float_info.epsilon, theta)[0]/theta - 1)/theta)**2
+      return minimize(frank_fun, 4, method='BFGS', tol=1e-5).x
+    elif family == 'gumbel':
+        return 1/(1-tau)</pre>
+</div>
+</div>
+<h3>Step 4: Selecting the Best Fitting Copula</h3>
+Once we get the parameter estimation for the copula functions, we use the AIC criteria to select the copula that provides the best fit in algorithm initialization.
+
+\[AIC=-2L(\theta)+2k\]
+
+where \(L(\theta)=\sum_{t=1}^T\log c(u_t,v_t;\theta)\) is the log-likelihood function and k is the number of parameters, here k=1.
+
+The density functions of each copula function are as follows:
+<table class="table qc-table">
+<thead>
+<tr>
+<th style="text-align: center;">Copula</th>
+<th style="text-align: center;">Density function c(u,v;θ)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Clayton Copula</td>
+<td style="text-align: left;">\[(\theta+1)(u^{-\theta}+v^{-\theta}-1)^{-2-1/\theta}u^{-\theta-1}v^{-\theta-1}\]</td>
+</tr>
+<tr>
+<td>Gumbel Copula</td>
+<td>\[C(u,v;\theta)(uv)^{-1}A^{-2+2/\theta}[(\ln u)(\ln v)]^{\theta -1}[1+(\theta-1)A^{-1/\theta}]\]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Frank Copula</td>
+<td style="text-align: left;">\[\frac{-\theta(exp(-\theta)-1)(exp(-\theta(u+v)))}{((exp(-\theta u)-1)(exp(-\theta v)-1)+(exp(-\theta)-1))^2}\]</td>
+</tr>
+<tr>
+<td colspan="2">\[A=(-\ln u)^{\theta}+(-\ln v)^{\theta}\]</td>
+</tr>
+</tbody>
+</table>
+<div class="page" title="Page 23">
+<div class="layoutArea">
+<div class="column">
+<pre class="prettyprint linenums">def _lpdf_copula(self, family, theta, u, v):
+    ''' estimate the log probability density function of three kinds of Archimedean copulas '''        
+    if  family == 'clayton':
+        pdf = (theta+1) * ((u**(-theta)+v**(-theta)-1)**(-2-1/theta)) * (u**(-theta-1)*v**(-theta-1))            
+    elif family == 'frank':
+        num = -theta * (np.exp(-theta)-1) * (np.exp(-theta*(u+v)))
+        denom = ((np.exp(-theta*u)-1) * (np.exp(-theta*v)-1) + (np.exp(-theta)-1))**2
+        pdf = num/denom
+    elif family == 'gumbel':
+        A = (-np.log(u))**theta + (-np.log(v))**theta
+        c = np.exp(-A**(1/theta))
+        pdf = c * (u*v)**(-1) * (A**(-2+2/theta)) * ((np.log(u)*np.log(v))**(theta-1)) * (1+(theta-1)*A**(-1/theta))
+    return np.log(pdf)
+</pre>
+The copula that provides the best fit is the one that corresponds to the lowest value of AIC criterion. The chosen pair is "GLD" &amp; "DGL".
+<pre class="prettyprint linenums">self.family = ['clayton', 'frank', 'gumbel']
+tau = kendalltau(x, y)[0]  # estimate Kendall'rank correlation
+AIC ={}  # generate a dict with key being the copula family, value = [theta, AIC]
+for i in self.family:
+    lpdf = [self._lpdf_copula(i, self._parameter(i,tau), x, y) for (x, y) in zip(u, v)]
+    # Replace nan with zero and inf with finite numbers in lpdf list
+    lpdf = np.nan_to_num(lpdf) 
+    loglikelihood = sum(lpdf)
+    AIC[i] = [self._parameter(i,tau), -2*loglikelihood + 2]
+    # choose the copula with the minimum AIC  
+    self.copula = min(AIC.items(), key = lambda x: x[1][1])[0]  
+</pre>
+&nbsp;
+<h3>Step 5: Generating the Trading Signals</h3>
+The copula functions include all the information about the dependence structures of two return series. According to Stander Y, Marais D, Botha I(2013)[ref]Stander Y, Marais D, Botha I. Trading strategies with copulas[J]. Journal of Economic and Financial Sciences, 2013, 6(1): 83-107. <a href="https://journals.co.za/content/jefs/6/1/EJC135921">Online Copy</a> [/ref], the fitted copula is used to derive the confidence bands for the conditional marginal distribution function of \(C(v\mid u)\) and \(C(u\mid v)\), that is the mispricing indexes. When the market observations fall outside the confidence band, it is an indication that pairs trading opportunity is available. Here we choose 95%  as the upper confidence band, 5% as the lower confidence band as indicated in the paper. The confidence level was selected based on a back-test analysis in the paper that shows using 95% seems to lead to appropriate trading opportunities to be identified.
+
+Given current returns \(R_x, R_y\) of stock X and stock Y, we define the "mis-pricing indexes" are:
+
+\[MI_{X|Y}=P(U\leq u\mid V\leq v)=\frac{\partial C(u,v)}{\partial v}\]
+
+\[MI_{Y|X}=P(V\leq v\mid U\leq u)=\frac{\partial C(u,v)}{\partial u}\]
+
+For further <span class="s1">mathematical proof</span>, please refer to Xie W, Wu Y(2013)[ref]Xie W, Wu Y. Copula-based pairs trading strategy[C]//Asian Finance Association (AsFA) 2013 Conference. doi. 2013, 10.[/ref]
+
+The conditional probability formulas of bivariate copulas can be derived by taking partial derivatives of copula functions shown in Table 1. The results are as follows:
+
+Gumbel Copula
+
+\[C(v\mid u)=C(u,v;\theta)[(-\ln u)^\theta+(-\ln v)^\theta]^{\frac{1-\theta}{\theta}}(-\ln u)^{\theta-1}\frac{1}{u}\]
+
+\[C(u\mid v)=C(u,v;\theta)[(-\ln u)^\theta+(-\ln v)^\theta]^{\frac{1-\theta}{\theta}}(-\ln v)^{\theta-1}\frac{1}{v}\]
+
+</div>
+</div>
+</div>
+Clayton Copula
+
+\[C(v\mid u)=u^{-\theta-1}(u^{-\theta}+v^{-\theta}-1)^{-\frac{1}{\theta}-1}\]
+
+\[C(u\mid v)=v^{-\theta-1}(u^{-\theta}+v^{-\theta}-1)^{-\frac{1}{\theta}-1}\]
+
+Frank Copula
+
+\[C(v\mid u)=\frac{(exp(-\theta u)-1)(exp(-\theta v)-1)+(exp(-\theta v)-1)}{(exp(-\theta u)-1)(exp(-\theta v)-1)+(exp(-\theta)-1)}  \]
+
+\[C(u\mid v)=\frac{(exp(-\theta u)-1)(exp(-\theta v)-1)+(exp(-\theta u)-1)}{(exp(-\theta u)-1)(exp(-\theta v)-1)+(exp(-\theta)-1)} \]
+
+After selection of trading pairs and the best-fitted copulas, we take the following steps for trading. Please note we implement the Steps 1, 2, 3 and 4 on the first day of each month using the daily data for the last 12 months, which means our empirical distribution functions and copula parameters theta estimation are updated once a month. In summary each month:
+<ol>
+ 	<li>During the 12 months' rolling formation period, daily close prices are used to calculate the daily log returns for the pair of ETFs and then compute Kendall's rank correlation.</li>
+ 	<li>Estimate the marginal distribution functions of log returns of X and Y, which are ecdf_x and ecdf_y separately.</li>
+ 	<li>Plug Kendall's tau into copula parameter estimation functions to get the value of theta.</li>
+ 	<li>Run linear regression over the two log return series. The coefficient is used to determine how many shares of X and Y to buy and sell. For example, if the coefficient is 2, for every X share that is bought or sold, 2 units of Y are sold or bought.</li>
+</ol>
+<pre class="prettyprint linenums">def _set_signal(self):    	
+    history = self.History(self.lookbackdays,Resolution.Daily)   	
+    # generate the log return series of paired stocks
+    # logreturn_trade is a dictionary to store the history log return series of paired stocks each trading day
+    logreturn_trade={}  
+    for j in range(len(self.syl)):
+        close = []
+        for slice in history:
+            bar = slice[self.syl[j]]
+            close.append(bar.Close)
+        logreturn_trade[self.ticker[j]] = np.diff(np.log([float(z) for z in close])) 
+    x, y = logreturn_trade[self.ticker[0]], logreturn_trade[self.ticker[1]]        
+    # estimate Kendall'rank correlation 
+    tau = kendalltau(x, y)[0]         
+    # estimate the copula parameter: theta
+    self.theta = self._parameter(self.copula, tau)        
+    # simulate the empirical distribution function for returns of two paired stocks
+    self.ecdf_x, self.ecdf_y  = ECDF(x), ECDF(y)         
+    # run linear regression over the two history return series
+    self.coef = stats.linregress(x,y).slope
+</pre>
+Finally during the trading period, each day we convert today's returns to u and v by using empirical distribution functions ecdf_x and ecdf_y. After that, two mispricing indexes are calculated every trading day by using the estimated copula C.  The algorithm constructs short positions in X and long positions in Y on the days that \(MI_{Y|X}&lt;0.05\) and \(MI_{X|Y}&gt;0.95\). It constructs short position in Y and long positions in X on the days that \(MI_{Y|X}&gt;0.95\) and \(MI_{X|Y}&lt;0.05\).
+<pre class="prettyprint linenums">def OnData(self,data):
+    for i in self.syl:
+        self.price_list[i].append(self.Portfolio[i].Price)        
+    # compute today's log return of 2 stocks
+    if len(self.price_list[self.syl[0]]) &lt; 2 or len(self.price_list[self.syl[1]]) &lt; 2: return
+    else: 
+        return_x = np.log(float(self.price_list[self.syl[0]][-1]/self.price_list[self.syl[0]][-2]))
+        return_y = np.log(float(self.price_list[self.syl[1]][-1]/self.price_list[self.syl[1]][-2]))        
+    # Convert the two returns to uniform values u and v using the empirical distribution functions
+    u_value = self.ecdf_x(return_x)
+    v_value = self.ecdf_y(return_y)        
+    # Compute the mispricing indices for u and v by using estimated copula
+    self._misprice_index(self.copula, self.theta, u_value, v_value)        
+    quantity = self.CalculateOrderQuantity(self.syl[1],0.4)        
+    if self.MI_u_v &lt; self.floor_CL and self.MI_v_u &gt; self.cap_CL:
+        if self.Portfolio[self.syl[0]].Quantity &lt; 0 and self.Portfolio[self.syl[1]].Quantity &gt; 0:
+            self.Liquidate(self.syl[0])
+            self.Liquidate(self.syl[1])
+            quantity = self.CalculateOrderQuantity(self.syl[1],0.4)
+            self.Sell(self.syl[1], 1 * quantity )
+            self.Buy(self.syl[0], self.coef * quantity)
+        else:
+            self.Sell(self.syl[1], 1 * quantity )
+            self.Buy(self.syl[0], self.coef * quantity)	            	
+    elif self.MI_u_v &gt; self.cap_CL and self.MI_v_u &lt; self.floor_CL:
+        if self.Portfolio[self.syl[0]].Quantity &gt; 0 and self.Portfolio[self.syl[1]].Quantity &lt; 0:
+            self.Liquidate(self.syl[0])
+            self.Liquidate(self.syl[1])
+            quantity = self.CalculateOrderQuantity(self.syl[1],0.4)
+            self.Buy(self.syl[1], 1 * quantity )
+            self.Sell(self.syl[0], self.coef * quantity)
+        else:
+            self.Buy(self.syl[1], 1 * quantity )
+            self.Sell(self.syl[0], self.coef * quantity)</pre>
+<h2 class="page" title="Page 5">Part II: Cointegration Method</h2>
+For the cointegration pairs trading method, we choose the same ETF pair "GLD" &amp; "DGL".  There is no need to choose a copula function so there is only a 12 month rolling formation period. The trading period is 5 years from January 2011 to  May 2017.
+<h3 class="page" title="Page 5">Step 1: Generate the Spread Series</h3>
+At the start of each month we generate the log price series of two ETFs with the daily close. Then the spread series is estimated using regression analysis based on log price series data.
+
+For equities X and Y, we run linear regression over the log price series and get the coefficient β.
+
+\[spread_t=\log(price_t^y)-\beta \log(price_t^x)\]
+
+&nbsp;
+<h3>Step 2: Compute the Threshold</h3>
+<div class="page" title="Page 5">
+<div class="layoutArea">
+<div class="column">
+
+Using the standard deviation of spread during the rolling formation period, a threshold of two standard deviations is set up for the trading strategy as indicated in the paper.
+
+</div>
+<pre class="prettyprint linenums">def _set_signal(self):
+    history = self.History(self.numdays,Resolution.Daily)
+    logprice = {}
+    for j in range(len(self.syl)):
+        close = []
+        for slice in history:
+            bar = slice[self.syl[j]]
+            close.append(bar.Close)
+        logprice[self.ticker[j]] = np.log([float(z) for z in close])    # generate the log return series of stock price
+    # run linear regression over the two history log price series
+    reg = linear_model.LinearRegression()
+    x,y = logprice[self.ticker[0]],logprice[self.ticker[1]]
+    reg.fit([[n] for n in x],y)
+    self.coef = reg.coef_    # reg.intercept_
+    self.spread = y - self.coef * x  #compute the spread series based on regression result
+    self.mean, self.std = np.mean(self.spread),np.std(self.spread)
+</pre>
+</div>
+</div>
+<div class="page" title="Page 5">
+<div class="layoutArea">
+<div class="column">
+<h3>Step 3: Set up the Trading Signals</h3>
+On each trading day, we enter a trade whenever the spread moves more than two standard deviations away from its mean. In other words, we construct short positions in X and long positions in Y on the day that spread&gt;mean+2*std. We construct short positions in Y and long positions in X on the day that spread&lt;mean-2*std. The trade is exited if the spread reverts to its <span class="s1">equilibrium (defined as less than half a standard deviation from zero spread).</span>
+
+The value of mean and standard deviation are calculated from the rolling formation period and will be updated once a month.
+
+</div>
+</div>
+</div>
+<h2>Conclusion</h2>
+<table class="table qc-table">
+<thead>
+<tr>
+<th style="text-align: center;">method</th>
+<th style="text-align: center;">Transactions</th>
+<th style="text-align: center;">Profit</th>
+<th style="text-align: center;">Sharpe Ratio</th>
+<th style="text-align: center;">Drawdown</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Copula</td>
+<td style="text-align: center;">227</td>
+<td style="text-align: center;">71%</td>
+<td style="text-align: center;">0.736</td>
+<td style="text-align: center;">14.3%</td>
+</tr>
+<tr>
+<td style="text-align: center;">Cointegration</td>
+<td style="text-align: center;">39</td>
+<td style="text-align: center;">14.6%</td>
+<td style="text-align: center;">0.33</td>
+<td style="text-align: center;">11.7%</td>
+</tr>
+</tbody>
+</table>
+Ultimately pairs trading intends to capture the price divergence of two correlated assets through mean reversion. Our results demonstrate that the copula approach for pairs trading is superior to the conventional cointegration method because it is based on the probability of the dependence structure, vs cointegration which relies on simple linear regression variance from normal pricing. We found through testing the performance of the copula method less sensitive to the starting parameters. Because the cointegration method relies on standard distribution and the ETF pairs had low volatility there were few trading opportunities.
+
+Generally ETFs are not very volatile and so mean-reversion did not provide many trading opportunities. There are only 39 trades during 5 years for cointegration method.
+
+It is observed that the use of copula in pairs trading provides more trading opportunities as it does not require any rigid assumptions[ref]Liew R Q, Wu Y. Pairs trading: A copula approach[J]. Journal of Derivatives &amp; Hedge Funds, 2013, 19(1): 12-30.[/ref].
+<h2>Backtest</h2>
+Backtest for copula method
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=40e5048bb1de897f6db29538c71ca882'></script>
+
+Backtest for cointegration method
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=d16d72d0ae8e9149bb0f1ec0fc4e9eb4'></script>
