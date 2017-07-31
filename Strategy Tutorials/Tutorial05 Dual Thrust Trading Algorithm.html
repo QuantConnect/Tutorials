@@ -1,0 +1,65 @@
+<h2>Abstract</h2>
+The <a href="http://www.finance-directory.org/investing/site/6395">Dual Thrust trading algorithm</a>  [ref]<strong>Gang Wei(May 2012)</strong>. Dual Thrust Intraday Strategy, <a href="http://www.xcf.cn/zjfxs/yjzs/jrgc/201210/P020121004348795101761.pdfl"> Online Copy</a>[/ref] is a famous strategy developed by Michael Chalek. It has been commonly used in futures, forex and equity markets. The idea of Dual Thrust is similar to a typical breakout system, however dual thrust uses the historical price to construct update the look back period - theoretically making it more stable in any given period.
+
+In this tutorial, we give a brief introduction to the strategy and show how to implement this algorithm on QuantConnect. After pulling in the historical price of the chosen stock, the range is calculated based on the close, high and low over the most recent N-days.  A position is opened when the market moves a certain range from the opening price. We tested the strategy on individual stocks under two market states: a trending market and range bound market.  The results suggest this momentum trading system works better in trending market but will trigger some fake buy and sell signals in the much more volatile market. Under the range bound market, we can adjust the parameters to get a better return. As a comparison of individual stocks, we also implemented the strategy on SPY. The result suggested that the strategy beat the market.
+<h2>Method</h2>
+<h3>Step 1 : Initialization of algorithm</h3>
+Firstly we need to initialize the data and resolution required, as well as the cash and start-end dates for your algorithm. All algorithms must be initialized.
+<pre class="prettyprint linenums">def Initialize(self):
+    self.SetStartDate(2016, 4, 12)
+    self.SetEndDate(2017, 3, 19)
+    self.SetCash(100000)
+    equity = self.AddSecurity(SecurityType.Equity, "AAON", Resolution.Hour)
+</pre>
+Although this is an intraday strategy, we still want to test the strategy within a long period not just within one day. The scheduling methods sets up an event to fire at a specific date or time and will execute the scheduled event function.
+<pre class="prettyprint linenums">self.Schedule.On(self.DateRules.EveryDay(self.syl),self.TimeRules.AfterMarketOpen(self.syl,0),Action(self.SetSignal))
+</pre>
+Here Schedule.On(DateRules, TimeRules, Action()) will trigger every trading day for our stock, at market open. Events are scheduled using date and time rules. Date rules specify on what dates and event will fire. Time rules specify at what time on those dates the event will fire. Inside of the scheduled function we can pull the recent historical data and current open price each trading day.
+<h3>Step 2:  Implementation of algorithm</h3>
+<img class="alignnone wp-image-90" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/05/屏幕快照-2017-05-03-下午5.42.21-300x124.png" alt="" width="346" height="143" />
+
+In order to calculate the range, each trading day we need the close, high and low price data over the most recent N days. In addition, open price of the current day is required in order to generate the signals. QuantConnect provides History(Symbol, TimeSpan, Resolution) method to get the history data like open, close, high and low for all configured securities over the requested N-days time span. Then the range is calculated by \[range = max(HH-LC, HC-LL)\]. In this implementation we choose N=4. It is less than one week and the range would reflect the recent price change.
+<pre class="prettyprint linenums">for slice in history:
+            self.high.append(slice.High)
+            self.low.append(slice.Low)
+            self.close.append(slice.Close)
+</pre>
+<h3>Step 3: Trading Implementation</h3>
+The long signal is calculated by \[cap = open + K_1 \times Range\]. The short signal is calculated by \[floor = open – K_2 \times  Range\] where K1 and K2 are the parameters. When K1 is greater than K2, it is much easier to trigger the long signal and vice versa. Here we choose K1 = K2 = 0.5. In live trading we can still use historical data to optimize those parameters or adjust the parameters according to the market trend. K1 should be small than k2 if you are bullish on the market and k1 should be much bigger if you are bearish on the market.
+
+<img class="wp-image-134 aligncenter" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/05/屏幕快照-2017-05-03-下午5.42.33-300x165.png" alt="" width="373" height="205" />
+
+This system is a reversal system, so if the investor holds a short position when the price breaks the cap line, short margin should be liquidated first before open a long position. If the investor holds a long position when the price breaks the floor line, long margin should be liquidated first before open a new short position.
+<pre class="prettyprint linenums"> holdings = self.Portfolio[self.syl].Quantity
+        if self.Portfolio[self.syl].Price &gt;= self.selltrig:
+            if holdings &gt;= 0:
+                self.SetHoldings(self.syl, 1)
+            else:
+                self.Liquidate(self.syl)
+                self.SetHoldings(self.syl, 1)
+        elif self.Portfolio[self.syl].Price &lt; self.selltrig: if holdings &gt;= 0:
+                self.Liquidate(self.syl)
+                self.SetHoldings(self.syl, -1)
+            else:
+                self.SetHoldings(self.syl, -1)</pre>
+<h2>Conclusion</h2>
+We tested three representative stocks for this strategy; AAON which exhibits uptrend over the testing period for one year, AXP which was ranging and the S&amp;P 500 ETF SPY to compare the strategy to the benchmark.
+
+AAON resulted in a Sharpe Ratio of 1.52 and the drawdown is 12%.  There are almost 260 trades for one year and one trade each day on average. As expected the strategy works well in a trending market. The strategy seemed to detect most of the market turning points and beat the market from October 2016 to June 2017.
+
+In contrast, the price of AXP was volatile over the backtesting period. As expected the strategy is not as profitable as in a trending market. We get a Sharpe Ratio 0.298 with drawdown of 22%.
+
+From September 2014 to September 2016, the SPDR S&amp;P 500 ETF (<em>SPY</em>) was range-bound. For the tested result, we found the strategy generated a 1.19 Sharpe Ratio and 12% drawdown if applied on a basket of stocks through an ETF.
+
+This is just a basic implementation and the parameters K1 and K2 are fixed. The strategy can be further extended to Futures and Forex markets. When K1 is smaller than k2, buy signals are prone to trigger and vice versa. To improve the model we can apply technical indicators to judge the trend of price and adjust the value of two parameters dynamically and apply risk control in the position sizing.
+<h2>Algorithm</h2>
+Backtest result for SPY from 2014 to 2016
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=699936d0be0e343be6a9a581f4809e25&bm=Benchmark'></script>
+
+Backtest result for AAON from 2016 to 2017
+
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=8708e2c4c19ba3d9411164e83e3a352e&bm=SPY'></script>
+
+Backtest result for AXP from 2013 to 2015
+
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=01020254423d9d2e5c904e87e59a4bfc&bm=IWM'></script>
