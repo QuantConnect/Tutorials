@@ -1,0 +1,65 @@
+Scheduled events allow you to trigger code blocks for execution at specific times according to rules you set. This feature helps coordinate your algorithm activities and perform analysis at regular intervals; while letting the trading engine take care of market holidays.
+
+The scheduling is set with two rules: the <code>DateRules</code> and <code>TimeRules</code> classes. The schedule manager takes one of each and executes an action code block:
+<pre class="prettyprint linenums">Schedule.On(DateRules.On(2013, 10, 7), TimeRules.At(13, 0), () =&gt; 
+{
+         Debug("Specific Time: Fired at : " + Time);
+});</pre>
+The date rules can be specified as below:
+<table class="table table-striped">
+<thead>
+<tr>
+<th colspan="2">Scheduled Events Date Rules</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td width="50%"><code>DateRules.On(2013, 10, 7)</code></td>
+<td>On a specific date</td>
+</tr>
+<tr>
+<td><code>DateRules.EveryDay("SPY")</code></td>
+<td>Every trading day for SPY</td>
+</tr>
+<tr>
+<td><code>DateRules.Every(DayOfWeek.Monday, ...)</code></td>
+<td>On specific days of week</td>
+</tr>
+<tr>
+<td><code>DateRules.EveryDay()</code></td>
+<td>Every day</td>
+</tr>
+<tr>
+<td><code>DateRules.MonthStart("SPY")</code></td>
+<td>SPY trading start of each month</td>
+</tr>
+</tbody>
+</table>
+The time rules trigger specify when on the day the event should be triggered. They can be specified as below:
+<table class="table table-striped">
+<thead>
+<tr>
+<th colspan="2">Scheduled Events Time Rules</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td width="50%"><code>TimeRules.At(13, 0)</code></td>
+<td>At a specific time, 1:00pm</td>
+</tr>
+<tr>
+<td><code>TimeRules.AfterMarketOpen("SPY", 10)</code></td>
+<td>Run 10 minutes after market open for SPY</td>
+</tr>
+<tr>
+<td><code>TimeRules.BeforeMarketClose("SPY", 10)</code></td>
+<td>Run 10 minutes before market close for SPY</td>
+</tr>
+<tr>
+<td><code>TimeRules.Every(TimeSpan.FromMinutes(10))</code></td>
+<td>Every 10 minutes during day specified</td>
+</tr>
+</tbody>
+</table>
+For a demonstration see the tutorial video below:
+https://youtu.be/SUu4MKlm93I
