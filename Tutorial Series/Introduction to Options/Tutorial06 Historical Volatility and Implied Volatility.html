@@ -42,12 +42,11 @@ std = sqrt(sum(diff_square)*(1.0/(len(r)-1)))
 vol = std*sqrt(252)</pre>
 An asset has a historical volatility based on its past performance as described above, investors can gain insight on the fluctuations of the underlying price during the past period of time. But it does not tell us anything about the volatility in the market now and in the future. So here we introduce the implied volatility.
 <h2><strong>Implied Volatility</strong></h2>
-In contrast to historical volatility, the implied volatility looks ahead. It is often interpreted as the market’s expectation for the future volatility of a stock and is implied by the price of the stock’s options. Here implied volatility means it is not observable in the market but can be derived from the price of an option.
+Implied volatility is a concept specific to options. In contrast to historical volatility, the implied volatility looks ahead. It is often interpreted as the market’s expectation for the future volatility of a stock and is implied by the price of the stock’s options. Here implied volatility means it is not observable in the market but can be derived from the price of an option.
 <h3>1. Definition</h3>
 <div class="page" title="Page 73">
 <div class="layoutArea">
 <div class="column">
-
 We use volatility as an input parameter in option pricing model. If we take a look at the BSM pricing, the theoretical price or the fair value of an option is P, where P is a function of historical volatility σ, stock  price S, strike price K, risk-free rate r and the time to expiration T.  That is \(P=f(\sigma,S,K,r,T)\). But the market price of options is not always the same with the theoretical price. Now in contrast, if we are given the market’s prices of calls and puts written on some asset and also the value of S, K, r, T. For each asset we can solve a new volatility that corresponds to the price of each option – the implied volatility. Then the implied volatility is \(\IV=f^{-1}(P,S,K,r,T)\).
 <h3>2. Calculation</h3>
 Here we use the bisection method to solve the BSM pricing equation and find the root which is the implied volatility. We use Yahoo Finance Python API to get the real time option data.
@@ -173,20 +172,6 @@ Using the correct implied volatility of an asset allows one to price other deriv
 <h2>Summary</h2>
 The historical volatility of an asset is the statistical measure we know as the standard deviation of the stock return series. The implied volatility of the same asset, on the other hand, is the volatility parameter that we can infer from the prices of traded options written on this asset. In contrast to historical volatility, which looks at fluctuations of asset prices in the past, implied volatility looks ahead. The two volatilities do not necessarily coincide, and although they may be close, they are typically not equal.
 
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
 </div>
 </div>
 </div>
