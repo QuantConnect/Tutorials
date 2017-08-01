@@ -15,7 +15,7 @@ Many market participants take volatility as the prime risk factor and the hedgin
 <h3>1. Definition</h3>
 As its name indicated, the historical volatility is a measure of past volatility which already happened and can be inferred from the histocial price series. In common, volatility is said to be the standard deviation of the return of assets price.
 <h3>2. Calculation</h3>
-Here we discuss how to estimate the historical volatility of the option written on specific underlying asset empirically.
+Here we discuss how to estimate the historical volatility of the option written on specific underlying asset empirically. There are two things you need to note. First, commonly the historical volatility is annalized standartd deviation of the price movement. Second, it is measured in actual trading days not just days. Thus, after you compute the daily standard deviation, you need to multiply it by the squart root of the actual trading days within one year.
 
 \[r_i=ln(\frac{S_i}{S_{i-1}})\quad for\ i=0,1,2,3,...,n\]
 
