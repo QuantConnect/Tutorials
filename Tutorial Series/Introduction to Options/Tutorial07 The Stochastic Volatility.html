@@ -1,0 +1,50 @@
+<div class="page" title="Page 84">
+<div class="layoutArea">
+<div class="column">
+<h2>Introduction</h2>
+Last chapter we discussed two of the volatilities: historical volatility and the implied volatility. This chapter, we will further extend the concept of volatility and introduce the local volatility and the stochastic volatility.
+<h2>Stochastic Model</h2>
+<h3>Motivation</h3>
+We already knew that volatility is a measure of the fluctuation degree of the underlying assets price series. There are many types of volatilities. As we discussed in the last chapter, historical volatility is the standard deviation of the price series during a certain period. It is a constant and represents the price movement in the past. However, the implied volatility is not based on the historical pricing data of stocks. It is the value of volatility parameter derived from the market quote of options in BSM pricing model. In contrast to historical volatility, implied volatility is forward looking and varies with different options contracts.
+
+One of the most significant assumptions in BSM model is that the volatility is a constant term over time. But in the real world, it could be constant in a small time period but never constant in long term. As we discussed in the last chapter, there is volatility skew for most of the options, which means that the volatility is not constant across strikes. The constant volatility assumption in BSM model seems not reasonable in most of the options pricing.
+
+In order to explain why options with different strikes and expirations have different implied volatilities, we introduce the stochastic volatility.
+<h3>Stochastic Process</h3>
+Before knowing what is the stochastic volatility, we first review some knowledge about the stochastic process.
+
+The price of a certain stock at a future time t is unknown at the present so it is a random variable \(S_t\). Then we can think of the movement path of the stock price is a stochastic process since\(S_t\) is a random variable at each time t in the future. In general, we usually assume that the stock price follows a Markov stochastic process, which means only the current stock price is relevant for predicting the future price, it is not correlated with the past price.
+<div class="page" title="Page 327">
+<div class="layoutArea">
+<div class="column">
+
+Brownian motion is a particular type of Markov stochastic process or we can think of it as a family of random variables \({W_t\mid t\geq0} \)indexed by time t and has the following properties:
+<ol>
+ 	<li>\({W_0\)=0</li>
+ 	<li>For \(0\leq s&lt;t\), the increment \({W_t-W_s\) is normally distributed with mean 0 and variance t-s.</li>
+ 	<li>For any partitions \(0\leq t_1&lt;t_2&lt;\cdot\cdot\cdot &lt;t_n\), the increments (\W_{t_1}- W_{t_0},W_{t_2}-W_{t_1},\cdot\cdot\cdot, W_{t_n}-W_{t_{n-1}}\) are independent random variables.</li>
+</ol>
+</div>
+</div>
+</div>
+Then we model the proportional increase in the stock price as a Brownian motion as follows
+
+\[\frac{dS_t}{S_t}=\sigma dW_t\]
+
+Where /(dS_t/) is the change in the stock price over a short time period from t to t+dt. σ is the variance term. Here /(dS_t/) at different time t are independent, which means today's price change is independent with tomorrows change.
+
+Although stock prices are stochastic processes in discrete time,
+
+In stochastic volatility models, the asset price and its volatility are both assumed to be random processes and can change over time.
+
+\[dS_t = \mu_tS_tdt＋\sqrt{v_t}S_tdZ_1\]
+
+\[dv_t=-\lambda(v_t-\overline{v})dt+\eta\sqrt{v_t}dZ_2\]
+
+\[&lt;dZ_1,dZ_2&gt;=\rho dt\]
+
+In allowing the volatility to be random, stochastic volatility models give rise to implied volatility skews and term structures.
+
+</div>
+</div>
+</div>
