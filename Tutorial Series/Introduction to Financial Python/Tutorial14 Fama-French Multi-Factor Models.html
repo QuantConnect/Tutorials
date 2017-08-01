@@ -1,0 +1,54 @@
+<h2>Introduction</h2>
+In the last chapter we introduced Capital Asset Pricing Model(CAPM), which used market return as a factor to explain the return of the measured asset. In this chapter we will expand the single-factor model into multi-factor models, which use more factor to price an asset. Multi-factor models can be written in the following forms:
+\[r_A = \alpha + \beta_1f_1 + \beta_2f_2 + \beta_3f_3 +...+\beta_nf_n\]
+Where \(f_i\) is the factor \(i\) and \(\beta_i\) is the coefficient, or beta of factor \(i\).
+<h2>Fama-French Three-Factor Model</h2>
+This factor is designed by <strong>Eugene Fama</strong> and <strong>Kenneth French</strong> to describe stock returns. They proposed this model in their research in 1993,[ref] <strong>Fama, E. F.; French, K. R.</strong> (1993). "Common risk factors in the returns on stocks and bonds". Journal of Financial Economics. 33: 3. CiteSeerX 10.1.1.139.5892 Freely accessible. doi:10.1016/0304-405X(93)90023-5[/ref] and thereafter this model are commonly used to replace CAPM.
+
+The model is given by:
+\[r = \alpha + \beta_mMKT + \beta_sSMB + \beta_hHML + \epsilon\]
+Where \(MKT\), \(SMB\) \(HML\) are the three factors.
+
+\(MKT\) is the market factor and it represents the excess return on the market[ref]Kenneth's Website <a href="http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/Data_Library/f-f_factors.html">Link</a>[/ref]. It's a value-weight return of all CRSP firms incorporated in the US and listed on the NYSE, AMEX, or NASDAQ minus the one-month Treasure bill rate.
+
+\(SMB\) is short for 'Small Minus Big', which represents the small cap stocks beat the large cap stocks.
+
+\(HML\) is short for 'High Minus Low'. It represents the stocks with high B/P values(book value to market price) outperform the stocks with low B/P values. The high B/P stocks are also called <strong>"value stocks".</strong> Correspondently, the low B/P ones are called <strong>"growth stocks"</strong>.
+
+The details of how these factors are calculated can be found on<a href="http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/Data_Library/f-f_factors.html"> Kenneth's website</a>. This is also the source of the Fama-French factors.
+<h2>Model test</h2>
+In order to test the model significance and the economics intuition behind it, we used NASDAQ US Small Cap Index and NASDAQ US Large Cap Index to fit the three-factor model. We used daily data in the past six years to do the regression.
+The following table is the regression results from the small caps:
+<img class="aligncenter size-full wp-image-2206" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/08/Screen-Shot-2017-08-01-at-5.20.02-PM.png" alt="" width="1342" height="830" />As we expected, the exposure to, or the coefficient of the SMB factor is positive, which means when the small stocks beat the large stocks, it positively contributes to the return. Compared with the HML factor, the absolute values of factor MKT and SMB are obviously larger. Given that the values of the three factor are under the same scale, we know that MKT and SMB are the decisive factors for the small cap index.
+
+&nbsp;
+
+Now let's check the result for large caps below:
+
+<img class="aligncenter size-full wp-image-2205" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/08/Screen-Shot-2017-08-01-at-5.18.48-PM.png" alt="" width="1346" height="822" />
+
+Not surprisingly, The SMB factor is negative for the large cap index. The reason is straightforward: when small stocks outperform big stocks, the big stocks performs relatively bad thus the index has a lower return. The coefficient of HML factor is still very low, the reason is the value stocks and growth stocks takes approximately the same weight in the index portfolio.
+<h2>Risk Premia</h2>
+What if we want to know know the return on a single factor? We can achieve this purpose by construct a <strong>tracking portfolio</strong>. For example, if we want a tracking portfolio of the HML factor, we only need to find 4 stocks to construct a portfolio that has zero coefficients on the MKT and SMB factor and 1 coefficient on the HML factor. Generally, if we have stock A, B, C, and D, who's return can be explain by the three factor model:
+\[r_A = \alpha_A + \beta_{11}MKT + \beta_{12}SMB + \beta_{13}HML\]
+\[r_B = \alpha_B + \beta_{21}MKT + \beta_{22}SMB + \beta_{23}HML\]
+\[...\]
+And their weight in the portfolio are represented by \((w_A,w_B,w_C,w_D\)). We write the coefficients into a matrix:
+\[\Sigma = \begin{pmatrix}
+\alpha_{1} &amp; \beta_{11}&amp;\beta_{12}&amp;\beta_{13} \\
+\alpha_{2} &amp;\beta_{21}&amp;\beta_{22}&amp;\beta_{23} \\
+\alpha_{3}&amp;\beta_{31}&amp;\beta_{32}&amp;\beta_{33}\\
+\alpha_{4}&amp;\beta_{41}&amp;\beta_{42}&amp;\beta_{43}
+\end{pmatrix}\]
+We just need to solve the following linear equations:
+\[w\Sigma = \begin{pmatrix}
+0\\0\\0\\1
+\end{pmatrix}\quad\]
+
+
+
+
+
+
+
+Although the FF three factors are the most import factors(by far), there are still some popular factors. Momentum is a commonly used one, which represents 'winners' significantly outperform 'losers'.
