@@ -56,12 +56,40 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 from matplotlib import animation
 
+z = delta
+fig = plt.figure(figsize=(20,11))
+ax = fig.add_subplot(111, projection='3d')
+ax.view_init(40,290)
+ax.plot_wireframe(s, T, z, rstride=1, cstride=1)
+ax.plot_surface(s, T, z, facecolors=cm.jet(delta),linewidth=0.001, rstride=1, cstride=1, alpha = 0.75)
+ax.set_zlim3d(0, z.max())
+ax.set_xlabel('stock price')
+ax.set_ylabel('Time to Expiration')
+ax.set_zlabel('delta')
+m = cm.ScalarMappable(cmap=cm.jet)
+m.set_array(z)
+cbar = plt.colorbar(m)
+</pre>
+<img src="images/delta.png" alt="Greeks letter: options gamma" />
+
+The color of the graph above represents delta value.
+<h3>2. Gamma</h3>
+Gamma is the rate of change of the portfolio's delta with respect to the underlying asset's price. It represents the second-order sensitivity of the option to a movement in the underlying asset’s price.
+
+Long options, either calls or puts, always yield positive Gamma. Gamma is higher for options that are at-the-money and closer to expiration because the Delta of the near term options move toward either 0 or 1.00 is imminent. Deeper-in-the-money or farther-out-of-the-money options have lower Gamma as their Deltas already approached 0 or 1.00 (or 0 or -1.00 for puts) and will not change as quickly with movement in the underlying. For European options:
+\[gamma(call)=gamma(put)=\frac{N^{'}(d_1)e^{-q(T-t)}}{S\sigma\sqrt{(T-t)}}\]
+<pre class="prettyprint linenums">def gamma(self):
+    d1 = self.d1()
+    dn1 = self.dn(d1)
+    return dn1 * exp(-self.q * self.T) / (self.s * self.sigma * sqrt(self.T))
+</pre>
+<pre class="prettyprint linenums">z = gamma
 fig = plt.figure(figsize=(20,11))
 ax = fig.add_subplot(111, projection='3d')
 ax.view_init(12,320)
-ax.plot_wireframe(s, T, gamma, rstride=1, cstride=1)
-ax.plot_surface(s, T, gamma, facecolors=cm.jet(delta),linewidth=0.001, rstride=1, cstride=1, alpha = 0.75)
-ax.set_zlim3d(0, gamma.max())
+ax.plot_wireframe(s, T, z, rstride=1, cstride=1)
+ax.plot_surface(s, T, z, facecolors=cm.jet(delta),linewidth=0.001, rstride=1, cstride=1, alpha = 0.75)
+ax.set_zlim3d(0, z.max())
 ax.set_xlabel('stock price')
 ax.set_ylabel('Time to Expiration')
 ax.set_zlabel('gamma')
@@ -69,22 +97,9 @@ m = cm.ScalarMappable(cmap=cm.jet)
 m.set_array(delta)
 cbar = plt.colorbar(m)
 </pre>
-<img class="alignnone wp-image-1672" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/delta-300x183.png" alt="" width="515" height="314" />
+<img src="images/gamma.png" alt="The Greeks letters: gamma" />
 
-The color of the graph above represents delta.
-<h3>2. Gamma</h3>
-Gamma is the rate of change of the portfolio's delta with respect to the underlying asset's price. It represents the second-order sensitivity of the option to a movement in the underlying asset’s price.
-
-Long options, either calls or puts, always yield positive Gamma. Gamma is higher for options that are at-the-money and closer to expiration because the Delta of the near term options move toward either 0 or 1.00 is imminent. Deeper-in-the-money or farther-out-of-the-money options have lower Gamma as their Deltas already approached 0 or 1.00 (or 0 or -1.00 for puts) and will not change as quickly with movement in the underlying. For European options:
-\[gamma(call)=gamma(put)=\frac{N^{'}(d_1)e^{-q(T-t)}}{S\sigma\sqrt{(T-t)}}\]
-<pre class="prettyprint linenums">def gamma(self, ):
-    d1 = self.d1()
-    dn1 = self.dn(d1)
-    return dn1 * exp(-self.q * self.T) / (self.s * self.sigma * sqrt(self.T))
-</pre>
-<img class="alignnone wp-image-1673" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/gamma-300x183.png" alt="" width="565" height="345" />
-
-The color of the graph above represents delta.
+The color of the graph above represents delta value.
 <h3>3. Vega</h3>
 <div class="page" title="Page 438">
 <div class="layoutArea">
@@ -98,11 +113,25 @@ Vega is always positive for long positions and is the same value for both puts a
     d1 = self.d1()
     dn1 = self.dn(d1)
     return self.s * sqrt(self.T) * dn1 * exp(-self.q * self.T)
-
+</pre>
+<pre class="prettyprint linenums">z = vega
+norm = matplotlib.colors.Normalize()
+fig = plt.figure(figsize=(20,11))
+ax = fig.add_subplot(111, projection='3d')
+ax.view_init(20,45)
+ax.plot_wireframe(s, T, z, rstride=1, cstride=1)
+ax.plot_surface(s, T, z, facecolors=cm.jet(norm(z)),linewidth=0.001, rstride=1, cstride=1, alpha = 0.9)
+ax.set_zlim3d(z.min(), z.max())
+ax.set_xlabel('stock price')
+ax.set_ylabel('Time to Expiration')
+ax.set_zlabel('vega')
+m = cm.ScalarMappable(cmap=cm.jet)
+m.set_array(z)
+cbar = plt.colorbar(m)
 </pre>
 </div>
 </div>
-<h3><img class="alignnone wp-image-1680" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/vega2-300x183.png" alt="" width="534" height="326" /></h3>
+<h3> <img src="images/vega.png" alt="The Greeks letters: vega" /></h3>
 The color of the graph above represents Vega.
 <h3>4. Theta</h3>
 <div class="page" title="Page 432">
@@ -114,8 +143,7 @@ Theta is the rate of change of the value of the option with respect to the pass
 The theta of  holding long position of a call or a put option is usually negative. An option that loses 0.1% per day is said to have a Theta of −0.1%. For example, if we buy an OTM call option, the value of this call option decreases as time passes since the option has less time to expiry. If time passes with the price of the underlying asset and its volatility remaining the same, the passing of time will lower the value of the option. Theta for European Options
 \[Theta(call)=-SN^{'}(d_1)\sigma e^{-q(T-t)}/(2\sqrt{T-t})+qSN(d_1)e^{(-q(T-t))}-rKe^{-r(T-t)}N(d_2)\]
 \[Theta(put)=-SN^{'}(d_1)\sigma e^{-q(T-t)}/(2\sqrt{T-t})-qSN(-d_1)e^{(-q(T-t))}+rKe^{-r(T-t)}N(-d_2)\]
-<pre class="prettyprint linenums">
-def theta(self):
+<pre class="prettyprint linenums">def theta(self):
     d1 = self.d1()
     d2 = d1 - self.sigma * sqrt(self.T)
     dn1 = self.dn(d1)
@@ -130,7 +158,24 @@ def theta(self):
                     + self.r * self.k * exp(-self.r * self.T) * self.n(-d2)
         return theta
 </pre>
-<h3> <img class="alignnone wp-image-1681" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/theta2-300x181.png" alt="" width="545" height="329" /></h3>
+<pre class="prettyprint linenums">z = theta
+# facecolors aren't normalizing as might be expected
+# we need to normalize it to avoid all dark color for value under 0
+norm = matplotlib.colors.Normalize()
+fig = plt.figure(figsize=(20,11))
+ax = fig.add_subplot(111, projection='3d')
+ax.view_init(35,300)
+ax.plot_wireframe(s, T, z, rstride=1, cstride=1)
+ax.plot_surface(s, T, z, facecolors=cm.jet(norm(z)),linewidth=0.001, rstride=1, cstride=1, alpha = 0.9)
+ax.set_zlim3d(z.min(), z.max())
+ax.set_xlabel('stock price')
+ax.set_ylabel('Time to Expiration')
+ax.set_zlabel('rho')
+m = cm.ScalarMappable(cmap=cm.jet)
+m.set_array(z)
+cbar = plt.colorbar(m)
+</pre>
+<h3> <img src="images/theta.png" alt="The Greeks letters: theta" /></h3>
 <h3>5. Rho</h3>
 Rho is the rate of change of the value of a derivative with respect to the interest rate. It is usually small and not a big issue in practice unless the option is deep in-the-money and has a long horizon. The interest rate would matter because we need to discount a larger cash flow over a longer horizon. Rho for the European options:
 \[Rho(call)=K(T-t)e^{-r(T-t)}N(d_2)\]
@@ -141,14 +186,28 @@ Rho is the rate of change of the value of a derivative with respect to the inter
         rho = self.k * self.T * (exp(-self.r*self.T)) * self.n(d2)
     elif self.type == "p":
         rho = -self.k * self.T * (exp(-self.r*self.T)) * self.n(-d2)
-
     return rho
+</pre>
+<pre class="prettyprint linenums">z = rho
+norm = matplotlib.colors.Normalize()
+fig = plt.figure(figsize=(20,11))
+ax = fig.add_subplot(111, projection='3d')
+ax.view_init()
+ax.plot_wireframe(s, T, z, rstride=1, cstride=1)
+ax.plot_surface(s, T, z, facecolors=cm.jet(norm(z)),linewidth=0.001, rstride=1, cstride=1, alpha = 0.9)
+ax.set_zlim3d(z.min(), z.max())
+ax.set_xlabel('stock price')
+ax.set_ylabel('Time to Expiration')
+ax.set_zlabel('vega')
+m = cm.ScalarMappable(cmap=cm.jet)
+m.set_array(z)
+cbar = plt.colorbar(m)
 </pre>
 <div class="page" title="Page 438">
 <div class="layoutArea">
 <div class="column">
 
-<img class="alignnone wp-image-1682" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/rho-300x183.png" alt="" width="534" height="326" />
+<img src="images/rho.png" alt="The Greeks letters: rho"/>
 <h2>Delta, Gamma &amp; Vega Hedging</h2>
 The delta of the underlying asset is always 1.0, the trader can hedge his positions by buying or selling the number of shares of the underlying asset indicated by the total delta. However, underlying asset positions have Gamma 0 because their Delta is always 1.00 (long) or -1.00 (short) and will not change. In addition, Vega of the underlying asset is also zero because the underlying asset's payoff doesn't vary depending on how its price moves (payoff is not contingent). Therefore, its price is not affected by price volatility.
 
@@ -169,16 +228,4 @@ Delta is the primary indicator used when monitoring option risk. By taking an op
 
 &nbsp;
 
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
 </div>
