@@ -16,7 +16,7 @@ Although this is an intraday strategy, we still want to test the strategy within
 </pre>
 Here Schedule.On(DateRules, TimeRules, Action()) will trigger every trading day for our stock, at market open. Events are scheduled using date and time rules. Date rules specify on what dates and event will fire. Time rules specify at what time on those dates the event will fire. Inside of the scheduled function we can pull the recent historical data and current open price each trading day.
 <h3>Step 2:  Implementation of algorithm</h3>
-<img class="alignnone wp-image-90" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/05/屏幕快照-2017-05-03-下午5.42.21-300x124.png" alt="" width="346" height="143" />
+<img src="images/dual thrust price range.png" alt="dual thrust price range"/>
 
 In order to calculate the range, each trading day we need the close, high and low price data over the most recent N days. In addition, open price of the current day is required in order to generate the signals. QuantConnect provides History(Symbol, TimeSpan, Resolution) method to get the history data like open, close, high and low for all configured securities over the requested N-days time span. Then the range is calculated by \[range = max(HH-LC, HC-LL)\]. In this implementation we choose N=4. It is less than one week and the range would reflect the recent price change.
 <pre class="prettyprint linenums">for slice in history:
@@ -27,7 +27,7 @@ In order to calculate the range, each trading day we need the close, high and lo
 <h3>Step 3: Trading Implementation</h3>
 The long signal is calculated by \[cap = open + K_1 \times Range\]. The short signal is calculated by \[floor = open – K_2 \times  Range\] where K1 and K2 are the parameters. When K1 is greater than K2, it is much easier to trigger the long signal and vice versa. Here we choose K1 = K2 = 0.5. In live trading we can still use historical data to optimize those parameters or adjust the parameters according to the market trend. K1 should be small than k2 if you are bullish on the market and k1 should be much bigger if you are bearish on the market.
 
-<img class="wp-image-134 aligncenter" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/05/屏幕快照-2017-05-03-下午5.42.33-300x165.png" alt="" width="373" height="205" />
+<img src="images/dual thrust trading.png" alt="dual thrust trading strategy"/>
 
 This system is a reversal system, so if the investor holds a short position when the price breaks the cap line, short margin should be liquidated first before open a long position. If the investor holds a long position when the price breaks the floor line, long margin should be liquidated first before open a new short position.
 <pre class="prettyprint linenums"> holdings = self.Portfolio[self.syl].Quantity
