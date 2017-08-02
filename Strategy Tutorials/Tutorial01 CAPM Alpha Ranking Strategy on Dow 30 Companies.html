@@ -1,56 +1,61 @@
 <h2>Abstract</h2>
-This tutorial performs a simple linear regression to build Capital Asset Pricing Model(CAPM)[ref]<strong>Sharpe, William, 1990 http://www.nobelprize.org/nobel_prizes/economic-sciences/laureates/1990/sharpe-lecture.pdf <a href="http://www.nobelprize.org/nobel_prizes/economic-sciences/laureates/1990/sharpe-lecture.pdf">Online Copy</a></strong>[/ref], a classical model developed by William F. Sharpe and Harry Markowitz. This model yields alpha and beta for each asset and is traded by going long the stocks ranked with the highest alpha. This tutorial demonstrates how to use historical data, set an event handler, conduct linear regression and build your own functions in the QuantConnect Algorithm Lab. The implementation of the strategy demonstrates that stocks beat the market last month are likely to beat again in the subsequent month. This algorithm performs well when the market is smooth. However when the market volatility increases the model fails to capture alpha and it performs poorly. We conclude market fluctuations decrease the significance level of the linear regression coefficients, especially when we are using daily returns to fit the model.
+This tutorial performs a simple linear regression to build the Capital Asset Pricing Model(CAPM) [ref]<a href="http://www.nobelprize.org/nobel_prizes/economic-sciences/laureates/1990/sharpe-lecture.pdf">Sharpe, William, 1990 http://www.nobelprize.org/nobel_prizes/economic-sciences/laureates/1990/sharpe-lecture.pdf</a>[/ref], a classical model developed by William F. Sharpe and Harry Markowitz. This model yields alpha and beta for each asset and is traded by going long on the stocks ranked with the highest alpha. This tutorial will demonstrate the following: 
+<ol>
+	<li>How to use historical data</li> 
+	<li>Set an event handler</li> 
+	<li>Conduct linear regression</li> 
+	<li>Build your own functions in the QuantConnect Algorithm Lab</li>
+</ol>
+ The implementation of the strategy demonstrates that stocks beat the market last month are likely to beat the market again in the subsequent month. This algorithm performs well when the market is smooth. However when the market volatility increases the model fails to capture alpha and it performs poorly. What we learn from this is that market fluctuations decrease the significance level of the linear regression coefficients, especially when we are using daily returns to fit the model.
 <h2>CAPM Theory</h2>
-The capital asset pricing model (CAPM) describes the relationship between systematic risk and expected return for assets, typically stocks. The formula for calculating expected return of an asset given its risk is as follows:
+The capital asset pricing model (CAPM) describes the relationship between systematic risk and expected return for assets, typically stocks. The formula for calculating the expected return of an asset given its risk is as follows:
 
 \[r_a = r_f + \beta_a*(r_m - r_f) + \epsilon \]
 
 where:
-<p style="text-align: left;">\[r_f = Risk Free Rate\]</p>
+
+[r_f = Risk Free Rate\]
 \[\beta = Beta of the security\]
 
 \[r_m = Expected market return\]
 
 \[\epsilon = Tracking error\]
 
-&nbsp;
-
-This formula can be better understood if we refactor the formula to below:
+This formula can be better understood if we refactor the formula as seen below:
 
 \[(r_a - r_f ) = \beta_a*(r_m - r_f) + \epsilon \]
 
-The left side of the equation gives us the difference between the asset return and risk free rate, the <strong>"excess return"</strong>.<strong> </strong>If we regress the the <strong>market excess return</strong> against the <strong>asset excess return </strong>the slope represents the <strong>Beta</strong> of the asset. Therefore Beta can also be calculated by the equation:
+The left side of the equation gives us the difference between the asset return and risk free rate, the <strong>"excess return"</strong>. If we regress the <strong>market excess return</strong> against the <strong>asset excess return </strong>the slope represents the <strong>"beta"</strong> of the asset. Therefore, beta can also be calculated by the equation:
 
 \[\beta = \frac{Cov(r_a,r_b)}{var(r_b)}\]
 
-So beta is essentially
+So beta can be described as:
 
 \[\beta = \rho _a,_b*\frac{\sigma _a}{\sigma_b}\]
 
-The formula above indicates that beta can be explained as<strong> "correlated relative volatility"</strong>. However to make this simpler Beta can be calculated by doing a simple linear regression. Beta can be viewed as a factor to explain the return and the tracking error can represent alpha.
+The formula above indicates that beta can be explained as<strong> "correlated relative volatility"</strong>. To make this simpler, beta can be calculated by doing a simple linear regression which can be viewed as a factor to explain the return, and the tracking error can represent alpha.
 
 To make this theory more convenient for our algorithm, we change the above formula into the following form:
 
 \[r_a = \beta*r_m + r_f*(1-\beta) + \epsilon\]
 
-<strong>r*(1-β) </strong>on the right hand side of the equation is a very small item, thus this item is negligible, especially when our universe is the Dow 30 companies. If we regress the stock’s return with the return of the benchmark, the slope and intercept will be beta and alpha.
+<strong>r*(1-β) </strong>on the right hand side of the equation is a very small item, making it negligible in the context of the Dow 30 companies. If we regress the stocks return with the return of the benchmark, the slope and intercept will be beta and alpha.
 
-&nbsp;
 <h2>Method</h2>
-Our investment logic is simple and straightforward. We assume that stocks which beat the market last month will continue to beat the market. We rank stocks according to their alpha, and each month we long the 'best' two stocks. To implement this strategy we require do the following at the start of each month:
+Our investment logic is simple and straightforward. We assume that stocks which beat the market last month will continue to beat the market. We rank stocks according to their alpha, and each month we "long" the top two stocks. For this strategy to work, we need to do the following at the start of each month: 
 <ol>
- 	<li>Get historical price of Dow 30 stocks in the past 21 trading days, and calculate their daily rates of return.</li>
+ 	<li>Get the historical price of Dow 30 stocks in the past 21 trading days and calculate their daily rates of return.</li>
  	<li>Conduct simple linear regression on the return of each stock against a benchmark (S&amp;P 500 index, SPY).</li>
  	<li>Rank the stocks by their intercepts.</li>
  	<li>Liquidate all our positions and purchase the first 2 stocks in our sorted list.</li>
 </ol>
-The last time Dow Jones components change very infrequently, and the last change was on March 19th, 2015 [ref]<strong>https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average <a href="https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average">Online</a></strong>[/ref]. To make the implementation easier we have we simply listed the current components in this algorithm. Because of this the earliest start date of this algorithm is March 19th, 2015.
+Dow Jones components change very infrequently, with the last change being on March 19th, 2015 [ref]<strong> <a href="https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average">https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average</a></strong>[/ref]. To make the implementation easier we have simply listed the current Dow components in this algorithm. This means that the earliest start date of this algorithm is March 19th, 2015.
 <h3>Step 1: Setup Event Handler</h3>
-In the initialize method we define a Scheduled Event to trigger monthly re-balancing of the portfolio. For more details about how to use Scheduled Events you can read the <a href="https://www.quantconnect.com/docs#Scheduled-Events">Documentation</a> or see the example <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ScheduledEventsAlgorithm.py">ScheduledEventsAlgorithm</a>.
+In the initialize method we define a Scheduled Event to trigger a monthly re-balancing of the portfolio. For more details about how to use Scheduled Events, you can read the <a href="https://www.quantconnect.com/docs#Scheduled-Events">Documentation</a> or see the example <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ScheduledEventsAlgorithm.py">ScheduledEventsAlgorithm</a>.
 <pre class="prettyprint linenums">def Initialize(self):
     self.Schedule.On(self.DateRules.MonthStart(self.benchmark), self.TimeRules.AfterMarketOpen(self.benchmark), Action(self.rebalance))</pre>
 <h3>Step 2: Linear Regression Function</h3>
-In order to conduct linear regression, we need to write a function to take the price data and output the regression results. This function takes a list of the asset prices (x) and a list of the benchmark prices (y). This function calculates the percentage changes and conducts a linear regression. The output is a tuple which contains the intercept and slope.
+In order to conduct linear regression, we need to write a function to take the price data and output the regression results. The function takes a list of the "asset prices" (x) and a list of the "benchmark prices" (y). It then calculates the percentage change and conducts a linear regression. The output is a tuple which contains the intercept and slope.
 <pre class="prettyprint linenums">def regression(self,x,y):
     x = np.array(x)
     x = np.diff(x)/x[:-1]
@@ -75,9 +80,9 @@ Each month we get the historical prices of the DOW30 components using the <a hre
     result = self.regression(symbol_price,benchmark_price)
     return result</pre>
 <h3>Step 4: Rebalance Function:</h3>
-This function is where all the action happens! It will be executed on the first trading day of each month, as we setup in to our scheduled event. The second argument of SetHoldings is a decimal, setting this to "1" tells the algorithm to set the portfolio as long 100% with no leverage. See the link the documentation for more information on using <a href="https://www.quantconnect.com/docs#Trading-and-Orders">SetHoldings</a>.
+This function is where all the action happens, it will be executed on the first trading day of each month as a scheduled event. The second argument of SetHoldings is a decimal, setting this to "1" tells the algorithm to set the portfolio as "long 100%" with no leverage. More information on the function can be read on this link: <a href="https://www.quantconnect.com/docs#Trading-and-Orders">SetHoldings</a>.
 <pre class="prettyprint linenums">def rebalance(self):
-    # get historical stock symbols and prices, and then put them in tuples
+    # get historical stock symbols and prices, then put them in tuples
     history = self.History(self.regression_dates, Resolution.Daily)
     filter = []
     for i in self.symbols:
@@ -92,7 +97,7 @@ This function is where all the action happens! It will be executed on the first 
     for i in self.Portfolio:
     	if i.Value.Invested:
     		holding_list.append(i.Value.Symbol)
-    # if we have holdings, and we are not going to hold them anymore, sell them
+    # if we have holdings and we are not going to hold them anymore, sell them
     if holding_list:
     	for i in holding_list:
     		if i not in sorted_symbols:
@@ -101,20 +106,21 @@ This function is where all the action happens! It will be executed on the first 
     for i in sorted_symbols:
     	self.SetHoldings(i,1)</pre>
 <h2>Conclusion</h2>
-We demonstrate that during smooth markets stocks which beat the market last month are likely to beat the market again in the subsequent month. When the market fluctuates the significance level of linear regression reduces and the model performance decreases.
+We have demonstrated that during a smooth market, the stocks that beat the market last month are likely to beat the market again in the subsequent month. When there is market fluctuation, the significance level of linear regression will reduce and the model performance will decrease.
 
-We can understand this by looking at the co-variance of the asset(x) and the benchmark (y). As the co-variance goes to zero, the beta decreases.
+We can understand this by looking at the covariance of the asset(x) and the benchmark (y). As the covariance reduces to zero, the beta will decrease.
 
 \[\hat{\beta} = \frac{Cov[x,y]}{\sum (x_i - \b{x})^2}\]
 
-To experiment we tested the algorithm in the year 2015, during which period the market was more volatile. It fluctuated with a mean return close to zero, and dived nearly 10% from Aug 18th to Aug 25th. During this year the algorithm performed badly, with a -11.58% rate of return.
+As an experiment, we tested the algorithm on market data from 2015. This was a much more volatile period for the market with a fluctuation that returned a mean close to zero and dropped neaerly 10% from Aug 18th to Aug 25th of that year. The algorithm performed quite poorly in this year with a return rate of -11.58%.
 
-There are many risks associated with this strategy. These include a high drawdown, lack of hedging and no stop-loss. As we are using leverage the risk is increased and it has a margin call in January as a result.
+The risks associated with this strategy include a high drawdown, lack of hedging and not stop-loss. Since we are using leverage, the risk is increased and it has a margin call in January as a result.
 
 We can improve the performance by applying the following techniques:
 
-1. Conduct optimization: we can implement mean-variance analysis to determine asset allocation each month and select more stocks to trade. This will lower our risk and manage the portfolio more scientifically.
-
-2. Take beta into consideration: If we want to be more aggressive, we can select targets by a combination of alpha and beta. This means we choose the stocks with high alpha that are more volatile than the market. On the other hand, if we are conservative investors we can make the strategy market-neutral, which means the portfolio would not be affected by the market performance. For example, if we long two stocks with beta 1 and -1 respectively at the same position size, our portfolio becomes market-neutral.
+<ol>
+	<li>Conduct optimizations: we can implement mean-variance analysis to determine the asset allocation each month and select more stocks to trade. This will lower our risk and manage the portfolio more scientifically.</li>
+	<li>Take beta into consideration: If we want to be more aggressive, we can select targets by a combination of alpha and beta. This means we choose stocks with a high alpha that are more volatile than the market. If we are conservative investors however, we can make the strategy market-neutral, which means the portfolio would not be affected by the market performance. For example, if we long two stocks with beta 1 and -1 respectively at the same position size, our portfolio becomes market-neutral.</li>
+</ol>
 <h2>Algorithm</h2>
 <script src='https://www.quantconnect.com/terminal/backtest.js?sid=f49f71017808fe1b55d1f274e5baa012&bm='></script>
