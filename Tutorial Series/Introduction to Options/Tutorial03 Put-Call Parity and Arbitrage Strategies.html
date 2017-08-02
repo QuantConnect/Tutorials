@@ -1,25 +1,21 @@
 <h2>Introduction</h2>
-In this chapter, we will discuss the option's payoff if you long or short the options. Then we discuss the put call parity which is a relationship between the price of a European call option, the price of a European put option, and the underlying stock price. In addition, an application of put-call parity in arbitrage trading strategies was demonstrated.
+In this chapter, we will discuss the option's payoff if you long or short the options. We will then discuss "put call parity", which is the relationship between the European "call" and "put" option and the underlying stock price. At the end of this tutorial we will demonstrate an application that makes use of the put-call parity in arbitrage trading strategies. 
 <h3>Option Payoff</h3>
-Consider Google(NASDAQ: GOOG) is trading at $910 now and you are bullish on this stock and expect it to rise over the next three months. The minimum capital requirement to buy 100 shares of GOOG is $90000 but you only have limited capital for stock investors. You could buy 1 call option contract written on GOOG which expires after three months with a $900 strike price. If GOOG rises to $950 in three months, you can get  ($950 - $900) *100 = $5000 by paying just a small amount of premium instead of a full cost of shares. Even if the share price of GOOG falls below $900, you lose only the premium. This is one of the biggest benefits of trading options and is also called the financial leverage. Without borrowing the capital, you can control a larger number of shares by investing in options other than purchasing the shares themselves.
+Consider Google(NASDAQ: GOOG), which is trading at $910 at the time of this writing. You are bullish on this stock and expect it to rise over the next three months. The minimum capital requirement to buy 100 shares of GOOG is $90,000, however you only have limited funds for stock investments. As an alternative, you could buy 1 call option contract for GOOG which expires after three months, with a $900 strike price. If GOOG rises to $950 in three months, you can earn ($950 - $900) *100 = $5,000 by investing a small amount of the premium instead of the full cost for the shares. Even if the share price of GOOG were to fall below $900, you would lose only the premium. This is one of the biggest benefits of trading options, also known as "financial leverage". Without having to borrow the capital, you are able to control a larger number of shares by investing in options, rather than purchasing the shares outright.
 
-From the above example, [ref]Bouzoubaa M, Osseiran A. Exotic options and hybrids: A guide to structuring, pricing and trading[M]. John Wiley &amp; Sons, 2010.[/ref] The investor will buy a European call if he has a bullish view on the market and believes the underlying stock price will be above the strike price at the expiry date. He will make money when the underlying price goes up and lose when it goes down. The payoff of a call option at T is
+From the above example, [ref]Bouzoubaa M, Osseiran A. Exotic options and hybrids: A guide to structuring, pricing and trading[M]. John Wiley &amp; Sons, 2010.[/ref] The investor will often buy a European "call" if he has a bullish view on the market and believes the underlying stock price will be above the strike price at the expiry date. In this case the investor will make money if the underlying price goes up, and lose if the price goes down. The payoff of a call option at T is represented as:
 
 \[Call_{payoff}=max[0,S_T-K]\]
-<div class="page" title="Page 55">
-<div class="layoutArea">
-<div class="column">
 
-On the other hand, an investor will buy a European put if he is bearish about the market and believes that the underlying stock price will be below the strike at the expiry date. He will make money when the underlying price goes down and lose when it goes up. The European put payoff at T is
+
+If however, the investor buys a European "put", is bearish about the market and believes that the underlying stock price will be below the strike at the expiry date, then he will make money when the underlying price goes down and lose when it goes up. The European put payoff at T is represented as:
 
 \[Put_{payoff}=max[0,K-S_T]\]
 
-</div>
-</div>
-</div>
-Where \(S_T\) is the price of underlying assets at maturity. K is the strike price.
+Where \(S_T\) is the price of the underlying assets at maturity. K is the strike price.
 
-We use the GOOG option contract to show the call and put option payoff. The current share price of GOOG is $945 at 07/12/2017.
+We use the GOOG option contract to show the call and put option payoff. The current share price of GOOG is $945 as of 07/12/2017 in this example.
+
 <table class="table qc-table">
 <thead>
 <tr>
@@ -32,22 +28,23 @@ We use the GOOG option contract to show the call and put option payoff. The curr
 </thead>
 <tbody>
 <tr>
-<td> GOOG170714C00940000</td>
+<td>GOOG170714C00940000</td>
 <td> Call</td>
 <td> 07/14/2017</td>
-<td>$ 940</td>
+<td>$940</td>
 <td> $7.5</td>
 </tr>
 <tr>
 <td>GOOG170714P00960000</td>
 <td> Put</td>
 <td> 07/14/2017</td>
-<td> $960</td>
+<td>$960</td>
 <td> $19.5</td>
 </tr>
 </tbody>
 </table>
-If you long these two options, the payoff at expire date would be as follows
+
+If you "long" these two options, the payoff at expiry date would be as follows:
 <pre class="prettyprint linenums">import matplotlib.pyplot as plt
 %pylab inline
 price = np.arange(900,1000,1)
@@ -71,20 +68,21 @@ plt.grid(True)
 </pre>
 <img class="alignnone wp-image-1498" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/call-payoff-300x212.png" alt="" width="263" height="186" />     <img class="alignnone wp-image-1499" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/short-payoff-300x212.png" alt="" width="263" height="185" />
 
-The above payoff diagrams illustrate the cash payoff on an option at the expiration date. For a call option, the net payoff is negative if the price of the underlying asset is less than the strike price(The negative payoff comes from the premium). If the underlying price exceeds the strike price, the gross payoff is the price of the underlying asset minus the strike price and the premium. For a put option, the net payoff is positive if the underlying price is less than the strike price. If the price of the underlying asset exceeds the strike price, the gross payoff is negative because you pay premuim for purchasing the contracts.
+The above payoff diagrams illustrate the cash payoff on an option at the expiration date. For a call option, the net payoff is negative if the price of the underlying asset is less than the strike price (the negative payoff comes from the premium). If the underlying price exceeds the strike price, the gross payoff is the price of the underlying asset minus the strike price and the premium. For a put option, the net payoff is positive if the underlying price is less than the strike price. If the price of the underlying asset exceeds the strike price, the gross payoff is negative because you pay the premium for purchasing the contracts.
 <h3>2. Put-Call Parity</h3>
-Put-Call parity describes the relationship between the price of a European put and a call options with the identical strike price K, expiry T and their underlying stock's price. Next we will demonstrate how to derive the put-call parity according to John Hull's book.
+Put-Call parity describes the relationship between the price of a European put and a call options with the identical strike price K, expiry T and their underlying stocks price. Next we will demonstrate how to derive the put-call parity according to John Hull's book.
 
-We consider two portfolios as follows,
+Consider the following two portfolios:
 
 Portfolio A: buy one European call option (underlying non-dividend-paying stock S, strike K, expiring at T) plus a zero-coupon bond which pays K at T
 
 Portfolio B: sell one European put option (underlying non-dividend-paying stock S, strike K, expiring at T) plus one share of underlying stock S
+
 <table class="table qc-table">
 <tbody>
 <tr>
-<td> Payoff</td>
-<td> \(S_t &gt; K\)</td>
+<td>Payoff</td>
+<td>\(S_t &gt; K\)</td>
 <td>\(S_t &lt; K\)</td>
 </tr>
 <tr>
@@ -99,7 +97,8 @@ Portfolio B: sell one European put option (underlying non-dividend-paying stock
 </tr>
 </tbody>
 </table>
-From the above table we can see that in all states, Portfolio A has the same payoff at the options' expiration date as Portfolio B. Thus the present value of two portfolio must be the same. Otherwise, an investor can make risk-free profits by purchasing the undervalued portfolio and selling the overvalued portfolio and holding the position to maturity. Then we have the price equality(suppose the present price of stock S is \(S_0\) )
+
+From the above table we can see that Portfolio A has the same payoff at the options expiration date as Portfolio B. The present value of two portfolios must be the same, otherwise an investor can make risk-free profits by purchasing the undervalued portfolio and selling the overvalued portfolio and holding the position to maturity. We now have price equality (assuming the present price of stock S is \(S_0\) )
 
 \[Price_{call}+Ke^{-rT}=Price_{put}+S_0\]
 
@@ -107,15 +106,13 @@ If the dividend is paid during the option holding period, the share holder of 
 
 \[Price_{call}+D+Ke^{-rT}=Price_{put}+S_0\]
 <h3>3. Synthetic Positions</h3>
-<div class="page" title="Page 57">
-<div class="layoutArea">
-<div class="column">
 
-Through the put-call parity, we can find that there is a synthetic equivalent for all of the basic positions in an underlying assets and its corresponding options. In other words, the risk profile(the possible profit or loss) of any position can be exactly duplicated with a complex combination of the other basic positions. These equivalents are synthetic underlying and synthetic options.
+Through the put-call parity, we can find that there is a synthetic equivalent for all of the basic positions in an underlying asset and its corresponding options. In other words, the risk profile (the possible profit or loss) of any position can be exactly duplicated with a complex combination of other basic positions. These equivalents are called "synthetic underlying" and "synthetic options".
 
-[ref]Put-Call Parity and Arbitrage Opportunity, Jim Graham, February 6, 2017 <a href="http://www.investopedia.com/articles/optioninvestor/05/011905.asp">Online Copy</a>[/ref]The rule for creating synthetics is that the strike price and expiration date, of the calls and puts, must be identical. For creating synthetics, with both the underlying stock and its options, the number of shares of stock must equal the number of shares represented by the options.
+[ref]<a href="http://www.investopedia.com/articles/optioninvestor/05/011905.asp">Put-Call Parity and Arbitrage Opportunity, Jim Graham, February 6, 2017 </a>[/ref] The rule for creating synthetics is that the strike price and expiration date of the calls and puts must be identical. For creating synthetics with both the underlying stock and its options, the number of shares of stock must equal the number of shares represented by the options.
 
-There are many arbitrage strategies based on the idea of the synthetic position. Here we demonstrate two of the most common strategies: the conversion and the reversal.
+There are many arbitrage strategies based on the idea of the synthetic position. Here we demonstrate two of the most common strategies: the Conversion and the Reversal.
+
 <table class="table qc-table">
 <tbody>
 <tr>
@@ -134,25 +131,13 @@ The actual stock position: short the underlying stocks</td>
 </tr>
 </tbody>
 </table>
-Traders use conversions when options are overpriced  relative to the underlying stock and use reversals when options are relatively underpriced.
+
+Traders use conversions when options are overpriced relative to the underlying stock and use reversals when options are relatively underpriced.
 <h3>Algorithm</h3>
 <script src='https://www.quantconnect.com/terminal/backtest.js?sid=69b91d962fb631da4c1d7b6fadb91ec3'></script>
 <h2>Summary</h2>
-<div class="page" title="Page 264">
-<div class="layoutArea">
-<div class="column">
 
-In this chapter, we derived an important relationship between the prices of European put and call options that have the same strike price and time to maturity by constructing two portfolios. Then we described the synthetic positions, a common concept which is always used in arbitrage trading strategies. Finally two simple arbitrage strategies conversion and reversal are demonstrated on QC platform to help you get a better understanding of how to implement algorithms with simple option mechanism.
+In this chapter we learned an important relationship between the prices of the European "put" and "call" options that have the same strike price and time to maturity by constructing two portfolios. We then described the synthetic positions, a common concept which is always used in arbitrage trading strategies. Finally, we illustrated two simple arbitrage strategies, "conversion" and "reversal" using the QC platform to provide a better understanding of how to implement the algorithms with a simple option mechanism.
 
-Next chapter we will dig into the famous option pricing model-Black Sholes Merton Model and discuss how to apply BSM in European options pricing.
+In the next chapter, we will dig into the famous option pricing model known as the "Black Sholes Merton Model" and discuss how to apply BSM in European options pricing.
 
-</div>
-</div>
-</div>
-&nbsp;
-
-&nbsp;
-
-</div>
-</div>
-</div>
