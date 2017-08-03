@@ -2,7 +2,8 @@
 <div class="layoutArea">
 <div class="column">
 <h2>Introduction</h2>
-The change of volatility can have a significant impact on any options trading strategies performance. In addition to the Vega we explained in Greeks letter chapter, this part of the volatility tutorial will discuss the concept of volatility, specifically, we discuss realized and implied volatility, their meanings, measurements, uses, and limitations.
+Options Volatility is a measurement of how much the price of the undelying asset has changed on average during the certain period of time. It is only a magnitude measurement of the price movement but give no information of the movement direction. Intuitively, an asset that has a relative stable price is said to have low volatility, while an asset which fluctuates wildly in either directions is said to have high volatility.
+Many market participants take volatility as the prime risk factor and the hedging instrument. The change of volatility can have a significant impact on the options price and any options trading strategies performance. Thus many options market participants developed different kinds of methods to measure and estimate the volatility which can be used in different ways. Two estimates which are widely used to determine levels of volatility risk are the historical (realized) volatility and the implied volatility. This part of the volatility tutorial we will discuss these two types of volatilities which are difined from completely different perspective. Specifically, we will discuss their meanings, measurements, uses, and limitations.
 
 </div>
 </div>
@@ -12,9 +13,9 @@ The change of volatility can have a significant impact on any options trading st
 <div class="layoutArea">
 <div class="column">
 <h3>1. Definition</h3>
-It is a measurement of how much the price of the asset has changed on average during the certain period of time. In common, volatility is said to be the standard deviation of the return of assets price.
+As its name indicated, the historical volatility is a measure of past volatility which already happened and can be inferred from the histocial price series. In common, volatility is said to be the standard deviation of the return of assets price.
 <h3>2. Calculation</h3>
-Here we discuss how to estimate the historical volatility of the option written on specific underlying asset empirically.
+Here we discuss how to estimate the historical volatility of the option written on specific underlying asset empirically. There are two things you need to note. First, commonly the historical volatility is annalized standartd deviation of the price movement. Second, it is measured in actual trading days not just days. Thus, after you compute the daily standard deviation, you need to multiply it by the squart root of the actual trading days within one year.
 
 \[r_i=ln(\frac{S_i}{S_{i-1}})\quad for\ i=0,1,2,3,...,n\]
 
@@ -41,12 +42,11 @@ std = sqrt(sum(diff_square)*(1.0/(len(r)-1)))
 vol = std*sqrt(252)</pre>
 An asset has a historical volatility based on its past performance as described above, investors can gain insight on the fluctuations of the underlying price during the past period of time. But it does not tell us anything about the volatility in the market now and in the future. So here we introduce the implied volatility.
 <h2><strong>Implied Volatility</strong></h2>
-In contrast to historical volatility, the implied volatility looks ahead. It is often interpreted as the market’s expectation for the future volatility of a stock and is implied by the price of the stock’s options. Here implied volatility means it is not observable in the market but can be derived from the price of an option.
+Implied volatility is a concept specific to options. In contrast to historical volatility, the implied volatility looks ahead. It is often interpreted as the market’s expectation for the future volatility of a stock and is implied by the price of the stock’s options. Here implied volatility means it is not observable in the market but can be derived from the price of an option.
 <h3>1. Definition</h3>
 <div class="page" title="Page 73">
 <div class="layoutArea">
 <div class="column">
-
 We use volatility as an input parameter in option pricing model. If we take a look at the BSM pricing, the theoretical price or the fair value of an option is P, where P is a function of historical volatility σ, stock  price S, strike price K, risk-free rate r and the time to expiration T.  That is \(P=f(\sigma,S,K,r,T)\). But the market price of options is not always the same with the theoretical price. Now in contrast, if we are given the market’s prices of calls and puts written on some asset and also the value of S, K, r, T. For each asset we can solve a new volatility that corresponds to the price of each option – the implied volatility. Then the implied volatility is \(\IV=f^{-1}(P,S,K,r,T)\).
 <h3>2. Calculation</h3>
 Here we use the bisection method to solve the BSM pricing equation and find the root which is the implied volatility. We use Yahoo Finance Python API to get the real time option data.
@@ -140,10 +140,10 @@ plt.grid()
 plt.xlabel('strike')
 plt.ylabel('Implied Volatility')
 </pre>
-<img class="alignnone wp-image-1882" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/IV-smile-300x134.png" alt="" width="578" height="258" />
+<img src="images/iv call.png" alt="implied volatility of European call options" />
 
 </div>
-<h2><img class="alignnone wp-image-1899" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/put-300x135.png" alt="" width="578" height="260" /></h2>
+<h2><img src="images/iv put.png" alt="implied volatility of European put options" /></h2>
 80% OTM put has a different implied volatility to the ATM put. Plotting these implied volatilities across strikes gives us the implied volatility skew, also referred to as volatility skew, or even just skew. Although the volatility skew is dynamic, in equity markets it is almost always a decreasing function of the strike. Other asset classes such as FX and commodities have differently shaped skews.
 <h2></h2>
 <h2>Limitations</h2>
@@ -172,20 +172,6 @@ Using the correct implied volatility of an asset allows one to price other deriv
 <h2>Summary</h2>
 The historical volatility of an asset is the statistical measure we know as the standard deviation of the stock return series. The implied volatility of the same asset, on the other hand, is the volatility parameter that we can infer from the prices of traded options written on this asset. In contrast to historical volatility, which looks at fluctuations of asset prices in the past, implied volatility looks ahead. The two volatilities do not necessarily coincide, and although they may be close, they are typically not equal.
 
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
 </div>
 </div>
 </div>

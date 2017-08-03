@@ -1,0 +1,119 @@
+<div class="page" title="Page 84">
+<div class="layoutArea">
+<div class="column">
+<h2>Introduction</h2>
+In the last chapter, we discussed two of the volatilities: historical volatility and the implied volatility. This chapter, we will further extend the concept of volatility and introduce the local volatility and the stochastic volatility.
+<h2>Motivation</h2>
+We already knew that volatility is a measure of the fluctuation degree of the underlying assets price series. There are many types of volatilities. As we discussed in the last chapter, historical volatility is the standard deviation of the price series during a certain period. It is a constant and represents the price movement in the past. However, the implied volatility is not based on the historical pricing data of stocks. It is the value of volatility parameter derived from the market quote of options in BSM pricing model. In contrast to historical volatility, implied volatility is forward looking and varies with different options contracts.
+
+One of the most significant assumptions in BSM model is that the volatility is a constant term over time. But in the real world, it could be constant in a small time period but never constant in long term. As we discussed in the last chapter, there is volatility skew for most of the options, which means that the volatility is not constant across strikes. The constant volatility assumption in BSM model seems not reasonable in most of the options pricing.
+
+In order to explain why options with different strikes and expirations have different implied volatilities, we introduce the stochastic volatility.
+<h3>Stochastic Process</h3>
+Before knowing what is the stochastic volatility, we first review some knowledge about the stochastic process.
+
+First, you need to know what the stochastic process is. We say any variable that changes over time in an uncertain way follows a stochastic process. The price of a certain stock at a future time t is unknown at the present so it is a random variable \(S_t\). Then we can think of the movement path of the stock price is a stochastic process since\(S_t\) is a random variable at each time t in the future.
+
+Markov process is a special case of the stochastic process. It means that only the current value of a random variable is relevant for future prediction. In general, we usually assume that the stock price follows a Markov stochastic process, which means only the current stock price is relevant for predicting the future price, it is not correlated with the past price.
+<div class="page" title="Page 327">
+<div class="layoutArea">
+<div class="column">
+
+Brownian motion is a particular type of Markov stochastic process or we can think of it as a family of random variables {\(W_t\mid t\geq0} \)} indexed by time t. The one-dimensional Brownian motion is called Wiener Process. (Brownian motion is n-dimensional Wiener processes which mean each dimension is just a standard Wiener process). It has the following properties:
+<ol>
+ 	<li>\({W_0=0\)</li>
+ 	<li>For \(t\geq0\) and \(\Delta t\geq0\), the increment \(W_{t+\Delta t}-W_t\) is normally distributed with mean 0 and standard deviation \(\\sqrt{\Delta t}) .</li>
+ 	<li>For any partitions \(0\leq t_1&lt;t_2&lt;\cdot\cdot\cdot &lt;t_n\), the increments \(W_{t_1}- W_{t_0},W_{t_2}-W_{t_1},\cdot\cdot\cdot, W_{t_n}-W_{t_{n-1}}\) are independent random variables.</li>
+ 	<li>With probability 1, the function W(t) is continuous at t.</li>
+</ol>
+Next, we simulate the Wiener process and plot the paths. Each path is an independent Wiener process.
+<pre class="prettyprint linenums">import numpy as np
+import matplotlib.pyplot as plt
+%pylab inline
+def wiener_process(T, N):
+    """
+    T: total time
+    N: The total number of steps
+    """
+    W0 = 0
+    dt = T/float(N)
+    # simulate the increments by normal random variable generator
+    increments = np.random.normal(0, 1*np.sqrt(dt), steps)
+    W = [0] + list(np.cumsum(increments))
+    return W
+t = np.linspace(0.0, N*dt, N+1)
+plt.figure(figsize=(15,10))
+for i in range(5):
+    W = wiener_process(10, 1000)
+    plt.plot(t, W)
+    plt.xlabel('time')
+    plt.ylabel('W')
+    plt.grid(True)
+</pre>
+</div>
+</div>
+</div>
+<img class="alignnone size-full wp-image-2233" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/wiener-process.png" alt="" width="890" height="592" />
+<div class="page" title="Page 328">
+<div class="layoutArea">
+<div class="column">
+
+[ref]Hull J C. Options, futures, and other derivatives[M]. Pearson Education India, 2006.[/ref]In ordinary calculus,\(\text{d}x=a\ \text{d}t\) is used to indicate that\(\Delta x=a\Delta x\) as \( \Delta t\rightarrow0\). We use the similar notation here. The mean change per unit time for a stochastic process is known as the drift rate and the variance per unit time is known as the variance rate. We can write the Wiener process in this form: \(dW_t\) with zero drift rate and 1 variance rate. If we extend the concept of Wiener process, we can get the generalized Wiener process which has constant drift rate and constant variance rate. We can write the Generalized Wiener process in the form: \(\text d\ x_t=a\ \text d t+b\ \text dW_t\).
+
+Then we go back to the stock price. In order to characterize the dynamics of a stock price process, we model the proportional increase in the stock price as follows:
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="page" title="Page 84">
+<div class="layoutArea">
+<div class="column">
+
+\[\text dS_t=\mu S_t\ \text d t+\sigma S_t\ \text dW_t \]
+
+Where \(dS_t\) is the change in the stock price over a short time period from t to t+dt. μ is the drift term and can be deemed as the annual expected level of the stock return, σ is the annual volatility of the stock. Here \(dS_t\) at different time t are independent, which means today's price change is independent with tomorrows change. \(W_t\) is a standard Wiener process. We say \(S_t\)
+
+We can also derive the process that \(lnS_t\) follows is(Here we just give the result and ignore the derivation):
+
+\[\text d\ ln(S_t)=(\mu-\frac{\sigma^2}{2}) \ \text d t+\sigma \ \text dW_t \]
+
+Here ln S follows a generalized Wiener process as which has constant drift rate and variance rate. That means the change in ln S between time 0 and some future time T is normally distributed.
+
+\[lnS_t-lnS_0\sim N\left[(\mu-\frac{\sigma^2}{2})T,\sigma^2T\right]\]
+
+Thus we say stock price S is a Geometric Brownian motion because the logarithm of S follows a Brownian motion.
+<div class="page" title="Page 333">
+<div class="layoutArea">
+<div class="column">
+
+We write the above stochastic differential equation into discrete form:
+
+&nbsp;
+
+Monte Carlo simulation is a commonly used method to price derivatives and estimate the risk of a portfolio. It repeats a process many times through generating random samples, attempting to predict all the possible future outcomes of random variables.  Here we apply this technique to modeling stock prices in order to look at the potential evolution of stock prices over time. Here we apply Monte Carlo technique to modeling stock prices in order to look at the potential evolution of stock prices over time.
+
+&nbsp;
+
+&nbsp;
+
+</div>
+</div>
+</div>
+Although stock prices are stochastic processes in discrete time,
+
+In stochastic volatility models, the asset price and its volatility are both assumed to be random processes and can change over time.
+
+\[dS_t = \mu_tS_tdt＋\sqrt{v_t}S_tdZ_1\]
+
+\[dv_t=-\lambda(v_t-\overline{v})dt+\eta\sqrt{v_t}dZ_2\]
+
+\[&lt;dZ_1,dZ_2&gt;=\rho dt\]
+
+In allowing the volatility to be random, stochastic volatility models give rise to implied volatility skews and term structures.
+
+</div>
+</div>
+</div>
