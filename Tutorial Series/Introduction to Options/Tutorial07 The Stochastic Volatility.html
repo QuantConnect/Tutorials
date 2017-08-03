@@ -22,11 +22,13 @@ Markov process is a special case of the stochastic process. It means that only t
 Brownian motion is a particular type of Markov stochastic process or we can think of it as a family of random variables {\(W_t\mid t\geq0} \)} indexed by time t. The one-dimensional Brownian motion is called Wiener Process. (Brownian motion is n-dimensional Wiener processes which mean each dimension is just a standard Wiener process). It has the following properties:
 <ol>
  	<li>\({W_0=0\)</li>
- 	<li>For \(t\geq0\) and \(\Delta t\geq0\), the increment \(W_{t+\Delta t}-W_t\) is normally distributed with mean 0 and standard deviation \(\\sqrt{\Delta t}) .</li>
+ 	<li>For \(t\geq0\) and \(\Delta t\geq0\), the increment \(W_{t+\Delta t}-W_t\) is normally distributed with mean 0 and standard deviation \(\sqrt{\Delta t}\) .</li>
  	<li>For any partitions \(0\leq t_1&lt;t_2&lt;\cdot\cdot\cdot &lt;t_n\), the increments \(W_{t_1}- W_{t_0},W_{t_2}-W_{t_1},\cdot\cdot\cdot, W_{t_n}-W_{t_{n-1}}\) are independent random variables.</li>
  	<li>With probability 1, the function W(t) is continuous at t.</li>
 </ol>
-Next, we simulate the Wiener process and plot the paths. Each path is an independent Wiener process.
+Intuitively understanding of the definition, Wiener process has independent and normally distributed increments and has continuous sample path.
+
+Next, we simulate the Wiener process and plot the paths attempting to gain an intuitive understanding of a stochastic process. Each path is an independent Wiener process.
 <pre class="prettyprint linenums">import numpy as np
 import matplotlib.pyplot as plt
 %pylab inline
@@ -58,9 +60,15 @@ for i in range(5):
 <div class="layoutArea">
 <div class="column">
 
-[ref]Hull J C. Options, futures, and other derivatives[M]. Pearson Education India, 2006.[/ref]In ordinary calculus,\(\text{d}x=a\ \text{d}t\) is used to indicate that\(\Delta x=a\Delta x\) as \( \Delta t\rightarrow0\). We use the similar notation here. The mean change per unit time for a stochastic process is known as the drift rate and the variance per unit time is known as the variance rate. We can write the Wiener process in this form: \(dW_t\) with zero drift rate and 1 variance rate. If we extend the concept of Wiener process, we can get the generalized Wiener process which has constant drift rate and constant variance rate. We can write the Generalized Wiener process in the form: \(\text d\ x_t=a\ \text d t+b\ \text dW_t\).
+[ref]Hull J C. Options, futures, and other derivatives[M]. Pearson Education India, 2006.[/ref]In ordinary calculus,\(\text{d}x=a\ \text{d}t\) is used to indicate that\(\Delta x=a\Delta t\) as \( \Delta t\rightarrow0\). We use the similar notation here. The mean change per unit time for a stochastic process is known as the drift rate and the variance per unit time is known as the variance rate. We can write the derivative of Wiener process over time t in this form: \(dW_t\) with zero drift rate and 1 variance rate per unit time. If we extend the concept of Wiener process, we can get the generalized Wiener process in the form: \(\text d\ x_t=a\ \text d t+b\ \text dW_t\) which has non-zero constant drift rate and variance rate. If we write it as approximate discrete form as
 
-Then we go back to the stock price. In order to characterize the dynamics of a stock price process, we model the proportional increase in the stock price as follows:
+\[\Delta x=x_{t+\Delta t}-x_t=a\Delta t+b\epsilon\sqrt{\Delta t}\]
+
+Where ε follows the standard normal distribution N(0,1). Thus \(\Delta x\) has normal distribution with mean being \(a\Delta t\), variance being \(b^2\Delta t\). And because \(\Delta t\) is independent, from time 0 to time T, the change in the value of x is just the sum of \(\Delta x\) in each small time interval. It means that the change in the value of x follows the normal distribution \(N(aT,b^2T)\).
+
+Then we go back to the stock price. If we use the generalized Wiener process to model the stock price, for example, the share price of a stock is $30 now, then the percentage change in price from now to say the end of this year is normally distributed with constant mean and variance. But there is a problem that for normal distribution assumption of return, there is the possibility that the stock price will be negative but it is unreasonable in the real world. For example, this percentage change could be -1.1, which means the stock price at the end of the year is -$3. Thus it is not appropriate to assume that a stock price follows a generalized Wiener process with constant drift rate and variance rate.
+
+In order to characterize the dynamics of a stock price process and fix this problem, we model the proportional increase in the stock price as follows:
 
 </div>
 </div>
@@ -72,30 +80,50 @@ Then we go back to the stock price. In order to characterize the dynamics of a 
 <div class="layoutArea">
 <div class="column">
 
-\[\text dS_t=\mu S_t\ \text d t+\sigma S_t\ \text dW_t \]
+\[\text dS_t=\mu S_t\ \text d t+\sigma S_t\ \text dW_t \cdot\cdot\cdot\cdot\cdot\cdot(1)\]
 
-Where \(dS_t\) is the change in the stock price over a short time period from t to t+dt. μ is the drift term and can be deemed as the annual expected level of the stock return, σ is the annual volatility of the stock. Here \(dS_t\) at different time t are independent, which means today's price change is independent with tomorrows change. \(W_t\) is a standard Wiener process. We say \(S_t\)
+Where \(dS_t\) is the change in the stock price over a short time period from t to\(t+\Delta t\). μ is the drift term and can be deemed as the annual expected level of the stock return, σ is the annual volatility of the stock. Here \(dS_t\) at different time t are independent, which means today's price change is independent with tomorrows change. \(W_t\) is a standard Wiener process (1) we discussed above.
 
-We can also derive the process that \(lnS_t\) follows is(Here we just give the result and ignore the derivation):
+The discrete approximation form of (1) is
 
-\[\text d\ ln(S_t)=(\mu-\frac{\sigma^2}{2}) \ \text d t+\sigma \ \text dW_t \]
+\[\Delta S=\mu S\Delta t+\sigma S\epsilon\sqrt{\Delta t}\]
 
-Here ln S follows a generalized Wiener process as which has constant drift rate and variance rate. That means the change in ln S between time 0 and some future time T is normally distributed.
+We can also derive the process that \(lnS_t\) follows is(Here we just give the result, the derivation should use the Ito Lemma):
 
-\[lnS_t-lnS_0\sim N\left[(\mu-\frac{\sigma^2}{2})T,\sigma^2T\right]\]
+\[\text d\ ln(S_t)=(\mu-\frac{\sigma^2}{2}) \ \text d t+\sigma \ \text dW_t \cdot\cdot\cdot\cdot\cdot\cdot(2)\]
 
-Thus we say stock price S is a Geometric Brownian motion because the logarithm of S follows a Brownian motion.
+Here ln S follows a generalized Wiener process as which has constant drift rate and variance rate. That means the change in ln S during time interval  \(\Delta t\)is normally distributed.
+
+\[lnS_{t+\Delta t}-lnS_t\sim N\left[(\mu-\frac{\sigma^2}{2})\Delta t,\sigma^2\Delta t\right]\]
+
+We write (2) into discrete approximation form as:
+
+\[ln(S_{t+\Delta t})-ln(S_{t})=(\mu-\frac{\sigma^2}{2})\ \Delta t+\sigma \epsilon\sqrt{\Delta t}\]
+
+Equivalently
+
+\[S_{t+\Delta t}=S_{t}\exp\left[(\mu-\frac{\sigma^2}{2})\ \Delta t+\sigma \epsilon\sqrt{\Delta t}\right]\cdot\cdot\cdot\cdot\cdot\cdot(3)\]
+
+Now the logarithm return follows the normal distribution other than the return. If we change t to 0 and change \(\Delta t\) to T, we get
+
+\[S_{T}=S_{0}\exp\left[(\mu-\frac{\sigma^2}{2})\ T+\sigma \epsilon\sqrt{T}\right]\]
+
+according to the above equation, we know the stock price at time T should always greater than 0, the problem for negative price is fixed. Thus we say stock price S is a Geometric Brownian motion because the logarithm of S follows a Brownian motion.
 <div class="page" title="Page 333">
 <div class="layoutArea">
 <div class="column">
+<h3>Monte Carlo Method</h3>
+Monte Carlo simulation is a commonly used method to price derivatives and estimate the risk of a portfolio. It divides a time interval into many small time steps and randomly sampling possible paths for the variable, then repeats this process many times attempting to predict all the possible future outcomes of random variables.
 
-We write the above stochastic differential equation into discrete form:
-
-&nbsp;
-
-Monte Carlo simulation is a commonly used method to price derivatives and estimate the risk of a portfolio. It repeats a process many times through generating random samples, attempting to predict all the possible future outcomes of random variables.  Here we apply this technique to modeling stock prices in order to look at the potential evolution of stock prices over time. Here we apply Monte Carlo technique to modeling stock prices in order to look at the potential evolution of stock prices over time.
-
-&nbsp;
+The essence of using Monte Carlo method to price the options is to simulate the possible paths for stock prices then we can get all the possible value of stock price at expiration.
+<ol>
+ 	<li>First, we need to divide the maturity T of options into N small time intervals, the length of each time interval is \(\Delta t\), N is the number of steps</li>
+ 	<li>Sample the possible random paths for the stock price according to equation (3) and get the stock price \(S_T\)at maturity T.</li>
+ 	<li>Calculate the payoff of options according to the \(S_T\)</li>
+ 	<li>Discount the payoff at the risk-free rate to get one estimate of options' price</li>
+ 	<li>Repeat the step 1 to 4 for a reasonable number of times and get many estimates of options price and then the average of these price estimates is the final options price.</li>
+</ol>
+Here we apply this technique to modeling stock prices in order to look at the potential evolution of stock prices over time and then demonstrate how to price the European options. Here we use Google as an example.
 
 &nbsp;
 
