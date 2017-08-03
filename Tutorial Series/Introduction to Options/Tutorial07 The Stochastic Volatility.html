@@ -22,7 +22,7 @@ Markov process is a special case of the stochastic process. It means that only t
 Brownian motion is a particular type of Markov stochastic process or we can think of it as a family of random variables {\(W_t\mid t\geq0} \)} indexed by time t. The one-dimensional Brownian motion is called Wiener Process. (Brownian motion is n-dimensional Wiener processes which mean each dimension is just a standard Wiener process). It has the following properties:
 <ol>
  	<li>\({W_0=0\)</li>
- 	<li>For \(0\leq s&lt;t\), the increment \({W_t-W_s\) is normally distributed with mean 0 and variance t-s.</li>
+ 	<li>For \(t\geq0\) and \(\Delta t\geq0\), the increment \(W_{t+\Delta t}-W_t\) is normally distributed with mean 0 and standard deviation \(\\sqrt{\Delta t}) .</li>
  	<li>For any partitions \(0\leq t_1&lt;t_2&lt;\cdot\cdot\cdot &lt;t_n\), the increments \(W_{t_1}- W_{t_0},W_{t_2}-W_{t_1},\cdot\cdot\cdot, W_{t_n}-W_{t_{n-1}}\) are independent random variables.</li>
  	<li>With probability 1, the function W(t) is continuous at t.</li>
 </ol>
@@ -58,9 +58,9 @@ for i in range(5):
 <div class="layoutArea">
 <div class="column">
 
-[ref]Hull J C. Options, futures, and other derivatives[M]. Pearson Education India, 2006.[/ref]In ordinary calculus,\(\text{d}x=a\ \text{d}t\) is used to indicate that\(\Delta x=a\Delta x\) as \( \Delta t\rightarrow0\). We use the similar notation here. The mean change per unit time for a stochastic process is known as the drift rate and the variance per unit time is known as the variance rate. We can write the Wiener process in this form: \(dW_t\) with zero drift rate and 1 variance rate.
+[ref]Hull J C. Options, futures, and other derivatives[M]. Pearson Education India, 2006.[/ref]In ordinary calculus,\(\text{d}x=a\ \text{d}t\) is used to indicate that\(\Delta x=a\Delta x\) as \( \Delta t\rightarrow0\). We use the similar notation here. The mean change per unit time for a stochastic process is known as the drift rate and the variance per unit time is known as the variance rate. We can write the Wiener process in this form: \(dW_t\) with zero drift rate and 1 variance rate. If we extend the concept of Wiener process, we can get the generalized Wiener process which has constant drift rate and constant variance rate. We can write the Generalized Wiener process in the form: \(\text d\ x_t=a\ \text d t+b\ \text dW_t\).
 
-Then we go back to the stock price. In order to characterize the dynamics of a stock price process, we model the proportional increase in the stock price as a generalized Wiener process which has constant drift and variance terms as follows:
+Then we go back to the stock price. In order to characterize the dynamics of a stock price process, we model the proportional increase in the stock price as follows:
 
 </div>
 </div>
@@ -72,14 +72,32 @@ Then we go back to the stock price. In order to characterize the dynamics of a 
 <div class="layoutArea">
 <div class="column">
 
-\[\text dS=\mu S\ \text d t+\sigma S\ \text dW \]
+\[\text dS_t=\mu S_t\ \text d t+\sigma S_t\ \text dW_t \]
 
-Where /(dS/) is the change in the stock price over a short time period from t to t+dt. μ is the drift term and can be deemed as the expected level of the stock return, σ is the volatility of the stock price. Here /(dS/) at different time t are independent, which means today's price change is independent with tomorrows change. dW is a standard Wiener process.
+Where \(dS_t\) is the change in the stock price over a short time period from t to t+dt. μ is the drift term and can be deemed as the annual expected level of the stock return, σ is the annual volatility of the stock. Here \(dS_t\) at different time t are independent, which means today's price change is independent with tomorrows change. \(W_t\) is a standard Wiener process. We say \(S_t\)
+
+We can also derive the process that \(lnS_t\) follows is(Here we just give the result and ignore the derivation):
+
+\[\text d\ ln(S_t)=(\mu-\frac{\sigma^2}{2}) \ \text d t+\sigma \ \text dW_t \]
+
+Here ln S follows a generalized Wiener process as which has constant drift rate and variance rate. That means the change in ln S between time 0 and some future time T is normally distributed.
+
+\[lnS_t-lnS_0\sim N\left[(\mu-\frac{\sigma^2}{2})T,\sigma^2T\right]\]
+
+Thus we say stock price S is a Geometric Brownian motion because the logarithm of S follows a Brownian motion.
 <div class="page" title="Page 333">
 <div class="layoutArea">
 <div class="column">
 
-Monte Carlo simulation is a commonly used method in the stochastic process which generates random samples to simulate the possible outcomes of random variables. Here we apply this technique to modeling stock prices in order to look at the potential evolution of stock prices over time.
+We write the above stochastic differential equation into discrete form:
+
+&nbsp;
+
+Monte Carlo simulation is a commonly used method to price derivatives and estimate the risk of a portfolio. It repeats a process many times through generating random samples, attempting to predict all the possible future outcomes of random variables.  Here we apply this technique to modeling stock prices in order to look at the potential evolution of stock prices over time. Here we apply Monte Carlo technique to modeling stock prices in order to look at the potential evolution of stock prices over time.
+
+&nbsp;
+
+&nbsp;
 
 </div>
 </div>
