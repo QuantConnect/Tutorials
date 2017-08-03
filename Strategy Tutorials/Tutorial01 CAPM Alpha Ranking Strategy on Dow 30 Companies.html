@@ -1,9 +1,9 @@
 <h2>Abstract</h2>
-This tutorial performs a simple linear regression to build the Capital Asset Pricing Model(CAPM) [ref]<a href="http://www.nobelprize.org/nobel_prizes/economic-sciences/laureates/1990/sharpe-lecture.pdf">Sharpe, William, 1990 http://www.nobelprize.org/nobel_prizes/economic-sciences/laureates/1990/sharpe-lecture.pdf</a>[/ref], a classical model developed by William F. Sharpe and Harry Markowitz. This model yields alpha and beta for each asset and is traded by going long on the stocks ranked with the highest alpha. This tutorial will demonstrate the following: 
+This tutorial performs a simple linear regression to build the Capital Asset Pricing Model(CAPM) [ref]<a href="http://www.nobelprize.org/nobel_prizes/economic-sciences/laureates/1990/sharpe-lecture.pdf">Sharpe, William, 1990 http://www.nobelprize.org/nobel_prizes/economic-sciences/laureates/1990/sharpe-lecture.pdf</a>[/ref], a classical model developed by William F. Sharpe and Harry Markowitz. This model yields alpha and beta for each asset and is traded by going long on the stocks ranked with the highest alpha. This tutorial will demonstrate the following:
 <ol>
-	<li>How to use historical data</li> 
-	<li>Set an event handler</li> 
-	<li>Conduct linear regression</li> 
+	<li>How to use historical data</li>
+	<li>Set an event handler</li>
+	<li>Conduct linear regression</li>
 	<li>Build your own functions in the QuantConnect Algorithm Lab</li>
 </ol>
  The implementation of the strategy demonstrates that stocks beat the market last month are likely to beat the market again in the subsequent month. This algorithm performs well when the market is smooth. However when the market volatility increases the model fails to capture alpha and it performs poorly. What we learn from this is that market fluctuations decrease the significance level of the linear regression coefficients, especially when we are using daily returns to fit the model.
@@ -14,7 +14,7 @@ The capital asset pricing model (CAPM) describes the relationship between system
 
 where:
 
-[r_f = Risk Free Rate\]
+\[r_f = Risk Free Rate\]
 \[\beta = Beta of the security\]
 
 \[r_m = Expected market return\]
@@ -42,7 +42,7 @@ To make this theory more convenient for our algorithm, we change the above form
 <strong>r*(1-β) </strong>on the right hand side of the equation is a very small item, making it negligible in the context of the Dow 30 companies. If we regress the stocks return with the return of the benchmark, the slope and intercept will be beta and alpha.
 
 <h2>Method</h2>
-Our investment logic is simple and straightforward. We assume that stocks which beat the market last month will continue to beat the market. We rank stocks according to their alpha, and each month we "long" the top two stocks. For this strategy to work, we need to do the following at the start of each month: 
+Our investment logic is simple and straightforward. We assume that stocks which beat the market last month will continue to beat the market. We rank stocks according to their alpha, and each month we "long" the top two stocks. For this strategy to work, we need to do the following at the start of each month:
 <ol>
  	<li>Get the historical price of Dow 30 stocks in the past 21 trading days and calculate their daily rates of return.</li>
  	<li>Conduct simple linear regression on the return of each stock against a benchmark (S&amp;P 500 index, SPY).</li>
