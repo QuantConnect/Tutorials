@@ -409,17 +409,15 @@ The value of mean and standard deviation are calculated from the rolling format
 </tr>
 <tr>
 <td style="text-align: center;">Cointegration</td>
-<td style="text-align: center;">39</td>
-<td style="text-align: center;">14.6%</td>
+<td style="text-align: center;">114</td>
+<td style="text-align: center;">31.37%</td>
 <td style="text-align: center;">0.33</td>
-<td style="text-align: center;">11.7%</td>
+<td style="text-align: center;">33.6%</td>
 </tr>
 </tbody>
 </table>
 Ultimately pairs trading intends to capture the price divergence of two correlated assets through mean reversion. Our results demonstrate that the copula approach for pairs trading is superior to the conventional cointegration method because it is based on the probability of the dependence structure, vs cointegration which relies on simple linear regression variance from normal pricing. We found through testing the performance of the copula method less sensitive to the starting parameters. Because the cointegration method relies on standard distribution and the ETF pairs had low volatility there were few trading opportunities.
-
-Generally, ETFs are not very volatile and so mean-reversion did not provide many trading opportunities. There are only 39 trades during 5 years for cointegration method.
-
+Generally, ETFs are not very volatile and so mean-reversion did not provide many trading opportunities. There are only 114 trades during 5 years for cointegration method.
 It is observed that the use of copula in pairs trading provides more trading opportunities as it does not require any rigid assumptions[ref]Liew R Q, Wu Y. Pairs trading: A copula approach[J]. Journal of Derivatives &amp; Hedge Funds, 2013, 19(1): 12-30.[/ref].
 <h2>Backtest</h2>
 Backtest for copula method
