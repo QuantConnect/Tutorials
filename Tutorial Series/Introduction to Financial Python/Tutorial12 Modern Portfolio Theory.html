@@ -66,7 +66,9 @@ Because of risk-free, we will not hold any risky portfolio that has a expected r
 
 there are infinite kinds of possible portfolio combination, but you can't diversify all of the portfolio risk away. In other words, you can't construct a portfolio with zero standard deviation with any combination of risky asset, otherwise there would be arbitrage opportunity.
 
-If we plot all the assets and all the portfolio on a chart, with standard deviation on the horizontal axis and expected return on the vertical axis, we will get a chart below:<img class="aligncenter size-full wp-image-1816" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/Unknown.png" alt="" width="1177" height="592" />
+If we plot all the assets and all the portfolio on a chart, with standard deviation on the horizontal axis and expected return on the vertical axis, we will get a chart below:
+
+<img class="aligncenter size-full wp-image-2154" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/Unknown-2.png" alt="" width="1184" height="592" />
 We simulated this graph using 10 stocks. In the real world there are far more than 10 assets, but the graph would be almost the same shape. Before demonstrating how to simulate this, we should totally understand it.
 
 The black curve is called <strong>efficient frontier</strong>. More accurately speaking, only the part above the blue dash-line is. Efficient frontier means that for a given expected return, you can't achieve a standard deviation lower than that of the portfolio on the efficient frontier. In other words, all of the assets and possible portfolio should lie inside the efficient frontier.
@@ -80,7 +82,7 @@ The economical intuition behind Sharpe ratio is that given a small incremental r
 In this chart, the sharpe ratio of each asset is exactly the slope of the straight line across the asset and the risk-free rate. Starting from the risk-free rate point, we find the tangent line of the efficient frontier. This is why the optimized portfolio is also called <strong>'tangent portfolio'</strong>.
 
 From the formula calculating the portfolio variance, we know that adding more stocks with negative correlation will decrease the risk. However, we are not looking for the portfolio with lowest variance, but the portfolio with highest sharpe ratio.
-<img class="aligncenter size-full wp-image-1847" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/Unknown-1.png" alt="" width="1177" height="592" />
+<img class="aligncenter size-full wp-image-2155" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/Unknown2.png" alt="" width="1184" height="592" />
 The blue curve in the chart above is the efficient frontier formed by the portfolios with only three stocks: IBM, GE, and PFE. Obviously the portfolios on this curve has lower sharpe ratio than the portfolios on the original efficient frontier. As the number of stocks increases, the efficient frontier becomes better.
 <h3>Capital Market Line</h3>
 The basic assumption of modern portfolio theory is that all of the investors are rational, which means all of they are smart enough to construct the optimized portfolio, or market portfolio. Under this assumption, all of the investors should hold the same proportion of risky assets. Since the investors are rational, they will only hold the portfolios on the red line above, which is called <strong>Capital Market Line<strong>. The reason is straightforward: all the portfolios on the capital market line has the same sharpe ratio, and this is the highest sharpe ratio this world can achieve. </strong></strong>
@@ -96,3 +98,7 @@ Under the rational assumption, if my portfolio is difference with yours, the rea
 What if I extend the the market capital line to achieve a higher return at a higher risk? There is another import assumption that there is no transaction cost, which means I can borrow money as much as I wish. In order to achieve a higher return, we need to borrow risk-free asset, or short risk-free, and invest the proceeds together with our own money to the market portfolio. Under such circumstance, our weight on risk-free is negative, and the weight on the market portfolio is larger than 1.
 <h2>Summary</h2>
 In this chapter we learned modern portfolio theory. It's important to understand here is that by holding difference stocks we can achieve a portfolio with higher sharpe ratio, and all the investors holds the same amount of risky asset, which is the market portfolio. In the next chapter we will introduce asset pricing with CAPM, which is the most classical asset pricing model.
+<h2>Algorithm:</h2>
+Mean-variance analysis is usually used to optimize portfolios with several strategies. Here we treat Dow 30 stocks as strategy and designed an algorithm to test mean-variance analysis:
+
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=71761bc8ce01e7c81b5ea91f54a82640' ></script>
