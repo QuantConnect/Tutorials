@@ -1,0 +1,69 @@
+In the last chapter we introduced modern portfolio theory and some very important concepts, which include portfolio variance, sharpe ratio, diversification, tangent portfolio, capital market line. In this chapter we will continue from the modern portfolio theory world and consider asset pricing.
+<h2>CAPM</h2>
+You maybe confused with the term 'asset pricing'. For any securities, 'price' and 'return' are the same thing, they just like the two faces of a coin. <strong>Capital Asset Pricing Model (CAPM)</strong> is the most classical model for asset pricing.
+
+Let's start from what we have learned.
+
+<img class="aligncenter size-full wp-image-2154" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/Unknown-2.png" alt="" width="1184" height="592" />
+In the last chapter we learned that all the investor should hold the securities on the capital market line(the red line above). We also know that all the assets on this line has the same sharpe ratio. for any two assets:
+\[SR =\frac{ r_i - r_f}{\sigma_i} = \frac{ r_j - r_f}{\sigma_j}\]
+This should also hold for the market portfolio, so we replace asset j with the market portfolio:
+\[SR =\frac{ r_i - r_f}{\sigma_i} = \frac{ r_m - r_f}{\sigma_m}\]
+We change the form of the above equation:
+\[r_i =r_f + \frac{\sigma_i}{\sigma_m} (r_m - r_f)\]
+We know that all the asset on the capital asset line is a two-asset portfolio consist with risk-free asset and market portfolio, thus the correlation of the portfolio i and the market portfolio must be 1 (perfect linear relation). We multiply the the numerator and the denominator of the second term at the same time:
+\[r_i =r_f + \frac{\rho \sigma_m\sigma_i}{\sigma_m^2} (r_j - r_j) = r_f + \frac{Cov_{i,m}}{Var_m} (r_j - r_j)\]
+If you are familiar enough with simple linear regression, you will found that If we set \(r_i-r_f\) as y, and \(r_m - r_f\) as x, the slope, or coefficient of this simple linear regression, \(\beta\), is:
+\[\beta = \frac{Cov_{i,m}}{Var_m}\]
+We use \(\beta\) to replace this term:
+\[r_i - r_f = \beta(r_m - r_f) + \epsilon\]
+This is the <strong>Capital Asset Pricing Model (CAPM)</strong>, where \(\alpha\) is the so called <strong> Jensen's alpha</strong> and \(\epsilon\) is the regression residual. In a Perfect CAPM world, all of the return can be explained by the model, so the \(\alpha\) should be zero.
+<h2>Beta</h2>
+In CAPM, beta is a synonym of 'risk'. This can be seen from the formula given below:
+\[\beta = \frac{\rho\sigma_m\sigma_p}{\sigma_m^2} = \frac{\rho\sigma_p}{\sigma_m}\]
+Under the CAPM assumption, All of the securities should lie on the capital allocation line, thus the correlation \(\rho\) should be 1. Beta represents the systematic risk that can not be diversified away because it is the exposure to the market.
+
+More straightforwardly, beta can be considered the relationship between the asset return and market return. If asset A has a beta of 1.2, that means when the market goes up 1%, the asset goes up 1.2%, and if the market goes down 1%, the asset would goes down 1.2%.
+<h3>Beta Computing in Practice</h3>
+The formula for the Capital Asset Pricing Model looks easy, but we have a lot of factors to consider when we use it in practice. We first need to choose the return period we use to computer the rate of return: We should use daily return, weekly return or monthly return? Then we need to consider the number of data points we use for the regression. If we use monthly return in the past one year to computer the beta, or use daily return to computer the beta in one month, neither of them make sense because the samples' size are too small.
+
+In the real world, beta is not unchanged for a given asset. The following plot is the daily rolling beta of GE stock with a 6-month rolling windows:
+<img class="aligncenter size-full wp-image-2161" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/Unknown-3.png" alt="" width="1156" height="558" />
+As you can see, the beta of this asset ranged approximately from 0.1 to 0.5, which is a very wide range! This is the reason why you need to be careful when using beta. It makes no sense to talk about beta without resolution and computing period.
+The following graph is the rolling p-value of beta. The p-value stays close to zero most of the time. However, during some period it suddenly increased close to 0.1, which corresponds to a 90% confidence interval. This might be caused by some mispricing or market turmoil.
+<img class="aligncenter size-full wp-image-2164" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/Unknown-4.png" alt="" width="1163" height="558" />
+<h3>Market-neutral</h3>
+A portfolio is considered to be <strong>Market Neutral</strong> if it seeks to avoid the market risk. Some classical market-neutral strategies are pairs trading, beta-hedged equity portfolio and other derivatives strategies.
+
+Technically speaking, market neutral means totally the portfolio's beta is zero. This means the portfolio's return would not be affected by the market return. A market-neutral portfolio is usually construct by long/short because most of the fundamental assets have positive betas. Here we try to construct a simple market-neutral portfolio by hedging out beta.
+
+We used Dow 30 companies as out stock universe. The idea is straightforward: we calculate the rolling beta of each stock, and find the stocks who's rolling beta is highly correlated with each other. If we can find the linear relationship between two rolling betas, we can cancel out the portfolio's beta by long and short.
+
+Let's say we have stock A and stock B, given that:
+\[r_A = r_f + \beta_A(r_m - r_f)\]
+\[r_B = r_f + \beta_B(r_m - r_f)\]
+Although \(\beta_A\) and \(\beta_B\) are always changing, as long as we can find the linear relationship between them, we can construct a market-neutral portfolio. If:
+\[\beta_B = a + b\beta_A\]:
+Replacing \(\beta_B\) with \(\beta_A\):
+\[r_B = r_f = (a + b\beta_A)*(r_m - r_f)\]
+Let's allocate \(w_A\) on stock A and \(w_B\) on stock B, we only need to solve two linear equations:
+\[w_A + w_B = 1\]
+\[w_A + b*w_B = 0\]
+As you may noticed, we are not perfectly hedging here because the exists of the intercept \(\a\). If the significance level of \(\a\) is low or the value of it is small enough to be neglected, we can achieve our goal by just using two stocks. Otherwise we need to use three stocks to cancel out the intercept amount of the market risk. Anyway we by using two asset we have already hedged out most of the market risk exposure.
+
+We used daily return data from March 2012 to Jan 2015, which is an approximately two year in sample period. After calculating the daily rolling beta with a 6-month rolling windows length, we drew the correlation chart of their rolling betas:
+<img src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/Unknown-5.png" alt="" width="1056" height="578" class="aligncenter size-full wp-image-2174" />
+We selected PG and KO stocks, who's rolling betas have a correlation of 0.95.
+We use OLS regression to find the relationship between two beta. The model shows that:
+\[\beta_{KO} = -0.0097 + 0.969\beta_{PG}\]
+With 57.98 t-stats score on beta and 0.87 r-squared. We confirm that there exist linear relationship.
+After solving the linear equations demonstrated above, we obtained the hedge weight:
+\[w_{KO} = -24\]
+\[w_{PG} = 25\]
+We scaled the weight by dividing all of the weights by 25, we got \(w_{KO} = -0.48\) and \(w_{PG} = 0.5\). We test this portfolio both in sample and out of sample, and it achieved a beta of 0.01 and -0.004. The two backtesting results are attached at the end.
+
+<h2>Summary</h2>
+In this chapter we deduced the Capital Asset Pricing Model formula from the modern portfolio theory, and show some practice to build a market-neutral portfolio. In the next chapter we will expand CAPM into multi-factor models, which include the most commonly used Fama-French 3 factor and 5 factor models.
+<h2>Algorihtm</h2>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=8bac244b346cbd9bc3b39dca76192919'></script>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=5c75197259238b36a6cea72832c9e709'></script>
