@@ -30,19 +30,20 @@ The following few options tutorials was created to help you understand exactly h
     </thead>
     <tbody>
         <tr>
-            <td> <a href="1"> 1. General Features of Options </a> </td>
-            <td> <a href="2"> 2. Using Options in QuantConnect </a> </td>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-options-general-features-options/"> 1. General Features of Options </a> </td>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-options-using-options-in-quantconnect/"> 2. Using Options in QuantConnect </a> </td>
         </tr>
         <tr>
-            <td> <a href="3"> 3. Put-Call Parity and Arbitrage Strategies </a> </td>
-            <td> <a href="4"> 4. Options Pricing: Black-Scholes-Merton Model </a> </td>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-options-put-call-parity-and-arbitrage-strategies/"> 3. Put-Call Parity and Arbitrage Strategies </a> </td>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-options-black-scholes-merton-model/"> 4. Options Pricing: Black-Scholes-Merton Model </a> </td>
         </tr>
         <tr>
-            <td> <a href="5"> 5. The Greek Letters </a> </td>
-            <td> <a href="6"> 6. Historical Volatility and Implied Volatility </a> </td>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-options-the-greek-letters/"> 5. The Greek Letters </a> </td>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-options-historical-volatility-implied-volatility/"> 6. Historical Volatility and Implied Volatility </a> </td>
         </tr>
         <tr>
-            <td> <a href="7"> 7. Stochastic Volatility </a> </td>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-options-stochastic-volatility/
+"> 7. Stochastic Volatility </a> </td>
             <td> <a href="8"> 8. - work in progress </a> </td>
         </tr>
     </tbody>
@@ -51,9 +52,3 @@ The following few options tutorials was created to help you understand exactly h
 
 
 [1]: https://www.quantconnect.com/tutorials/introduction-options-general-features-options/
-[2]: https://www.quantconnect.com/tutorials/introduction-options-using-options-in-quantconnect/
-[3]: https://www.quantconnect.com/tutorials/introduction-options-put-call-parity-and-arbitrage-strategies/
-[4]: https://www.quantconnect.com/tutorials/introduction-options-black-scholes-merton-model/
-[5]: https://www.quantconnect.com/tutorials/introduction-options-the-greek-letters/
-[6]:https://www.quantconnect.com/tutorials/introduction-options-historical-volatility-implied-volatility/
-[7]:https://www.quantconnect.com/tutorials/introduction-options-stochastic-volatility/
