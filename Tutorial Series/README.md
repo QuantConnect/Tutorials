@@ -93,5 +93,36 @@ Unlike most teachings in textbooks, our tutorials keep from going deep into math
 
 
 
+<table width="100%">
+    <thead>
+        <tr>
+            <th colspan="2" align="left">Introduction to Machine Learning</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td> <a href=""> 1. Neural Network - Supervised Classification </a> </td>
+            <td> <a href=""> 2. Support Vehicle Machine - Supervised Classification </a> </td>
+        </tr>
+        <tr>
+            <td> <a href=""> 3. Naive Bayes Classifier - Supervised Classification </a> </td>
+            <td> <a href=""> 4. ID3, C4.5 - Decision Tree Method </a> </td>
+        </tr>
+        <tr>
+            <td> <a href=""> 5. Random Forest - Decision Tree Method </a> </td>
+            <td> <a href=""> 6. AdaBoost - Ensemble Learning </a> </td>
+        </tr>
+        <tr>
+            <td> <a href=""> 7. Q-learning - Reinforcement Learning </a> </td>
+            <td> <a href=""> 8. Apriori - Association Rule </a> </td>
+        </tr>
+ <tr>
+            <td> <a href=""> 9. K Nearest Neighbors - Unsupervised Classification </a> </td>
+            <td> <a href=""> 10. Genetic Algorithm - Heuristic Optimization </a> </td>
+        </tr>
+    </tbody>
+</table>
+
+
 
 [1]: https://www.quantconnect.com/tutorials/introduction-options-general-features-options/
