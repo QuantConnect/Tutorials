@@ -101,16 +101,16 @@ Unlike most teachings in textbooks, our tutorials keep from going deep into math
     </thead>
     <tbody>
         <tr>
-            <td> <a href=""> 1. Structure and Construction of Neural Network</a> </td>
-            <td> <a href=""> 2. Kernel Function and Construction of Support Vector Machine</a> </td>
+            <td> <a href=""> 1. Structure and Construction of Neural Networks</a> </td>
+            <td> <a href=""> 2. Kernel Function and Construction of Support Vector Machines</a> </td>
         </tr>
         <tr>
             <td> <a href=""> 3. Bayes' Theorem and Classification of Market Signals by Naive Bayes</a> </td>
             <td> <a href=""> 4. Using Entropy and Information Gain to Construct ID3 Decision Tree</a> </td>
         </tr>
         <tr>
-            <td> <a href=""> 5. Random Subtrees and Class Prediction of Random Forest</a> </td>
-            <td> <a href=""> 6. Boosting Ensemble and Making Predictions by AdaBoost</a> </td>
+            <td> <a href=""> 5. Random Subtrees and Class Prediction with Random Forest</a> </td>
+            <td> <a href=""> 6. Boosting Ensemble and Making Predictions with AdaBoost</a> </td>
         </tr>
         <tr>
             <td> <a href=""> 7. Unsupervised Reinforcement Mechanism and Implementation of Q-Learning Algorithms</a> </td>
@@ -118,7 +118,7 @@ Unlike most teachings in textbooks, our tutorials keep from going deep into math
         </tr>
  <tr>
             <td> <a href=""> 9. Centroid Rebalance and Stock Classification with K-Nearest Neighbors</a> </td>
-            <td> <a href=""> 10. Optimizing Technical Indicators by Simulating Evolution Process to Construct Genetic Algorithms</a> </td>
+            <td> <a href=""> 10. Optimizing Technical Indicators by Simulating Evolution Processes to Construct Genetic Algorithms</a> </td>
         </tr>
     </tbody>
 </table>
