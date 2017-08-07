@@ -101,24 +101,24 @@ Unlike most teachings in textbooks, our tutorials keep from going deep into math
     </thead>
     <tbody>
         <tr>
-            <td> <a href=""> 1. Neural Network - Supervised Classification </a> </td>
-            <td> <a href=""> 2. Support Vehicle Machine - Supervised Classification </a> </td>
+            <td> <a href=""> 1. Structure and Construction of Neural Network</a> </td>
+            <td> <a href=""> 2. Kernel Function and Construction of Support Vector Machine</a> </td>
         </tr>
         <tr>
-            <td> <a href=""> 3. Naive Bayes Classifier - Supervised Classification </a> </td>
-            <td> <a href=""> 4. ID3, C4.5 - Decision Tree Method </a> </td>
+            <td> <a href=""> 3. Bayes' Theorem and Classification of Market Signals by Naive Bayes</a> </td>
+            <td> <a href=""> 4. Using Entropy and Information Gain to Construct ID3 Decision Tree</a> </td>
         </tr>
         <tr>
-            <td> <a href=""> 5. Random Forest - Decision Tree Method </a> </td>
-            <td> <a href=""> 6. AdaBoost - Ensemble Learning </a> </td>
+            <td> <a href=""> 5. Random Subtrees and Class Prediction of Random Forest</a> </td>
+            <td> <a href=""> 6. Boosting Ensemble and Making Predictions by AdaBoost</a> </td>
         </tr>
         <tr>
-            <td> <a href=""> 7. Q-learning - Reinforcement Learning </a> </td>
-            <td> <a href=""> 8. Apriori - Association Rule </a> </td>
+            <td> <a href=""> 7. Unsupervised Reinforcement Mechanism and Implement of Q-Learning Algorithms</a> </td>
+            <td> <a href=""> 8. Association Rule and Market Trend Analysis with Apriori Algorithms</a> </td>
         </tr>
  <tr>
-            <td> <a href=""> 9. K Nearest Neighbors - Unsupervised Classification </a> </td>
-            <td> <a href=""> 10. Genetic Algorithm - Heuristic Optimization </a> </td>
+            <td> <a href=""> 9. Centroid Rebalance and Stock Classification with K-Nearest Neighbors</a> </td>
+            <td> <a href=""> 10. Optimizing Technical Indicators by Simulating Evolution Process to Construct Genetic Algorithms</a> </td>
         </tr>
     </tbody>
 </table>
