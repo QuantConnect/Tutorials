@@ -31,7 +31,7 @@ First, we introduce the factors in the model. For all the factors listed below, 
 </tr>
 <tr>
 <td> Time to Expiration</td>
-<td> T-t(should be converted to year)</td>
+<td> T-t</td>
 </tr>
 <tr>
 <td> Interest Rates</td>
@@ -56,7 +56,7 @@ First, we introduce the factors in the model. For all the factors listed below, 
         self.sigma = volatility # Underlying volatility
         self.type = option_type # option type "p" put option "c" call option
 </pre>
-There are some details we need to pay attention to about the input of BSM model. First, the model works in continuous time, rather than discrete time. Therefore the risk-free rate r has to be modified to continuous form.
+There are some details we need to pay attention to about the input of BSM model. Firstly, the model works in continuous time, rather than discrete time. Therefore the risk-free rate r has to be modified to the continuous form. Secondly, the time to expiration should be converted to year. The volatility is the annual volatlity.
 <h2>Assumptions</h2>
 The market assumptions behind the Black–Scholes formula for pricing European options are as follows:
 <ol>
