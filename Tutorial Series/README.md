@@ -39,7 +39,7 @@ The following few options tutorials was created to help you understand exactly h
         <tr>
             <td> <a href="https://www.quantconnect.com/tutorials/introduction-options-stochastic-volatility/
 "> 7. Stochastic Volatility </a> </td>
-            <td> <a href="8"> 8. - Sochastic Process and Monte Carlo Mehtod(WIP) </a> </td>
+            <td> <a href="8"> 8. Stochastic Process and Monte Carlo Method(WIP) </a> </td>
         </tr>
     </tbody>
 </table>
@@ -82,7 +82,7 @@ The following few options tutorials was created to help you understand exactly h
         
  <tr>
             <td> <a href="https://www.quantconnect.com/tutorials/capital-asset-pricing-model/">13. Capital Asset Pricing Model </a> </td>
-            <td> <a href="None"> 14. Tutorial14 Fama-French Multi-Factor Models-in progress </a> </td>
+            <td> <a href="None"> 14. Fama-French Multi-Factor Models-in progress </a> </td>
         </tr>
     </tbody>
 </table>
