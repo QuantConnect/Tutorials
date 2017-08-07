@@ -6,9 +6,9 @@ This repository is a collection of WordPress and Jupyter notebook tutorials for 
 
 
 ## Team Members ##
-* Xiaowei Yan 
+* Xiaowei Yan   shufeyxw@gmail.com
 * Jing Wu       msjingwu@outlook.com
-* Xiang Li
+* Xiang Li      lixiang.lx618@gmail.com
 
 
 ## Introduction to Financial Python ##
@@ -21,6 +21,8 @@ The goal of this series is to introduce options to those who are option novices 
 
 The following few options tutorials was created to help you understand exactly how options are used as investment and risk hedging tools. We will further discuss the pricing method of options like BSM model and monte carlo method. And then several metrics to gauge the options risks like the Greek lettters, different kinds of volatilities used in options pricing and trading. At the end of some tutorials, we will apply the knowledge in that tutorial to demonstrate some simple algorithms developed with Python on Quantconnect attempting to help you gain an insight into options trading and learn more efficient API tools to better customize your own trading algorithms. 
 
+
+## Tutorial Series ##
 
 <table>
     <thead>
@@ -48,6 +50,50 @@ The following few options tutorials was created to help you understand exactly h
         </tr>
     </tbody>
 </table>
+
+
+
+<table>
+    <thead>
+        <tr>
+            <th colspan="2">Introduction to Financial Python</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-python-data-types-data-structures/"> 1. Data Types and Data Structures </a> </td>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-python-logical-operation-loop/"> 2. Logical Opertions and Loops </a> </td>
+        </tr>
+        <tr>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-python-functions-object-oriented-programming/"> 3. Functions and Object-Oriented Programming </a> </td>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-python-numpy-basic-pandas/"> 4. NumPy and Basic Pandas </a> </td>
+        </tr>
+        <tr>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-python-pandas-resampling-dataframe/"> 5. Pandas-Resampling and DataFrame </a> </td>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-python-rate-return-mean-variance/"> 6.Rate of Return, Mean and Variance </a> </td>
+        </tr>
+        <tr>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-python-random-variable-distributions/
+"> 7. Random Variable and Distributions </a> </td>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-python-confidence-interval-hypothesis-testing/"> 8. Confidence Interval and Hypothesis Testing </a> </td>
+        </tr>
+ <tr>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-python-simple-linear-regression/">9. Simple Linear Regression </a> </td>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-python-multiple-linear-regression-residual-analysis/"> 10.Multiple Linear Regression </a> </td>
+        </tr>
+        
+  <tr>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-python-linear-algebra/"> 11. Linear Algebra </a> </td>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-python-modern-portfolio-theory/"> 12. Modern Portfolio Theory </a> </td>
+        </tr>
+        
+ <tr>
+            <td> <a href="https://www.quantconnect.com/tutorials/capital-asset-pricing-model/">13. Capital Asset Pricing Model </a> </td>
+            <td> <a href="None"> 14. Tutorial14 Fama-French Multi-Factor Models-in progress </a> </td>
+        </tr>
+    </tbody>
+</table>
+
 
 
 
