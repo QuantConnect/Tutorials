@@ -4,13 +4,6 @@
 
 This repository is a collection of WordPress and Jupyter notebook tutorials for LEAN demonstrating basic financial concepts, Python usage and introduction to Options and Machine Learning. Tutorials are categorized into 3 folders with each Category. The Jupyter notebook and the associated HTML webpage must use matching file names. The HTML is generated and displayed with wordpress.
 
-
-## Team Members ##
-* Xiaowei Yan   shufeyxw@gmail.com
-* Jing Wu       msjingwu@outlook.com
-* Xiang Li      lixiang.lx618@gmail.com
-
-
 ## Introduction to Financial Python ##
 This tutorial series starts from basic Python and finance concepts. If you have great investment ideas but don’t know how to build, or you think you need to learn some basic skills in quantitative finance, here is a good start point. These series include four parts: Python, basic math and statistics, basic finance regarding investment, and financial time series analysis, which is an advanced curriculum in quantitative finance.
 
@@ -24,10 +17,10 @@ The following few options tutorials was created to help you understand exactly h
 
 ## Tutorial Series ##
 
-<table>
+<table width="100%">
     <thead>
         <tr>
-            <th colspan="2">Introduction to Options</th>
+            <th colspan="2" align="left">Introduction to Options</th>
         </tr>
     </thead>
     <tbody>
@@ -46,17 +39,17 @@ The following few options tutorials was created to help you understand exactly h
         <tr>
             <td> <a href="https://www.quantconnect.com/tutorials/introduction-options-stochastic-volatility/
 "> 7. Stochastic Volatility </a> </td>
-            <td> <a href="8"> 8. - work in progress </a> </td>
+            <td> <a href="8"> 8. - Sochastic Process and Monte Carlo Mehtod(WIP) </a> </td>
         </tr>
     </tbody>
 </table>
 
 
 
-<table>
+<table width="100%">
     <thead>
         <tr>
-            <th colspan="2">Introduction to Financial Python</th>
+            <th colspan="2" align="left">Introduction to Financial Python</th>
         </tr>
     </thead>
     <tbody>
