@@ -113,7 +113,7 @@ Unlike most teachings in textbooks, our tutorials keep from going deep into math
             <td> <a href=""> 6. Boosting Ensemble and Making Predictions by AdaBoost</a> </td>
         </tr>
         <tr>
-            <td> <a href=""> 7. Unsupervised Reinforcement Mechanism and Implement of Q-Learning Algorithms</a> </td>
+            <td> <a href=""> 7. Unsupervised Reinforcement Mechanism and Implementation of Q-Learning Algorithms</a> </td>
             <td> <a href=""> 8. Association Rule and Market Trend Analysis with Apriori Algorithms</a> </td>
         </tr>
  <tr>
