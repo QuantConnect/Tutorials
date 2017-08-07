@@ -94,7 +94,9 @@ Here ln S follows a generalized Wiener process as which has constant drift rate 
 
 \[lnS_{t+\Delta t}-lnS_t\sim N\left[(\mu-\frac{\sigma^2}{2})\Delta t,\sigma^2\Delta t\right]\]
 
-We write (2) into discrete approximation form as:
+\[lnS_{t+\Delta t}\sim N\left[\text ln{S_t}+(\mu-\frac{\sigma^2}{2})\Delta t,\sigma^2\Delta t\right]\]
+
+Now the logarithm stock price follows the normal distribution.We write (2) into discrete approximation form as:
 
 \[ln(S_{t+\Delta t})-ln(S_{t})=(\mu-\frac{\sigma^2}{2})\ \Delta t+\sigma \epsilon\sqrt{\Delta t}\]
 
@@ -102,7 +104,7 @@ Equivalently
 
 \[S_{t+\Delta t}=S_{t}\exp\left[(\mu-\frac{\sigma^2}{2})\ \Delta t+\sigma \epsilon\sqrt{\Delta t}\right]\cdot\cdot\cdot\cdot\cdot\cdot(3)\]
 
-Now the logarithm return follows the normal distribution other than the return. If we change t to 0 and change \(\Delta t\) to T, we get
+If we change t to 0 and change \(\Delta t\) to T, we get
 
 \[S_{T}=S_{0}\exp\left[(\mu-\frac{\sigma^2}{2})\ T+\sigma \epsilon\sqrt{T}\right]\]
 
