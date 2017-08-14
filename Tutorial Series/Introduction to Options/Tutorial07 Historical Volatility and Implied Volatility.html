@@ -166,10 +166,10 @@ plt.legend((e,f), ("IV (call options)", "IV (put options)"))
 The current date is 08/14/2017. We plot the implied volatilities for SPY options which expire on 12/21/2018.
 
 </div>
-<h2><img class="alignnone size-full wp-image-2411" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/ivcall.png" alt="" width="947" height="429" /></h2>
-<img class="alignnone size-full wp-image-2412" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/ivput.png" alt="" width="947" height="429" />
+<h2><img src="images/ivcall.png" alt="implied volatility of call options"/></h2>
+<img src="images/ivput.png" alt="implied volatility of put options"/>
 
-<img class="alignnone size-full wp-image-2413" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/ivputcall.png" alt="" width="947" height="429" />
+<img src="images/ivputcall.png" alt="implied volatility of call and put options"/>
 
 80% OTM put has a different implied volatility to the ATM put. Plotting these implied volatilities across strikes gives us the implied volatility skew, also referred to as volatility skew, or even just skew. Although the volatility skew is dynamic, in equity markets it is almost always a decreasing function of the strike. Other asset classes such as FX and commodities have differently shaped skews.
 
@@ -200,7 +200,8 @@ ax = fig.add_subplot(111, projection='3d')
 ax.view_init(20,10)
 ax.scatter(x,y,z)
 </pre>
-<img src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/volsurface.png" alt="" width="1137" height="673" class="alignnone size-full wp-image-2414" />
+<img src="images/volsurface.png" alt="implied volatility surface"/>
+
 &nbsp;
 <h2>Limitations</h2>
 <div class="page" title="Page 73">
