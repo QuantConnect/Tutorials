@@ -48,7 +48,7 @@ We not only introduce the concepts but also show you how to apply the introduced
  <tr>
             <td> <a href="https://www.quantconnect.com/tutorials/introduction-python-random-variable-distributions/
 "> 7. Random Variable and Distributions </a> </td>
-            <td> <a href="None"> 14. Fama-French Multi-Factor Models(WIP) </a> </td>
+            <td> <a href="None"> 14. Fama-French Multi-Factor Models</a> </td>
         </tr>
     </tbody>
 </table>
