@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿![QuantConnect Logo](https://cdn.quantconnect.com/web/i/logo-small.png)
+=======
+![QuantConnect Logo](https://cdn.quantconnect.com/web/i/logo-small.png)
+>>>>>>> 60389fada84517d603b1533a6133e7ec392c3b5c
 # QuantConnect Tutorial Series
 ----------
 
@@ -10,10 +14,13 @@ This tutorial series starts from basic Python and finance concepts. If you have 
 We not only introduce the concepts but also show you how to apply the introduced technique step by step using Python code snippets. We use real financial datasets as examples, and show you what those charts in text book look like with real-world financial data. After each chapter, we also design a QC algorithm applying what we learned. We do this in order to let you have a more comprehensive understanding and see the differences between the theories and the practice — sometimes it can be hard to apply a simple concept.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 ## Tutorial Series ##
 
+=======
+>>>>>>> 60389fada84517d603b1533a6133e7ec392c3b5c
 <table width="100%">
     <thead>
         <tr>
@@ -65,11 +72,12 @@ The following few options tutorials was created to help you understand exactly h
 <table width="100%">
     <thead>
         <tr>
-            <th colspan="2" align="left">Introduction to Financial Python</th>
+            <th colspan="2" align="left">Introduction to Options</th>
         </tr>
     </thead>
     <tbody>
         <tr>
+<<<<<<< HEAD
 <<<<<<< HEAD
             <td> <a href="https://www.quantconnect.com/tutorials/introduction-python-data-types-data-structures/"> 1. Data Types and Data Structures </a> </td>
             <td> <a href="https://www.quantconnect.com/tutorials/introduction-python-confidence-interval-hypothesis-testing/"> 8. Confidence Interval and Hypothesis Testing </a> </td>
@@ -188,3 +196,24 @@ Unlike most teachings in textbooks, our tutorials keep from going deep into math
 
 
 >>>>>>> upstream/master
+=======
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-options-general-features-options/"> 1. General Features of Options </a> </td>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-options-the-greek-letters/"> 5. The Greek Letters </a> </td>
+        </tr>
+        <tr>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-options-using-options-in-quantconnect/"> 2. Using Options in QuantConnect </a> </td>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-options-historical-volatility-implied-volatility/"> 6. Historical Volatility and Implied Volatility </a> </td>
+        </tr>
+        <tr>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-options-put-call-parity-and-arbitrage-strategies/"> 3. Put-Call Parity and Arbitrage Strategies </a> </td>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-options-stochastic-volatility/
+"> 7. Stochastic Volatility </a> </td>
+        </tr>
+        <tr>
+            <td> <a href="https://www.quantconnect.com/tutorials/introduction-options-black-scholes-merton-model/"> 4. Options Pricing: Black-Scholes-Merton Model </a> </td>
+            <td> <a href="8"> 8. Stochastic Process and Monte Carlo Method(WIP) </a> </td>
+        </tr>
+    </tbody>
+</table>
+[1]: https://www.quantconnect.com/tutorials/introduction-options-general-features-options/
+>>>>>>> 60389fada84517d603b1533a6133e7ec392c3b5c
