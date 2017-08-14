@@ -2,8 +2,7 @@
 <div class="layoutArea">
 <div class="column">
 <h2>Introduction</h2>
-Options Volatility is a measurement of how much the price of the undelying asset has changed on average during the certain period of time. It is only a magnitude measurement of the price movement but give no information of the movement direction. Intuitively, an asset that has a relative stable price is said to have low volatility, while an asset which fluctuates wildly in either directions is said to have high volatility.
-Many market participants take volatility as the prime risk factor and the hedging instrument. The change of volatility can have a significant impact on the options price and any options trading strategies performance. Thus many options market participants developed different kinds of methods to measure and estimate the volatility which can be used in different ways. Two estimates which are widely used to determine levels of volatility risk are the historical (realized) volatility and the implied volatility. This part of the volatility tutorial we will discuss these two types of volatilities which are difined from completely different perspective. Specifically, we will discuss their meanings, measurements, uses, and limitations.
+The change of volatility can have a significant impact on any options trading strategies performance. In addition to the Vega we explained in Greeks letter chapter, this part of the volatility tutorial will discuss the concept of volatility, specifically, we discuss realized and implied volatility, their meanings, measurements, uses, and limitations.
 
 </div>
 </div>
@@ -13,9 +12,9 @@ Many market participants take volatility as the prime risk factor and the hedgin
 <div class="layoutArea">
 <div class="column">
 <h3>1. Definition</h3>
-As its name indicated, the historical volatility is a measure of past volatility which already happened and can be inferred from the histocial price series. In common, volatility is said to be the standard deviation of the return of assets price.
+It is a measurement of how much the price of the asset has changed on average during the certain period of time. In common, volatility is said to be the standard deviation of the return of assets price.
 <h3>2. Calculation</h3>
-Here we discuss how to estimate the historical volatility of the option written on specific underlying asset empirically. There are two things you need to note. First, commonly the historical volatility is annalized standartd deviation of the price movement. Second, it is measured in actual trading days not just days. Thus, after you compute the daily standard deviation, you need to multiply it by the squart root of the actual trading days within one year.
+Here we discuss how to estimate the historical volatility of the option written on specific underlying asset empirically.
 
 \[r_i=ln(\frac{S_i}{S_{i-1}})\quad for\ i=0,1,2,3,...,n\]
 
@@ -42,56 +41,66 @@ std = sqrt(sum(diff_square)*(1.0/(len(r)-1)))
 vol = std*sqrt(252)</pre>
 An asset has a historical volatility based on its past performance as described above, investors can gain insight on the fluctuations of the underlying price during the past period of time. But it does not tell us anything about the volatility in the market now and in the future. So here we introduce the implied volatility.
 <h2><strong>Implied Volatility</strong></h2>
-Implied volatility is a concept specific to options. In contrast to historical volatility, the implied volatility looks ahead. It is often interpreted as the market’s expectation for the future volatility of a stock and is implied by the price of the stock’s options. Here implied volatility means it is not observable in the market but can be derived from the price of an option.
+In contrast to historical volatility, the implied volatility looks ahead. It is often interpreted as the market’s expectation for the future volatility of a stock and is implied by the price of the stock’s options. Here implied volatility means it is not observable in the market but can be derived from the price of an option.
 <h3>1. Definition</h3>
 <div class="page" title="Page 73">
 <div class="layoutArea">
 <div class="column">
+
 We use volatility as an input parameter in option pricing model. If we take a look at the BSM pricing, the theoretical price or the fair value of an option is P, where P is a function of historical volatility σ, stock  price S, strike price K, risk-free rate r and the time to expiration T.  That is \(P=f(\sigma,S,K,r,T)\). But the market price of options is not always the same with the theoretical price. Now in contrast, if we are given the market’s prices of calls and puts written on some asset and also the value of S, K, r, T. For each asset we can solve a new volatility that corresponds to the price of each option – the implied volatility. Then the implied volatility is \(\IV=f^{-1}(P,S,K,r,T)\).
 <h3>2. Calculation</h3>
 Here we use the bisection method to solve the BSM pricing equation and find the root which is the implied volatility. We use Yahoo Finance Python API to get the real time option data.
-<pre class="prettyprint linenums">import numpy as np
-import scipy.stats as sp
-
-def bsm_price(option_type, sigma, s, k, r, T, q):
-    # calculate the bsm price of European call and put option
+<pre class="prettyprint linenums">def bsm_price(option_type, sigma, s, k, r, T, q):
+    # calculate the bsm price of European call and put options
+    sigma = float(sigma)
     d1 = (np.log(s / k) + (r - q + sigma ** 2 * 0.5) * T) / (sigma * np.sqrt(T))
     d2 = d1 - sigma * np.sqrt(T)
     if option_type == 'c':
-        price = np.exp(-r*T) * (s * np.exp((r - q)*T) * sp.norm.cdf(d1) - k *  sp.norm.cdf(d2))
+        price = np.exp(-r*T) * (s * np.exp((r - q)*T) * stats.norm.cdf(d1) - k *  stats.norm.cdf(d2))
         return price
     elif option_type == 'p':
-        price = np.exp(-r*T) * (k * sp.norm.cdf(-d2) - s * np.exp((r - q)*T) *  sp.norm.cdf(-d1))
+        price = np.exp(-r*T) * (k * stats.norm.cdf(-d2) - s * np.exp((r - q)*T) *  stats.norm.cdf(-d1))
         return price
     else:
         print('No such option type %s') %option_type
 def implied_vol(option_type, option_price, s, k, r, T, q):
     # apply bisection method to get the implied volatility by solving the BSM function
-    precision = 0.0001
-    upper_vol = 10000
-    max_vol = 10000
+    precision = 0.00001
+    upper_vol = 500.0
+    max_vol = 500.0
+    min_vol = 0.0001
     lower_vol = 0.0001
     iteration = 0
+
     while 1:
-        iteration = +1
+        iteration +=1
         mid_vol = (upper_vol + lower_vol)/2.0
         price = bsm_price(option_type, mid_vol, s, k, r, T, q)
-        lower_price = bsm_price(option_type, lower_vol, s, k, r, T, q)
-        if (lower_price - option_price) * (price - option_price) &gt; 0:
-            lower_vol = mid_vol
-        else:
-            upper_vol = mid_vol
-        if abs(price - option_price) &lt; precision: break if mid_vol &gt; max_vol - 5 :
-            mid_vol = 0
-            break
+        if option_type == 'c':
+
+            lower_price = bsm_price(option_type, lower_vol, s, k, r, T, q)
+            if (lower_price - option_price) * (price - option_price) &gt; 0:
+                lower_vol = mid_vol
+            else:
+                upper_vol = mid_vol
+            if abs(price - option_price) &lt; precision: break if mid_vol &gt; max_vol - 5 :
+                mid_vol = 0.000001
+                break
+
+        elif option_type == 'p':
+            upper_price = bsm_price(option_type, upper_vol, s, k, r, T, q)
+
+            if (upper_price - option_price) * (price - option_price) &gt; 0:
+                upper_vol = mid_vol
+            else:
+                lower_vol = mid_vol
+            if abs(price - option_price) &lt; precision: break if iteration &gt; 50: break
+
     return mid_vol
 implied_vol('c', 0.3, 3, 3, 0.032, 30.0/365, 0.01)
 </pre>
 From the result above, the implied volatility of European call option (with premium c=0.3, S=3, K=3, r=0.032, T =30 days, d=0.01) is 0.87.
 <h3>3. Factors affecting Implied Volatility</h3>
-<ul>
- 	<li><strong>Time Value of the option</strong></li>
-</ul>
 According to the time value description in the first tutorial, [ref]Options Pricing: Intrinsic Value And Time Value, Jean Folger, <a href="http://www.investopedia.com/university/options-pricing/intrinsic-value-time-value.asp?lgl=rira-baseline-vertical">Online Copy</a>[/ref]in general, the more time to expiration, the greater the time value of the option. Investors are willing to pay extra money for zero intrinsic value options which have more time to expiration because more time increases the likelihood of price movement and fluctuations, it is the options will become profitable. Implied volatility tends to be an increasing function of maturity. A short-dated option often has a low implied volatility, whereas a long-dated option tends to have a high implied volatility.
 
 &nbsp;
@@ -110,42 +119,89 @@ For European options of the same maturity and the same underlying assets, the im
 If we Keep the same expiry date and the same underlying assets, the implied volatility can be measured for different strike prices. This curve is called the volatility smile. The shape of volatility smile depends on the assets and the market conditions.
 
 Here we give an example how to plot the volatility smile by using the real time options data of SPDR S&amp;P 500 ETF(NYSEARCA: SPY).
-<pre class="prettyprint linenums">import matplotlib.pyplot as plt
-%pylab inline
-from pandas_datareader.data import Options
-import pandas_datareader.data as web
-import datetime
-# download option data for all expiry months from Yahoo Finance
+<pre class="prettyprint linenums"># download option data for all expiry months from Yahoo Finance
 # provide a formatted DataFrame with a hierarchical index
 opt = Options('spy', 'yahoo')
-# choose contracts with specified expiry date
-expiry = opt.expiry_dates[10]
-data = opt.get_call_data(expiry=expiry)
-len(data) # number of contracts with specified expiry date
-r = 0.013 # risk free rate
-s = data['Underlying_Price'] # undelying price
-expiry = data.index.get_level_values('Expiry')[0] # get the expiry
-current_date = datetime.datetime.now() # get the current date
-time_to_expire = float((expiry - current_date).days)/365 # compute time to expiration
-premium = (data['Ask'] + data['Bid'])/2 # option premium
-k = data.index.get_level_values('Strike') # get the strike price
-d = 0.01 # continuous devidend yield
-IV = []
-for i in range(len(data)):
-    IV.append(implied_vol('c', premium[i], s[i], k[i], r, time_to_expire, d))
+opt.expiry_dates  # list all the available expiration dates
+def IV_plot(opt,option_type,expiry_index):
+    expiry = opt.expiry_dates[expiry_index]
+    if option_type == 'c':
+        data = opt.get_call_data(expiry=expiry)
+    elif option_type == 'p':
+        data = opt.get_put_data(expiry=expiry)
+    r = 0.01 # risk free rate
+    d = 0.01 # continuous devidend yield
+    s = opt.underlying_price # data_call['Underlying_Price']  undelying price
+    expiry = data.index.get_level_values('Expiry')[0] # get the expiry
+    current_date = opt.quote_time # current_date = datetime.datetime.now() # get the current date
+    time_to_expire = float((expiry - current_date).days)/365 # compute time to expiration
+    premium = (data['Ask'] + data['Bid'])/2 # option premium
+    strike = list(data.index.get_level_values('Strike')) # get the strike price
+    IV = []
+    for i in range(len(data)):
+        IV.append(implied_vol(option_type, premium.values[i], s, strike[i], r, time_to_expire, d))
+
+    plt.figure(figsize=(16, 7))
+    a = plt.scatter(strike,IV, c='r', label="IV by solving BSM")
+    b = plt.scatter(strike,data['IV'],c = 'b', label="IV from Yahoo Finance")
+    plt.grid()
+    plt.xlabel('strike')
+    if option_type == 'c':
+        plt.ylabel('Implied Volatility for call option')
+        plt.legend((a,b), ("IV(call) by solving BSM", "IV(call) from Yahoo Finance"))
+    elif option_type == 'p':
+        plt.ylabel('Implied Volatility for put options')
+        plt.legend((a,b), ("IV(put) by solving BSM", "IV(put) from Yahoo Finance"))
+
+    return strike,IV
+k_call, IV_call = IV_plot(opt,'c',23)
+k_put, IV_put = IV_plot(opt,'p',23)
 plt.figure(figsize=(16, 7))
-plt.plot(k,IV, c='r', label="IV by solving BSM")
-plt.plot(k,data['IV'],c = 'b', label="IV from Yahoo Finance")
-plt.grid()
+e = plt.scatter(k_call,IV_call, c ='red', label="IV(call options)")
+f = plt.scatter(k_put,IV_put, c = 'black', label="IV(put options)")
 plt.xlabel('strike')
 plt.ylabel('Implied Volatility')
+plt.legend((e,f), ("IV (call options)", "IV (put options)"))
 </pre>
-<img src="images/iv call.png" alt="implied volatility of European call options" />
+The current date is 08/14/2017. We plot the implied volatilities for SPY options which expire on 12/21/2018.
 
 </div>
-<h2><img src="images/iv put.png" alt="implied volatility of European put options" /></h2>
+<h2><img class="alignnone size-full wp-image-2411" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/ivcall.png" alt="" width="947" height="429" /></h2>
+<img class="alignnone size-full wp-image-2412" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/ivput.png" alt="" width="947" height="429" />
+
+<img class="alignnone size-full wp-image-2413" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/ivputcall.png" alt="" width="947" height="429" />
+
 80% OTM put has a different implied volatility to the ATM put. Plotting these implied volatilities across strikes gives us the implied volatility skew, also referred to as volatility skew, or even just skew. Although the volatility skew is dynamic, in equity markets it is almost always a decreasing function of the strike. Other asset classes such as FX and commodities have differently shaped skews.
-<h2></h2>
+
+Then we scattered all the implied volatilities of contracts across all the strikes.
+<pre class="prettyprint linenums">opt = Options('spy', 'yahoo')
+r = 0.01 # risk free rate
+d = 0.01 # continuous devidend yield
+expiry_dates = [i for i in opt.expiry_dates if i > opt.quote_time.date()]
+current_date = opt.quote_time.date()  ## get the current date
+s = opt.underlying_price # undelying price
+num_expiry = len(expiry_dates)
+IV = [] # (num_expiry * 3)-dimension list with each row being [time_to_expire, strike, implied_vol]
+
+for expiry_index in range(num_expiry):
+    data = opt.get_put_data(expiry=expiry_dates[expiry_index])
+    expiry = expiry_dates[expiry_index] # get the expiry
+    time_to_expire = float((expiry - current_date).days)/365 # compute time to expiration
+    premium = (data['Ask'] + data['Bid'])/2.0 # option premium
+    strike = data.index.get_level_values('Strike') # get the strike price
+    num_strike = len(data)
+    for j in range(num_strike):
+        IV.append([time_to_expire, strike[j], implied_vol('c', premium.values[j], s, strike[j], r, time_to_expire, d)])
+x= [IV[i][0] for i in range(len(IV))]
+y= [IV[i][1] for i in range(len(IV))]
+z= [IV[i][2] for i in range(len(IV))]
+fig = plt.figure(figsize=(20,11))
+ax = fig.add_subplot(111, projection='3d')
+ax.view_init(20,10)
+ax.scatter(x,y,z)
+</pre>
+<img src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/volsurface.png" alt="" width="1137" height="673" class="alignnone size-full wp-image-2414" />
+&nbsp;
 <h2>Limitations</h2>
 <div class="page" title="Page 73">
 <div class="layoutArea">
@@ -172,6 +228,20 @@ Using the correct implied volatility of an asset allows one to price other deriv
 <h2>Summary</h2>
 The historical volatility of an asset is the statistical measure we know as the standard deviation of the stock return series. The implied volatility of the same asset, on the other hand, is the volatility parameter that we can infer from the prices of traded options written on this asset. In contrast to historical volatility, which looks at fluctuations of asset prices in the past, implied volatility looks ahead. The two volatilities do not necessarily coincide, and although they may be close, they are typically not equal.
 
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
