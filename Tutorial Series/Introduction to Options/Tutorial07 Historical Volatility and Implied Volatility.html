@@ -114,9 +114,7 @@ According to the time value description in the first tutorial, [ref]Options Pric
 <div class="layoutArea">
 <div class="column">
 <h2>Volatility Skew</h2>
-For European options of the same maturity and the same underlying assets, the implied volatilities vary with the strikes. For a series of put options or call options, if we plot these implied volatilities for a series of options which have the same expiration date and the same underlying with the x axis being the different strikes, we would get a convex curve. The shape of this curve is like people's smiling, it is being called the volatility.
-
-If we Keep the same expiry date and the same underlying assets, the implied volatility can be measured for different strike prices. This curve is called the volatility smile. The shape of volatility smile depends on the assets and the market conditions.
+For European options of the same maturity and the same underlying assets, the implied volatilities vary with the strikes. For a series of put options or call options, if we plot these implied volatilities for a series of options which have the same expiration date and the same underlying with the x axis being the different strikes, we would get a convex curve. The shape of this curve is like people's smiling, it is being called the volatility. The shape of volatility smile depends on the assets and the market conditions.
 
 Here we give an example how to plot the volatility smile by using the real time options data of SPDR S&amp;P 500 ETF(NYSEARCA: SPY).
 <pre class="prettyprint linenums"># download option data for all expiry months from Yahoo Finance
@@ -164,15 +162,14 @@ plt.ylabel('Implied Volatility')
 plt.legend((e,f), ("IV (call options)", "IV (put options)"))
 </pre>
 The current date is 08/14/2017. We plot the implied volatilities for SPY options which expire on 12/21/2018.
-
 </div>
 <h2><img src="images/ivcall.png" alt="implied volatility of call options"/></h2>
 <img src="images/ivput.png" alt="implied volatility of put options"/>
 
+Plotting these implied volatilities across strikes gives us the implied volatility skew. For the shape of volatility smile, it should be a symmetry convex curve. But from the above chart, the implied volatility curve slope downward to the right. This is referred to the skew, which means that options with low strikes have higher implied volatilities than those with higher strikes. The smile is not symmetry. The skew of a distribution is a measure of its assymetry. Although the volatility skew is dynamic, in equity markets it is almost always a decreasing function of the strike. Other asset classes such as FX and commodities have differently shaped skews.
+If we plot the call and put options implied volatility smile in the same chart for the same expiration date:
 <img src="images/ivputcall.png" alt="implied volatility of call and put options"/>
-
-80% OTM put has a different implied volatility to the ATM put. Plotting these implied volatilities across strikes gives us the implied volatility skew, also referred to as volatility skew, or even just skew. Although the volatility skew is dynamic, in equity markets it is almost always a decreasing function of the strike. Other asset classes such as FX and commodities have differently shaped skews.
-
+From the above chart, we can see the implied volatility for put options is higher than call options. Usually, put options trade for a higher price than call options, because traders place more risk in the short put positions, which raises the amount of reward they require to sell the position. Higher option prices signify an increase in risk and are represented by higher implied volatility levels derived from the option pricing model.
 Then we scattered all the implied volatilities of contracts across all the strikes.
 <pre class="prettyprint linenums">opt = Options('spy', 'yahoo')
 r = 0.01 # risk free rate
@@ -201,30 +198,18 @@ ax.view_init(20,10)
 ax.scatter(x,y,z)
 </pre>
 <img src="images/volsurface.png" alt="implied volatility surface"/>
+<h2>Volatility Surface</h2>
+By fixing a maturity and looking at the implied volatilities of European options on the same underlying but different strikes, we obtain the implied volatility skew or smile. The volatility surface is the three-dimensional surface obtained when we plots the market implied volatilities of European options with different strikes and different maturities.
 By using the interpolation method, we can generate the implied volatility surface of SPY options for both put and call options as follows:
 <img src="images/vol-surface-call.png" alt="implied volatility surface for call options"/>
 <img src="images/vol-surface-put.png" alt="implied volatility surface for put options"/>
-<h2>Limitations</h2>
-<div class="page" title="Page 73">
-<div class="layoutArea">
-<div class="column">
-There are several reasons for the existence of this implied volatility skew. Implied volatility is the market’s consensus on the volatility of the asset between now and the maturity of the option. Put options pay on the downside and are thus good hedging instruments against market crashes. If an asset drops in price, this is generally accompanied by an increase in its volatility. In this case, fear manifests itself because of the increased uncertainty and risk involved in such a drop. This is reflected in the implied volatilities of the OTM puts being higher than the OTM calls because puts pay on the downside.
-
-The realized volatility of an asset, as just seen, is a measure of how the asset’s price fluctuated over a specific period of time. It is also called historical volatility because it reflects the past; however, it does not necessarily contain information about the current market sentiment. The implied volatility of an asset on the other hand, as the name suggests, is a representative of what the market is implying in terms of volatility.
-<div class="page" title="Page 73">
-<div class="layoutArea">
-<div class="column">
-
-Using the correct implied volatility of an asset allows one to price other derivatives on the asset, in particular, those that are not liquidly traded. Where the implied volatility of an asset cannot be implied from traded instruments, one may resort to using the realized volatility as a proxy for implied volatility to get an idea of what volatility would be correct to use.
-
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+<h2>The Reason for Volatility Skew</h2>
+The volatility skew shows that for Put options, implied volatility is higher for deep OTM options and then is decreasing as it moves towards ITM options. For call options, the implied volatility is higher for deep ITM options and then is decreasing as it moves towards OTM options. From the demand and supply degree, the skew reflects that investors are more willing to buy deep OTM puts and ITM calls. Why there is volatility skew in the market? 
+First, the majority of the equity positions are long. Investors usually have two ways to hedge those long positions risks: Buying downside puts or selling upside calls. The increase in demand create increases in price of downside puts and decreases in price of upside calls. The volatility is a reflection of options price. Therefore the volatility of in-the-money put is higher and the volatility of in-the-money call is lower.
+The second reason for volatility skew is that the market moves down faster than it moves up. The downside market move is riskier than the upside move. Thus the price of OTM puts is higher than OTM calls.
 <h2>Summary</h2>
-The historical volatility of an asset is the statistical measure we know as the standard deviation of the stock return series. The implied volatility of the same asset, on the other hand, is the volatility parameter that we can infer from the prices of traded options written on this asset. In contrast to historical volatility, which looks at fluctuations of asset prices in the past, implied volatility looks ahead. The two volatilities do not necessarily coincide, and although they may be close, they are typically not equal.
+In this chapter, we discussed the historical volatility and the implied volatility. The historical volatility of an asset is the statistical measure we know as the standard deviation of the stock return series. The implied volatility of the same asset, on the other hand, is the volatility parameter that we can infer from the prices of traded options written on this asset. In contrast to historical volatility, which looks at fluctuations of asset prices in the past, implied volatility looks ahead. The two volatilities do not necessarily coincide, and although they may be close, they are typically not equal.
+Now we know the constant volatility assumption in Black-Sholes-Merton model is not applicable in the real market because there is volatility skew for most of the options. Then in next chapter we will introduce some volatility models to capture the volatility skew in options pricing.
 
 </div>
 </div>
