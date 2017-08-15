@@ -67,7 +67,7 @@ In stochastic volatility models, the asset price and its volatility are both ass
 
 \[dv_t=-\lambda(v_t-\overline{v})\ dt+\eta\sqrt{v_t}\ dW_{2,t}\]
 
-\[&lt;dW_{1,t},\ dW_{2,t}&gt;=\rho \ dt\]
+\[dW_{1,t},\ dW_{2,t}=\rho \ dt\]
 
 Where the instantaneous variance of the stock price \(v_t\) itself is a stochastic process.
 
@@ -76,7 +76,7 @@ Where the instantaneous variance of the stock price \(v_t\) itself is a stochast
 \(\eta\) is the volatility of the variance process \(v_t\) (often called the volatility of volatility)
 
 \(W_{1,t}\) and \(W_{2,t}\) are two dependent Wiener processes with correlation coefficient \(\rho\).
-<h3>2. Simulation of the Heston process</h3>
+<h3>2. Simulation of the Heston Process</h3>
 We already discuss how to simulate the stock price process with Monte Carlo method in the introduction to stochastic process tutorial. In order to simulate the variance process, we need to write it into discrete form. The derivation can be found in paper Rouah F D. Euler and Milstein discretization[ref]Rouah F D. Euler and Milstein discretization[J]. Documento de Trabajo, Sapient Global Markets, Estados Unidos, 2011. <a href="http://www.frouah.com/finance%20notes/Euler%20and%20Milstein%20Discretization.pdf">Online Copy</a>[/ref].
 
 \[v_{t+\Delta t}=\left(\sqrt{v_t}+\frac{1}{2}\eta\sqrt{\Delta t}W_1\right)^2-\lambda(v_t-\overline{v})\Delta t-\frac{\eta^2}{4}\Delta t\]

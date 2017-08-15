@@ -208,24 +208,19 @@ cbar = plt.colorbar(m)
 <div class="column">
 
 <img src="images/rho.png" alt="The Greeks letters: rho"/>
-<h2>Delta, Gamma &amp; Vega Hedging</h2>
+<h2>Delta, Gamma and Vega Hedging</h2>
 The delta of the underlying asset is always 1.0, the trader can hedge his positions by buying or selling the number of shares of the underlying asset indicated by the total delta. However, underlying asset positions have Gamma 0 because their Delta is always 1.00 (long) or -1.00 (short) and will not change. In addition, Vega of the underlying asset is also zero because the underlying asset's payoff doesn't vary depending on how its price moves (payoff is not contingent). Therefore, its price is not affected by price volatility.
 
 As a result, in order to adjust Gamma and Vega, it is necessary to take a position in an option or other derivatives. However, if only one other derivative is added, either the Gamma risk or the Vega risk will be canceled out, but not both at the same time. Here we need to use 2 derivatives to make the portfolio delta, gamma, and vega neutral all at once. Note, Vega and Gamma for a portfolio is the sum of the vegas and Gammas of its constituents.
 
-</div>
-</div>
-</div>
-</div>
-</div>
-<h2>Algorithm</h2>
-Delta is the primary indicator used when monitoring option risk. By taking an opposite position in the underlying instrument equal in size to the option’s delta, people try to protect their positions from market price movements, which we also called making portfolio delta neutral.
+<h2> Summary</h2>
+<div class="page" title="Page 84">
 <div class="layoutArea">
 <div class="column">
-<div class="page" title="Page 438">
-<div class="layoutArea">
-<div class="column">
-
-&nbsp;
-
+In this chapter we discussed the various Greeks, their meanings and their implications on the pricing and hedging of derivatives. We also presented some useful formulas for calculating the Greeks value of European options and generated the plots to show how they changed with strikes and time to expirations. The Greeks letter is the sensitivity measure of options price to the market variables. Next chapter we will discuss another major risk measures: volatility.
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>

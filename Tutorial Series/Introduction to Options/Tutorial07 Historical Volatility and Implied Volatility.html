@@ -100,7 +100,7 @@ def implied_vol(option_type, option_price, s, k, r, T, q):
 implied_vol('c', 0.3, 3, 3, 0.032, 30.0/365, 0.01)
 </pre>
 From the result above, the implied volatility of European call option (with premium c=0.3, S=3, K=3, r=0.032, T =30 days, d=0.01) is 0.87.
-<h3>3. Factors affecting Implied Volatility</h3>
+<h3>3. Factors Affecting Implied Volatility</h3>
 According to the time value description in the first tutorial, [ref]Options Pricing: Intrinsic Value And Time Value, Jean Folger, <a href="http://www.investopedia.com/university/options-pricing/intrinsic-value-time-value.asp?lgl=rira-baseline-vertical">Online Copy</a>[/ref]in general, the more time to expiration, the greater the time value of the option. Investors are willing to pay extra money for zero intrinsic value options which have more time to expiration because more time increases the likelihood of price movement and fluctuations, it is the options will become profitable. Implied volatility tends to be an increasing function of maturity. A short-dated option often has a low implied volatility, whereas a long-dated option tends to have a high implied volatility.
 
 &nbsp;
@@ -211,7 +211,6 @@ By using the interpolation method, we can generate the implied volatility surfac
 <div class="page" title="Page 75">
 <div class="layoutArea">
 <div class="column">
-<h3>Reason for volatility skew</h3>
 There are several reasons for the existence of this implied volatility skew. Implied volatility is the market’s consensus on the volatility of the asset between now and the maturity of the option. Put options pay on the downside and are thus good hedging instruments against market crashes. If an asset drops in price, this is generally accompanied by an increase in its volatility. In this case, fear manifests itself because of the increased uncertainty and risk involved in such a drop. This is reflected in the implied volatilities of the OTM puts being higher than the OTM calls because puts pay on the downside.
 
 The realized volatility of an asset, as just seen, is a measure of how the asset’s price fluctuated over a specific period of time. It is also called historical volatility because it reflects the past; however, it does not necessarily contain information about the current market sentiment. The implied volatility of an asset on the other hand, as the name suggests, is a representative of what the market is implying in terms of volatility.
