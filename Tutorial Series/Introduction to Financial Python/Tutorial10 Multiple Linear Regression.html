@@ -10,7 +10,7 @@ A multiple linear regression model with $p$ variables is given by:
 
 <h2>Python Implementation</h2>
 
-In the last chapter we used S&amp;P 500 index as a variable to predict Amazon stock. Now we can add more variable to see whether the fitness of the model increases.
+In the last chapter we used the S&amp;P 500 index as a variable to predict Amazon stock. Now we can add more variables to see whether the fitness of the model increases.
 
 <pre class="prettyprint linenums">import numpy as np
 import pandas as pd
@@ -122,9 +122,9 @@ aapl           0.1529      0.084      1.831      0.068      -0.012       0.317
 
 As seen from the summary table, the P-values for Ebay, Walmart and Apple are 0.174, 0.330 and 0.068 respectively, so none of the them are significant at a 95% confidence.
 
-The multiple regression model has a higher R-square than the simple one: 0.254 vs 0.234. Indeed, R-square cannot decrease as the number of variables increases. This is because if additional variables do not explain the response (amzn), then their estimated coefficients will be zero, without losing explanatory power.
+The multiple regression model has a higher R-square than the simple one: 0.254 vs 0.234. Indeed, R-square would defenitely increase as the number of variables increases. There is only one exception: if and only if the additional variable has complete linear regression with one of the originally existing variables. This is because if additional variables do not explain the response (amzn), then their estimated coefficients will be zero, without losing explanatory power.
 
-However, this doesn't mean it's better to add hundreds of variables. We will talk about overfitting in another chapter.
+However, it is not always better to to add more variables or we will overfit our model. We'll talk about this in a later chapter.
 
 The reason why it's just increased a little is that we selected some stocks based on our intuition. We think that the competitors and the substitutes of AMZN may explain AMZN's daily return, but actually they don't. Here we try <strong>Fama-French 5 factor</strong>, which is an important model asset pricing theory and we will cover it in the later tutorials.
 
@@ -150,7 +150,7 @@ plt.legend()
 plt.show()
 </pre>
 
-Although it's hard to observe, we can still found that the prediction from multiple regression is closer to the actual value. Usually we don't plot the result to observe which model is better, instead we read the statistical results from the summary table to make decisions.
+Although it's hard to observe, we can still see that the prediction from multiple regression is closer to the actual value. Usually we don't plot the result to observe which model is better, instead we read the statistical results from the summary table to make decisions.
 
 <h2>Model Significance Test</h2>
 
