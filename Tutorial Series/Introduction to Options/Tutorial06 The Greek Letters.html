@@ -131,8 +131,10 @@ cbar = plt.colorbar(m)
 </pre>
 </div>
 </div>
-<h3> <img src="images/vega.png" alt="The Greeks letters: vega" /></h3>
+    
+<img src="images/vega.png" alt="The Greeks letters: vega" />
 The color of the graph above represents Vega.
+
 <h3>4. Theta</h3>
 <div class="page" title="Page 432">
 <div class="layoutArea">
@@ -175,7 +177,8 @@ m = cm.ScalarMappable(cmap=cm.jet)
 m.set_array(z)
 cbar = plt.colorbar(m)
 </pre>
-<h3> <img src="images/theta.png" alt="The Greeks letters: theta" /></h3>
+    
+<img src="images/theta.png" alt="The Greeks letters: theta" />
 <h3>5. Rho</h3>
 Rho is the rate of change of the value of a derivative with respect to the interest rate. It is usually small and not a big issue in practice unless the option is deep in-the-money and has a long horizon. The interest rate would matter because we need to discount a larger cash flow over a longer horizon. Rho for the European options:
 \[Rho(call)=K(T-t)e^{-r(T-t)}N(d_2)\]
