@@ -1,12 +1,12 @@
-<h2>Introduction</h2>
+﻿<h2>Introduction</h2>
 
 In the last chapter we introduced simple linear regression, which has only one independent variable. In this chapter we will learn about linear regression with multiple independent variables.
 
 A simple linear regression model is written in the following form:
 \[ Y = \alpha + \beta X + \epsilon \]
 
-A <strong>multiple linear regression</strong> model with \( p \) variables is given by:
-\[ Y = \alpha + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 + \dots + \beta_p X_p + \epsilon \]
+A <strong>multiple linear regression</strong> model with <em>p</em> variables is given by:
+\[ Y = \alpha + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_p X_p + \epsilon \]
 
 <h2>Python Implementation</h2>
 
@@ -194,7 +194,7 @@ print model.summary()
     </tr>
 </table>
 
-As seen from the summary table, the p-values for Ebay, Walmart and Apple are 0.174, 0.330 and 0.068 respectively, so none of the them are significant at a 95% confidence.
+As seen from the summary table, the p-values for Ebay, Walmart and Apple are 0.174, 0.330 and 0.068 respectively, so none of them is significant at the 95% level.
 
 The multiple regression model has a higher \( R^2 \) than the simple one: 0.254 vs 0.234. Indeed, \( R^2 \) cannot decrease as the number of variables increases. Why? If an extra variable is added to our regression model, but it cannot account for variations in the response (amzn), then its estimated coefficient will simply be zero. It's as though that variable was never included in the model, so \( R^2 \) will not change.
 
@@ -231,7 +231,7 @@ Although it's hard to see from the chart above, the predicted return from multip
 Instead of using \( R^2 \) to assess whether our regression model is a good fit to the data, we can perform a hypothesis test: the F test.
 
 The null and alternative hypotheses of an F test are:
-\[H_0: \beta_1 = \beta_2 = \dots = \beta_p = 0\]
+\[ H_0: \beta_1 = \beta_2 = \dots = \beta_p = 0  \]
 \[ H_1: \text{At least one coefficient is not 0} \]
 
 We won't explain F test procedure in detail here. You just need to understand the null and alternative hypotheses. In the summary table of an F test, the 'F-statistic' is the F score, while 'prob (F-statistic)' is the p-value. Performing this test on the Fama-French model, we get a p-value of `2.21e-24` so we are almost certain that at least one of the coefficient is not 0.
@@ -245,7 +245,7 @@ In simple linear regression, an F test is equivalent to a t test on the slope, s
 In linear regression, we often assume that the residuals are independent and normally distributed with the same variance (homoskedasticity), so that we can contruct prediction intervals, for example.
 
 <h3>Normality</h3>
-We can plot the density of the residual to check for normality:
+We can plot the residual's density to check for normality:
 
 <pre class="prettyprint linenums">plt.figure()
 fama_model.resid.plot.density()
