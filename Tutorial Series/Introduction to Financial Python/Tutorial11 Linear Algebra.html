@@ -1,79 +1,89 @@
-<h2>Introduction</h2>
-In this chapter we are going to introduce linear algebra, which is a basic tool for us to solve linear equations. We commonly use linear algebra to solve portfolio variance and conducting portfolio optimization.
-<h2>Matrix</h2>
-Let's start from vector. A <strong>vector</strong> is also called a <strong>vector space</strong>. If it's in a Cartesian coordinate system, it would be a 2-dimensional vector, \((x,y)\). If it's 3-dimensional, it would be \((x,y,z)\). Here you can simply consider a vector as an array of number, although it's very meaningful in math and physics.
-In linear algebra, we usually write a vector vertically:
-\[v = \begin{pmatrix}
-x \\ y \\z
-\end{pmatrix}\]
-Now consider if we have multiple vector \((v_1,v_2,v_3...v_n)\), and they have the same length(strictly speaking, dimension), we can put them together to make up a <strong>matrix</strong>.
-If we have:
-\[v_1 = \begin{pmatrix}
-1 \\
-2\\
-3
-\end{pmatrix}\]
-\[v_2 = \begin{pmatrix}
-2 \\
-2\\
-2
-\end{pmatrix}\]
-\[v_3 = \begin{pmatrix}
-3 \\
-1\\
-1
-\end{pmatrix}\]
-We combine them together to form a matrix:
-\[m = \begin{pmatrix}
-1&amp;2&amp;3 \\
-2&amp;2&amp;2\\
-3&amp;1&amp;1
-\end{pmatrix}\]
-m is a \(3 \times 3) matrix. When we describe the dimension of a matrix, we typically use \(m\times n\), where m is the number of rows and n is the number of columns. \(m\) and \(n\) do not have to be the same
+﻿<h2>Introduction</h2>
+
+In this chapter we introduce linear algebra, which is an essential tool for portfolio optimization.
+
+<h2>Vectors</h2>
+
+A vector can be thought of as an arrow pointing from the origin to a specific point. Any vector or point can be represented by its coordinates i.e. an array of numbers, such as \((x,y)\) for a 2-dimensional vector, or \((x,y,z)\) for a 3-dimensional one. We usually write a vector as a column:
+\[ v = \begin{pmatrix}
+x \\ y \\ z
+\end{pmatrix} \]
+
+<h2>Matrices</h2>
+
+If we have a few vectors \((v_1, v_2, \dots, v_n)\) with the same dimension, then we can put them side-by-side to form a <strong>matrix</strong>. For example, the vectors
+\[ v_1 = \begin{pmatrix} 1 \\ 2 \\ 3 \end{pmatrix} \qquad
+   v_2 = \begin{pmatrix} 2 \\ 2 \\ 2 \end{pmatrix} \qquad
+   v_3 = \begin{pmatrix} 3 \\ 1 \\ 1 \end{pmatrix} \]
+can be combined to produce a matrix:
+\[ m = \begin{pmatrix}
+1 &amp; 2 &amp; 3 \\
+2 &amp; 2 &amp; 2 \\
+3 &amp; 1 &amp; 1
+\end{pmatrix} \]
+
+m is a 3 &times; 3 matrix. We typically describe the dimensions of a matrix as \(m \times n\) where m = number of rows and n = number of columns.
+
 <h3>Python Implementation</h3>
-In python we have NumPy to deal with linear algebra. The array we learned in NumPy chapter can be deemed as a vector:
+In Python, the NumPy package deals with linear algebra. The array we learned in the NumPy chapter can be deemed as a vector:
+
 <pre class="prettyprint linenums">import numpy as np
 a = np.array([1,2,3])
 b = np.array([2,2,2])
-c = np.array([3,1,1])matrix = np.column_stack((a,b,c))
+c = np.array([3,1,1])
+matrix = np.column_stack((a,b,c))
 print matrix
 print type(matrix)
 </pre>
-It worths noticing that we used np.column_stack() here to make the matrix to ensure that the original vectors are vertical in the new matrix.If we directly put the vectors together:
+
+It is worth noticing that we used column_stack() here to ensure that the vectors are vertical and placed side-by-side to form a matrix. Without the column_stack() function, the vectors will be made horizontal and stacked on top of one another:
+
 <pre class="prettyprint linenums">matrix2 = np.array([a,b,c])
 print matrix2
 </pre>
-By default it would stack the vectors horizontally.
+
 <h2>Matrix Multiplication</h2>
-In a matrix, we use \(x_{ij}\) to refer to a single value. For example, if this value lies at the second row and the third column, we refer to it by \(x_{23}\).
-If A is an \(m\times n\) matrix and B is an \(p\times q\) matrix, and \(n=p\), we can multiply A and B, which is written as \(A\times B\). Please note that if \(q \neq m\), we can't multiply B and A by \(B\times A\).
-Generally speaking, we can multiply A and B by \(A\times B\) if and only if \(n=p\). Matrix multiplication doesn't have commutative property.
-Let's see if A is a \(3\times 2\) matrix and B is a \(2\times 2\)matrix:
-\[A\times B = \begin{pmatrix}
+\(X_{ij}\) refers to a specific value in row \(i\) and column \(j\) of a matrix \(X\). For example, \(X_{23}\) is the number in the second row and third column of \(X\).
+
+If A is an \(m \times n\) matrix and B is an \(p \times q\) matrix, and \(n=p\), we can multiply A with B, which is written as \(AB\). Please note that \(AB \neq BA\) in general i.e. matrix multiplication is <strong>not commutative</strong>. If \(q \neq m\), we cannot multiply B with A to get \(BA\) to begin with.
+
+Consider this matrix product:
+\[ AB = \begin{pmatrix}
 a_{11}&amp;a_{12} \\
 a_{21}&amp;a_{22}\\a_{31}&amp;a_{32}
 \end{pmatrix}
-\times
 \begin{pmatrix}
 b_{11}&amp;b_{12} \\
 b_{21}&amp;b_{22}
 \end{pmatrix} = \begin{pmatrix}
 x_{11}&amp;x_{12} \\
-x_{21}&amp;x_{22}\\x_{31}&amp;x_{32}
-\end{pmatrix}\]
-Where \(x_{11} = a_{11}*b_{11}+a_{12}*b_{12}\), \(x_{12} = a_{11}*b_{12}+a_{12}*b_{22}\), \(x_{21} = a_{21}*b_{11} + a_{21}*b_{21}\), \(x_{22} = a_{21}*b_{12} + a_{22}*b_{22}\).
-In one words, \(x_{ij}\) equals to the sum-product of row \(i\) from the first matrix and the column \(i\) from the second matrix.
-The calculation is not difficult but complex. Fortunately we can use python to do it:
+x_{21}&amp;x_{22} \\
+x_{31}&amp;x_{32}
+\end{pmatrix} \]
+
+Then
+\[ x_{11} = a_{11} b_{11} + a_{12} b_{12} \]
+\[ x_{12} = a_{11} b_{12} + a_{12} b_{22} \]
+\[ x_{21} = a_{21} b_{11} + a_{21} b_{21} \]
+\[ x_{22} = a_{21} b_{12} + a_{22} b_{22} \]
+\[ \dots \]
+
+In other words, \(x_{ij}\) is the <strong>scalar product</strong> of row \(i\) from matrix \(A\) with column \(j\) from matrix \(B\).
+
+The calculation is tedious, but fortunately we can use NumPy to do it:
+
 <pre class="prettyprint linenums">A = np.array([[2,3],[4,2],[2,2]])
 B = np.array([[4,2],[4,6]])
 x = np.dot(A,B)
 print x
 </pre>
-Using np.dot(), we can conduct matrix multiplication. It worths mentioning that A and B need to be in the right order, if you inverse the oder in this example:
+
+Using np.dot(), we can conduct matrix multiplication. A and B must be in the right order; if you reverse the order you will get an error:
+
 <pre class="prettyprint linenums">x = np.dot(B,A)
 </pre>
-Not surprisingly, you would get an error.
-It's useful to remember that \(m \times n \times n \times p = m \times p\). This means a \(m\times n\) matrix multiply a \(n\times p\) matrix ends up with a \(m \times p \) matrix.
+
+It's useful to remember that \(m \times n \times n \times p = m \times p\). This means an \(m \times n\) matrix multiplied with an \(n \times p\) matrix yields an \(m \times p \) matrix.
 <h2>Inverse</h2>
 In linear algebra, there are a group of special matrix that have \(n\times n\) dimension and with ones on the main diagonal and zeros elsewhere. This type of matrix is called <strong>identity matrix</strong>. We usually present it with \(I_n\), where \(n\) is the dimension.
 \[I_n= \begin{pmatrix}
