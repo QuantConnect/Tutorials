@@ -1,16 +1,8 @@
-<div class="page" title="Page 71">
-<div class="layoutArea">
-<div class="column">
 <h2>Introduction</h2>
 The change of volatility can have a significant impact on any options trading strategies performance. In addition to the Vega we explained in Greeks letter chapter, this part of the volatility tutorial will discuss the concept of volatility, specifically, we discuss realized and implied volatility, their meanings, measurements, uses, and limitations.
 
-</div>
-</div>
-</div>
 <h2>Historical Volatility</h2>
-<div class="page" title="Page 71">
-<div class="layoutArea">
-<div class="column">
+
 <h3>1. Definition</h3>
 It is a measurement of how much the price of the asset has changed on average during the certain period of time. In common, volatility is said to be the standard deviation of the return of assets price.
 <h3>2. Calculation</h3>
@@ -43,9 +35,6 @@ An asset has a historical volatility based on its past performance as described 
 <h2><strong>Implied Volatility</strong></h2>
 In contrast to historical volatility, the implied volatility looks ahead. It is often interpreted as the market’s expectation for the future volatility of a stock and is implied by the price of the stock’s options. Here implied volatility means it is not observable in the market but can be derived from the price of an option.
 <h3>1. Definition</h3>
-<div class="page" title="Page 73">
-<div class="layoutArea">
-<div class="column">
 
 We use volatility as an input parameter in option pricing model. If we take a look at the BSM pricing, the theoretical price or the fair value of an option is P, where P is a function of historical volatility σ, stock  price S, strike price K, risk-free rate r and the time to expiration T.  That is \(P=f(\sigma,S,K,r,T)\). But the market price of options is not always the same with the theoretical price. Now in contrast, if we are given the market’s prices of calls and puts written on some asset and also the value of S, K, r, T. For each asset we can solve a new volatility that corresponds to the price of each option – the implied volatility. Then the implied volatility is \(\IV=f^{-1}(P,S,K,r,T)\).
 <h3>2. Calculation</h3>
@@ -103,16 +92,6 @@ From the result above, the implied volatility of European call option (with prem
 <h3>3. Factors Affecting Implied Volatility</h3>
 According to the time value description in the first tutorial, [ref]Options Pricing: Intrinsic Value And Time Value, Jean Folger, <a href="http://www.investopedia.com/university/options-pricing/intrinsic-value-time-value.asp?lgl=rira-baseline-vertical">Online Copy</a>[/ref]in general, the more time to expiration, the greater the time value of the option. Investors are willing to pay extra money for zero intrinsic value options which have more time to expiration because more time increases the likelihood of price movement and fluctuations, it is the options will become profitable. Implied volatility tends to be an increasing function of maturity. A short-dated option often has a low implied volatility, whereas a long-dated option tends to have a high implied volatility.
 
-&nbsp;
-<div class="page" title="Page 461">
-<div class="layoutArea">
-<div class="column">
-<div class="page" title="Page 73">
-<div class="layoutArea">
-<div class="column">
-<div class="page" title="Page 74">
-<div class="layoutArea">
-<div class="column">
 <h2>Volatility Skew</h2>
 For European options of the same maturity and the same underlying assets, the implied volatilities vary with the strikes. For a series of put options or call options, if we plot these implied volatilities for a series of options which have the same expiration date and the same underlying with the x axis being the different strikes, we would get a convex curve. The shape of this curve is like people's smiling, it is being called the volatility. The shape of volatility smile depends on the assets and the market conditions.
 
@@ -162,7 +141,7 @@ plt.ylabel('Implied Volatility')
 plt.legend((e,f), ("IV (call options)", "IV (put options)"))
 </pre>
 The current date is 08/14/2017. We plot the implied volatilities for SPY options which expire on 12/21/2018.
-</div>
+
 <h2><img src="images/ivcall.png" alt="implied volatility of call options"/></h2>
 <img src="images/ivput.png" alt="implied volatility of put options"/>
 
@@ -211,20 +190,3 @@ The second reason for volatility skew is that the market moves down faster than 
 In this chapter, we discussed the historical volatility and the implied volatility. The historical volatility of an asset is the statistical measure we know as the standard deviation of the stock return series. The implied volatility of the same asset, on the other hand, is the volatility parameter that we can infer from the prices of traded options written on this asset. In contrast to historical volatility, which looks at fluctuations of asset prices in the past, implied volatility looks ahead. The two volatilities do not necessarily coincide, and although they may be close, they are typically not equal.
 Now we know the constant volatility assumption in Black-Sholes-Merton model is not applicable in the real market because there is volatility skew for most of the options. Then in next chapter we will introduce some volatility models to capture the volatility skew in options pricing.
 
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
