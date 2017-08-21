@@ -1,4 +1,4 @@
-﻿<h2>Introduction</h2>
+<h2>Introduction</h2>
 
 In the last chapter we introduced simple linear regression, which has only one independent variable. In this chapter we will learn about linear regression with multiple independent variables.
 
@@ -17,26 +17,28 @@ import pandas as pd
 import quandl
 import matplotlib.pyplot as plt
 import statsmodels.formula.api as sm
-
+# get stock price
 quandl.ApiConfig.api_key = 'tAyfv1zpWnyhmDsp91yv'
 spy_table  = quandl.get('BCIW/_SPXT')
 amzn_table = quandl.get('WIKI/AMZN')
 ebay_table = quandl.get('WIKI/EBAY')
 wal_table  = quandl.get('WIKI/WMT')
-aapl_table = quandl.get('WIKI/AAPL')
-
+aapl_table = quandl.get('WIKI/AAPL')</pre>
+Then we take the data start from year 2016.
+<pre class="prettyprint linenums">
 spy  = spy_table .loc['2016',['Close']]
 amzn = amzn_table.loc['2016',['Close']]
 ebay = ebay_table.loc['2016',['Close']]
 wal  = wal_table .loc['2016',['Close']]
 aapl = aapl_table.loc['2016',['Close']]
-
+</pre>
+After taking log returns, we concat those data into a DataFrame.
+<pre class="prettyprint linenums">
 spy_log  = np.log(spy.Close) .diff().dropna()
 amzn_log = np.log(amzn.Close).diff().dropna()
 ebay_log = np.log(ebay.Close).diff().dropna()
 wal_log  = np.log(wal.Close) .diff().dropna()
 aapl_log = np.log(aapl.Close).diff().dropna()
-
 df = pd.concat([spy_log,amzn_log,ebay_log,wal_log,aapl_log],axis = 1).dropna()
 df.columns = ['SPY', 'AMZN', 'EBAY', 'WAL', 'AAPL']
 df.tail()
@@ -202,9 +204,13 @@ However, it is not always better to add hundreds of variables or we will overfit
 
 Can we improve our model further? Here we try the <strong>Fama-French 5-factor model</strong>, which is an important model in asset pricing theory. We will cover it in the later tutorials.
 
-<pre class="prettyprint linenums">fama_table = quandl.get('KFRENCH/FACTORS5_D')
+<pre class="prettyprint linenums">
+#get the variables from quandl.
+fama_table = quandl.get('KFRENCH/FACTORS5_D')
 fama = fama_table['2016']
+#rename the columns for our convenience to use
 fama = fama.rename(columns = {'Mkt-RF':'MKT'})
+#process the variables to make them more straight forward, because the raw data is in percentage, dividing by 100 we can get the implied returns.
 fama = fama.apply(lambda x: x/100)
 fama_df = pd.concat([fama,amzn_log],axis = 1)
 fama_model = sm.ols(formula = 'Close~MKT+SMB+HML+RMW+CMA',data = fama_df).fit()
@@ -213,9 +219,12 @@ print fama_model.summary()
 
 The Fama-French 5-factor model has a higher \( R^2 \) of 0.387. We can compare the predictions from simple linear regression and Fama-French multiple regression by plotting them together on one chart:
 
-<pre class="prettyprint linenums">result = pd.DataFrame({'simple regression': simple.predict(),
+<pre class="prettyprint linenums">
+#put the data into a DataFrame for the convenience of plotting.
+result = pd.DataFrame({'simple regression': simple.predict(),
                        'fama_french': fama_model.predict(),
                        'sample': df.amzn}, index = df.index)
+#plot part, feel free to adjust the size for your better view.
 plt.figure(figsize = (15,7.5))
 plt.plot(result['2016-7':'2016-9'].index,result.loc['2016-7':'2016-9','simple regression'])
 plt.plot(result['2016-7':'2016-9'].index,result.loc['2016-7':'2016-9','fama_french'])
@@ -242,12 +251,13 @@ In simple linear regression, an F test is equivalent to a t test on the slope, s
 
 <h2>Residual Analysis</h2>
 
-In linear regression, we often assume that the residuals are independent and normally distributed with the same variance (homoskedasticity), so that we can contruct prediction intervals, for example.
+In linear regression, we assume that the residuals are independent and normally distributed with the same variance (homoskedasticity). Residual analysis is one of the most important parts to examine and apply a linear model. In lots of linear model-based statistical arbitrage strategies, we use residuals to generate signals. That's why we should check the properties of residuals.
 
 <h3>Normality</h3>
-We can plot the residual's density to check for normality:
+As we mentioned, the residual of a linear model should follow normal distribution. In other wrods, it has normality. We can plot the residual's density to check for normality:
 
 <pre class="prettyprint linenums">plt.figure()
+#ols.fit().model is a method to access to the residual.
 fama_model.resid.plot.density()
 plt.show()
 </pre>
