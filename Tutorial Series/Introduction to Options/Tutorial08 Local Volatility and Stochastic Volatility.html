@@ -1,0 +1,209 @@
+<div class="page" title="Page 84">
+<div class="layoutArea">
+<div class="column">
+<h2>Introduction</h2>
+In the last chapter, we discussed two of the volatilities: historical volatility and the implied volatility. This chapter, we will further extend the concept of volatility and introduce the local volatility and the stochastic volatility.
+<h2>Motivation</h2>
+We already knew that volatility is a measure of the fluctuation degree of the underlying assets price series. There are many types of volatilities. As we discussed in the last chapter, historical volatility is the standard deviation of the price series during a certain period. It is a constant and represents the price movement in the past. However, the implied volatility is not based on the historical pricing data of stocks. It is the value of volatility parameter derived from the market quote of options in BSM pricing model. In contrast to historical volatility, implied volatility is forward looking and varies with different options contracts.
+<div class="page" title="Page 82">
+<div class="layoutArea">
+<div class="column">
+
+In the Black–Scholes model, the asset’s price is modeled as a log-normal random variable, which means that the asset’s log-returns are normally distributed. One of the most significant assumptions in BSM model is that the volatility is a constant term over time.
+
+\[\sigma=\sigma_{implied}\]
+
+But in the real world, it could be constant in a small time period but never constant in long term. As we discussed in the last chapter, there is volatility skew for most of the options, which means that the volatility is not constant across strikes.
+
+[ref]Bouzoubaa M, Osseiran A. Exotic options and hybrids: A guide to structuring, pricing and trading[M]. John Wiley &amp; Sons, 2010.[/ref]One way to capture the volatility skew is to assume that that the volatility itself is a random variable, this is the stochastic volatility model we will discuss next. But on the other hand, the introduction of additional sources of randomness will increase the complexity of the model. The other way to capture the volatility skew but without introducing the additional source of randomness is the local volatility.
+<h2>Local Volatility</h2>
+<h3>1. Definition</h3>
+The constant volatility assumption in BSM model seems not reasonable in most of the options pricing. The volatility skew tells us that the stock’s log-returns are actually not normally distributed. That means there exist some other kinds of distributions of stock price so that if we use this distribution to price the options, it would give the accurate options' price as we see in the market. The local volatility is implied in this non-normal distribution. Let's look at the definition of local volatility.
+
+[ref]Bouzoubaa M, Osseiran A. Exotic options and hybrids: A guide to structuring, pricing and trading[M]. John Wiley &amp; Sons, 2010.[/ref]The local volatility of the underlying assets is a deterministic function of assets price and the time t.
+
+\[\sigma=\sigma(S_t,t)\]
+
+Therefore under local volatility model, the stochastic process followed by the stock price is
+
+\[\text d S_t=\mu S_t\ \text d t+\sigma(S_t,t)\text d W_t\]
+
+If \(\sigma(S_t,t)=\sigmaS_t\), then this is the case of BSM model with constant volatility\(\sigma\). Here we are not assuming the volatility is constant but a function of the asset price so the stock’s log-returns are not normally distributed anymore. There is only one source of randomness fro m the stock price: \(W_t\).
+<h3>2. Model Calibration</h3>
+How to obtain the function \(\sigma(S_t,t)\)? Finding the function \(\sigma(S_t,t)\) is known as the calibration of local volatility model. This is answered by the following Dupire's formula.
+
+\[\sigma_{Local}(K,T)=\sqrt{\frac{\frac{\partial C}{\partial T}}{\frac{1}{2}K^2\frac{\partial^2 C}{\partial K^2}}}\]
+
+If we assume that we know all the observed market price of European call options C(T, K) for every strike K and every maturity T.  Local volatility model calculates volatilities for a set of options with the different combination of strike prices and expires. For a given date, time(t) and the underlying stock prices(St), a local volatility is derived from the equation that options prices calculated using local volatility equal the market options prices.
+
+But most of the time, we can only get a limited number of contracts with a few strikes and maturities, we can follow the steps below to get the local volatility estimation:
+<ol>
+ 	<li>First, use the available quoted price to calculate the implied volatilities.</li>
+ 	<li>Appy interpolation method to produce a smooth implied volatility surface.</li>
+ 	<li>Plug implied the implied volatilities into BSM model to get all the market prices of European calls.</li>
+ 	<li>Calculate the local volatility according to Dupire formula. In order to avoid taking derivatives, we could use finite differences to approximate the derivatives.</li>
+</ol>
+\[\frac{\partial C}{\partial T}\approx\frac{C(K,T+\Delta T)-C(K,T-\Delta T)}{2\Delta t}\]
+
+\[\frac{\partial^2 C}{\partial K^2}\approx\frac{C(K-\Delta K,T)-2C(K,T)+C(K+\Delta K,T)}{(\Delta K)^2}\]
+
+</div>
+<div class="column">
+<h2>Stochastic Volatility</h2>
+<h3>1. Definition</h3>
+</div>
+</div>
+</div>
+In stochastic volatility models, the asset price and its volatility are both assumed to be random processes and can change over time. There are many stochastic volatility models. Here we will present the most well-known and popular one: the Heston Model. In Heston model, the stock prices are log-normal distributed, the volatility process is a positive increasing function of a mean-reversion process. That is[ref]Gatheral J. The volatility surface: a practitioner's guide[M]. John Wiley &amp; Sons, 2011[/ref]
+
+</div>
+</div>
+</div>
+<div class="page" title="Page 84">
+<div class="layoutArea">
+<div class="column">
+
+\[dS_t = \mu_tS_tdt+\sqrt{v_t}S_tdW_{1,t}\]
+
+\[dv_t=-\lambda(v_t-\overline{v})\ dt+\eta\sqrt{v_t}\ dW_{2,t}\]
+
+\[dW_{1,t},\ dW_{2,t}=\rho \ dt\]
+
+Where the instantaneous variance of the stock price \(v_t\) itself is a stochastic process.
+
+\(\lambda\) is the speed of reversion of \(v_t\) to its long-term mean \(\overline{v})\). We can think of\(\lambda\) as the rate at which the stock price variance reverts back to its long term average value.
+
+\(\eta\) is the volatility of the variance process \(v_t\) (often called the volatility of volatility)
+
+\(W_{1,t}\) and \(W_{2,t}\) are two dependent Wiener processes with correlation coefficient \(\rho\).
+<h3>2. Simulation of the Heston Process</h3>
+We already discuss how to simulate the stock price process with Monte Carlo method in the introduction to stochastic process tutorial. In order to simulate the variance process, we need to write it into discrete form. The derivation can be found in paper Rouah F D. Euler and Milstein discretization[ref]Rouah F D. Euler and Milstein discretization[J]. Documento de Trabajo, Sapient Global Markets, Estados Unidos, 2011. <a href="http://www.frouah.com/finance%20notes/Euler%20and%20Milstein%20Discretization.pdf">Online Copy</a>[/ref].
+
+\[v_{t+\Delta t}=\left(\sqrt{v_t}+\frac{1}{2}\eta\sqrt{\Delta t}W_1\right)^2-\lambda(v_t-\overline{v})\Delta t-\frac{\eta^2}{4}\Delta t\]
+
+Then, we take the following steps to simulate Heston process: Given the value of \(v_t\) at time t, we first update to \(v_{t+\Delta t}\) using the formula above (Here note that in options pricing, Monte Carlo method use risk neutral result, so here the expected return \(\mu\) should equal the risk free rate r):
+<ul>
+ 	<li>Given the value of \(v_t\) at time t, we first update to \(v_{t+\Delta t}\) using the formula above</li>
+ 	<li>We obtain \(S_{t+\Delta t}\) using\[S_{t+\Delta t}=S_t\ \text {exp}\left[(r-\frac{1}{2}v_t)\Delta t+\sqrt{v_t\Delta t}W_2\right]\]</li>
+ 	<li>To generate \(W_1\) and \(W_2\) with correlation \(\rho\), we first generate two independent standard normal variables \(Z_1\) and \(Z_2\), set \(W_1=Z_1\), then \[W_2=\rho Z_1+\sqrt{1-\rho^2}Z_2\]</li>
+</ul>
+<pre class="prettyprint linenums">from numpy import sqrt, exp
+import numpy as np
+
+def mc_heston(option_type,S0,K,T,initial_var,long_term_var,rate_reversion,vol_of_vol,corr,r,num_reps,steps):
+    """
+    option_type:    'p' put option 'c' call option
+    S0:              the spot price of underlying stock
+    K:              the strike price
+    T:              the maturity of options
+    initial_var:    the initial value of variance
+    long_term_var:  the long term average of price variance
+    rate_reversion: the mean reversion rate for the variance
+    vol_of_vol:     the volatility of volatility(the variance of the variance of stock price)
+    corr:           the correlation between the standard normal random variables W1 and W2
+    r:              the risk free rate
+    reps:           the number of repeat for monte carlo simulation
+    steps:          the number of steps in each simulation
+    """
+    delta_t = T/float(steps)
+    payoff = 0
+    for i in range(num_reps):
+        vt = initial_var
+        st = S0
+        for j in range(steps):
+            w1 = np.random.normal(0, 1)
+            w2 = corr*w1+sqrt(1-corr**2)*np.random.normal(0, 1)
+            vt = (sqrt(vt) + 0.5 * vol_of_vol * sqrt(delta_t) * w1)**2  \
+                 - rate_reversion * (vt - long_term_var) * delta_t \
+                 - 0.25 * vol_of_vol**2 * delta_t
+            st = st * exp((r - 0.5*vt)*delta_t + sqrt(vt*delta_t) * w2)
+        if option_type == 'c':
+                payoff += max(st - K, 0)
+        elif option_type == 'p':
+                payoff += max(K - st, 0)
+
+    return (payoff/float(num_reps)) * (exp(-r*T))
+</pre>
+<h3>3. Calibration of Model Parameters</h3>
+The calibration of a model is the process of seeking the model parameters for which the model result best matches the market option data. This data usually consists of market quoted prices for European plain vanilla call options or of Black-Scholes implied volatilities derived from the prices. Calibrating the Heston model is equivalent to solving the non-linear constrained optimization problem: Minimize the error between the market quotes of options and the options price estimated by Heston model. The object function could be the absolute value of the error or the absolute squared error. You can refer to the paper <em>Parameters recovery via calibration in the Heston model</em>[ref]Escobar, Marcos, and Christoph Gschnaidtner. "Parameters recovery via calibration in the Heston model: A comprehensive review." <i>Wilmott</i> 2016.86 (2016): 60-81.[/ref] for details of different error measure.
+
+There are five parameters need to be estimated in Heston model:
+<ol>
+ 	<li>\(v_t\) : the initial value of the variance (Bounds of 0 and 1)</li>
+ 	<li>\(\overline{v}\) : the long term average variance of stock price (Bounds of 0 and 1)</li>
+ 	<li>\(\lambda\) : the speed of reversion (non-negativity)</li>
+ 	<li>\(\eta\) : the volatility of the volatility (non-negativity)</li>
+ 	<li>\(\rho\) : the correlation coefficient between two Wiener process (Bounds of -1 and 1)</li>
+</ol>
+Here we use QuantLib[ref]Modeling Volatility Smile and Heston Model Calibration Using QuantLib Python, Goutham Balaraman, <a href="http://gouthamanbalaraman.com/blog/volatility-smile-heston-model-calibration-quantlib-python.html">online copy</a>[/ref] Python library to calibrate the parameters.
+
+Let us look at how we can calibrate the Heston model to some market quotes. For example, let's say we are interested in trading SPDR S&amp;P 500 ETF (SPY) options with 4-months maturity. Here we choose all the options contracts written on SPY expire in 4 months. We need the strikes and the market prices of those contracts and the underlying price as the input of our objective function to minimize.
+<pre class="prettyprint linenums">import pandas as pd
+from numpy import sqrt,mean,log,diff
+import QuantLib as ql
+from pandas_datareader.data import Options
+import pandas_datareader.data as web
+import datetime
+opt = Options('spy', 'yahoo')
+expiration_dates = [ql.Date(i.day, i.month, i.year) for i in opt.expiry_dates]
+expiry_index = 14 # choose the contracts expire on 11/17/2017
+data = opt.get_call_data(expiry=opt.expiry_dates[expiry_index])
+strikes = list(data.index.get_level_values('Strike'))
+premium = list(data['Last'])
+day_count = ql.Actual365Fixed()
+calendar = ql.UnitedStates()
+calculation_date = ql.Date(opt._quote_time.day,opt._quote_time.month,opt._quote_time.year) # 08/10/2017
+spot = opt.underlying_price  # spot price is 244.82
+ql.Settings.instance().evaluationDate = calculation_date
+dividend_yield = ql.QuoteHandle(ql.SimpleQuote(0.0))
+risk_free_rate = 0.01
+dividend_rate = 0.0
+flat_ts = ql.YieldTermStructureHandle(
+    ql.FlatForward(calculation_date, risk_free_rate, day_count))
+dividend_ts = ql.YieldTermStructureHandle(
+    ql.FlatForward(calculation_date, dividend_rate, day_count))
+# dummy parameters
+initial_var = 0.2; rate_reversion = 0.5; long_term_var = 0.2; corr = -0.75; vol_of_vol = 0.2;
+# initial_var = 0.2; rate_reversion = 0.15; long_term_var = 0.6; corr = -0.75; vol_of_vol = 0.2;
+process = ql.HestonProcess(flat_ts, dividend_ts,
+                           ql.QuoteHandle(ql.SimpleQuote(spot)),
+                           initial_var, rate_reversion, long_term_var, vol_of_vol, corr)
+model = ql.HestonModel(process)
+engine = ql.AnalyticHestonEngine(model)
+heston_helpers = []
+date = expiration_dates[expiry_index]
+for j, s in enumerate(strikes):
+    t = (date - calculation_date)
+    p = ql.Period(t, ql.Days)
+    sigma = premium[j]
+    helper = ql.HestonModelHelper(p, calendar, spot, s,
+                                  ql.QuoteHandle(ql.SimpleQuote(sigma)),
+                                  flat_ts,
+                                  dividend_ts)
+    helper.setPricingEngine(engine)
+    heston_helpers.append(helper)
+lm = ql.LevenbergMarquardt(1e-8, 1e-8, 1e-8)
+model.calibrate(heston_helpers, lm,
+                 ql.EndCriteria(500, 50, 1.0e-8,1.0e-8, 1.0e-8))
+long_term_var, rate_reversion, vol_of_vol, corr, initial_var = model.params()
+print "long_term_var = %f, rate_reversion = %f, vol_of_vol = %f, corr = %f, initial_var = %f" % (long_term_var, rate_reversion, vol_of_vol, corr, initial_var)
+</pre>
+We get the market data at 08/10/2017 and choose the contracts which expire on 11/17/2017. Then we get the following parameters estimation
+<pre class="prettyprint linenums">long_term_var = 0.191762, rate_reversion = 0.000001, vol_of_vol = 0.215442, corr = -0.817388, initial_var = 0.198778
+</pre>
+When you get the parameter estimation, you can plug the parameter values into the Heston Monte Carlo options pricing model and get the price estimation with stochastic volatility. But as we already discussed for Heston model, the introduction of randomness of volatility increases the complexity of the estimation. No matter which error measure is chosen, the objective function is highly non-linear and far from being convex and we have 5 parameters in the model. All these drawbacks of Heston models will make the estimated parameter values quite sensitive the initial guess of parameters. Therefore options prices generated by the Heston model are also parameter sensitive. From the above, we can get a sense of how computationally expensive it can be to get accurate values of options in a stochastic volatility model.
+<h2> Summary</h2>
+<div class="page" title="Page 84">
+<div class="layoutArea">
+<div class="column">
+
+In Black–Scholes, that volatility is assumed to be constant, it is not reasonable especially for some exotic options in which the option's payoff is based on the changing volatility. Therefore we introduced the two volatility models to capture the volatility skew.The first approach, local volatility, assumes that the volatility is a deterministic function of time and the underlying asset price. This function must be chosen as to match the observed market option prices. In another stochastic volatility models, the asset price and its volatility are both assumed to be random processes.
+
+The calibration of these models needs the market price of the Vanilla options. When we get the model estimation we can use these models to pricing the corresponding exotic options.
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

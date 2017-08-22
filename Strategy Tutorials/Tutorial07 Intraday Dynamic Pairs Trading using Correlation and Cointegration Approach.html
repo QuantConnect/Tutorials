@@ -1,0 +1,328 @@
+<h2>Abstract</h2>
+In this tutorial we implement a high frequency and dynamic pairs trading strategy based on market-neutral statistical arbitrage strategy using a two-stage correlation and cointegration approach. This strategy is based on George J. Miao's work.[ref]<strong>George J. Miao </strong>High Frequency and Dynamic Pairs Trading Based on Statistical Arbitrage Using a Two-Stage Correlation and Cointegration Approach <a href="https://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=1&amp;ved=0ahUKEwiX9qHlqt7UAhVBOj4KHX-IAU4QFggkMAA&amp;url=http%3A%2F%2Fwww.ccsenet.org%2Fjournal%2Findex.php%2Fijef%2Farticle%2Fdownload%2F33007%2F19708&amp;usg=AFQjCNFbUXJRGML636l1kKu_sEGoI4SZcQ"><strong>Online Copy</strong></a>[/ref]We applied this trading strategy to the U.S. bank sector stocks, backtested this strategy with 10-minute stock data from 2012 to 2013. Our trading strategy yields a compounding annual return up to 29.4% and a 0.968 sharpe ratio.
+
+This strategy is especially profitable when the market is performing poorly. The profit is resulted from mispricing, and mispricings are likely to happen when the market goes down or volatility increases.
+
+To explore this strategy further, we design this strategy to be flexible. We can change the data resolution into 5 minutes, 10 minutes or even 30 minutes by simply changing a parameter. It's also essential to choose optimized entering, closing and stop loss threshold. Everyone can has his/her own version of this strategy.
+<h2>Introduction</h2>
+High Frequency Trading(HFT) is a type of quantitative trading characterized by short holding period and the use of sophisticated computer method to trade securities rapidly. It aims to capture small profit on every short-term trade.(Cartea &amp; Penalva, 2012[ref]<strong>Cartea &amp; Penalva, 2012 </strong>Where is the value in high frequency trading?<strong><a href="http://dx.doi.org/10.1142/S2010139212500140"> Online Copy</a></strong>[/ref]).
+<div class="page" title="Page 14">
+<div class="layoutArea">
+<div class="column">
+
+Statistical arbitrage is a situation where there is a statistical mispricing of one or more assets based on the expected values of these assets. When a profit situation takes place from pricing inefficiencies between securities, traders can identify the statistical arbitrage situation through mathematical models. Statistical arbitrage depends heavily on the ability of market prices to return to a historical or predicted mean. <strong>The Law of One Price(LOP)</strong> lays the foundation for this assumption. LOP states that two stocks with the same payoff in every state of nature must have the same current value (Gatev, Goetzmann, &amp; Rouwenhorst, 2006[ref]<strong>Gatev, Goetzmann, &amp; Rouwenhorst, 2006 </strong>Pairs trading: Performance of a relative-value arbitrage rule. The Review of Financial Studies, 19(3), 797–827. <a href="http://dx.doi.org/10.1093/rfs/hhj020"><strong>Online Copy</strong></a>[/ref]) Thus, two stock prices spread between close substitute assets should have a stable, long-term equilibrium price over time.
+
+</div>
+<h3>Data Description</h3>
+In order to have more pairs with high correlation, we select stocks in a specific industry. Economically, we prefer traditional sectors because the companies in these sector are more likely to be close substitutes. If we selected N stocks, the number of pairs can be calculated by \(\textrm{C}_{n}^{2} = \frac{n*(n-1)}{2}\). In the demonstrated strategy we used 80 stocks, so we have 3160 pairs in total. We used minute data and aggregate them into lower resolution, thus 1 minute is the highest resolution for this strategy.
+<h3>Correlation Approach</h3>
+Correlations measure the relationship between two stocks that have price trends. They tend to move together, and thus are correlated. Correlation filter is the first step to screen the candidate pairs.
+
+Consider two stocks A and B, a correlation coefficient between the stocks was a statistic that provide a measure of how the two stocks A and B were associated. The correlation coefficient \(\rho\) of stock A and stock B was obtained by
+
+\[\rho = \frac{\sum_{i}^{N}(A_i - \bar{A})(B_i - \bar{B}))}{[\sum_{i}^{N}(A - \bar{A})^2\sum_{i}^{N}(B_i - \bar{B})^2]^\frac{1}{2}}}\]
+
+Where \(\bar{A}\) and \(\bar{B}\) are the mean prices of stock A and stock B respectively, N denoted a trading data range. \(\rho\) is in the range of [-1,1]. The more positive \(\rho\) is, the more positive the association of stock A and stock B is.
+
+However, the pairs trading based on a correlation approach alone would have a disadvantage of instabilities over time. Correlation coefficients do not necessarily imply  mean-reversion between the prices of the two stock pairs. In order to overcome the above issue, a cointegration approach was further used as the second-step of the selection process for the pairs.
+<h3>Cointegration Approach</h3>
+The Cointegration concept, an innovative mathematical model in economics developed by Nobel laureates Engle and Granger[ref]<strong>Engle and Granger</strong> Co-integration and error correction: Representation, estimation, and testing. Econometrica, 55(2), 251–276. <strong><a href="http://dx.doi.org/10.2307/1913236">Online Copy</a></strong>[/ref]Cointegration states that, in some instances, despite two given non-stationary time series, a specific linear combination of the two time series is actually stationary. In other word, the two time series move together in a lockstep pattern.
+
+The definition of cointegration is the following: assume that \(x_t\) and \(y_t\) are two time series that were non-stationary. If there exists a parameter \(\gamma\) such that the following equation:
+
+\[z_t = y_t - \gamma x_t\]
+
+was a stationary process, then \(x_t\) and \(y_t\) would be cointegrated. This process is a powerful tool for investigating common asset trends in multivariate time series.
+
+In our case, Let \(p_t^A\) and \(p_t^B\) be the prices of two stocks A and B respectively. If it is assumed that {\({p_t^A, p_t^B}\)} is individually non-stationary, there exists the parameter \(\gamma\) such that the following equation was a stationary process
+
+\[P_t^A - \gamma P_t^B = \mu + \epsilon_t\]
+
+where \(\mu\) is a mean of the cointegration model. \(\epsilon_t\) is a stationary, mean-revering process and was referred to as a <em>cointegration residual</em>. The parameter \(\gamma\) is known as a <em>cointegration coefficient. </em>The equation above represents a model of cointegrated pair for stocks A and B.
+
+It's essential to understand how the conitegration residual together with the cointegration coefficient determines our trading direction. If \(\epsilon\) is positive, in a given confidence interval, this is a signal that stock A is relatively overpriced and stock B is relatively underpriced, and we are going to long B and short A; If If \(\epsilon\) is negative, we are going to long A and short B.
+<h3>Cointegration Verification(optional reading part)</h3>
+<div class="page" title="Page 5">
+<div class="layoutArea">
+<div class="column">
+
+In the Engle-Granger method(Engle &amp; Granger, 1987), we first set up a cointegration regression between stock A and stock B as stated in the equation above, and then estimate the regression parameters \(\mu\) and \(\gamma\) using an ordinary least squares(OLS). Subsequently, we tested the regression residual \(epsilon_t\) to determine whether or not it was stationary.
+
+The most popular stationary test in the area of cointegration, the Augmented Dickey Fuller (ADF) test, was used on the regression residual \(\epsilon\) to determine whether it had a unit root.
+<div class="page" title="Page 5">
+<div class="layoutArea">
+<div class="column">
+
+Testing for the presence of the unit root in the regression residual using the ADF test was given by
+
+\[\Delta Z_t = \alpha + \beta t + \gamma Z_{t-1} + \sum_{i = 1}^{p -1}\delta_i \DeltaZ_{t-i} + \mu_t\]
+
+where \(\alpha\) is a constant, \(\beta\) is the coefficient on a time trend, p is the lag of order of the autoregressive process, \(\mu_t\) is an error term and serially uncorrelated.
+
+The number of lag order p in the equation is usually unknown and therefore had to be estimated. To determine the number of lag p, the information criteria for lag order selection was used. Here we choose Bayesian Information Criterion(BIC)
+
+\[BIC = (T-p)\ln\frac{T\hat{\sigma}_p^2}{T-p} + T[1+ln(\sqrt{2\pi})] + p\ln[\frac{\sum_{t=1}^{T}(\Delta Z_t)^2 -T\hat{\sigma}_p^2}{p}]\]
+
+Where T is the sample size.
+
+The unit root test for the regression residual \(\epsilon\) using the ADF test was then carried out under the null hypothesis \(H_0 : \gamma = 0\) versus the alternative hypothesis \(H_1 : \gamma &lt; 0\). A statistical value of the ADF test was obtained by
+
+\[ADF  test = \frac{\hat{\gamma }}{SE(\hat{\gamma })}\]
+
+The test result in the equation above is compared with the critical value of the ADF test. If the test result is less than the critical value, then the null hypothesis is rejected. This means the regression residual \(\epsilon\) is stationary. Thus, the two stock prices {\({p_t^A, p_t^B}\)} are cointegrated.
+<h3>Pairs Trading Strategy</h3>
+The pairs trading strategy uses trading signals based on the regression residual \(\epsilon\) and were modeled as a mean-reverting process.
+
+In order to select potential stocks for pairs trading, the two-stage correlation and cointegration approach was used. The first step is to identify potential stock pairs from the same sector, where the stock pairs are selected with correlation coefficient of at least 0.9 using the correlation approach. The second step is to check the the cointegration of the pairs passed the correlation test. If the test value of cointegration is equal or less than -3.34, which is the critical value at a 95% confidence lever, the null hypothesis \(H_0 : \gamma = 0\) is rejected, thus the residual \(\epsilon\) is stationary, and the pair passed the cointegration test. The third step is to rank all of the stock pairs that passed the two-stage test according to their cointegration test values. The smaller the cointegration test value is, the higher rank the stock pair is assigned to. Financial selection of the stock pairs from the top rank is used for pairs trading.
+
+The final step of the strategy is to define trading rules. To open a pairs trading, the regression residual \(\epsilon_t\) must cross over and down the positive \(\sigma\) standard deviation above the mean or cross down and over the negative \(\sigma\) standard deviation below the mean. If the residual is positive, we short stock B and long stock A; if the residual is negative, we short Stock A and long Stock B. When the regression residual (\epsilon_t\) returned to a certain level, the pairs trading is closed. Further more, in order to prevent the loss of too much on a single pairs trading, a stop-loss is used to close the pairs when the residual hit \(4\epsilon\) positive or negative standard deviation.
+
+In the training period, each of the training data contained a 3-month period, which is a dynamic rolling window size. Immediately after the training period, we begin our one-month trading period, and the dynamic rolling window automatically shift ahead to record the new prices of the stocks in each pair. After the first trading period, we use the updated stock prices to select our pairs for trading again, and begin another trading period.
+<h3>Parameter Adjustment</h3>
+The performance of the strategy is sensitive to the parameters. There are  mainly four parameter to adjust: Opening Threshold, Closing Threshold, Stop-loss Threshold and data resolution.
+
+Opening threshold represents by how many times the residual \(\epsilon\) exceed the standard deviation, which is calculated by \(\frac{\epsilon - \bar{\epsilon}}{\sigma}\). By default we set it to 2.32 and -2.32, which is the critical value for 99% confidence interval if we assume the residual follows normal distribution.
+
+Closing threshold is calculated in the same way as opening threshold, we set it to 0.5 by default to close early to prevent further divergence.
+
+Stop-loss Threshold is set to 4.5. This depends on the level of mispricing we can bear. The higher degree our tolerance to risk is, the higher we can set this parameter. However, if we set this number too low, we may have too many pairs closed before reversion to stop loss.
+
+</div>
+&nbsp;
+<h2>Method</h2>
+In this trading strategy we would define a class named 'pairs'. We manage pairs instead of stocks directly to make it's more convenient for us to calculate correlation and cointegration, update stock prices in the pair and trade on the selected pairs.
+<h3>Step 1: Pairs Class Definition</h3>
+The pairs is made up of two stocks, stock A and stock B. This class has several properties. The basic properties include symbols of stock A and stock B, the pandas DataFrame that contains time and prices of the two stocks, the current error, the error of the last datapoint, and the lists to record stock prices for update purpose. Instead of updating the DataFrame every 5 minutes, we record the prices in lists to update the DataFrame monthly. This would speed up the algorithm at least 10 times because manipulating DataFrame is very time consuming.
+The cor_update method is used every month to update the correlation between the two stocks in this pair. The cointegration_test method is also used monthly to do OLS regression, conduct ADF test, and calculate the mean and standard deviation of the residual. The method also assign these calculated values as properties to the pair object.
+<pre class="prettyprint linenums">class pairs(object):
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
+        self.name = str(a) + ':' + str(b)
+        self.df = pd.concat([a.df,b.df],axis = 1).dropna()
+    # The number of bars in the rolling window would be determined by the resolution, so we get this
+      information from the shape of the DataFrame here.
+        self.num_bar = self.df.shape[0]
+        self.cor = self.df.corr().ix[0][1]
+    # Set the initial signals to be 0
+        self.error = 0
+        self.last_error = 0
+        self.a_price = []
+        self.a_date = []
+        self.b_price = []
+        self.b_date = []
+
+    def cor_update(self):
+        self.cor = self.df.corr().ix[0][1]
+
+    def cointegration_test(self):
+        self.model = sm.ols(formula = '%s ~ %s'%(str(self.a),str(self.b)), data = self.df).fit()
+    # This line conduct ADF test on the residual. ts.adfuller() returns a tuple and the first element in
+      the tuple is the test value.
+        self.adf = ts.adfuller(self.model.resid,autolag = 'BIC')[0]
+        self.mean_error = np.mean(self.model.resid)
+        self.sd = np.std(self.model.resid)
+
+    def price_record(self,data_a,data_b):
+        self.a_price.append(float(data_a.Close))
+        self.a_date.append(data_a.EndTime)
+        self.b_price.append(float(data_b.Close))
+        self.b_date.append(data_b.EndTime)
+
+    def df_update(self):
+        new_df = pd.DataFrame({str(self.a):self.a_price,str(self.b):self.b_price},index =
+                 [self.a_date]).dropna()
+        self.df = pd.concat([self.df,new_df])
+        self.df = self.df.tail(self.num_bar)
+    # after updating the DataFrame, we empty the lists for the incoming data
+        for list in [self.a_price,self.a_date,self.b_price,self.b_date]:
+            list = []
+</pre>
+<h3>Step 2: Generate and Clean Pairs</h3>
+The function generate_pairs generates pairs using the stock symbols. self.pair_threshold and self.pair_num are pre-determined to control the number of candidate pairs. The pairs in self.pair_list would be kept and updated throughout our backtesting period. we set self.pair_threshold to 0.88 and self.pair_num to 120 to limit the number of pairs in the list. If we put too many pairs in the list, the backtesting would be too time consuming.
+The function pair_clean is called after the two-stage screen. If the first pair contains stock A and stock B, and the second pair contains stock B and stock C, we would remove the second pair because the overlapped signal would disturb the balance of our portfolio.
+<pre class="prettyprint linenums">def generate_pairs(self):
+    for i in range(len(self.symbols)):
+        for j in range(i+1,len(self.symbols)):
+            self.pair_list.append(pairs(self.symbols[i],self.symbols[j]))
+
+    self.pair_list = [x for x in self.pair_list if x.cor &gt; self.pair_threshold]
+
+    self.pair_list.sort(key = lambda x: x.cor, reverse = True)
+
+    if len(self.pair_list) &gt; self.pair_num:
+        	self.pair_list = self.pair_list[:self.pair_num]
+
+def pair_clean(self,list):
+    l = []
+    l.append(list[0])
+    for i in list:
+        symbols = [x.a for x in l] + [x.b for x in l]
+        if i.a not in symbols and i.b not in symbols:
+            l.append(i)
+        else:
+            pass
+    return l
+</pre>
+<h3>Step 3: Warming up Period</h3>
+This part is under the OnData step. We set self.num_bar equals to the number of TradeBar in three months, which is determined by the resolution. During this period we fill the stock prices in lists, and assign each stock's price list to the symbol as a property. We would also remove the symbol from the symbol list if it has no data.
+<pre class="prettyprint linenums">if len(self.symbols[0].prices) &lt; self.num_bar:
+    for symbol in self.symbols:
+        if data.ContainsKey(i) is True:
+    	    symbol.prices.append(float(data[symbol].Close))
+            symbol.dates.append(data[symbol].EndTime)
+        else:
+            self.Log('%s is missing'%str(symbol))
+            self.symbols.remove(symbol)
+    self.data_count = 0
+    return</pre>
+<h3>Step 4: Pairs Selection</h3>
+This process is also under the OnData step. This step would generate pairs if it is the first trading period of this algorithm. If it's not, it will update the DataFrame and correlation coefficient of each pair in self.pair_list. After that the pairs have a correlation coefficient higher than 0.9 would be selected into self.selected_pair. Then all the pairs in self.selected_pair would be tested on their cointegration, and the pairs with a test value less than -3.34 would be selected to the final list. This step will also limit the number of stocks in the final list, by default we set self.selected_num to 10. self.count is a flag to count the number of datapoint we received. Once it reach 1-month amount, that means one trading period is passed and it would be set to 0.
+<pre class="prettyprint linenums">if self.count == 0 and len(self.symbols[0].prices) == self.num_bar:
+    if self.generate_count == 0:
+        for symbol in self.symbols:
+        symbol.df = pd.DataFrame(symbol.prices, index = symbol.dates, columns = ['%s'%str(symbol)])
+
+        self.generate_pairs()
+        self.generate_count +=1
+        self.Log('pair list length:'+str(len(self.pair_list)))
+
+        for pair in self.pair_list:
+            pair.cor_update()
+    # Update the DataFrame and correlation selection
+    if len(self.pair_list[0].a_price) != 0:
+        for pair in self.pair_list:
+    	    pair.df_update()
+            pair.cor_update()
+
+    self.selected_pair = [x for x in self.pair_list if x.cor &gt; 0.9]
+    # Cointegration test
+    for pair in self.selected_pair:
+        pair.cointegration_test()
+
+    self.selected_pair = [x for x in self.selected_pair if x.adf &lt; self.BIC]
+    self.selected_pair.sort(key = lambda x: x.adf)
+    # If no pair passed the two-stage test, return.
+    if len(self.selected_pair) == 0:
+        self.Log('no selected pair')
+        self.count += 1
+        return
+    # clean the pair to avoid overlapping stocks.
+    self.selected_pair = self.pair_clean(self.selected_pair)
+    # assign a property to the selected pair, this is a signal that would be used for trading.
+    for pair in self.selected_pair:
+        pair.touch = 0
+        self.Log(str(pair.adf) + pair.name)
+    # limit the number of selected pairs.
+    if len(self.selected_pair) &gt; self.selected_num:
+        self.selected_pair = self.selected_pair[:self.selected_num]
+
+    self.count +=1
+    self.data_count = 0
+    return
+</pre>
+<h3>Step 5: Trade Period</h3>
+It would be too long to read if we paste all the code in trading period together. Thus we would separate the code into three part: updating pairs, opening pairs trading and closing pairs trading. But all those lines are under OnData step and are under the condition: if self.count != 0 and self.count &lt; self.one_month. This means it's in the trading period.
+<h4>Updating Pairs</h4>
+This step would update the stock prices in each pair. It would also update the signal called 'last_error' and immediately after this the pairs would receive new signals.
+<pre class="prettyprint linenums">num_select = len(self.selected_pair)
+for pair in self.pair_list:
+    if data.ContainsKey(pair.a) is True and data.ContainsKey(pair.b) is True:
+        i.price_record(data[i.a],data[i.b])
+    else:
+        self.Log('%s has no data'%str(pair.name))
+        self.pair_list.remove(pair)
+
+for pair in self.selected_pair:
+    pair.last_error = pair.error
+
+for pair in self.trading_pairs:
+    pair.last_error = pair.error</pre>
+<h4>Opening Pairs Trading</h4>
+This is most complex part. For each pair in self.selected_pair, we receive the current prices of the stocks, and then use the cointegration model to calculate the residual \(\epsilon\), which is assigned to the pair as a property named 'error'. self.trading.pairs is a list to store the trading pairs. Once a pairs trading is open, this pair would be add to the list, and it would be removed when the trading is closed. The property 'touch' is signal. If the residual \(\epsilon\) cross over the positive threshold standard deviation(we set \(\ 2.23*sigma\) here), the signal would become +1; while if it cross down the negative threshold deviation(\(\ -2.23*sigma\), the signal would become -1. For those pairs with +1 signal, if the error cross down positive threshold, there is a signal to open a trade. We long stock B and short stock A. For those pairs with -1 signal, if the error cross over negative threshold, we long Stock A and short stock B.
+When we opening a trade, we need to record the current model, current mean and standard deviation of the residual. This is necessary because if we enter a new trading period and the trade has not been closed yet, the cointegration model, mean and standard deviation of the pairs would be changed. We need to use the original thresholds to close the trades. while adding the pairs into self.trading_pairs, we also need to set the signal 'touch' to 0 for further use.
+<pre class="prettyprint linenums">for i in self.selected_pair:
+    price_a = float(data[i.a].Close)
+    price_b = float(data[i.b].Close)
+    i.error = price_a - (i.model.params[0] + i.model.params[1]*price_b)
+    if (self.Portfolio[i.a].Quantity == 0 and self.Portfolio[i.b].Quantity == 0) and i not in
+    self.trading_pairs:
+        if i.touch == 0:
+            if i.error &lt; i.mean_error - self.open_size*i.sd and i.last_error &gt; i.mean_error -
+            self.open_size*i.sd:
+                i.touch += -1
+            elif i.error &gt; i.mean_error + self.open_size*i.sd and i.last_error &lt; i.mean_error + self.open_size*i.sd: i.touch += 1 else: pass elif i.touch == -1: if i.error &gt; i.mean_error - self.open_size*i.sd and i.last_error &lt; i.mean_error -
+            self.open_size*i.sd:
+                self.Log('long %s and short %s'%(str(i.a),str(i.b)))
+                i.record_model = i.model
+                i.record_mean_error = i.mean_error
+                i.record_sd = i.sd
+                self.trading_pairs.append(i)
+                self.SetHoldings(i.a, 5.0/(len(self.selected_pair)))
+                self.SetHoldings(i.b, -5.0/(len(self.selected_pair)))
+                i.touch = 0
+         elif i.touch == 1:
+             if i.error &lt; i.mean_error + self.open_size*i.sd and i.last_error &gt; i.mean_error +
+             self.open_size*i.sd:
+             self.Log('long %s and short %s'%(str(i.b),str(i.a)))
+             i.record_model = i.model
+             i.record_mean_error = i.mean_error
+             i.record_sd = i.sd
+             self.trading_pairs.append(i)
+             self.SetHoldings(i.b, 5.0/(len(self.selected_pair)))
+             self.SetHoldings(i.a, -5.0/(len(self.selected_pair)))
+             i.touch = 0
+         else:
+             pass
+    else:
+        pass
+</pre>
+<h4>Closing Pairs Trading</h4>
+This part controls pairs trading exit. It works similar to the opening part. It uses the recorded original model and thresholds to determine whether or not we should close the position. If the residual \(\epsilon\) reaches our closing threshold, we liquidate stock A and stock B to close. If the residual continue to deviate from the mean and goes too far, we would also close the position to stop loss. When we close a pairs trading, we also remove the pairs from self.trading_pairs.
+<pre class="prettyprint linenums">for i in self.trading_pairs:
+    price_a = float(data[i.a].Close)
+    price_b = float(data[i.b].Close)
+    i.error = price_a - (i.record_model.params[0] + i.record_model.params[1]*price_b)
+    if ((i.error &lt; i.record_mean_error + self.close_size*i.record_sd and i.last_error &gt;i.record_mean_error + self.close_size*i.record_sd) or (i.error &gt; i.record_mean_error -
+    self.close_size*i.record_sd and i.last_error  i.record_mean_error +
+    self.stop_loss*i.record_sd:
+        self.Log('close %s to stop loss'%str(i.name))
+        self.Liquidate(i.a)
+        self.Liquidate(i.b)
+        self.trading_pairs.remove(i)
+    else:
+        pass</pre>
+<h2>Result</h2>
+We used 10-minute resolution data to backtest the strategy from Jan 2013 to Dec 2016. To demonstrate the in sample training results, we randomly selected a training period that from 2016-09-07 to 2013-11-30.
+<h3>Training Result</h3>
+The following table demonstrates the top 10 selected pairs in the training period mentioned above. We can see that the pairs with the highest correlation coefficient doesn't not necessarily has the best ADF test value. We made the rank by ADF test value because it's more robust.
+
+<img class="alignnone wp-image-1119" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/06/WechatIMG6478-300x193.jpeg" alt="" width="455" height="293" />
+
+The upper part of the following chart plots the stock prices of pair ING vs TCB. The lower part plots by how many times standard deviation the residual deviate from its mean. There are 5 trading opportunities if we set the opening threshold to be 2.32.
+
+<img class="alignnone size-full wp-image-1127" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/06/resid.png" alt="" width="1185" height="565" />
+
+The following chart is the density plot of the residual error. From the shape we can see the error is approximately normal distributed.
+
+<img class="alignnone size-full wp-image-1130" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/06/error.png" alt="" width="720" height="504" />
+
+<strong>Backtesting Result</strong>
+
+The strategy is considered to be market neutral strategy because it a long/short strategy betting on price convergence. Out backtested beta is -0.112, which is within our expectation.
+
+Theoretically, the higher resolution we use, the higher win rate is because on one hand the higher resolution would increase the number of datapoint in our training period, which would make it's harder to past the two-stage test; on the other hand the higher resolution data would let us capture minor profit more accurately. However, there is a trade off between performance and backtesting time. The higher resolution will lead backtesting time to increase drastically.
+
+The number of stocks in the initialize step would also affect our performance. Theoretically, the more stock we have, we better pairs we are likely to pick. But too many stocks would also be time consuming.
+
+what's worth mentioning is that the optimized parameters are different for each sector. It depends on the features of the price patterns in the specific industry. Plotting the pairs prices and the residual to observe is good option to adjust the thresholds.
+<h2>Algorithm</h2>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=4a8fa9de2d7f60be9fb0e0bdd307ccd1'></script>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

@@ -1,19 +1,10 @@
-<div class="page" title="Page 84">
-<div class="layoutArea">
-<div class="column">
 <h2>Introduction</h2>
-In the last chapter, we discussed two of the volatilities: historical volatility and the implied volatility. This chapter, we will further extend the concept of volatility and introduce the local volatility and the stochastic volatility.
-<h2>Motivation</h2>
-We already knew that volatility is a measure of the fluctuation degree of the underlying assets price series. There are many types of volatilities. As we discussed in the last chapter, historical volatility is the standard deviation of the price series during a certain period. It is a constant and represents the price movement in the past. However, the implied volatility is not based on the historical pricing data of stocks. It is the value of volatility parameter derived from the market quote of options in BSM pricing model. In contrast to historical volatility, implied volatility is forward looking and varies with different options contracts.
-
-One of the most significant assumptions in BSM model is that the volatility is a constant term over time. But in the real world, it could be constant in a small time period but never constant in long term. As we discussed in the last chapter, there is volatility skew for most of the options, which means that the volatility is not constant across strikes. The constant volatility assumption in BSM model seems not reasonable in most of the options pricing.
-
-In order to explain why options with different strikes and expirations have different implied volatilities, we introduce the stochastic volatility.
-<h3>Stochastic Process</h3>
-Before knowing what is the stochastic volatility, we first review some knowledge about the stochastic process.
+Last few chapters we introduced about the basic principles and mechanism of options trading. We already knew what an option contract is and basic relationship between call and options price. But how do these contracts traded in the exchange are being priced and where does the option premium come from? In the next few chapters, we will discuss the pricing of options.
+<h2>Stochastic Process</h2>
+In order to value the derivatives like options, the most significant part is to find a model to represent the underlying stock price so that we can price the options based on the underlying price.  We usually use the stochastic process to model the security price.
 
 First, you need to know what the stochastic process is. We say any variable that changes over time in an uncertain way follows a stochastic process. The price of a certain stock at a future time t is unknown at the present so it is a random variable \(S_t\). Then we can think of the movement path of the stock price is a stochastic process since\(S_t\) is a random variable at each time t in the future.
-
+<h3>1. Brownian motion</h3>
 Markov process is a special case of the stochastic process. It means that only the current value of a random variable is relevant for future prediction. In general, we usually assume that the stock price follows a Markov stochastic process, which means only the current stock price is relevant for predicting the future price, it is not correlated with the past price.
 <div class="page" title="Page 327">
 <div class="layoutArea">
@@ -65,14 +56,13 @@ for i in range(5):
 \[\Delta x=x_{t+\Delta t}-x_t=a\Delta t+b\epsilon\sqrt{\Delta t}\]
 
 Where ε follows the standard normal distribution N(0,1). Thus \(\Delta x\) has normal distribution with mean being \(a\Delta t\), variance being \(b^2\Delta t\). And because \(\Delta t\) is independent, from time 0 to time T, the change in the value of x is just the sum of \(\Delta x\) in each small time interval. It means that the change in the value of x follows the normal distribution \(N(aT,b^2T)\).
+<h3>2. Stochastic process followed by stock price</h3>
+Then we go back to the stock price. If we use the generalized Wiener process to model the stock price, for example, the share price of a stock is $30 now, then the percentage change in price from now to say the end of this year is normally distributed with constant mean and variance. But there is a problem that for normal distribution assumption of return, there is the possibility that the stock price will be negative this is unrealistic for stock prices. For example, this percentage change could be -1.1, which means the stock price at the end of the year is -$3.
 
-Then we go back to the stock price. If we use the generalized Wiener process to model the stock price, for example, the share price of a stock is $30 now, then the percentage change in price from now to say the end of this year is normally distributed with constant mean and variance. But there is a problem that for normal distribution assumption of return, there is the possibility that the stock price will be negative but it is unreasonable in the real world. For example, this percentage change could be -1.1, which means the stock price at the end of the year is -$3. Thus it is not appropriate to assume that a stock price follows a generalized Wiener process with constant drift rate and variance rate.
+On the other hand, if the spot price is small for a stock, then it tends to have small increments in price over a given time interval, on the contrary, stocks with high prices tend to have much larger increments in price on the same interval. But Wiener process has a variance which depends on just the time interval but not on the price itself. Thus it is not appropriate to assume that a stock price follows a generalized Wiener process with constant drift rate and variance rate.
 
-In order to characterize the dynamics of a stock price process and fix this problem, we model the proportional increase in the stock price as follows:
+In order to characterize the dynamics of a stock price process and fix this problem, we model the proportional increase in the stock price as follows(This kind of equation is often called the stochastic differential equation (SDE)):
 
-</div>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -83,7 +73,15 @@ In order to characterize the dynamics of a stock price process and fix this prob
 \[\text dS_t=\mu S_t\ \text d t+\sigma S_t\ \text dW_t \cdot\cdot\cdot\cdot\cdot\cdot(1)\]
 
 Where \(dS_t\) is the change in the stock price over a short time period from t to\(t+\Delta t\). μ is the drift term and can be deemed as the annual expected level of the stock return, σ is the annual volatility of the stock. Here \(dS_t\) at different time t are independent, which means today's price change is independent with tomorrows change. \(W_t\) is a standard Wiener process (1) we discussed above.
+<div class="page" title="Page 338">
+<div class="layoutArea">
+<div class="column">
 
+Now in the above equation, the drift and variance rate of stock price S is not only correlated with time t but also a function of both S itself and time t.
+
+</div>
+</div>
+</div>
 The discrete approximation form of (1) is
 
 \[\Delta S=\mu S\Delta t+\sigma S\epsilon\sqrt{\Delta t}\]
@@ -92,11 +90,13 @@ We can also derive the process that \(lnS_t\) follows is(Here we just give the r
 
 \[\text d\ ln(S_t)=(\mu-\frac{\sigma^2}{2}) \ \text d t+\sigma \ \text dW_t \cdot\cdot\cdot\cdot\cdot\cdot(2)\]
 
-Here ln S follows a generalized Wiener process as which has constant drift rate and variance rate. That means the change in ln S during time interval  \(\Delta t\)is normally distributed.
+Here ln S follows a generalized Wiener process as which has constant drift rate and variance rate. That means the change in ln S during time interval  \(\Delta t\) is normally distributed. This is the lognormal property of stock prices.
 
 \[lnS_{t+\Delta t}-lnS_t\sim N\left[(\mu-\frac{\sigma^2}{2})\Delta t,\sigma^2\Delta t\right]\]
 
-We write (2) into discrete approximation form as:
+\[lnS_{t+\Delta t}\sim N\left[\text ln{S_t}+(\mu-\frac{\sigma^2}{2})\Delta t,\sigma^2\Delta t\right]\]
+
+Now the logarithm stock price follows the normal distribution.We write (2) into discrete approximation form as:
 
 \[ln(S_{t+\Delta t})-ln(S_{t})=(\mu-\frac{\sigma^2}{2})\ \Delta t+\sigma \epsilon\sqrt{\Delta t}\]
 
@@ -104,7 +104,7 @@ Equivalently
 
 \[S_{t+\Delta t}=S_{t}\exp\left[(\mu-\frac{\sigma^2}{2})\ \Delta t+\sigma \epsilon\sqrt{\Delta t}\right]\cdot\cdot\cdot\cdot\cdot\cdot(3)\]
 
-Now the logarithm return follows the normal distribution other than the return. If we change t to 0 and change \(\Delta t\) to T, we get
+If we change t to 0 and change \(\Delta t\) to T, we get
 
 \[S_{T}=S_{0}\exp\left[(\mu-\frac{\sigma^2}{2})\ T+\sigma \epsilon\sqrt{T}\right]\]
 
@@ -112,8 +112,8 @@ according to the above equation, we know the stock price at time T should always
 <div class="page" title="Page 333">
 <div class="layoutArea">
 <div class="column">
-<h3>Monte Carlo Method</h3>
-Monte Carlo simulation is a commonly used method to price derivatives and estimate the risk of a portfolio. It divides a time interval into many small time steps and randomly sampling possible paths for the variable, then repeats this process many times attempting to predict all the possible future outcomes of random variables.
+<h2>Monte Carlo Method</h2>
+Monte Carlo simulation is a commonly used method for derivatives where the payoff is dependent on the history of the underlying asset or where there are several underlying variables. It divides a time interval into many small time steps and randomly sampling possible paths for the variable, then repeats this process many times attempting to predict all the possible future outcomes of random variables.
 
 The essence of using Monte Carlo method to price the options is to simulate the possible paths for stock prices then we can get all the possible value of stock price at expiration.
 <ol>
@@ -123,24 +123,53 @@ The essence of using Monte Carlo method to price the options is to simulate the 
  	<li>Discount the payoff at the risk-free rate to get one estimate of options' price</li>
  	<li>Repeat the step 1 to 4 for a reasonable number of times and get many estimates of options price and then the average of these price estimates is the final options price.</li>
 </ol>
-Here we apply this technique to modeling stock prices in order to look at the potential evolution of stock prices over time and then demonstrate how to price the European options. Here we use Google as an example.
-
-&nbsp;
-
+We apply this technique to modeling stock prices in order to look at the potential evolution of stock prices over time and then demonstrate how to price the European options. Here we use Google as an example. Suppose today is 07/31/2017, the share price of GOOG is $930.5. We use the historical close price from 01/2015 to 07/2017 to compute the historical annual return and volatility as the mu and sigma parameters. (Note, we do not need to concern with the detailed determinants of 􏰯\(\mu\) because the value of options written on a stock is, in general, independent of􏰯 \(\mu\). In contrast, the stock price volatility \(\sigma\) is of crucial importance to the determination of the value of options). Then we apply Monte Carlo to simulate 500 price paths in the next three months.
+<pre class="prettyprint linenums">import quandl
+quandl.ApiConfig.api_key = 'NxTUTAQswbKs5ybBbwfK'
+data = quandl.get('WIKI/GOOG')
+close = data['2015-01':'2017-07']['Adj. Close']
+annual_return = (close[-1]/close[1])** (365.0/len(close)) - 1
+annual_vol = (close/close.shift(1)-1)[1:].std()*np.sqrt(252)
+mu = annual_return
+sigma = annual_vol
+s0 = close[-1]
+T = 3.0/12
+delta_t = 0.001
+num_reps = 500
+steps = T/delta_t
+plt.figure(figsize=(15,10))
+for j in range(num_reps):
+    price_path = [s0]
+    st = s0
+    for i in range(int(steps)):
+        st = st*e**((mu-0.5*sigma**2)*delta_t + sigma*np.sqrt(delta_t)*np.random.normal(0, 1))
+        price_path.append(st)
+    plt.plot(price_path)
+plt.ylabel('stock price',fontsize=15)
+plt.xlabel('steps',fontsize=15)</pre>
 </div>
 </div>
 </div>
-Although stock prices are stochastic processes in discrete time,
+<img class="alignnone size-full wp-image-2293" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/stoc-price-path.png" alt="" width="899" height="597" />
+<pre class="prettyprint linenums">def mc_euro_options(option_type,s0,strike,maturity,mu,sigma,num_reps):
+    payoff_sum = 0
+    for j in range(num_reps):
+        st = s0
+        st = st*e**((mu-0.5*sigma**2)*maturity + sigma*np.sqrt(maturity)*np.random.normal(0, 1))
+        if option_type == 'c':
+            payoff = max(0,st-strike)
+        elif option_type == 'p':
+            payoff = max(0,strike-st)
+        payoff_sum += payoff
+    premium = payoff_sum/num_reps
+    return premium
+mc_euro_options('c',927.96,785,100.0/252,0,0.23,500)
+</pre>
+A European call option with strike price being $785 and expires in 100 days, the spot price is $927, the premium by using Monte Carlo method is $149.
+<h2>Summary</h2>
+In this chapter, we modeled stock price with the stochastic process. The stochastic process usually assumed for a stock price is geometric Brownian motion.The Black–Scholes–Merton model, which we cover in the next chapter, is based on the geometric Brownian motion assumption. Under this process, the logarithm of stock return in a small period of time is normally distributed and the returns in two nonoverlapping periods are independent.
 
-In stochastic volatility models, the asset price and its volatility are both assumed to be random processes and can change over time.
-
-\[dS_t = \mu_tS_tdt＋\sqrt{v_t}S_tdZ_1\]
-
-\[dv_t=-\lambda(v_t-\overline{v})dt+\eta\sqrt{v_t}dZ_2\]
-
-\[&lt;dZ_1,dZ_2&gt;=\rho dt\]
-
-In allowing the volatility to be random, stochastic volatility models give rise to implied volatility skews and term structures.
+In the second part of the tutorial,  we applied Monte Carlo method to simulate the stock price in order to gain an intuitive understanding of the stochastic process followed by stock price. Then we discussed how to use Monte Carlo method to price the options based on the underlying prices paths.
 
 </div>
 </div>
