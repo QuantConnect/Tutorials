@@ -10,17 +10,26 @@ import numpy as np
 import pandas as pd
 import quandl
 quandl.ApiConfig.api_key = 'tAyfv1zpWnyhmDsp91yv'
+#get data from quandl
 spy_table = quandl.get('BCIW/_SPXT')
 spy_total = spy_table[['Open','Close']]
+#calculate log returns
 spy_log_return = np.log(spy_total.Close).diff().dropna()
 print 'Population mean:', np.mean(spy_log_return)
+[out]: Population mean: 0.000443353825615
 print 'Population standard deviation:',np.std(spy_log_return)
+[out]: Population standard deviation: 0.00784267293815
 </pre>
 Now let's check the recent 10 days sample and recent 1000 days sample:
-<pre class="prettyprint linenums">print '10 days sample returns:', np.mean(spy_log_return.tail(10))
+<pre class="prettyprint linenums">
+print '10 days sample returns:', np.mean(spy_log_return.tail(10))
+[out]: 10 days sample returns: 0.000845189915474
 print '10 days sample standard deviation:', np.std(spy_log_return.tail(10))
+[out]: 10 days sample standard deviation: 0.00313558001122
 print '1000 days sample returns:', np.mean(spy_log_return.tail(1000))
+[out]: 1000 days sample returns: 0.000462827047221
 print '1000 days sample standard deviation:', np.std(spy_log_return.tail(1000))
+[out]: 1000 days sample standard deviation: 0.00766589174299
 </pre>
 As we expected, the two samples has different means and variances.
 <h3>Confidence Interval</h3>
@@ -32,12 +41,17 @@ Generally, if we want to estimate an interval of the population so that 95% of t
 Where \(\mu\) is the sample mean and SE is the standard error.
 This interval is called <strong>confidence interval</strong>. We usually use 1.96 to calculate a 95% confidence interval because we assume that the sample mean follows normal distribution. We will cover this in detail later.
 Let's try to calculate the confidence interval using the samples above:
-<pre class="prettyprint linenums">bottom_1 = np.mean(spy_log_return.tail(10))-1.96*np.std(spy_log_return.tail(10))/(np.sqrt(len((spy_log_return.tail(10)))))
+<pre class="prettyprint linenums">
+#apply the formula above to calculate confidence interval
+bottom_1 = np.mean(spy_log_return.tail(10))-1.96*np.std(spy_log_return.tail(10))/(np.sqrt(len((spy_log_return.tail(10)))))
 upper_1 = np.mean(spy_log_return.tail(10))+1.96*np.std(spy_log_return.tail(10))/(np.sqrt(len((spy_log_return.tail(10)))))
 bottom_2 = np.mean(spy_log_return.tail(1000))-1.96*np.std(spy_log_return.tail(1000))/(np.sqrt(len((spy_log_return.tail(1000)))))
 upper_2 = np.mean(spy_log_return.tail(1000))+1.96*np.std(spy_log_return.tail(1000))/(np.sqrt(len((spy_log_return.tail(1000)))))
+#print the outcomes
 print '10 days 95% confidence inverval:', (bottom_1,upper_1)
+[out]: 10 days 95% confidence inverval: (-0.0010982627102681939, 0.002788642541217079)
 print '1000 days 95% confidence inverval:', (bottom_2,upper_2)
+[out]: 1000 days 95% confidence inverval: (-1.230984558013321e-05, 0.00093796394002165957)
 </pre>
 As we can see, the 95% confidence interval became much narrower if we increase the sample size from 10 to 1000. Imagine that if N goes positive infinite, then we have \(\lim_{n\rightarrow \infty}\frac{\sigma}{\sqrt{n}} = 0\). The confidence interval would become a certain value, which is the sample mean!
 <h3>Confidence Interval of Normal Distribution</h3>
@@ -66,17 +80,24 @@ mean_10 = np.mean(spy_log_return.tail(10))
 std_10 = np.std(spy_log_return.tail(10))
 s = pd.Series([mean_10,std_10,mean_1000,std_1000],index = ['mean_10', 'std_10','mean_1000','std_1000'])
 print s
+
+[out]: mean_10      0.000845
+       std_10       0.003136
+       mean_1000    0.000463
+       std_1000     0.007666
 </pre>
 We know how to calculate the confidence interval now. If I were right, i.e. the population mean is 0, then the 90% confidence interval of the sample with 1000 observations should be:
 <pre class="prettyprint linenums">bottom = 0 - 1.64*std_1000/np.sqrt(1000)
 upper = 0 + 1.64*std_1000/np.sqrt(1000)
 print (bottom, upper)
+[out]: (-0.00039756352254768874, 0.00039756352254768874)
 </pre>
 Our mean of the sample is out of the 90% confidence interval. This means on a 90% confidence level, we can claim that the mean of our population is not 0. In other word, we <strong>rejected</strong> the hypothesis that the daily return on S&amp;P500 from aug 2010 is zero.
 Can we claim that with 95% confidence level?
 <pre class="prettyprint linenums">bottom = 0 - 1.96*std_1000/np.sqrt(1000)
 upper = 0 + 1.96*std_1000/np.sqrt(1000)
 print (bottom, upper)
+[out]: (-0.00047513689280089639, 0.00047513689280089639)
 </pre>
 This time the sample mean is within the confidence interval. Thus we can't reject my hypothesis. In other words, we can't claim with 95% confidence level that the mean return is positive. Even though we can claim it with 90% confidence level.
 We have actually already finished a hypothesis testing above! In general, we have <strong>null hypothesis</strong> \(H_0\) and <strong>alternative hypothesis</strong>. They are usually in the following forms:
@@ -87,11 +108,13 @@ Although the hypothesis testing method we used above is straightforward, it's no
 \[Z = \frac{X - \mu}{\frac{\sigma}{\sqrt{n}}}\]
 Let's calculate the Z score from our sample:
 <pre class="prettyprint linenums">print np.sqrt(1000)*(mean_1000 - 0)/std_1000
+[out]: 1.90922032428
 </pre>
 We know that the critical value for the 90% confidence level is 1.64 and that for the 95% confidence level is 95%. The higher the Z score is, the further the tested value is from the hypothesized value(which is 0 in this example). Thus with 90% confidence level, we are far away enough from zero and we reject the null hypothesis. However with 95% confidence level, we are not far away enough from zero, so we can't reject the null hypothesis.
 one reason of doing in this way is that we can know how wide our confidence interval is. In our example, the z-score is 1.8488. We can know the width is the confidence interval referring to a normal distribution table. Of course we can do this in Python:
 <pre class="prettyprint linenums">import scipy.stats as st
 print (1 - st.norm.cdf(1.9488))
+[out]: 0.025659656888
 </pre>
 It's worth noting that st.norm.cdf will return the probability that a value take from the distribution is less than our tested value. In other words, 1 - st.norm.cdf(1.9488) will return the probability that the value is greater than our tested value, which is 0.025659 in this example. This calculated number is called <strong>p-value</strong>. If our confidence level our confidence interval is 95%, then we have 2.5% on the left side and 2.5% on the right side. This is called <strong>two-tail test</strong>. If our null hypothesis is \(\mu = 0\), we are conducting two-tail test because the tested sample mean can be either positive enough or negative enough to reject the null hypothesis. We can see it from the chart:
 <img class="alignnone " src="http://napitupulu-jon.appspot.com/galleries/coursera-statistics/3w76.jpg" width="663" height="517" />
@@ -101,8 +124,10 @@ Now let's test the hypothesis that population mean = 0 again with a large sample
 std_1200 = np.std(spy_log_return.tail(1200))
 z_score = np.sqrt(1200)*(mean_1200 - 0)/std_1200
 print 'z-score = ',z_score
+[out]: z-score =  2.19793023185
 p_value = (1 - st.norm.cdf(z_score))
 print 'p_value = ',p_value
+[out]: p_value =  0.0139770390655
 </pre>
 Using the a larger sample, now we can reject the null hypothesis with a higher confidence interval! our p-value is 0.0105, and it's a two-tail test, so our confidence level of the interval is 1-(0.0105*2) = 0.979. We can say at most with 97.9% confidence interval, we can claim that the population mean is not zero. We already know that the population mean is not 0. As our sample size increasing, the accurate rate of our hypothesis goes up.
 <h2>Summary</h2>
