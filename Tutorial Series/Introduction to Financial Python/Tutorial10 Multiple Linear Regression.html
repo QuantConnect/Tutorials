@@ -250,11 +250,13 @@ If the p-value is larger than 0.05, you should consider rebuilding your model wi
 In simple linear regression, an F test is equivalent to a t test on the slope, so their p-values will be the same.
 
 <h2>Residual Analysis</h2>
+Residual analysis is one of the most important parts to examine and apply a linear model. In lots of linear model-based statistical arbitrage strategies, we use residuals to generate signals. That's why we should check the properties of residuals.
 
-In linear regression, we assume that the residuals are independent and normally distributed with the same variance (homoskedasticity). Residual analysis is one of the most important parts to examine and apply a linear model. In lots of linear model-based statistical arbitrage strategies, we use residuals to generate signals. That's why we should check the properties of residuals.
+In linear regression, we assume that the mean of the error terms, or residual, should be zero and the mean doesn't depend on variable X. We have an optional assumption that the error term follows normal distribution. This is for the convenience of building confidence interval, and it's true for most cases in practice.
 
+Another import assumption is that the residual are independent and the variance of it is constant(homoskedasticity).
 <h3>Normality</h3>
-As we mentioned, the residual of a linear model should follows normal distribution. In other words, it has normality. We can plot the residual's density to check for normality:
+As we mentioned, the residual of a linear model in practice usually follows normal distribution. In other words, it has normality. We can plot the residual's density to check for normality:
 
 <pre class="prettyprint linenums">plt.figure()
 #ols.fit().model is a method to access to the residual.
