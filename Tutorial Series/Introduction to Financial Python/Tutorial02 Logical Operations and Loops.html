@@ -8,6 +8,12 @@ print 1 == 1
 print 1 != 0
 print 5 &gt;= 5
 print 5 &gt;= 6
+[out]:
+False
+True
+True
+True
+False
 </pre>
 We can make complex logical statements using logical operators 'and', 'or', and 'not'.
 The logic 'P and Q' is true only if both P and Q are true, otherwise this statement is False.
@@ -16,10 +22,18 @@ The logic 'P or Q' is false only if both P and Q are false, otherwise this state
 print 2 &gt; 1 and 3 &lt; 2
 print 2 &gt; 1 or 3 &lt; 2
 print 2 &lt; 1 and 3 &lt; 2
+[out]:
+True
+False
+True
+False
 </pre>
 If we are dealing with a very complex logical statement that involves in several statements, we can use brackets to separate and combine them.
 <pre class="prettyprint linenums">print (3 &gt; 2 or 1 &lt; 3) and (1!=3 and 4&gt;3) and not ( 3 &lt; 2 or 1 &lt; 3 and (1!=3 and 4&gt;3))
 print 3 &gt; 2 or 1 &lt; 3 and (1!=3 and 4&gt;3) and not ( 3 &lt; 2 or 1 &lt; 3 and (1!=3 and 4&gt;3))
+[out]:
+False
+True
 </pre>
 Comparing the above two statements, we can see that it's wise to use brackets when we make a complex logical statement.
 <h3>If Statement</h3>
@@ -40,6 +54,7 @@ An if statement doesn't necessarily has elif and else part. If it's not specifie
 <pre class="prettyprint linenums">i = 0
 if i == 0:
     print 'i==0 is True'
+[out]: i==0 is True
 </pre>
 As we mentioned above, we can write some complex statements here:
 <pre class="prettyprint linenums">p = 1 &gt; 0
@@ -52,6 +67,7 @@ elif q and not p:
     print 'p is false'
 else:
     print 'None of p and q is true'
+[out]: q is false
 </pre>
 <h2>Loop Structures</h2>
 Loop is the most important part of programming. The for loop and while loop provide a way to run a block of code repeatedly.
@@ -61,6 +77,12 @@ A while loop will run repeatedly until a certain condition has been met.
 while i &lt; 5:
     print i
     i += 1
+[out]:
+0
+1
+2
+3
+4
 </pre>
 When making a while loop, we need to ensure that something changes from iteration to iteration so that the while loop will terminates, otherwise it will run infinitely. Here we used shorthand i += 1 (short for i = i + 1) to make i larger after each iteration. This is the most commonly used method to control a while loop.
 <h3>For Loop</h3>
@@ -68,6 +90,12 @@ A for loop will iterate over a sequence of value and terminate when the sequence
 The keywords of a for loop is 'for' and 'in'.
 <pre class="prettyprint linenums">for i in [1,2,3,4,5]:
     print i
+[out]:
+1
+2
+3
+4
+5
 </pre>
 We can also add if statements in a for loop. Here is a real example from our pairs trading algorithm:
 <pre class="prettyprint linenums">stocks = ['AAPL','GOOG','IBM','FB','F','V', 'G', 'GE']
@@ -77,6 +105,7 @@ for i in stocks:
     if i not in selected:
         new_list.append(i)
 print stocks
+[out]: ['AAPL', 'GOOG', 'IBM', 'FB', 'F', 'V', 'G', 'GE']
 </pre>
 Here we iterated all the elements in the list 'stocks'. Later in this chapter we will introduce a smarter way to do this, which is just an one-line code.
 There are two commonly used statements in a for loop: break and continue.
@@ -86,6 +115,11 @@ for i in stocks:
     print i
     if i == 'FB':
         break
+[out]:
+AAPL
+GOOG
+IBM
+FB
 </pre>
 Continue statement tells the loop to end this iteration and skip to the next iteration.
 <pre class="prettyprint linenums">stocks = ['AAPL','GOOG','IBM','FB','F','V', 'G', 'GE']
@@ -93,6 +127,14 @@ for i in stocks:
     if i == 'FB':
         continue
     print i
+[out]:
+AAPL
+GOOG
+IBM
+F
+V
+G
+GE
 </pre>
 By using break and continue, we can accomplish complex tasks in a for loop.
 <h2>List Comprehension</h2>
@@ -101,21 +143,27 @@ List comprehension is a Pythonic way to create lists. Common applications are to
 for i in [1,2,3,4,5]:
     squares.append(i**2)
 print squares
+[out]: [1, 4, 9, 16, 25]
 </pre>
 Using list comprehension:
 <pre class="prettyprint linenums">list = [1,2,3,4,5]
 squares = [x**2 for x in list]
 print squares
+[out]: [1, 4, 9, 16, 25]
 </pre>
 Recall the example above, we used a for loop to select stock. Here we use list comprehension:
 <pre class="prettyprint linenums">stocks = ['AAPL','GOOG','IBM','FB','F','V', 'G', 'GE']
 selected = ['AAPL','IBM']
 new_list = [x for x in stocks if x in selected]
 print new_list
+[out]: ['AAPL', 'IBM']
 </pre>
 A list comprehension consists of brackets containing an expression followed by a for clause, then zero or more for or if clauses. For example:
 <pre class="prettyprint linenums">print [(x, y) for x in [1,2,3] for y in [3,1,4] if x != y]
 print [str(x)+' vs '+str(y) for x in ['AAPL','GOOG','IBM','FB'] for y in ['F','V','G','GE'] if x!=y]
+[out]:
+[(1, 3), (1, 4), (2, 3), (2, 1), (2, 4), (3, 1), (3, 4)]
+['AAPL vs F', 'AAPL vs V', 'AAPL vs G', 'AAPL vs GE', 'GOOG vs F', 'GOOG vs V', 'GOOG vs G', 'GOOG vs GE', 'IBM vs F', 'IBM vs V', 'IBM vs G', 'IBM vs GE', 'FB vs F', 'FB vs V', 'FB vs G', 'FB vs GE']
 </pre>
 List comprehension is an elegant way to organize one or many for loops if the purpose is to create a list.
 <h2>Summary</h2>
