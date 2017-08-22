@@ -1,4 +1,4 @@
-﻿<h2>Introduction</h2>
+<h2>Introduction</h2>
 
 In this chapter we introduce linear algebra, which is an essential tool for portfolio optimization.
 
@@ -34,12 +34,20 @@ c = np.array([3,1,1])
 matrix = np.column_stack((a,b,c))
 print matrix
 print type(matrix)
+[out]:
+[[1 2 3]
+ [2 2 1]
+ [3 2 1]]
 </pre>
 
 It is worth noticing that we used column_stack() here to ensure that the vectors are vertical and placed side-by-side to form a matrix. Without the column_stack() function, the vectors will be made horizontal and stacked on top of one another:
 
 <pre class="prettyprint linenums">matrix2 = np.array([a,b,c])
 print matrix2
+[out]:
+[[1 2 3]
+ [2 2 2]
+ [3 1 1]]
 </pre>
 
 <h2>Matrix Multiplication</h2>
@@ -76,6 +84,10 @@ The calculation is tedious, but fortunately we can use NumPy to do it:
 B = np.array([[4,2],[4,6]])
 x = np.dot(A,B)
 print x
+[out]:
+[[20 22]
+ [24 20]
+ [16 16]]
 </pre>
 
 Using np.dot(), we can conduct matrix multiplication. A and B must be in the right order; if you reverse the order you will get an error:
@@ -105,18 +117,39 @@ In Python, we also use python to solve inverse matrix.
 <pre class="prettyprint linenums">print matrix
 print '\n-------------seperation line------------\n'
 print np.linalg.inv(matrix)
+[out]:
+[[1 2 3]
+ [2 2 1]
+ [3 2 1]]
+
+-------------seperation line------------
+
+[[ 0.   -1.    1.  ]
+ [-0.25  2.   -1.25]
+ [ 0.5  -1.    0.5 ]]
 </pre>
 Using np.linalg.inv(), we found the inverse matrix of our variable 'matrix'. Now let's check if the multiplication is \(I\):
 <pre class="prettyprint linenums">inverse = np.linalg.inv(matrix)
 print np.dot(matrix,inverse)
 print '\n-------------seperation line------------\n'
 print np.dot(inverse,matrix)
+[out]:
+[[  1.00000000e+00  -6.66133815e-16   6.66133815e-16]
+ [  0.00000000e+00   1.00000000e+00   1.11022302e-16]
+ [  0.00000000e+00  -2.22044605e-16   1.00000000e+00]]
+
+-------------seperation line------------
+
+[[  1.00000000e+00  -4.44089210e-16  -2.22044605e-16]
+ [  6.66133815e-16   1.00000000e+00   0.00000000e+00]
+ [  0.00000000e+00   0.00000000e+00   1.00000000e+00]]
 </pre>
 Not surprisingly, we ended up with an identity matrix.
 If a square matrix is not invertible, it's called <strong>singular matrix</strong>.
 For example, let's synthesize a singular matrix:
 <pre class="prettyprint linenums">singular = np.array([[1,2,3],[1,2,3],[3,3,3]])
 inv = np.linalg.inv(singular)
+[out]: error message
 </pre>
 We got an error message: Singular matrix.
 <h2>Linear Functions</h2>
@@ -156,10 +189,18 @@ Let's try it in python:
 B = np.array([[8],[-11],[-3]])
 inv_A = np.linalg.inv(A)
 print np.dot(inv_A,B)
+[out]:
+[[ 2.]
+ [ 3.]
+ [-1.]]
 </pre>
 \(x = 2, y = 3, z = -1\) is the solution of the linear functions
 More conveniently, we can directly use NumPy function to solve it:
 <pre class="prettyprint linenums">print np.linalg.solve(A,B)
+[out]:
+[[ 2.]
+ [ 3.]
+ [-1.]]
 </pre>
 We got exactly the same result.
 We can check the correctness of the solution by substituting x, y, and z in the original linear equations.
