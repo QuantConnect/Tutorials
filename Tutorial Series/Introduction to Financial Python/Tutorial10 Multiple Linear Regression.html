@@ -1,16 +1,16 @@
-<h2>Introduction</h2>
+﻿<h2>Introduction</h2>
 
-In the last chapter we introduced simple linear regression and model fitness test. In this chapter we will expand our independent variable from one to many, which is known as <strong>Multiple Linear Regression</strong>.
+In the last chapter we introduced simple linear regression, which has only one independent variable. In this chapter we will learn about linear regression with multiple independent variables.
 
-A simple linear regression model is usually written in the following form:
+A simple linear regression model is written in the following form:
 \[ Y = \alpha + \beta X + \epsilon \]
 
-A multiple linear regression model with $p$ variables is given by:
-\[ Y = \alpha + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 +......+ \beta_p X_p \]
+A <strong>multiple linear regression</strong> model with <em>p</em> variables is given by:
+\[ Y = \alpha + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_p X_p + \epsilon \]
 
 <h2>Python Implementation</h2>
 
-In the last chapter we used the S&amp;P 500 index as a variable to predict Amazon stock. Now we can add more variables to see whether the fitness of the model increases.
+In the last chapter we used the S&amp;P 500 index to predict Amazon stock returns. Now we will add more variables to improve our model's predictions. In particular, we shall consider Amazon's competitors.
 
 <pre class="prettyprint linenums">import numpy as np
 import pandas as pd
@@ -44,7 +44,7 @@ df.tail()
 
 This yields the log returns of each stock in the last 5 days:
 
-<table>
+<table cellspacing="0" cellpadding="3" class="table qc-table">
     <tr>
         <td>Date</td>
         <td align="right">SPY</td>
@@ -95,38 +95,112 @@ This yields the log returns of each stock in the last 5 days:
     </tr>
 </table>
 
-Now let's build a model. Recall that we can perform a simple linear regression model using the 'statsmodels' package by inputing the formula:
+As before, we use the 'statsmodels' package to perform simple linear regression:
 
-<pre class="prettyprint linenums">simple = sm.ols(formula = 'amzn ~ spy',data = df).fit()
+<pre class="prettyprint linenums">simple = sm.ols(formula = 'amzn ~ spy', data = df).fit()
 print simple.summary()
-
-                 coef    std err          t      P>|t|      [0.025      0.975]
-------------------------------------------------------------------------------
-Intercept   9.876e-05      0.001      0.097      0.923      -0.002       0.002
-spy            1.0796      0.124      8.725      0.000       0.836       1.323
 </pre>
+
+<table cellspacing="0" cellpadding="3" class="table qc-table">
+    <tr>
+        <td>&nbsp;</td>
+        <td align="right">coef</td>
+        <td align="right">std err</td>
+        <td align="right">t</td>
+        <td align="right">P>|t|</td>
+        <td align="right">[0.025</td>
+        <td align="right">0.975]</td>
+    </tr>
+    <tr>
+        <td>Intercept</td>
+        <td align="right">9.876e-05</td>
+        <td align="right">0.001</td>
+        <td align="right">0.097</td>
+        <td align="right">0.923</td>
+        <td align="right">-0.002</td>
+        <td align="right">0.002</td>
+    </tr>
+    <tr>
+        <td>spy</td>
+        <td align="right">1.0796</td>
+        <td align="right">0.124</td>
+        <td align="right">8.725</td>
+        <td align="right">0.000</td>
+        <td align="right">0.836</td>
+        <td align="right">1.323</td>
+    </tr>
+</table>
 
 Similarly, we can build a multiple linear regression model:
 
-<pre class="prettyprint linenums">model = sm.ols(formula = 'amzn ~ spy+ebay+wal',data = df).fit()
+<pre class="prettyprint linenums">model = sm.ols(formula = 'amzn ~ spy + ebay + wal', data = df).fit()
 print model.summary()
-
-                 coef    std err          t      P>|t|      [0.025      0.975]
-------------------------------------------------------------------------------
-Intercept      0.0001      0.001      0.134      0.894      -0.002       0.002
-spy            1.0468      0.170      6.155      0.000       0.712       1.382
-ebay          -0.0795      0.058     -1.364      0.174      -0.194       0.035
-wal           -0.0865      0.089     -0.976      0.330      -0.261       0.088
-aapl           0.1529      0.084      1.831      0.068      -0.012       0.317
 </pre>
 
-As seen from the summary table, the P-values for Ebay, Walmart and Apple are 0.174, 0.330 and 0.068 respectively, so none of the them are significant at a 95% confidence.
+<table cellspacing="0" cellpadding="3" class="table qc-table">
+    <tr>
+        <td>&nbsp;</td>
+        <td align="right">coef</td>
+        <td align="right">std err</td>
+        <td align="right">t</td>
+        <td align="right">P>|t|</td>
+        <td align="right">[0.025</td>
+        <td align="right">0.975]</td>
+    </tr>
+    <tr>
+        <td>Intercept</td>
+        <td align="right">0.0001</td>
+        <td align="right">0.001</td>
+        <td align="right">0.134</td>
+        <td align="right">0.894</td>
+        <td align="right">-0.002</td>
+        <td align="right">0.002</td>
+    </tr>
+    <tr>
+        <td>spy</td>
+        <td align="right">1.0468</td>
+        <td align="right">0.170</td>
+        <td align="right">6.155</td>
+        <td align="right">0.000</td>
+        <td align="right">0.712</td>
+        <td align="right">1.382</td>
+    </tr>
+    <tr>
+        <td>ebay</td>
+        <td align="right">-0.0795</td>
+        <td align="right">0.058</td>
+        <td align="right">-1.364</td>
+        <td align="right">0.174</td>
+        <td align="right">-0.194</td>
+        <td align="right">0.035</td>
+    </tr>
+    <tr>
+        <td>wal</td>
+        <td align="right">-0.0865</td>
+        <td align="right">0.089</td>
+        <td align="right">-0.976</td>
+        <td align="right">0.330</td>
+        <td align="right">-0.261</td>
+        <td align="right">0.088</td>
+    </tr>
+    <tr>
+        <td>aapl</td>
+        <td align="right">0.1529</td>
+        <td align="right">0.084</td>
+        <td align="right">1.831</td>
+        <td align="right">0.068</td>
+        <td align="right">-0.012</td>
+        <td align="right">0.317</td>
+    </tr>
+</table>
 
-The multiple regression model has a higher R-square than the simple one: 0.254 vs 0.234. Indeed, R-square would defenitely increase as the number of variables increases. There is only one exception: if and only if the additional variable has complete linear regression with one of the originally existing variables. This is because if additional variables do not explain the response (amzn), then their estimated coefficients will be zero, without losing explanatory power.
+As seen from the summary table, the p-values for Ebay, Walmart and Apple are 0.174, 0.330 and 0.068 respectively, so none of them is significant at the 95% level.
 
-However, it is not always better to to add more variables or we will overfit our model. We'll talk about this in a later chapter.
+The multiple regression model has a higher \( R^2 \) than the simple one: 0.254 vs 0.234. Indeed, \( R^2 \) cannot decrease as the number of variables increases. Why? If an extra variable is added to our regression model, but it cannot account for variations in the response (amzn), then its estimated coefficient will simply be zero. It's as though that variable was never included in the model, so \( R^2 \) will not change.
 
-The reason why it's just increased a little is that we selected some stocks based on our intuition. We think that the competitors and the substitutes of AMZN may explain AMZN's daily return, but actually they don't. Here we try <strong>Fama-French 5 factor</strong>, which is an important model asset pricing theory and we will cover it in the later tutorials.
+However, it is not always better to add hundreds of variables or we will overfit our model. We'll talk about this in a later chapter.
+
+Can we improve our model further? Here we try the <strong>Fama-French 5-factor model</strong>, which is an important model in asset pricing theory. We will cover it in the later tutorials.
 
 <pre class="prettyprint linenums">fama_table = quandl.get('KFRENCH/FACTORS5_D')
 fama = fama_table['2016']
@@ -137,7 +211,7 @@ fama_model = sm.ols(formula = 'Close~MKT+SMB+HML+RMW+CMA',data = fama_df).fit()
 print fama_model.summary()
 </pre>
 
-As we can see, the r-square increased significantly if we use Fama-French 5 factor to do the multiple lienar regression. We can compare the prediction from simple linear regression and Fama-French multiple regression by plotting them together on one chart:
+The Fama-French 5-factor model has a higher \( R^2 \) of 0.387. We can compare the predictions from simple linear regression and Fama-French multiple regression by plotting them together on one chart:
 
 <pre class="prettyprint linenums">result = pd.DataFrame({'simple regression': simple.predict(),
                        'fama_french': fama_model.predict(),
@@ -150,28 +224,28 @@ plt.legend()
 plt.show()
 </pre>
 
-Although it's hard to observe, we can still see that the prediction from multiple regression is closer to the actual value. Usually we don't plot the result to observe which model is better, instead we read the statistical results from the summary table to make decisions.
+Although it's hard to see from the chart above, the predicted return from multiple regression is closer to the actual return. Usually we don't plot the predictions to determine which model is better; we read the summary table.
 
 <h2>Model Significance Test</h2>
 
-From the last tutorial we know that r-square is an important statistical indicator for parameter significance. Now we are going to introduce another indicator for only multiple linear regression: F-score.
+Instead of using \( R^2 \) to assess whether our regression model is a good fit to the data, we can perform a hypothesis test: the F test.
 
-The null hypothesis and alternative hypothesis for F-test are:
-\[H_0: \beta_1 = \beta_2 = \beta_3 =... = \beta_n = 0\]
+The null and alternative hypotheses of an F test are:
+\[ H_0: \beta_1 = \beta_2 = \dots = \beta_p = 0  \]
 \[ H_1: \text{At least one coefficient is not 0} \]
 
-We won't explain F test procedure in detail here. You just need to understand the null hypothesis and alternative hypothesis. The 'F-statistic' in the summary table is the value for F-test, and the 'prob (F-statistic)' is the p-value for F-test. As you can see, the P-value of our F-test is extreme small, which means we are nearly 100% sure that at least one of the coefficient is not 0 from the statistic result.
+We won't explain F test procedure in detail here. You just need to understand the null and alternative hypotheses. In the summary table of an F test, the 'F-statistic' is the F score, while 'prob (F-statistic)' is the p-value. Performing this test on the Fama-French model, we get a p-value of `2.21e-24` so we are almost certain that at least one of the coefficient is not 0.
 
-After setting up a multiple linear regression model, the first step to do is check the F-score for model significance. If the p-value is not small enough to reject the null hypothesis, you should reconsider the feasibility of this model and find some other variables to build a new one.
+If the p-value is larger than 0.05, you should consider rebuilding your model with other independent variables.
 
-If we are doing simple linear regression, the null hypothesis for F-test and the null hypothesis for t-test on the slope should be exactly the same, so the p-values for both test should also be the same. You can find it from the simple linear regression summary table above.
+In simple linear regression, an F test is equivalent to a t test on the slope, so their p-values will be the same.
 
 <h2>Residual Analysis</h2>
 
 In linear regression, we often assume that the residuals are independent and normally distributed with the same variance (homoskedasticity), so that we can contruct prediction intervals, for example.
 
 <h3>Normality</h3>
-We can plot the density of the residual to check for normality:
+We can plot the residual's density to check for normality:
 
 <pre class="prettyprint linenums">plt.figure()
 fama_model.resid.plot.density()
@@ -186,7 +260,7 @@ print 'Residual variance: ', np.var(fama_model.resid)
 
 <h3>Homoskedasticity</h3>
 
-This word is difficult to pronounce but not difficult to understand. It means that the residuals have the same variance for all values of X. Otherwise we say 'heteroskedasticity' is detected.
+This word is difficult to pronounce but not difficult to understand. It means that the residuals have the same variance for all values of X. Otherwise we say that 'heteroskedasticity' is detected.
 
 <pre class="prettyprint linenums">plt.figure(figsize = (20,10))
 plt.scatter(df.spy,simple.resid)
@@ -197,14 +271,14 @@ plt.ylabel('residual')
 plt.show()
 </pre>
 
-As seen from the chart, the variance of residual doesn't increase with X obviously, except for three outliers, which would not change our conclusion. We can plot to test heteroskedasticity for simple linear regression. However, we can't do this for multiple regression, we use Python package instead:
+As seen from the chart, the residuals' variance doesn't increase with X. The three outliers do not change our conclusion. Although we can plot the residuals for simple regression, we can't do this for multiple regression, so we use statsmodels to test for heteroskedasticity:
 
 <pre class="prettyprint linenums">from statsmodels.stats import diagnostic as dia
 het = dia.het_breuschpagan(fama_model.resid,fama_df[['MKT','SMB','HML','RMW','CMA']][1:])
-print 'p-value of Heteroskedasticity: ', het[-1]
+print 'p-value: ', het[-1]
 </pre>
 
-For the multiple regression, we have 85% confidence level to claim that no heteroskedasticity is detected.
+No heteroskedasticity is detected at the 95% significance level.
 
 <h2>Summary</h2>
-In this chapter we introduced multiple linear regression, F-test and basic residual analysis, which are the basic for quantitative linear financial modeling. Next chapter we will introduce some linear algebra, which are used for the model portfolio theory and CAPM.
+In this chapter we have introduced multiple linear regression, F test and residual analysis, which are the fundamentals of linear models. In the next chapter we will introduce some linear algebra, which are used in modern portfolio theory and CAPM.
