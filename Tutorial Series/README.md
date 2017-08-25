@@ -127,8 +127,6 @@ Unlike most teachings in textbooks, our tutorials keep from going deep into math
 </table>
 
 
-<<<<<<< HEAD
-
 <table width="100%">
     <thead>
         <tr>
@@ -162,5 +160,4 @@ Unlike most teachings in textbooks, our tutorials keep from going deep into math
 
 
 [1]: https://www.quantconnect.com/tutorials/introduction-options-general-features-options/
-=======
->>>>>>> f6488134a4e55495fc58dfe9becaa6008397a401
+
