@@ -58,6 +58,10 @@ The goal of this series is to introduce options to those who are option novices 
 
 The following few options tutorials was created to help you understand exactly how options are used as investment and risk hedging tools. We will further discuss the pricing method of options like BSM model and monte carlo method. And then several metrics to gauge the options risks like the Greek lettters, different kinds of volatilities used in options pricing and trading. At the end of some tutorials, we will apply the knowledge in that tutorial to demonstrate some simple algorithms developed with Python on Quantconnect attempting to help you gain an insight into options trading and learn more efficient API tools to better customize your own trading algorithms. 
 
+## Introduction to Machine Learning ##
+This tutotial series aims to give you a general idea of what are machine learning algorithms and how could they be applied to your trading strategies. We start from supervised learning algorithms like the well-known neural network, support vehicle machine, etc. and then go to cover tree-based classifiers such as decision trees, random forest, etc. Next, we reach out to reinforcement learning and association rules. And in the end of this tutotial series, we introduce unsupervised learning, as well as heuristic algorithm. All of them play important roles in financial decisions.
+
+Unlike most teachings in textbooks, our tutorials keep from going deep into math which dampens readers' enthusiasm. Instead, we use simple and easy-to-understand examples to illustrate the complex logic behind each machine learning algorithm. We the display the APIs in Python to make these tools handy for you. Finally, we end each tutorial with a trading algorithm combining and applying what you've learned with real market data.
 
 <table width="100%">
     <thead>
@@ -122,4 +126,38 @@ Unlike most teachings in textbooks, our tutorials keep from going deep into math
     </tbody>
 </table>
 
+
+<table width="100%">
+    <thead>
+        <tr>
+            <th colspan="2" align="left">Introduction to Machine Learning</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td> <a href=""> 1. Structure and Construction of Neural Networks</a> </td>
+            <td> <a href=""> 2. Kernel Function and Construction of Support Vector Machines</a> </td>
+        </tr>
+        <tr>
+            <td> <a href=""> 3. Bayes' Theorem and Classification of Market Signals by Naive Bayes</a> </td>
+            <td> <a href=""> 4. Using Entropy and Information Gain to Construct ID3 Decision Tree</a> </td>
+        </tr>
+        <tr>
+            <td> <a href=""> 5. Random Subtrees and Class Prediction with Random Forest</a> </td>
+            <td> <a href=""> 6. Boosting Ensemble and Making Predictions with AdaBoost</a> </td>
+        </tr>
+        <tr>
+            <td> <a href=""> 7. Unsupervised Reinforcement Mechanism and Implementation of Q-Learning Algorithms</a> </td>
+            <td> <a href=""> 8. Association Rule and Market Trend Analysis with Apriori Algorithms</a> </td>
+        </tr>
+ <tr>
+            <td> <a href=""> 9. Centroid Rebalance and Stock Classification with K-Nearest Neighbors</a> </td>
+            <td> <a href=""> 10. Optimizing Technical Indicators by Simulating Evolution Processes to Construct Genetic Algorithms</a> </td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+[1]: https://www.quantconnect.com/tutorials/introduction-options-general-features-options/
 
