@@ -1,0 +1,71 @@
+<h2>Definition</h2>
+Bull Call Spread is an option strategy involved with two call option contracts with the same expiration but different strikes. The strategy buys the call options with a lower strike and sells the same amount of call options with a higher strike price.
+
+This strategy creates a ceiling and floor for the profit. By purchasing a call and selling a call with higher strike simultaneously, traders can reduce the cost of just one long call option with the premium of a short call option. But the premium of ITM call is more expensive than the OTM call. The strategy limits the loss from the dropping price of the stock but still create a ceiling to the profit while the price is increasing.
+
+Take GOOG as an example. If the share price of GOOG is $950 at time 0, the premium of ITM call option is 20 with strike 900, the premium of OTM call option is 2 with strike 1000. If we ignore the commission, dividends and other transaction fees, the payoff of Bull Call Spread strategy is as follows:
+<pre class="prettyprint linenums">price = np.arange(800,1100,1)
+k_low = 900 # lower strike price for call
+k_high = 1000 # higher strike price for call
+premium_low = 20 # premium of call option with lower strike
+premium_high = 2 # premium of call option with higher strike
+# long call with lower strike
+payoff_long_call = [max(-premium, i-k_low-premium_low ) for i in price]
+# short call with higher strike
+payoff_short_call = [min(premium, -(i-k_high-premium_high)) for i in price]
+payoff = np.sum([payoff_long_call, payoff_short_call], axis=0)
+plt.figure(figsize=(20,11))
+plt.plot(price, payoff_long_call, label = 'long call')
+plt.plot(price, payoff_short_call, label = 'short call')
+plt.plot(price, payoff, label = 'Bull Call Spread')
+plt.legend(fontsize = 20)
+plt.xlabel('Stock Price at Expiry',fontsize = 15)
+plt.ylabel('payoff',fontsize = 15)
+plt.title('Bull Call Spread Payoff at Expiration',fontsize = 20)
+plt.grid(True)
+</pre>
+<img src="images/bull_call_spread.png" alt="bull call spread payoff”/>
+From the payoff plot we can see, the maximum profit of the strategy is the difference between call option strike price sold and call option strike price purchased minus the difference between buying lower strike call premium and selling higher strike call premium.
+<h2>Implementation</h2>
+Step 1: First, you need to initialize the algorithm including set the start date, end date and the cash required. Then use <code>option.SetFilter(-6, 6, timedelta(30), timedelta(60))</code> to filter the candidate contracts which expire in 30 days to 60 days from now on. The strike price range involves both ITM and OTM options. Then we get the option chains of GOOG.
+<pre class="prettyprint linenums">def Initialize(self):
+	self.SetStartDate(2016, 5, 01)
+	self.SetEndDate(2016, 10, 01)
+	self.SetCash(200000)
+	equity = self.AddEquity("GOOG", Resolution.Minute)
+	option = self.AddOption("GOOG", Resolution.Minute)
+	self.symbol = option.Symbol
+	# set our strike/expiry filter for this option chain
+	option.SetFilter(-6, 6, timedelta(30), timedelta(60))
+	# use the underlying equity GOOG as the benchmark
+	self.SetBenchmark(equity.Symbol)
+</pre>
+Step 2: Choose the contracts with the same expiration date. For demonstration purpose here we sorted the contracts by their expiration dates and choose the options with the furthest expiration date in the option chain.
+<pre class="prettyprint linenums">def TradeOptions(self,optionchain):
+	for i in optionchain:
+		if i.Key != self.symbol: continue
+		chain = i.Value
+		# sorted the optionchain by expiration date and choose the furthest date
+		expiry = sorted(chain,key = lambda x: x.Expiry, reverse=True)[0].Expiry
+</pre>
+Step 3: Filter the call options from the contracts which expire on the furthest expiration date in the option chain.
+<pre class="prettyprint linenums">call = [i for i in chain if i.Expiry == expiry and i.Right == 0]
+</pre>
+Step 4: Sort the call options with the same expiration date according to their strike price. Then buy the call option with the lowest strike price and sell the call with the highest strike price.
+<pre class="prettyprint linenums">call_contracts = sorted(call,key = lambda x: x.Strike)
+	if len(call_contracts) == 0: continue
+	# call option contract with lower strike
+	self.call_low = call_contracts[0]
+	# call option contract with higher strike
+	self.call_high = call_contracts[-1]
+	self.Buy(self.call_low.Symbol, 1)
+	self.Sell(self.call_high.Symbol ,1)
+</pre>
+Note here you need to add the following rules in <code>OnData(self,slice)</code> method because you only need to trade options once and wait until the contracts expire. If you already had securities invested in the portfolio, then you do not need to trade new options.
+<pre class="prettyprint linenums">if not self.Portfolio.Invested:
+	self.TradeOptions(optionchain)
+</pre>
+<h2>Summary</h2>
+This strategy can be implemented when you have a moderate outlook on the stock because the payoff reaches its maximum when the price is between the strike price range of two traded options. The strategy protects the downside move of the stock price. But when the price is above the higher strike, the profit is capped.
+<h2>Algorithm</h2>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=e3fc8eb5d91b7a43179071f603b9d710'></script>
