@@ -6,22 +6,59 @@ If we are holding a stock, we must be curious about the relationship between our
 import pandas as pd
 import quandl
 quandl.ApiConfig.api_key = '_fgkxjSbt5389zGt4crC'
+#get data from quandl
 spy_table = quandl.get('BCIW/_SPXT')
 amzn_table = quandl.get('WIKI/AMZN')
+#fetch data from Jan 2017 to Jun 2017
 spy = spy_table.loc['2017':'2017-6',['Close']]
 amzn = amzn_table.loc['2017':'2017-6',['Close']]
+#calculate log return
 spy_log = np.log(spy.Close).diff().dropna()
 amzn_log = np.log(amzn.Close).diff().dropna()
 df = pd.concat([spy_log,amzn_log],axis = 1).dropna()
 df.columns = ['spx','amzn']
 print df.tail()
 </pre>
+<table cellspacing="0" cellpadding="3" class="table qc-table">
+    <tr>
+        <td>&nbsp;</td>
+        <td align="center">spy</td>
+        <td align="center">amzn</td>
+    </tr>
+    <tr>
+        <td>2016-12-22</td>
+        <td align="center">-0.004462</td>
+        <td align="center">-0.005543</td>
+    </tr>
+    <tr>
+        <td>2016-12-23</td>
+        <td align="center">0.001372</td>
+        <td align="center">-0.007531</td>
+    </tr>
+    <tr>
+        <td>2016-12-23</td>
+        <td align="center">0.000928</td>
+        <td align="center">0.000946</td>
+    </tr>
+    <tr>
+        <td>2016-12-23</td>
+        <td align="center">-0.005671</td>
+        <td align="center">-0.009081</td>
+    </tr>
+    <tr>
+        <td>2016-12-23</td>
+        <td align="center">0.002086</td>
+        <td align="center">-0.020172</td>
+    </tr>
+
+</table>
 We successfully create a DataFrame contains the daily logarithm return of Amazon stock and S&amp;P500. Now let's plot it:
 <pre class="prettyprint linenums">import matplotlib.pyplot as plt
 plt.figure(figsize = (15,10))
 plt.scatter(df.spy,df.amzn)
 plt.show()
 </pre>
+<img class="aligncenter size-full wp-image-2206" src="https://github.com/ShallweXiaowei/Tutorials/blob/master/Tutorial%20Series/Introduction%20to%20Financial%20Python/images/Tutorial9-plot1.png?raw=true" alt="" width="600" height="450" />
 The plot is scattered, but we can see they are approximately correlated: generally the higher SPX's daily return is, the higher Amazon stock's return is. This is called <strong>positively correlated</strong>. We will cover it in the following tutorials.
 <h2>Slope and Intercept</h2>
 It's natural that we want to model the relation between these two rates of return. Intuitively we use a straight line to model it, this is called <strong>Linear Regression</strong>. In order to find the best straight line, it's natural to think that the vertical distances between the points of the data set and the fitted line should be minimized. Those vertical distances are called <strong>residual</strong>. Our objective is to make the sum of squared residuals as small as possible. This method is called <strong>ordinary least square</strong>, or <strong>OLS</strong> method.
@@ -39,10 +76,20 @@ In python, we have a very power package for mathematical models, which is named 
 model = sm.ols(formula = 'amzn~spy',data = df).fit()
 print model.summary()
 </pre>
+<img class="aligncenter size-full wp-image-2206" src="https://github.com/ShallweXiaowei/Tutorials/blob/master/Tutorial%20Series/Introduction%20to%20Financial%20Python/images/Tutorial9-regression%20table.png?raw=true" alt="" width="600" height="450" />
 We built a simple linear regression model above by using the ols() function in statsmodels. The 'model' instance has lots of properties. The most commonly used one is parameters, or slope and intercept. We can access to them by:
 <pre class="prettyprint linenums">print 'pamameters: ',model.params
+[out]: pamameters:  Intercept    0.000012
+                   spy          0.492112
 print 'residual: ', model.resid.tail()
+[out]: residual:  Date
+2016-12-22   -0.003360
+2016-12-23   -0.008219
+2016-12-28    0.000477
+2016-12-29   -0.006303
+2016-12-30   -0.021211
 print 'fitted values: ',model.predict()
+[out]: fitted values:  [-0.00070299 -0.00218348  0.00068734  0.00046907 -0.00277819  0.00103882]
 </pre>
 Now let's have a look at our fitted line:
 <pre class="prettyprint linenums">plt.figure(figsize = (15,10))
@@ -52,6 +99,7 @@ plt.ylabel('amzn_return')
 plt.plot(df.spy,model.predict(),color = 'red')
 plt.show()
 </pre>
+<img class="aligncenter size-full wp-image-2206" src="https://github.com/ShallweXiaowei/Tutorials/blob/master/Tutorial%20Series/Introduction%20to%20Financial%20Python/images/Tutorial9-plot2.png?raw=true" alt="" width="600" height="450" />
 The red line is the fitted linear regression straight line.
 As we can see there are lot of statistical results in the summary table. Now let's talk about some important statistical parameters.
 <h2>Parameter Significance</h2>

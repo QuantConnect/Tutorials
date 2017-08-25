@@ -13,32 +13,45 @@ A NumPy array is a grid of values, all of the same type, and is indexed by a tup
 <pre class="prettyprint linenums">price_list = [143.73, 145.83, 143.68, 144.02, 143.5, 142.62]
 price_array = np.array(price_list)
 print price_array, type(price_array)
+[out]: [ 143.73  145.83  143.68  144.02  143.5   142.62]
 </pre>
 Notice that the type of array is 'ndarray'. This means it's a multiple-dimensional array. If we pass np.array() a list of lists, it will create a 2-dimensional array.
 <pre class="prettyprint linenums">Ar = np.array([[1,3],[2,4]])
-print Ar, type(Ar)
+print Ar, type
+[out]: [[1 3]
+       [2 4]]
 </pre>
 We can access the dimensions of an array using the array.shape property:
 <pre class="prettyprint linenums">print Ar.shape
+[out]: (2, 2)
 </pre>
 If we create an 2-dimensional array, we call it a matrix, and each list is an vector. We can access to the list by index:
 <pre class="prettyprint linenums">print Ar[0]
+[out]: [1 3]
 print Ar[1]
+[out]: [2 4]
 </pre>
 If we want to access to the matrix by column:
 <pre class="prettyprint linenums">print 'the first column: ', Ar[:,0]
+[out]: the first column:  [1 2]
 print 'the second column: ', Ar[:,1]
+[out]: the second column:  [3 4]
 </pre>
 <h3>Array Functions</h3>
 There are some very useful functions built in NumPy allow us to make calculations on an array or array elements.
 <pre class="prettyprint linenums">print np.log(price_array)
+[out]: [4.96793654  4.98244156  4.9675886   4.96995218  4.96633504  4.96018375]
 </pre>
 This function apply logarithm to each element and return an array.
 Some functions return a single value:
 <pre class="prettyprint linenums">print np.mean(price_array)
+[out]: 143.896666667
 print np.std(price_array)
+[out]: 0.967379047852
 print np.sum(price_array)
+[out]: 863.38
 print np.max(price_array)
+[out]: 145.83
 </pre>
 The above functions return the mean, standard deviation(we will introduce these concepts in the following tutorials) and the max value of the array.
 <h2>Pandas Basic</h2>
@@ -50,28 +63,73 @@ Series is a one-dimensional labeled array capable of holding any data type(integ
 <pre class="prettyprint linenums">price = [143.73, 145.83, 143.68, 144.02, 143.5, 142.62]
 s = pd.Series(price)
 print s
+0    143.73
+1    145.83
+2    143.68
+3    144.02
+4    143.50
+5    142.62
 </pre>
 We can create our customized index while creating the series:
 <pre class="prettyprint linenums">s = pd.Series(price,index = ['a','b','c','d','e','f'])
 print s
+a    143.73
+b    145.83
+c    143.68
+d    144.02
+e    143.50
+f    142.62
 </pre>
 We can easily set or change the index of an existing arrar:
 <pre class="prettyprint linenums">s.index = [6,5,4,3,2,1]
 print s
+6    143.73
+5    145.83
+4    143.68
+3    144.02
+2    143.50
+1    142.62
 </pre>
 Series is like a list in that we can slice it by index:
 <pre class="prettyprint linenums">print s[1:]
 print s[:-2]
+5    145.83
+4    143.68
+3    144.02
+2    143.50
+1    142.62
+dtype: float64
+6    143.73
+5    145.83
+4    143.68
+3    144.02
+dtype: float64
 </pre>
 Series is also like a fixed-size dictionary in that we can get and set values by index label:
 <pre class="prettyprint linenums">print s[4]
 s[4] = 0
 print s
+143.68
+6    143.73
+5    145.83
+4      0.00
+3    144.02
+2    143.50
+1    142.62
+dtype: float64
 </pre>
 Series can also have a name attribute, which will be used when we make up a Pandas DataFrame using several series.
 <pre class="prettyprint linenums">s = pd.Series(price, name = 'Apple Price List')
 print s
 print s.name
+0    143.73
+1    145.83
+2    143.68
+3    144.02
+4    143.50
+5    142.62
+Name: Apple Price List, dtype: float64
+Apple Price List
 </pre>
 <h3>Time Index</h3>
 pandas has a built-in function specifically for creating date indices, Pandas.date_range(). We use the function here to create a new index for our series:
@@ -79,26 +137,60 @@ pandas has a built-in function specifically for creating date indices, Pandas.da
 print time_index
 s.index = time_index
 print s
+
+DatetimeIndex(['2017-01-01', '2017-01-02', '2017-01-03', '2017-01-04',
+               '2017-01-05', '2017-01-06'],
+              dtype='datetime64[ns]', freq='D')
+2017-01-01    143.73
+2017-01-02    145.83
+2017-01-03    143.68
+2017-01-04    144.02
+2017-01-05    143.50
+2017-01-06    142.62
+Freq: D, Name: Apple Price List, dtype: float64
 </pre>
 Series are usually accessed using the iloc[] and loc[] methods. iloc[] is used to access elements by integer index, and loc[] is used to access the index of the series.
 iloc[] is necessary when the index of a series are integers, take our previous defined series as example:
 <pre class="prettyprint linenums">s.index = [6,5,4,3,2,1]
 print s
 print s[1]
+6    143.73
+5    145.83
+4    143.68
+3    144.02
+2    143.50
+1    142.62
+Name: Apple Price List, dtype: float64
+142.62
 </pre>
 If we intended to take the second element of the series, we would make a mistake here, because the index are integers. In order to access to the element we want, we use iloc[] here:
 <pre class="prettyprint linenums">print s.iloc[1]
+145.83
 </pre>
 While working with time-series financial data, we often use time as index. Pandas provide us a variety of methods to access the data by time index.
 <pre class="prettyprint linenums">s.index = time_index
 print s['2017-01-03']
+143.68
 </pre>
 We can even access to a range of dates:
 <pre class="prettyprint linenums">print s['2017-01-02':'2017-01-05']
+2017-01-02    145.83
+2017-01-03    143.68
+2017-01-04    144.02
+2017-01-05    143.50
+Freq: D, Name: Apple Price List, dtype: float64
 </pre>
 Series[] provides us a very flexible way to index data. We can add any condition in the square brackets:
 <pre class="prettyprint linenums">print s[s &lt; np.mean(s)]
 print s[(s &gt; np.mean(s)) &amp; (s &lt; np.mean(s) + 1.64*np.std(s))]
+
+2017-01-01    143.73
+2017-01-03    143.68
+2017-01-05    143.50
+2017-01-06    142.62
+Name: Apple Price List, dtype: float64
+2017-01-04    144.02
+Freq: D, Name: Apple Price List, dtype: float64
 </pre>
 As demonstrated, we can use logical operators &amp;, |, and ~(and, or, and not, respectively) to group multiple conditions.
 <h2>Summary</h2>

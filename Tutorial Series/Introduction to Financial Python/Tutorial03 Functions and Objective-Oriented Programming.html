@@ -4,39 +4,61 @@ In the last tutorial we introduced logical operations, for/while loop and list c
 A function is a reusable block of code. You can use a function to make a calculation, output a value, or do anything else you want. We can easily define our own function by using the keyword 'def'.
 <pre class="prettyprint linenums">def product(x,y):
     return x*y
-product(2,3)
-product(5,10)
+print product(2,3)
+[out]: 6
+print product(5,10)
+[out]: 50
 </pre>
 The keyword 'def' is followed by the function name and the parenthesized list of formal parameters. The statements that form the body of the function start at the next line, and must be indented. Here the 'x' and 'y' are the two parameters. A function doesn't necessarily have parameters.
 <pre class="prettyprint linenums">def say_hi():
     print 'Welcome to QuantConnect'
 say_hi()
+[out]: Welcome to QuantConnect
 </pre>
 <h2>Built-in Function</h2>
 Here we introduce some commonly used Python built-in functions.
 range() is a function to create lists containing arithmetic progressions. It's often used in for loops. the arguments must be integers. If the step argument is omitted, it defaults to 1.
-<pre class="prettyprint linenums">range(10)
-range(1,11)
-range(1,11,2)
+<pre class="prettyprint linenums">
+print range(10)
+[out]: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+print range(1,11)
+[out]: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+print range(1,11,2)
+[out]: [1, 3, 5, 7, 9]
 </pre>
 Another useful function usually used together with range() to create a for loop is len(). This function returns the length of an object. The argument must be a sequence or a collection.
-<pre class="prettyprint linenums">tickers = ['AAPL','GOOG','IBM','FB','F','V', 'G', 'GE']
+<pre class="prettyprint linenums">
+tickers = ['AAPL','GOOG','IBM','FB','F','V', 'G', 'GE']
 print 'The length of tickers is {}'.format(len(tickers))
 for i in range(len(tickers)):
     print tickers[i]
+[out]:
+The length of tickers is 8
+AAPL
+GOOG
+IBM
+FB
+F
+V
+G
+GE
 </pre>
 map() is a function that applies a specific function to every item of a sequence or collection, and returns a list of the results.
 <pre class="prettyprint linenums">tickers = ['AAPL','GOOG','IBM','FB','F','V', 'G', 'GE']
 print map(len,tickers)
+[out]: [4, 4, 3, 2, 1, 1, 1, 2]
 </pre>
 The Lambda operator is a way to create small anonymous functions. These functions are throw-away functions, which means they are just needed where they have been created.For example:
 <pre class="prettyprint linenums">map(lambda x: x**2, range(10))
+[out]: [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
 </pre>
 map() can be applied to more than one list. The lists have to have the same length.
 <pre class="prettyprint linenums">map(lambda x, y: x+y, [1,2,3,4,5],[5,4,3,2,1])
+[out]: [6, 6, 6, 6, 6]
 </pre>
 sort() returns a new sorted list from the items in a sequence or a collection.
 <pre class="prettyprint linenums">sorted([5,2,3,4,1])
+[out]: [1, 2, 3, 4, 5]
 </pre>
 We can add a 'key' parameter to specify a function to be called on each list element prior to making comparisons. For example:
 <pre class="prettyprint linenums">price_list = [('AAPL',144.09),('GOOG',911.71),('MSFT',69),('FB',150),('WMT',75.32)]
@@ -50,9 +72,10 @@ A list object also has a function list.sort(). This function takes the same 'key
 <pre class="prettyprint linenums">price_list = [('AAPL',144.09),('GOOG',911.71),('MSFT',69),('FB',150),('WMT',75.32)]
 price_list.sort(key = lambda x: x[1])
 print price_list
+[out]: [('MSFT', 69), ('WMT', 75.32), ('AAPL', 144.09), ('FB', 150), ('GOOG', 911.71)]
 </pre>
 <h2>Objective-oriented Programming</h2>
-Python is an objective-oriented programming language. It's important to understand the concept of 'Object' because almost every kind of data from QuantConnect API is an object.
+Python is an objective-oriented programming language. It's important to understand the concept of 'Object' because almost every kind of data from QuantConnect API is an object.
 <h3>Class</h3>
 a class is a kind of data type, just like a string, float, or list. When we create an object of that data type, we call it an instance of a class.
 In python, everything is an object - everything is an instance of some class. The data values which we store inside an object are called properties, and the functions which are associated with the object are called methods. For example, as we mentioned above, a list is an object of 'list' class, and it has a method list.sort().
@@ -82,16 +105,32 @@ google = stock('GOOG', 898.7, 911.7, 1561616)
 Now we can access to the properties and call the functions associated with the stock class.
 <pre class="prettyprint linenums">apple.ticker
 google.print_return()
+[out]: 0.0144653388227
 google.update(912.8,913.4)
 google.print_return()
+[out]: 0.000657318141981
 </pre>
 By calling the stock.update() function, we updated the open and close price of the stock. Please notice that when we use the properties or call the methods inside a method, we need to specify them as self.property or self.method(), otherwise Python will deem them as global variables thus cause error.
 We can easily assign add a property to an object anywhere.
-<pre class="prettyprint linenums">apple.ceo = 'Tim Cook'
+<pre class="prettyprint linenums">
+apple.ceo = 'Tim Cook'
 apple.ceo
+[out]: 'Tim Cook'
 </pre>
 We can check what properties are defined on an object using the dir() function:
 <pre class="prettyprint linenums">dir(apple)
+[out]:
+['__doc__',
+ '__init__',
+ '__module__',
+ 'ceo',
+ 'close',
+ 'open',
+ 'print_return',
+ 'rate_return',
+ 'ticker',
+ 'update',
+ 'volume']
 </pre>
 <h3>Inheritance</h3>
 Inheritance is a way of arranging objects in a hierarchy from the most general to the most specific. An object which inherits from another object is considered to be a subtype of that object. The subtype will inherit the methods. For example, we define a class named 'child', and it inherits 'stock':
@@ -100,12 +139,16 @@ Inheritance is a way of arranging objects in a hierarchy from the most general t
         self.name = name
 </pre>
 Then we create an object:
-<pre class="prettyprint linenums">aa = child('aa')
+<pre class="prettyprint linenums">
+aa = child('aa')
 aa.name
 aa.update(100,102)
-aa.open
-aa.close
-aa.print_return()
+print aa.open
+[out]: 100
+print aa.close
+[out]: 102
+print aa.print_return()
+[out]: 0.02
 </pre>
 As we can see above, the new class child inherited the methods from stock.
 <h2>Summary</h2>
