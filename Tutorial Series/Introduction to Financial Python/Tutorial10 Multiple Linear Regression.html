@@ -1,4 +1,4 @@
-<h2>Introduction</h2>
+﻿<h2>Introduction</h2>
 
 In the last chapter we introduced simple linear regression, which has only one independent variable. In this chapter we will learn about linear regression with multiple independent variables.
 
@@ -17,14 +17,17 @@ import pandas as pd
 import quandl
 import matplotlib.pyplot as plt
 import statsmodels.formula.api as sm
-# get stock price
+
+# Get stock prices
 quandl.ApiConfig.api_key = 'tAyfv1zpWnyhmDsp91yv'
 spy_table  = quandl.get('BCIW/_SPXT')
 amzn_table = quandl.get('WIKI/AMZN')
 ebay_table = quandl.get('WIKI/EBAY')
 wal_table  = quandl.get('WIKI/WMT')
 aapl_table = quandl.get('WIKI/AAPL')</pre>
-Then we take the data start from year 2016.
+
+Then we fetch closing prices starting from 2016:
+
 <pre class="prettyprint linenums">
 spy  = spy_table .loc['2016',['Close']]
 amzn = amzn_table.loc['2016',['Close']]
@@ -32,7 +35,9 @@ ebay = ebay_table.loc['2016',['Close']]
 wal  = wal_table .loc['2016',['Close']]
 aapl = aapl_table.loc['2016',['Close']]
 </pre>
-After taking log returns, we concat those data into a DataFrame.
+
+After taking log returns of each stock, we concatenate them into a DataFrame, and print out the last 5 rows:
+
 <pre class="prettyprint linenums">
 spy_log  = np.log(spy.Close) .diff().dropna()
 amzn_log = np.log(amzn.Close).diff().dropna()
@@ -43,8 +48,6 @@ df = pd.concat([spy_log,amzn_log,ebay_log,wal_log,aapl_log],axis = 1).dropna()
 df.columns = ['SPY', 'AMZN', 'EBAY', 'WAL', 'AAPL']
 df.tail()
 </pre>
-
-This yields the log returns of each stock in the last 5 days:
 
 <table cellspacing="0" cellpadding="3" class="table qc-table">
     <tr>
@@ -196,7 +199,7 @@ print model.summary()
     </tr>
 </table>
 
-As seen from the summary table, the p-values for Ebay, Walmart and Apple are 0.174, 0.330 and 0.068 respectively, so none of them is significant at the 95% level.
+As seen from the summary table, the p-values for Ebay, Walmart and Apple are 0.174, 0.330 and 0.068 respectively, so none of them are significant at a 95% confidence level.
 
 The multiple regression model has a higher \( R^2 \) than the simple one: 0.254 vs 0.234. Indeed, \( R^2 \) cannot decrease as the number of variables increases. Why? If an extra variable is added to our regression model, but it cannot account for variations in the response (amzn), then its estimated coefficient will simply be zero. It's as though that variable was never included in the model, so \( R^2 \) will not change.
 
@@ -204,47 +207,44 @@ However, it is not always better to add hundreds of variables or we will overfit
 
 Can we improve our model further? Here we try the <strong>Fama-French 5-factor model</strong>, which is an important model in asset pricing theory. We will cover it in the later tutorials.
 
-The data is publicly available on [ref]Kenneth's Website <a href="http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/Data_Library/f-f_factors.html">Link</a>[/ref]. We have downloaded it in convenience. The following code is to fetch the data.
+The data needed are publicly available on [ref]<a href="http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/Data_Library/f-f_factors.html" target="_blank">French's website</a>[/ref]. We have saved a copy for convenience. The following code fetches the data.
 
 <pre class="prettyprint linenums">
-#import libraries for remote fetch
 import urllib2
 from datetime import datetime
-#The url for the dataset
+
 url = 'https://www.quantconnect.com/tutorials/wp-content/uploads/2017/08/F-F_Research_Data_5_Factors_2x3_daily.csv'
-response = urllib2.urlopen(url)
-#read the dataset into DataFrame
+response   = urllib2.urlopen(url)
 fama_table = pd.read_csv(response)
-#Convert time column into index
-index = [datetime.strptime(str(x), "%Y%m%d") for x in fama_table.iloc[:,0]]
-fama_table.index = index
-#Remove time column
+
+# Convert time column into index
+fama_table.index = [datetime.strptime(str(x), "%Y%m%d")
+                    for x in fama_table.iloc[:,0]]
+# Remove time column
 fama_table = fama_table.iloc[:,1:]
 </pre>
 
-After having the data, we can try the model with fama-french factors:
+With the data, we can construct a Fama-French factor model:
+
 <pre class="prettyprint linenums">
-#get data start from 2016
 fama = fama_table['2016']
 fama = fama.rename(columns = {'Mkt-RF':'MKT'})
-#pre-process the factor data
 fama = fama.apply(lambda x: x/100)
-fama_df = pd.concat([fama,amzn_log],axis = 1)
-#Build multiple linear regression
-fama_model = sm.ols(formula = 'Close~MKT+SMB+HML+RMW+CMA',data = fama_df).fit()
+fama_df = pd.concat([fama, amzn_log], axis = 1)
+fama_model = sm.ols(formula = 'Close~MKT+SMB+HML+RMW+CMA', data = fama_df).fit()
 print fama_model.summary()
 </pre>
-<img class="aligncenter size-full wp-image-2206" src="https://github.com/ShallweXiaowei/Tutorials/blob/master/Tutorial%20Series/Introduction%20to%20Financial%20Python/images/Tutorial10-fama.png?raw=true" alt="" width="600" height="450" />
 
+<img class="aligncenter size-full wp-image-2206" src="https://github.com/ShallweXiaowei/Tutorials/blob/master/Tutorial%20Series/Introduction%20to%20Financial%20Python/images/Tutorial10-fama.png?raw=true" alt="" width="600" height="450" />
 
 The Fama-French 5-factor model has a higher \( R^2 \) of 0.387. We can compare the predictions from simple linear regression and Fama-French multiple regression by plotting them together on one chart:
 
 <pre class="prettyprint linenums">
-#put the data into a DataFrame for the convenience of plotting.
 result = pd.DataFrame({'simple regression': simple.predict(),
                        'fama_french': fama_model.predict(),
                        'sample': df.amzn}, index = df.index)
-#plot part, feel free to adjust the size for your better view.
+
+# Feel free to adjust the chart size
 plt.figure(figsize = (15,7.5))
 plt.plot(result['2016-7':'2016-9'].index,result.loc['2016-7':'2016-9','simple regression'])
 plt.plot(result['2016-7':'2016-9'].index,result.loc['2016-7':'2016-9','fama_french'])
@@ -252,7 +252,9 @@ plt.plot(result['2016-7':'2016-9'].index,result.loc['2016-7':'2016-9','sample'])
 plt.legend()
 plt.show()
 </pre>
+
 <img class="aligncenter size-full wp-image-2206" src="https://github.com/ShallweXiaowei/Tutorials/blob/master/Tutorial%20Series/Introduction%20to%20Financial%20Python/images/Tutorial10-compare.png?raw=true" alt="" width="600" height="450" />
+
 Although it's hard to see from the chart above, the predicted return from multiple regression is closer to the actual return. Usually we don't plot the predictions to determine which model is better; we read the summary table.
 
 <h2>Model Significance Test</h2>
@@ -270,26 +272,31 @@ If the p-value is larger than 0.05, you should consider rebuilding your model wi
 In simple linear regression, an F test is equivalent to a t test on the slope, so their p-values will be the same.
 
 <h2>Residual Analysis</h2>
-Residual analysis is one of the most important parts to examine and apply a linear model. In lots of linear model-based statistical arbitrage strategies, we use residuals to generate signals. That's why we should check the properties of residuals.
 
-In linear regression, we assume that the mean value of the residual should be zero and the mean doesn't depend on variable X. We have an optional assumption that the error term follows normal distribution. This is for the convenience of building confidence interval, and it's true for most cases in practice.
+Linear regression requires that the predictors and response have a linear relationship. This assumption holds if the residuals are zero on average, <strong>no matter</strong> what values the predictors \( X_1, \dots, X_p \) take.
 
-Another import assumption is that the residual are independent and the variance of it is constant(homoskedasticity).
+Often it's also assumed that the residuals are independent and normally distributed with the same variance (homoskedasticity), so that we can contruct prediction intervals, for example.
+
+To check whether these assumptions hold, we need to analyse the residuals. In statistical arbitrage, residual analysis can also be used to generate signals.
+
 <h3>Normality</h3>
-As we mentioned, the residual of a linear model in practice usually follows normal distribution. In other words, it has normality. We can plot the residual's density to check for normality:
+
+The residuals of a linear model usually has a normal distribution. We can plot the residual's density to check for normality:
 
 <pre class="prettyprint linenums">plt.figure()
 #ols.fit().model is a method to access to the residual.
 fama_model.resid.plot.density()
 plt.show()
 </pre>
+
 <img class="aligncenter size-full wp-image-2206" src="https://github.com/ShallweXiaowei/Tutorials/blob/master/Tutorial%20Series/Introduction%20to%20Financial%20Python/images/Tutorial10-residual.png?raw=true" alt="" width="600" height="450" />
+
 As seen from the plot, the residual is normally distributed. By the way, the residual mean is always zero, up to machine precision:
 
-<pre class="prettyprint linenums">print 'Residual mean: ', np.mean(fama_model.resid)
-[out]:residual mean:  -2.31112163493e-16
-print 'Residual variance: ', np.var(fama_model.resid)
-[out]:residual variance:  0.000205113416293
+<pre class="prettyprint linenums">print 'Residual mean:', np.mean(fama_model.resid)
+[out]: Residual mean: -2.31112163493e-16
+print 'Residual variance:', np.var(fama_model.resid)
+[out]: Residual variance: 0.000205113416293
 </pre>
 
 <h3>Homoskedasticity</h3>
@@ -304,7 +311,9 @@ plt.xlabel('x value')
 plt.ylabel('residual')
 plt.show()
 </pre>
+
 <img class="aligncenter size-full wp-image-2206" src="https://github.com/ShallweXiaowei/Tutorials/blob/master/Tutorial%20Series/Introduction%20to%20Financial%20Python/images/Tutorial10-variance.png?raw=true" alt="" width="600" height="450" />
+
 As seen from the chart, the residuals' variance doesn't increase with X. The three outliers do not change our conclusion. Although we can plot the residuals for simple regression, we can't do this for multiple regression, so we use statsmodels to test for heteroskedasticity:
 
 <pre class="prettyprint linenums">from statsmodels.stats import diagnostic as dia
@@ -316,4 +325,5 @@ print 'p-value: ', het[-1]
 No heteroskedasticity is detected at the 95% significance level.
 
 <h2>Summary</h2>
+
 In this chapter we have introduced multiple linear regression, F test and residual analysis, which are the fundamentals of linear models. In the next chapter we will introduce some linear algebra, which are used in modern portfolio theory and CAPM.

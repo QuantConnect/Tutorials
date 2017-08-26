@@ -1,104 +1,161 @@
-<h2>Introduction</h2>
-In the past tutorials we introduced Python, statistics and linear algebra. From this chapter we are going to introduce theories in finance. We start from<strong>Modern Portfolio Theory</strong>, which contains risk-averse assumption, mean-variance analysis, asset allocation and portfolio optimization.
-Risk-averse Assumption
+﻿<h2>Introduction</h2>
+This chapter is about the Modern Portfolio Theory, which suggests how investors should spread their wealth across various assets to minimize risk and maximize return.
 
-We assume that all the investors are <strong>risk-averse</strong>, which means for every incremental risk, we ask for additional return on that. For example, if we have two asset A and B. A has 50% probability to pay $200 at the end of the year and 50% probability to pay 0. B has 50% probability to pay $400 at the end of the year and 50% probability to pay $-200(which mean ask for $200 from you). which one would you take?
+This chapter is mathematically intense, so don't feel demoralized if you don't understand it on your first reading.
 
-The expected return of A is
-\[E(A) = 0.5*200 + 0.5*0 = 100 \]
-And that for B is also
-\[E(B) = 0.5*400 + 0.5*(-200) = 100 \].
-While the standard deviation for A is
-\[\sigma_A = \sqrt{(0.5((200-100)^2 + (0-100)^2))} = 100 \] and that for B is
-\[\sigma_A = \sqrt{(0.5((400-100)^2 + (-200-100)^2))} = 300 \]
-Which asset would we choose?
-If you are an risk seeker, you may choose asset B, because you can potentially get a higher return.
-In modern portfolio theory, we assume that all the investors are risk-averse and rational. Under such assumption, all of the investor would prefer asset A and no one would choose asset B.
-<h2>Portfolio Variance</h2>
-<h3>Expected Return</h3>
-Let's consider two asset, A and B, with expected rate of return \(r_a\) and \(r_b\), and variance \(Var_a\) and \(Var_b\).
-If we buy A and B to construct a portfolio, what's the expected return and variance of the portfolio?
-The answer is that it depends on the weight of the two assets. If we have \(w_A\) on A and \(w_b\) on B, our expected return on the portfolio can be calculated by:
-\[E(p) = w_Ar_a + w_br_b\]
-Note that \(w_A + w_B\) must equal to 1 because they are the weight.
-<h3>Covariance and Correlation</h3>
-Before we move to portfolio variance, we need first to learn <strong>Covariance and Correlation</strong>.
-If asset A has a series of Daily return\((A_1,A_2,A_3...A_n)\), and asset B has a series of Daily return \((B_1,B_2,B_3...B_n)\), then the covariance of A and B is given by:
-\[Cov_{a,b} = \frac{1}{n}\sum_{i = 1}^{n}(A_i - \bar{A})(B_i - \bar{B})\]
-equivalently, we can also write it in the following form:
-Cov_{a,b} = E[(A-E[A])(B-E[B])]
-What's the economic intuition behind this? Let's image that if whenever A has a return higher than its mean return, B also has a return above its mean, the covariance would be a positive number. Otherwise if whenever A has a return above the mean, B has a return below the mean, the covariance would be a negative number. In other words, covariance is a measure of the joint variability of two random variable.
-However, different assets has different magnitude of variance. In order to compare them, we introduce the concept of <strong>correlation</strong>. We usually represent it by \(r\)
-\[r_{AB} = \frac{Cov_{AB}}{\sigma_A \sigma_B}\]
-Correlation takes value from the range [-1,1]. We would not prove it mathematically here, but you are encouraged to do so if you are interested in it.
-It worths mentioning that correlation value of both 1 and -1 mean linear relations. If random variable A and B have a 1 correlation, there must exist a \(\beta\) so that \(A = \beta B\), where \(\beta\) is a positive number. If the correlation is -1, \(\beta\) is a negative number.
-<h3>Two-asset Portfolio Variance</h3>
-Now let's consider Portfolio Variance. We have already learned the formula for variance, we can start from:
-\[Var[r_p] = E[(r_p - E[(r_p)])^2]\]
-\[= E[((w_Ar_A+w_Br_B)-(w_A\mu_A +w_B\mu_B))^2]\]
-\[= E[(w_A(r_A-\mu_A)+w_B(r_B-\mu_B))^2]\]
-\[= E[w_A^2(r_A - \mu_A)^2 + w_B^2(r_B-\mu_B)^2+2w_Aw_B(r_A-\mu_A)(r_B - \mu_B)]\]
-\[=w_A^2Var[r_A] + w^2Var[r_B] + 2w_Aw_BCov(r_A,r_B)\]
-Feel free to skip the middle process if you are not comfortable with math. You just need to remember the last term: The portfolio variance equals to the weight-square multiply the variance for each asset and them plus 2 times each weight times the covariance of the two assets.
+<h2>Risk Aversion</h2>
 
-As we introduce the relationship between covariance and correlation, we can also write the above equation into:
+In portfolio theory, the riskiness of an asset is often measured by the variance (or standard deviation) of its returns. Risk-averse investors do not want their wealth to fluctuate wildly.
 
-\[Var[r_p]=w_A^2Var[r_A] + w^2Var[r_B] + 2w_Aw_Br_{AB}\sigma_A\sigma_B\]
+Risk aversion can be illustrated with a simple example. Which of the following assets do you prefer?
+<ul>
+    <li>Asset A pays $200 or $0 with 50% probability each.</li>
+    <li>Asset B pays $400 or &minus;$200 (i.e. you lose $200) with 50% probability each.</li>
+</ul>
 
-From the equation, we can see that if the two stock have a very low or even negative correlation, the portfolio variance can be minimized. This is the so called <strong>Diversification</strong>.
-<h3>N-asset Portfolio Variance</h3>
-The formula to compute the Variance of an N-asset portfolio is much more complex, we need to use linear algebra to represent it. However, it follows the same rule as two-asset portfolio: if we add an asset that has low or negative correlation with others assets in this portfolio, the portfolio variance can be decreased.
-If we have N asset with \((r_1,r_2,r_3,...,r_n)\) expected rate of return, and the weight for each asset is \((he w_1,w_2,w_3,...,w_n)\), the portfolio variance can be calculated by:
-\[\sigma^2 = w^T\Sigma w\]
-Where
-\[\Sigma = \begin{pmatrix}
-Cov_{11}&amp;Cov_{12}&amp;Cov_{13}&amp;...&amp;Cov_{1n}\\
-Cov_{21}&amp;Cov_{22}&amp;Cov_{23}&amp;...&amp;Cov_{2n}\\
-Cov_{31}&amp;Cov_{32}&amp;Cov_{33}&amp;...&amp;Cov_{3n}\\
-...&amp;...&amp;...&amp;...&amp;...\\
-Cov_{n1}&amp;Cov_{n2}&amp;Cov_{n3}&amp;...&amp;Cov_{nn}
-\end{pmatrix}\]
-To calculate the variance, we are doing matrix multiplication \(1\times n \times n \times n \times n \times 1 = 1 \times 1\). That's why we ends up with a number, which is our portfolio variance.
+The expected payouts of A and B are:
+\[ \mathbb{E}(A) = 0.5 \times 200 + 0.5 \times 0 = 100 \]
+\[ \mathbb{E}(B) = 0.5 \times 400 + 0.5 \times (-200) = 100 \]
+
+The standard deviation of their payouts are:
+\[ \sigma_A = \sqrt{0.5(200-100)^2 + 0.5(0-100)^2} = 100 \]
+\[ \sigma_A = \sqrt{0.5(400-100)^2 + 0.5(-200-100)^2} = 300 \]
+
+If you are an risk seeker, you may choose asset B, because you can potentially get a higher payout. Modern Portfolio Theory assumes that investors prefer asset A since both assets have the same expected payout, but asset A has less risk.
+
+<h2>Portfolio</h2>
+
+Suppose we invest some fraction \(w_1, w_2, \dots, w_n\) of our wealth in <em>n</em> risky assets (labelled 1 to <em>n</em>), and the remainder \(w_0\) in a riskless asset such as cash in a bank account.
+
+Clearly \(w_0 + w_1 + \dots + w_n = 1\) since our wealth comprises all those assets.
+
+Let \(R_0, R_1, \dots, R_n\) be the respective asset returns, then our portfolio return is
+\[ R_P = w_0 R_0 + w_1 R_1 + \dots + w_n R_n \]
+
+Alternatively, we can eliminate \(w_0\) to get
+\[ R_P - R_0 = w_1 (R_1 - R_0) + \dots + w_n (R_n - R_0) \]
+
+Our <strong>expected</strong> portfolio return is
+\[ \mathbb{E}(R_P) = w_0 R_0 + w_1 \mathbb{E}(R_1) + \dots + w_n \mathbb{E}(R_n) \]
+
+Note that \( \mathbb{E}(R_0) \) is simply \( R_0 \) since the riskless return is known with certainty, by definition.
+
+<a name="correlation">
+<h3>Correlation</h3>
+
+Before computing portfolio risk, we need to first understand covariance and correlation. They measure the linear relationship between two random variables.
+
+The covariance of two random variables X and Y is defined as
+\[ \text{Cov}(X, Y) = \mathbb{E} \left[ (X-\mathbb{E}(X)) (Y-\mathbb{E}(Y)) \right] = \mathbb{E} (XY) - \mathbb{E}(X) \mathbb{E}(Y) \]
+
+The correlation of X and Y, which is always between &minus;1 and 1, is their covariance after being standardized:
+\[ \text{Corr}(X, Y) = \text{Cov} \left( \frac{X-\mathbb{E}(X)}{\sigma_X}, \frac{Y-\mathbb{E}(Y)}{\sigma_Y} \right) = \frac{\text{Cov}(X, Y)}{\sigma_X \sigma_Y} \]
+
+<h3>Risk</h3>
+
+Now we are ready to compute portfolio risk, as measured by the variance of portfolio returns:
+\[ \text{Var}(R_P) = \text{Var}(w_0 R_0 + w_1 R_1 + \dots + w_n R_n) \]
+
+Recall that \( \text{Var}(X + c) = \text{Var}(X) \) if <em>c</em> is a known constant, so the term \( w_0 R_0 \) involving the riskless return can be omitted. It will be convenient to use <a href="https://www.mathsisfun.com/algebra/sigma-notation.html" target="_blank">sigma notation</a>:
+
+\[ \begin{align*}
+\text{Var}(R_P) &= \text{Var} \left( \sum_{k=1}^n w_k R_k \right) \\
+&= \mathbb{E} \left[\left( \sum_{k=1}^n w_k R_k - \mathbb{E} \left( \sum_{k=1}^n w_k R_k \right) \right)^2\right] \\
+&= \mathbb{E} \left[\left( \sum_{k=1}^n w_k \, \left( R_k - \mathbb{E}(R_k) \right) \right)^2\right]
+\end{align*} \]
+
+So we must square a sum of <em>n</em> terms... How?
+\[ \left( \sum_{k=1}^n u_k \right)^2 = (u_1 + \dots + u_n) \, (u_1 + \dots + u_n) \]
+
+If we expand the brackets on the right hand side, every term has the form \( u_i u_j \) where <em>i</em> and <em>j</em> can be 1, 2, ... , or <em>n</em>.
+\[ \left( \sum_{k=1}^n u_k \right)^2 = \sum_{i=1}^n \sum_{j=1}^n u_i u_j \]
+
+Therefore
+\[ \begin{align*}
+\text{Var}(R_P) &= \mathbb{E} \left[ \sum_{i=1}^n \sum_{j=1}^n w_i \, w_j \, (R_i - \mathbb{E}(R_i)) (R_j - \mathbb{E}(R_j)) \right] \\
+&= \sum_{i=1}^n \sum_{j=1}^n w_i \, w_j \, \text{Cov}(R_i, R_j)
+\end{align*} \]
+
+The last step arises from the definition of <a href="#correlation">covariance</a>. The only thing left is to express portfolio risk in matrix notation:
+
+\[ \text{Var}(R_P) = \bm{w}^T \Sigma \bm{w} \]
+where
+\[ \bm{w} = \begin{pmatrix} w_1 \\ \vdots \\ w_n \end{pmatrix} \qquad
+\Sigma = \begin{bmatrix}
+\text{Cov}(R_1, R_1) & \text{Cov}(R_1, R_2) & ... & \text{Cov}(R_1, R_n) \\
+\text{Cov}(R_2, R_1) & \text{Cov}(R_2, R_2) & ... & \text{Cov}(R_2, R_n) \\
+\vdots & \vdots & \ddots & \vdots \\
+\text{Cov}(R_n, R_1) & \text{Cov}(R_n, R_2) & ... & \text{Cov}(R_n, R_n)
+\end{bmatrix} \]
+
+<h3>Intuition</h3>
+
+How can we make sense of portfolio risk? Consider a simple case with a riskless asset and only <em>n</em> = 2 risky assets.
+
+\[ \text{Var}(R_P) = w_A^2 \text{Var}(R_A) + w_B^2 \text{Var}(R_B) + 2w_A w_B \text{Cov}(R_A, R_B) \]
+
+Portfolio risk can be reduced by choosing two assets that are negatively correlated. This is the benefit of diversification.
+
 <h2>Mean-Variance Analysis</h2>
-Is the portfolio with the lowest standard deviation the portfolio we are seeking? The answer is no. Don't forget we have <strong>risk-free rate</strong>, which has zero variance(of course there is no absolute risk-free asset, but we usually consider U.S. treasure as risk-free).
 
-Because of risk-free, we will not hold any risky portfolio that has a expected return lower than the risk-free. It worths noting that we say 'risky portfolio' here instead of 'risky asset' because we can possible hold an risky asset in our portfolio if this asset has negative correlation with other asset in our portfolio.
+We now try to find a portfolio \( \bm{w} = (w_1, ..., w_n) \) that minimizes risk and maximizes return.
 
-there are infinite kinds of possible portfolio combination, but you can't diversify all of the portfolio risk away. In other words, you can't construct a portfolio with zero standard deviation with any combination of risky asset, otherwise there would be arbitrage opportunity.
-
-If we plot all the assets and all the portfolio on a chart, with standard deviation on the horizontal axis and expected return on the vertical axis, we will get a chart below:
+The chart below has risk (standard deviation of returns) on the horizontal axis and expected return on the vertical axis. The 10 black points represent individual stocks, while each green / blue point is a portfolio of stocks:
 
 <img class="aligncenter size-full wp-image-2154" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/Unknown-2.png" alt="" width="1184" height="592" />
-We simulated this graph using 10 stocks. In the real world there are far more than 10 assets, but the graph would be almost the same shape. Before demonstrating how to simulate this, we should totally understand it.
 
-The black curve is called <strong>efficient frontier</strong>. More accurately speaking, only the part above the blue dash-line is. Efficient frontier means that for a given expected return, you can't achieve a standard deviation lower than that of the portfolio on the efficient frontier. In other words, all of the assets and possible portfolio should lie inside the efficient frontier.
+Notice that all points (i.e. stocks and portfolios) are enclosed by a hyperbola, known as the <strong>efficient frontier</strong>.
 
-Start from the definition of efficient frontier, we know that for any given standard deviation, the portfolio on the efficient frontier has a higher return, so we would only choose the portfolio on the efficient frontier. However, we have infinite number of portfolios on the efficient frontier, which one should we choose? Now we need to understand the concept of <strong>Sharpe Ratio</strong>.
-<h3>Sharpe Ratio</h3>
-Sharpe Ratio is defined by:
-\[SR = \frac{r_i - rf}{\sigma_i}\]
-The economical intuition behind Sharpe ratio is that given a small incremental risk, how much return excess the risk-free can I get. Of course everyone want a higher return on a small incremental, thus sharpe ratio is the standard for us to find the optimized portfolio.
+All portfolios on the efficient frontier have the maximum expected return for a given level of risk, if we only consider portfolios of risky stocks. Can we achieve higher returns by including a riskless asset? Yes.
 
-In this chart, the sharpe ratio of each asset is exactly the slope of the straight line across the asset and the risk-free rate. Starting from the risk-free rate point, we find the tangent line of the efficient frontier. This is why the optimized portfolio is also called <strong>'tangent portfolio'</strong>.
-
-From the formula calculating the portfolio variance, we know that adding more stocks with negative correlation will decrease the risk. However, we are not looking for the portfolio with lowest variance, but the portfolio with highest sharpe ratio.
-<img class="aligncenter size-full wp-image-2155" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/Unknown2.png" alt="" width="1184" height="592" />
-The blue curve in the chart above is the efficient frontier formed by the portfolios with only three stocks: IBM, GE, and PFE. Obviously the portfolios on this curve has lower sharpe ratio than the portfolios on the original efficient frontier. As the number of stocks increases, the efficient frontier becomes better.
 <h3>Capital Market Line</h3>
-The basic assumption of modern portfolio theory is that all of the investors are rational, which means all of they are smart enough to construct the optimized portfolio, or market portfolio. Under this assumption, all of the investors should hold the same proportion of risky assets. Since the investors are rational, they will only hold the portfolios on the red line above, which is called <strong>Capital Market Line<strong>. The reason is straightforward: all the portfolios on the capital market line has the same sharpe ratio, and this is the highest sharpe ratio this world can achieve. </strong></strong>
 
-The way to construct a portfolio on the capital market line is to hold risk-free asset and the market portfolio. Remember the variance for two-asset portfolio:
-\[\sigma^2 =w_A^2Var[r_A] + w^2Var[r_B] + 2w_Aw_BCov(r_A,r_B)\]
-If A is the market portfolio and B is risk-free asset, since both the variance of risk-free and the covariance of risk-free with any other asset is zero, the formula becomes:
-\[\sigma_p =w_A\sigma_A \]
-This formula tells us that the portfolio standard deviation has linear relation with the weight of market portfolio. In other words, if I put 50% weight in the risk-free asset and 50% weight in the market portfolio, my portfolio will lie on the center of the capital market line.
+The black line on the chart is the Capital Market Line (CML). It is <strong>tangent</strong> to the efficient frontier and cuts the vertical axis at the riskfree return. The point of tangency represents the so-called <strong>market portfolio</strong>.
 
-Under the rational assumption, if my portfolio is difference with yours, the reason must be that we put different weight in the risk-free asset and market portfolio. However, we hold the same market portfolio, which means the proportion of the risky asset in the market portfolio are the same. It's very important to make this clear.
+Every point on the CML represents a portfolio comprising the market portfolio and riskless asset in some proportion. Why?
 
-What if I extend the the market capital line to achieve a higher return at a higher risk? There is another import assumption that there is no transaction cost, which means I can borrow money as much as I wish. In order to achieve a higher return, we need to borrow risk-free asset, or short risk-free, and invest the proceeds together with our own money to the market portfolio. Under such circumstance, our weight on risk-free is negative, and the weight on the market portfolio is larger than 1.
+Suppose some fraction <em>w</em> of a CML portfolio is the market portfolio, and the remainder (1 &minus; <em>w</em>) is the riskless asset. Then its expected return is
+
+\[ \mathbb{E} (R_{\text{CML}}) = w \mathbb{E} (R_{\text{market}}) + (1-w) R_0 \]
+
+Since there is only <em>n</em> = 1 risky asset, the variance of the CML portfolio return is
+
+\[ \text{Var} (R_{\text{CML}}) = w^2 \text{Var} (R_{\text{market}}}) \]
+
+Taking square roots, we deduce that a CML portfolio's risk is proportional to the market portfolio's weight:
+
+\[ \sigma_{\text{CML}} = w \sigma_{\text{market}} \]
+
+This equation can be used to eliminate <em>w</em> in the calculation of expected return:
+
+\[ \mathbb{E} (R_{\text{CML}}) = R_0 + \frac{\mathbb{E} (R_{\text{market}}) - R_0}{\sigma_{\text{market}}} \sigma_{\text{CML}} \]
+
+This proves that when \( \mathbb{E} (R_{\text{CML}}) \) is plotted against \( \sigma_{\text{CML}} \), we will obtain a straight line: the CML.
+
+<h3>Portfolio Selection</h3>
+
+Why is the CML significant? For any given level of risk, CML portfolios have a higher return than those on the efficient frontier, so investors should select any of them according to their risk tolerance.
+
+Risk-averse investors may give the riskless asset a larger weight in their portfolio. Risk-seeking investors may borrow money (i.e. sell the riskless asset) to invest >100% of their wealth in the market portfolio.
+
+Regardless of their risk tolerances, all investors should hold the same stocks in the same proportion in the market portfolio. In other words, they should not pick stocks according to their risk tolerance.
+
+<h3>Diversification</h3>
+
+What happens to the efficient frontier and hence the CML if we have only 3 stocks (IBM, GE, and PFE) instead of 10?
+
+<img class="aligncenter size-full wp-image-2155" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/Unknown2.png" alt="" width="1184" height="592" />
+
+Since we have fewer stocks to choose from, it's not too surprising that our maximum expected return is lower for any level of risk.
+
+This demonstrates why diversification is often said to be a "free lunch" in investing.
+
 <h2>Summary</h2>
-In this chapter we learned modern portfolio theory. It's important to understand here is that by holding difference stocks we can achieve a portfolio with higher sharpe ratio, and all the investors holds the same amount of risky asset, which is the market portfolio. In the next chapter we will introduce asset pricing with CAPM, which is the most classical asset pricing model.
+
+In this chapter we have learnt about the modern portfolio theory. It recommends investors to spread their wealth across many asset classes to maximize returns while minimizing risk. In the next chapter, we will introduce asset pricing with CAPM, which is a classical asset pricing model.
+
 <h2>Algorithm:</h2>
-Mean-variance analysis is usually used to optimize portfolios with several strategies. Here we treat Dow 30 stocks as strategy and designed an algorithm to test mean-variance analysis:
+
+Mean-variance analysis is used to optimize portfolios with several strategies. Here we treat Dow 30 stocks as strategy and designed an algorithm to test mean-variance analysis:
 
 <script src='https://www.quantconnect.com/terminal/backtest.js?sid=71761bc8ce01e7c81b5ea91f54a82640' ></script>
