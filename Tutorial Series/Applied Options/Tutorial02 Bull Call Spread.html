@@ -24,7 +24,7 @@ plt.ylabel('payoff',fontsize = 15)
 plt.title('Bull Call Spread Payoff at Expiration',fontsize = 20)
 plt.grid(True)
 </pre>
-<img src="images/bull_call_spread.png" alt="bull call spread payoff”/>
+<img src="images/bull_call_spread.png" alt="bull call spread strategy payoff"/>
 From the payoff plot we can see, the maximum profit of the strategy is the difference between call option strike price sold and call option strike price purchased minus the difference between buying lower strike call premium and selling higher strike call premium.
 <h2>Implementation</h2>
 Step 1: First, you need to initialize the algorithm including set the start date, end date and the cash required. Then use <code>option.SetFilter(-6, 6, timedelta(30), timedelta(60))</code> to filter the candidate contracts which expire in 30 days to 60 days from now on. The strike price range involves both ITM and OTM options. Then we get the option chains of GOOG.
