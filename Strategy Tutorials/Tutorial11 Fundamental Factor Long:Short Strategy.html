@@ -6,7 +6,7 @@ The paper strategy used three factors together to rank stocks: value, quality an
 
 Value: The most commonly used measure for value is P/B ratio(price-to-book value). Intuitively, the stocks with high P/B ratio are likely to be overpriced, and those stocks are labeled as growth stock. On the other hand, the stocks with low P/B value are considered to be value stocks. Following this logic, we use book value per share as a measure for value in our algorithm: the stocks with high book value per share rank high.
 
-Quality: quality is a comprehensive factor. The paper used total profits over asset, gross margins, and free cash flow over assets. For simplicity, we used only operation margin as our quality factor. Here we assume that the companies with high operation margin are profitable, and their stocks are the quality ones.
+Quality: Quality is a comprehensive factor. The paper used total profits over asset, gross margins, and free cash flow over assets. For simplicity, we used only operation margin as our quality factor. Here we assume that the companies with high operation margin are profitable, and their stocks are the quality ones.
 
 Momentum: The paper strategy is quarterly rebalanced, so it used recent one-year return, three-month and returns around earning events as measures for momentum. While our algorithm is monthly rebalanced, we simply use recent monthly return as our momentum factor.
 
