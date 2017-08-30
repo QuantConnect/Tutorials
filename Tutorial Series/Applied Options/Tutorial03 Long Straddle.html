@@ -21,7 +21,7 @@ plt.title('Long Straddle Payoff',fontsize = 20)
 plt.grid(True)
 </pre>
 <img src="images/long_straddle.png" alt="long straddle strategy payoff"/>
-Given this plot, if the stock price moves sharply at the expiration either up or down, the Long Straddle will collect positive profit. the potential profit is unlimited on the upside because the stock price can rise indefinitely. On the downside, the potential profit is substantial, because the stock price can fall to zero. The potential loss is limited to the premium of both call and put options. The maximum loss will be reached if the stock price is exactly equal to the strike price at expiration. Both options will expire worthlessly.
+Given this plot, if the stock price moves sharply at the expiration either up or down, the Long Straddle will collect positive profit. the potential profit is unlimited on the upside because the stock price can rise indefinitely. On the downside, the potential profit is substantial, because the stock price can fall to zero. The potential loss is limited to the premium of both call and put options. The maximum loss will be reached if the stock price is exactly equal to the strike price at expiration. Both options will expire worthless.
 <h2>Implementation</h2>
 Step 1: Initialize your algorithm and filter the contract. Here we choose the time to expiration between 30 to 60 days from now on.
 <pre class="prettyprint linenums">def Initialize(self):
@@ -56,8 +56,6 @@ self.Buy(self.call.Symbol ,1)
 self.Buy(self.put.Symbol ,1)
 </pre>
 <h2>Summary</h2>
-There are three possible outcomes at expiration for the Long Straddle strategy. If the stock price is at the strike price of a long straddle at expiration, then both the call and the put become worthless and no stock position is created. If the stock price is above the strike price at expiration, the put expires worthless, the long call is exercised, the stock is purchased at the strike price and a long stock position is created. If the stock price is below the strike price at expiration, the call expires worthless, the long put is exercised, the stock is sold at the strike price and a short stock position is created. Here we buy GOOG put and call options strike at 820. At the expiration, the share price of GOOG rises to 930 then the call option
-
-In this algorithm, we buy GOOG put and call options strike at 820. At the expiration, the share price of GOOG rises to 930 then the call option is exercised and the put options become worthless. After expiration, we hold long stock positions for 100 shares.
+There are three possible outcomes at expiration for the Long Straddle strategy. If the stock price is at the strike price at expiration, then both the call and the put become worthless and no stock position is created. If the stock price is above the strike price at expiration, the put option expires worthless, the long call is exercised, the stock is purchased at the strike price and a long stock position for is created. If the stock price is below the strike price at expiration, the call expires worthless, the long put is exercised, the stock is sold at the strike price and a short stock position is created. In this algorithm, the undelying asset is GOOG stock. We purchase both the $820 put and the $820 call at time 0. At the expiration, the share price of GOOG rises to 930 then the call option is exercised and the put options become worthless. After expiration, we hold long position for 100 shares of GOOG stock.
 <h2>Algorithm</h2>
 <script src='https://www.quantconnect.com/terminal/backtest.js?sid=b89e54b1cc51a64ddd72506ff683a1ac'></script>
