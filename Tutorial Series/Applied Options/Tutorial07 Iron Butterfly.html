@@ -58,8 +58,7 @@ plt.ylabel('payoff',fontsize = 15)
 plt.title('Iron Butterfly Strategy Payoff',fontsize = 20)
 plt.grid(True)
 </pre>
-<img class="alignnone size-full wp-image-2672" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/09/iron_butterfly.png" alt="" width="1187" height="886" />
-
+<img src="images/iron_butterfly.png" alt="iron butterfly strategy payoff"/>
 From the payoff plot, the maximum gain is simply the net credit you received when you buy and sell 4 options. This occurs if the stock price is exactly the same as the strike price of ATM options. In this condition, all options expire worthless and you keep all premiums received. We can see the Iron Butterfly has more narrow structures than the Iron Condor. However, the profit can be higher than with the Iron Condor as you receive more premium by selling ATM options than OTM options.
 
 The maximum loss occurs if the underlying price is either below the OTM put strike or above the OTM call strike. In these two conditions, two puts or two calls are exercised and the other two options expire worthless.
