@@ -44,7 +44,7 @@ payoff_short_put = [min(premium_atm_put, -(k_atm-i-premium_atm_put)) for i in pr
 payoff_short_call = [min(premium_atm_call, -(i-k_atm-premium_atm_call)) for i in price]
 # payoff for the long call position
 payoff_long_call = [max(-premium_otm_call, i-k_otm_call-premium_otm_call) for i in price]
-# payoff for Long Iron Condor Strategy
+# payoff for Iron Butterfly Strategy
 payoff = np.sum([payoff_long_put,payoff_short_put,payoff_short_call,payoff_long_call], axis=0)
 plt.figure(figsize=(20,15))
 plt.plot(price, payoff_long_put, label = 'Long Put',linestyle='--')
