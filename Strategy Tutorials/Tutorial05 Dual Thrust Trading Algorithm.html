@@ -43,9 +43,6 @@ This system is a reversal system, so if the investor holds a short position when
                 self.SetHoldings(self.syl, -1)</pre>
 <h2>Conclusion</h2>
 We tested this strategy on the S&amp;P 500 ETF SPY from 2004 to 2017. During the backtesting period, SPY resulted in a Sharpe Ratio of 0.906 and the drawdown is 25%.  As expected the strategy works well in a trending market. The strategy seemed to detect most of the market turning points and beat the market from 2009 to 2017.
-
-&nbsp;
-
 This is just a basic implementation and the parameters K1 and K2 are fixed. The strategy can be further extended to Futures and Forex markets. When K1 is smaller than k2, buy signals are prone to trigger and vice versa. To improve the model we can apply technical indicators to judge the trend of price and adjust the value of two parameters dynamically and apply risk control in the position sizing.
 <h2>Algorithm</h2>
 Backtest result for ETF: SPY from 2004 to 2017
