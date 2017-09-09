@@ -1,0 +1,110 @@
+<h2>Definition</h2>
+Iron Butterfly is an option strategy which involves four option contracts. All options have the same expiration date. The order of strike for four contracts is A &gt; B &gt; C.
+<table class="table qc-table">
+<thead>
+<tr>
+<th> Position</th>
+<th>Strike</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Buy 1 OTM put</td>
+<td> A</td>
+</tr>
+<tr>
+<td>Sell 1 ATM put</td>
+<td> B</td>
+</tr>
+<tr>
+<td>Sell 1 ATM call</td>
+<td> B</td>
+</tr>
+<tr>
+<td>Buy 1 OTM call</td>
+<td> C</td>
+</tr>
+</tbody>
+</table>
+Similar to the Iron Condor, Iron Butterfly is a limited risk, limited profit trading strategy. It profits from lower volatility meaning that traders gain profits from this strategy if the stock price changes within a small range. Iron Butterfly has a more narrow range for the price to move up or down compared with Iron Condor.
+<h2>Payoff</h2>
+<pre class="prettyprint linenums">price = np.arange(700,950,1)
+k_atm = 830 # the strike price of ATM call &amp; put
+k_otm_put = 800 # the strike price of OTM put
+k_otm_call = 860 # the strike price of OTM call
+premium_otm_put = 2 # the premium of OTM put
+premium_atm_put = 7 # the premium of ATM put
+premium_atm_call = 8 # the premium of ATM call
+premium_otm_call = 1 # the premium of OTM call
+# payoff for the long put position
+payoff_long_put = [max(-premium_otm_put, k_otm_put-i-premium_otm_put) for i in price]
+# payoff for the short put position
+payoff_short_put = [min(premium_atm_put, -(k_atm-i-premium_atm_put)) for i in price]
+# payoff for the short call position
+payoff_short_call = [min(premium_atm_call, -(i-k_atm-premium_atm_call)) for i in price]
+# payoff for the long call position
+payoff_long_call = [max(-premium_otm_call, i-k_otm_call-premium_otm_call) for i in price]
+# payoff for Long Iron Condor Strategy
+payoff = np.sum([payoff_long_put,payoff_short_put,payoff_short_call,payoff_long_call], axis=0)
+plt.figure(figsize=(20,15))
+plt.plot(price, payoff_long_put, label = 'Long Put',linestyle='--')
+plt.plot(price, payoff_short_put, label = 'Short Put',linestyle='--')
+plt.plot(price, payoff_short_call, label = 'Short Call',linestyle='--')
+plt.plot(price, payoff_long_call, label = 'Long Call',linestyle='--')
+plt.plot(price, payoff, label = 'Iron Butterfly',c='black')
+plt.legend(fontsize = 20)
+plt.xlabel('Stock Price at Expiry',fontsize = 15)
+plt.ylabel('payoff',fontsize = 15)
+plt.title('Iron Butterfly Strategy Payoff',fontsize = 20)
+plt.grid(True)
+</pre>
+<img class="alignnone size-full wp-image-2672" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/09/iron_butterfly.png" alt="" width="1187" height="886" />
+
+From the payoff plot, the maximum gain is simply the net credit you received when you buy and sell 4 options. This occurs if the stock price is exactly the same as the strike price of ATM options. In this condition, all options expire worthless and you keep all premiums received. We can see the Iron Butterfly has more narrow structures than the Iron Condor. However, the profit can be higher than with the Iron Condor as you receive more premium by selling ATM options than OTM options.
+
+The maximum loss occurs if the underlying price is either below the OTM put strike or above the OTM call strike. In these two conditions, two puts or two calls are exercised and the other two options expire worthless.
+<h2>Implementation</h2>
+Step 1: Initialize your algorithm which includes setting the start date and end date, setting the cash and implement the coarse selection of option contracts.
+<pre class="prettyprint linenums">def Initialize(self):
+	self.SetStartDate(2017, 02, 01)
+	self.SetEndDate(2017, 03, 31)
+	self.SetCash(300000)
+	equity = self.AddEquity("GOOG", Resolution.Minute)
+	option = self.AddOption("GOOG", Resolution.Minute)
+	self.symbol = option.Symbol
+	option.SetFilter(-10, 10, timedelta(0), timedelta(30))
+	# use the underlying equity GOOG as the benchmark
+	self.SetBenchmark(equity.Symbol)
+</pre>
+Step 2: Break the candidate contracts into the call and put options.
+<pre class="prettyprint linenums">def TradeOptions(self,optionchain):
+    for i in optionchain:
+        if i.Key != self.symbol: continue
+	chain = i.Value
+	# filter the call and put options from the contracts
+	call = [i for i in chain if i.Right == 0]
+	put = [i for i in chain if i.Right == 1]
+</pre>
+Step 3: Sort the call and put options according to their strike price respectively. <code>option.SetFilter(-10, 10, timedelta(0), timedelta(30))</code> helps us choose 21 call options and 21 put options which expire within 30 days from now on.Then for call option, the first 10 contracts are in the money, the last 10 contracts are out of the money. The middle one is at the money option. For put options, the first 10 contracts are out of the money, the last 10 contracts are in the money.
+<pre class="prettyprint linenums">call_contracts = sorted(call,key = lambda x: x.Strike)
+put_contracts = sorted(put,key = lambda x: x.Strike)
+if len(call_contracts) == 0 or len(put_contracts) == 0 : continue
+</pre>
+Step 4: Find the specific contracts to trade. At the money options have the minimum absolute value of the difference between the underlying price and the strike price.
+<pre class="prettyprint linenums"># Sell 1 ATM Put
+self.atm_put = sorted(put_contracts,key = lambda x: abs(chain.Underlying.Price - x.Strike))[0]
+self.Sell(self.atm_put.Symbol ,1)
+# Sell 1 ATM Call
+self.atm_call = sorted(call_contracts,key = lambda x: abs(chain.Underlying.Price - x.Strike))[0]
+self.Sell(self.atm_call.Symbol ,1)
+# Buy 1 OTM Call
+self.otm_call = call_contracts[-1]
+self.Buy(self.otm_call.Symbol ,1)
+# Buy 1 OTM Put
+self.otm_put = put_contracts[0]
+self.Buy(self.otm_put.Symbol ,1)
+</pre>
+<h2>Summary</h2>
+In this algorithm, on 04/03/2017, the share price of Google is $832.8. We buy OTM put(strike = $805) at $2, OTM call(strike = $860) and sell an ATM call and an ATM put. At the expiry 04/21/2017, the share price is $841.53. The ATM call is exercised and the other 3 options expire worthless. As we hold the short position of ATM call, after expiration we hold 100 short positions of GOOG stock.
+<h2>Algorithm</h2>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=f5baccbefeb4e376cc87dce808155e43'></script>
