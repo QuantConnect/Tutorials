@@ -1,5 +1,4 @@
-﻿<h2>Introduction</h2>
-This chapter is about the Modern Portfolio Theory, which suggests how investors should spread their wealth across various assets to minimize risk and maximize return.
+﻿The Modern Portfolio Theory (MPT) suggests how investors should spread their wealth across various assets to minimize risk and maximize return.
 
 This chapter is mathematically intense, so don't feel demoralized if you don't understand it on your first reading.
 
@@ -21,7 +20,7 @@ The standard deviation of their payouts are:
 \[ \sigma_A = \sqrt{0.5(200-100)^2 + 0.5(0-100)^2} = 100 \]
 \[ \sigma_A = \sqrt{0.5(400-100)^2 + 0.5(-200-100)^2} = 300 \]
 
-If you are an risk seeker, you may choose asset B, because you can potentially get a higher payout. Modern Portfolio Theory assumes that investors prefer asset A since both assets have the same expected payout, but asset A has less risk.
+If you are an risk seeker, you may choose asset B, because you can potentially get a higher payout. MPT assumes that investors prefer asset A since both assets have the same expected payout, but asset A has less risk.
 
 <h2>Portfolio</h2>
 
@@ -39,14 +38,13 @@ Our <strong>expected</strong> portfolio return is
 \[ \mathbb{E}(R_P) = w_0 R_0 + w_1 \mathbb{E}(R_1) + \dots + w_n \mathbb{E}(R_n) \]
 
 Note that \( \mathbb{E}(R_0) \) is simply \( R_0 \) since the riskless return is known with certainty, by definition.
-
-<a name="correlation">
+<a name="correlation"></a>
 <h3>Correlation</h3>
 
 Before computing portfolio risk, we need to first understand covariance and correlation. They measure the linear relationship between two random variables.
 
 The covariance of two random variables X and Y is defined as
-\[ \text{Cov}(X, Y) = \mathbb{E} \left[ (X-\mathbb{E}(X)) (Y-\mathbb{E}(Y)) \right] = \mathbb{E} (XY) - \mathbb{E}(X) \mathbb{E}(Y) \]
+\[ \text{Cov}(X, Y) = \mathbb{E} \left[ (X-\mathbb{E}(X)) (Y-\mathbb{E}(Y)) \right] \]
 
 The correlation of X and Y, which is always between &minus;1 and 1, is their covariance after being standardized:
 \[ \text{Corr}(X, Y) = \text{Cov} \left( \frac{X-\mathbb{E}(X)}{\sigma_X}, \frac{Y-\mathbb{E}(Y)}{\sigma_Y} \right) = \frac{\text{Cov}(X, Y)}{\sigma_X \sigma_Y} \]
@@ -59,9 +57,9 @@ Now we are ready to compute portfolio risk, as measured by the variance of portf
 Recall that \( \text{Var}(X + c) = \text{Var}(X) \) if <em>c</em> is a known constant, so the term \( w_0 R_0 \) involving the riskless return can be omitted. It will be convenient to use <a href="https://www.mathsisfun.com/algebra/sigma-notation.html" target="_blank">sigma notation</a>:
 
 \[ \begin{align*}
-\text{Var}(R_P) &= \text{Var} \left( \sum_{k=1}^n w_k R_k \right) \\
-&= \mathbb{E} \left[\left( \sum_{k=1}^n w_k R_k - \mathbb{E} \left( \sum_{k=1}^n w_k R_k \right) \right)^2\right] \\
-&= \mathbb{E} \left[\left( \sum_{k=1}^n w_k \, \left( R_k - \mathbb{E}(R_k) \right) \right)^2\right]
+\text{Var}(R_P) &amp;= \text{Var} \left( \sum_{k=1}^n w_k R_k \right) \\
+&amp;= \mathbb{E} \left[\left( \sum_{k=1}^n w_k R_k - \mathbb{E} \left( \sum_{k=1}^n w_k R_k \right) \right)^2\right] \\
+&amp;= \mathbb{E} \left[\left( \sum_{k=1}^n w_k \, \left( R_k - \mathbb{E}(R_k) \right) \right)^2\right]
 \end{align*} \]
 
 So we must square a sum of <em>n</em> terms... How?
@@ -72,8 +70,8 @@ If we expand the brackets on the right hand side, every term has the form \( u_i
 
 Therefore
 \[ \begin{align*}
-\text{Var}(R_P) &= \mathbb{E} \left[ \sum_{i=1}^n \sum_{j=1}^n w_i \, w_j \, (R_i - \mathbb{E}(R_i)) (R_j - \mathbb{E}(R_j)) \right] \\
-&= \sum_{i=1}^n \sum_{j=1}^n w_i \, w_j \, \text{Cov}(R_i, R_j)
+\text{Var}(R_P) &amp;= \mathbb{E} \left[ \sum_{i=1}^n \sum_{j=1}^n w_i \, w_j \, (R_i - \mathbb{E}(R_i)) (R_j - \mathbb{E}(R_j)) \right] \\
+&amp;= \sum_{i=1}^n \sum_{j=1}^n w_i \, w_j \, \text{Cov}(R_i, R_j)
 \end{align*} \]
 
 The last step arises from the definition of <a href="#correlation">covariance</a>. The only thing left is to express portfolio risk in matrix notation:
