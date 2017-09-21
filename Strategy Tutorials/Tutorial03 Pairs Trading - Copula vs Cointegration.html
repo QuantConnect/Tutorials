@@ -282,28 +282,36 @@ After selection of trading pairs and the best-fitted copulas, we take the follow
  	<li>During the 12 months' rolling formation period, daily close prices are used to calculate the daily log returns for the pair of ETFs and then compute Kendall's rank correlation.</li>
  	<li>Estimate the marginal distribution functions of log returns of X and Y, which are ecdf_x and ecdf_y separately.</li>
  	<li>Plug Kendall's tau into copula parameter estimation functions to get the value of theta.</li>
- 	<li>Run linear regression over the two log return series. The coefficient is used to determine how many shares of X and Y to buy and sell. For example, if the coefficient is 2, for every X share that is bought or sold, 2 units of Y are sold or bought.</li>
+ 	<li>Run linear regression over the two price series. The coefficient is used to determine how many shares of stock X and Y to buy and sell. For example, if the coefficient is 2, for every X share that is bought or sold, 2 units of Y are sold or bought.</li>
 </ol>
 <pre class="prettyprint linenums">def _set_signal(self):
-    history = self.History(self.lookbackdays,Resolution.Daily)
-    # generate the log return series of paired stocks
+	history = self.History(self.lookbackdays,Resolution.Daily)
+	# generate the log return series of paired stocks
     # logreturn_trade is a dictionary to store the history log return series of paired stocks each trading day
-    logreturn_trade={}
+    price = {}
+    logreturn_trade = {}
     for j in range(len(self.syl)):
         close = []
         for slice in history:
             bar = slice[self.syl[j]]
             close.append(bar.Close)
+        price[self.ticker[j]] = close
         logreturn_trade[self.ticker[j]] = np.diff(np.log([float(z) for z in close]))
+
     x, y = logreturn_trade[self.ticker[0]], logreturn_trade[self.ticker[1]]
-    # estimate Kendall'rank correlation
+
+    # estimate Kendall'rank correlation each trading day
     tau = kendalltau(x, y)[0]
-    # estimate the copula parameter: theta
+
+    # etstimate the copula parameter: theta
     self.theta = self._parameter(self.copula, tau)
+
     # simulate the empirical distribution function for returns of two paired stocks
     self.ecdf_x, self.ecdf_y  = ECDF(x), ECDF(y)
     # run linear regression over the two history return series
-    self.coef = stats.linregress(x,y).slope
+    ols = linear_model.LinearRegression()
+    self.coef = ols.fit(np.array(price[self.ticker[0]]).reshape(-1,1), np.array(price[self.ticker[1]])).coef_
+
 </pre>
 Finally during the trading period, each day we convert today's returns to u and v by using empirical distribution functions ecdf_x and ecdf_y. After that, two mispricing indexes are calculated every trading day by using the estimated copula C.  The algorithm constructs short positions in X and long positions in Y on the days that \(MI_{Y|X}&lt;0.05\) and \(MI_{X|Y}&gt;0.95\). It constructs short position in Y and long positions in X on the days that \(MI_{Y|X}&gt;0.95\) and \(MI_{X|Y}&lt;0.05\).
 <pre class="prettyprint linenums">def OnData(self,data):
@@ -348,8 +356,6 @@ At the start of each month, we generate the log price series of two ETFs with th
 For equities X and Y, we run linear regression over the log price series and get the coefficient β.
 
 \[spread_t=\log(price_t^y)-\beta \log(price_t^x)\]
-
-&nbsp;
 <h3>Step 2: Compute the Threshold</h3>
 <div class="page" title="Page 5">
 <div class="layoutArea">
@@ -402,26 +408,28 @@ The value of mean and standard deviation are calculated from the rolling format
 <tbody>
 <tr>
 <td style="text-align: center;">Copula</td>
-<td style="text-align: center;">307</td>
-<td style="text-align: center;">94.4%</td>
-<td style="text-align: center;">0.727</td>
-<td style="text-align: center;">14.6%</td>
+<td style="text-align: center;">248</td>
+<td style="text-align: center;">1027%</td>
+<td style="text-align: center;">0.82</td>
+<td style="text-align: center;">12.9%</td>
 </tr>
 <tr>
 <td style="text-align: center;">Cointegration</td>
-<td style="text-align: center;">114</td>
-<td style="text-align: center;">31.37%</td>
+<td style="text-align: center;">39</td>
+<td style="text-align: center;">14.6%</td>
 <td style="text-align: center;">0.33</td>
-<td style="text-align: center;">33.6%</td>
+<td style="text-align: center;">11.7%</td>
 </tr>
 </tbody>
 </table>
 Ultimately pairs trading intends to capture the price divergence of two correlated assets through mean reversion. Our results demonstrate that the copula approach for pairs trading is superior to the conventional cointegration method because it is based on the probability of the dependence structure, vs cointegration which relies on simple linear regression variance from normal pricing. We found through testing the performance of the copula method less sensitive to the starting parameters. Because the cointegration method relies on standard distribution and the ETF pairs had low volatility there were few trading opportunities.
-Generally, ETFs are not very volatile and so mean-reversion did not provide many trading opportunities. There are only 114 trades during 5 years for cointegration method.
+
+Generally, ETFs are not very volatile and so mean-reversion did not provide many trading opportunities. There are only 39 trades during 5 years for cointegration method.
+
 It is observed that the use of copula in pairs trading provides more trading opportunities as it does not require any rigid assumptions[ref]Liew R Q, Wu Y. Pairs trading: A copula approach[J]. Journal of Derivatives &amp; Hedge Funds, 2013, 19(1): 12-30.[/ref].
 <h2>Backtest</h2>
 Backtest for copula method
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=70b5e83ab4769061de72e444ca8e072c'></script>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=ec8d510e7b213b2f7bdf535fcd08ddf4'></script>
 
 Backtest for cointegration method
 <script src='https://www.quantconnect.com/terminal/backtest.js?sid=aaffc843fcd213ebd82e10a241b40bc2'></script>

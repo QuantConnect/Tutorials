@@ -59,7 +59,7 @@ plt.ylabel('payoff',fontsize = 15)
 plt.title('Long Iron Condor Strategy Payoff',fontsize = 20)
 plt.grid(True)
 </pre>
-<h2><img class="alignnone size-full wp-image-2660" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/08/iron_condor.png" alt="" width="1187" height="886" /></h2>
+<img src="images/iron_condor.png" alt="iron condor strategy payoff"/>
 Here the strike price is A(750), B(760), C(850) and D(860). From the payoff plot, the maximum profit all come from the options premium because the deeper OTM options are cheaper than the less deep ones. It is reached when the stock price is between higher put strike and lower call strike. They are two short positions. In this condition, all the options expire worthless.  The maximum loss of Iron Condor is reached when the stock price is lower than the lowest strike A, then the two call options become worthless, the two puts are in the money. For the other condition, the stock price is higher than the highest strike D.Consequently, The two call options are in the money but the two puts expire worthless.
 <h2>Implementation</h2>
 Step 1: Initialize your algorithm which involves setting the start date and the end date, setting the cash for your algorithm and implement the coarse selection of option contracts.

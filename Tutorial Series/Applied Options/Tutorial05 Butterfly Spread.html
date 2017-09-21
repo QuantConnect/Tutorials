@@ -57,7 +57,7 @@ plt.ylabel('payoff',fontsize = 15)
 plt.title('Long Call Butterfly Spread Payoff',fontsize = 20)
 plt.grid(True)
 </pre>
-<img class="alignnone size-full wp-image-2651" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/08/butterfly_spread.png" alt="" width="1187" height="886" />
+<img src="images/butterfly_spread.png" alt="butterfly strategy strategy payoff"/>
 <h2>Implementation</h2>
 Step 1: Initialize your algorithm including setting the start date and the end date, setting the cash and implement a coarse selection of option contract. <code>SetFilter(-9, 9, timedelta(30), timedelta(60))</code> helps us choose the contracts which expire in 30 to 60 days from now on. Since ITM call strike and OTM call strike are symmetrical with ATM call strike. For the strike parameter, the first parameter is the minimum strike rank relative to market price,  the second parameter is the maximum strike rank relative to market price. The rank of ATM contract is 0. Here we need to choose 2 numbers which are symmetrical with 0.
 <pre class="prettyprint linenums">def Initialize(self):

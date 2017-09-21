@@ -44,7 +44,7 @@ payoff_short_put = [min(premium_atm_put, -(k_atm-i-premium_atm_put)) for i in pr
 payoff_short_call = [min(premium_atm_call, -(i-k_atm-premium_atm_call)) for i in price]
 # payoff for the long call position
 payoff_long_call = [max(-premium_otm_call, i-k_otm_call-premium_otm_call) for i in price]
-# payoff for Long Iron Condor Strategy
+# payoff for Iron Butterfly Strategy
 payoff = np.sum([payoff_long_put,payoff_short_put,payoff_short_call,payoff_long_call], axis=0)
 plt.figure(figsize=(20,15))
 plt.plot(price, payoff_long_put, label = 'Long Put',linestyle='--')
@@ -58,8 +58,7 @@ plt.ylabel('payoff',fontsize = 15)
 plt.title('Iron Butterfly Strategy Payoff',fontsize = 20)
 plt.grid(True)
 </pre>
-<img class="alignnone size-full wp-image-2672" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/09/iron_butterfly.png" alt="" width="1187" height="886" />
-
+<img src="images/iron_butterfly.png" alt="iron butterfly strategy payoff"/>
 From the payoff plot, the maximum gain is simply the net credit you received when you buy and sell 4 options. This occurs if the stock price is exactly the same as the strike price of ATM options. In this condition, all options expire worthless and you keep all premiums received. We can see the Iron Butterfly has more narrow structures than the Iron Condor. However, the profit can be higher than with the Iron Condor as you receive more premium by selling ATM options than OTM options.
 
 The maximum loss occurs if the underlying price is either below the OTM put strike or above the OTM call strike. In these two conditions, two puts or two calls are exercised and the other two options expire worthless.
