@@ -84,7 +84,6 @@ def Initialize(self):
 # Use SPY as a benchmark for market open
     self.Schedule.On(self.DateRules.MonthStart(self.spy), self.TimeRules.AfterMarketOpen(self.spy,5), Action(self.rebalance))
 Our rebalanced method is straightforward: We first liquidate the stocks that are no longer in the long/short list, and then assign equal weight to the stocks we are going to long or short.
-<pre class="prettyprint linenums">
 def rebalance(self):
 # if this month the stock are not going to be long/short, liquidate it.
     long_short_list = self.long + self.short
