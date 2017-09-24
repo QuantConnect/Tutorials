@@ -1,14 +1,16 @@
-<h2>Introduction</h2>
-This tutorial provides basic introduction to Python language. If you are new to python, we suggest that you should read through this tutorial and run the code snippets so that you can go through to our following topics. If you are an advanced python user, please feel free to skip this chapter.
-<h2>Basic Variable Type</h2>
-Python variables are used to store values for programming use. The basic variable types in python we covered in this tutorial include: strings, integers, floating point numbers and booleans.
+﻿This tutorial provides a basic introduction to the Python programming language. If you are new to Python, you should run the code snippets while reading this tutorial. If you are an advanced Python user, please feel free to skip this chapter.
 
-Strings in python are identified as a contiguous set of characters represented in either single quotes (' ') or double quotes(" ").
+<h2>Basic Variable Types</h2>
+
+The basic types of variables in Python are: strings, integers, floating point numbers and booleans.
+
+Strings in python are identified as a contiguous set of characters represented in either single quotes (' ') or double quotes (" ").
 <pre class="prettyprint linenums">my_string1 = 'Welcome to'
 my_string2 = "QuantConnect"
 print my_string1 + ' ' + my_string2
 [out]: Welcome to QuantConnect
 </pre>
+
 An integer is a round number with no values after the decimal point.
 <pre class="prettyprint linenums">my_int = 10
 print my_int
@@ -16,6 +18,7 @@ print my_int
 print type(my_int)
 [out]: type 'int'
 </pre>
+
 The built-in function int() can convert a string into an integer.
 <pre class="prettyprint linenums">my_string = "100"
 print type(my_string)
@@ -24,6 +27,7 @@ my_int = int(my_string)
 print type(my_int)
 [out]: type 'int'
 </pre>
+
 A floating point number, or a float, is a real number in mathematics. In Python we need to include a value after a decimal point to define it as a float.
 <pre class="prettyprint linenums">my_float = 1.0
 print type(my_float)
@@ -32,21 +36,24 @@ my_int = 1
 print type(my_int)
 [out]: type 'int'
 </pre>
-As you can see above, if we don't include a decimal value, the variable would be defined as an integer.
-The built-in function float() can convert a string or an integer into a float.
+
+As you can see above, if we don't include a decimal value, the variable would be defined as an integer. The built-in function float() can convert a string or an integer into a float.
 <pre class="prettyprint linenums">my_string = "100"
 my_float = float(my_string)
 print type(my_float)
 [out]: type 'float'
 </pre>
-A boolean, or bool, is a binary variable. Its value can only be either True or False. It is useful when we do some logic operations, which would be covered in our next chapter.
+
+A boolean, or bool, is a binary variable. Its value can only be True or False. It is useful when we do some logic operations, which would be covered in our next chapter.
 <pre class="prettyprint linenums">my_bool = False
 print my_bool
 [out]: False
 print type(my_bool)
 [out]: type 'bool'
 </pre>
+
 <h2>Basic Math Operations</h2>
+
 The basic math operators in python are demonstrated below:
 <pre class="prettyprint linenums">
 print "Addition ", 1+1
@@ -61,109 +68,137 @@ Multiplication  6
 Division  5
 exponent 8
 </pre>
-Please note that if you use an integer to divide an integer, you would end up getting an integer.
+
+In Python 2, if you divide an integer by another integer, you will get an integer.
 <pre class="prettyprint linenums">
 print 1/3
 [out]: 0
 print 1.0/3
 [out]: 0.3333333333
 </pre>
-In order to get the float result you need, remember to define either your numerator or denominator as float type.
+
+To get a float instead of an integer, either the numerator or denominator must be a float as shown above. This isn't a problem in Python 3 since 1/3 will return 0.3333333333
+
 <h2>Data Collections</h2>
+
 <h3>List</h3>
-The list is an ordered collection of values. A list is mutable, which means you can change a list's value without changing the list itself. Creating a list is simply putting different comma-separated values between square brackets.
+
+A list is an <strong>ordered</strong> collection of values. A list is mutable, which means you can change a list's value without changing the list itself. Creating a list is simply putting different comma-separated values between square brackets.
 <pre class="prettyprint linenums">my_list = ['Quant', 'Connect', 1,2,3]
 print my_list
 [out]: ['Quant', 'Connect', 1, 2, 3]
 </pre>
-The values in a list are called "elements". We can access to list elements by indexing. Python index starts from 0. Please note that If you have a list of n length, the index of the first element will be 0, and that of the last element will be n-1. By the way, the length of a collection can be obtained by the built-in function len().
+
+The values in a list are called "elements". We can access list elements by indexing. Python index starts from 0. So if you have a list of length <em>n</em>, the index of the first element will be 0, and that of the last element will be <em>n</em> &minus; 1. By the way, the length of a list can be obtained by the built-in function len().
 <pre class="prettyprint linenums">my_list = ['Quant', 'Connect', 1,2,3]
 print len(my_list)
 [out]: 5
 print my_list[0]
 [out]: Quant
-print my_list[len(my_list) -1]
+print my_list[len(my_list) - 1]
 [out]: 3
 </pre>
+
 You can also change the elements in the list by accessing an index and assigning a new value.
 <pre class="prettyprint linenums">my_list = ['Quant','Connect',1,2,3]
 my_list[2] = 'go'
 print my_list
 [out]: ['Quant', 'Connect', 'go', 2, 3]
 </pre>
-If you wish to add or remove an element from a list, you can use the methods of the list objects: list.append() and list.remove().
-<pre class="prettyprint linenums">my_list = ['Quant']
-my_list.append('Connect')
-print my_list
-[out]: ['Quant', 'Connect']
-my_list.remove('Quant')
-print my_list
-[out]: ['Connect']
-</pre>
-A list can also be sliced by using colon(:).
+
+A list can also be sliced with a colon:
 <pre class="prettyprint linenums">my_list = ['Quant','Connect',1,2,3]
 print my_list[1:3]
 [out]: ['Connect', 1]
 </pre>
-The slice starts from the first element indicated, but excludes the last element indicated.
-We can selected all the values after a certain one:
+
+The slice starts from the first element indicated, but excludes the last element indicated. Here we select all elements starting from index 1, which refers to the second element:
 <pre class="prettyprint linenums">print my_list[1:]
 [out]: ['Connect', 1, 2, 3]
 </pre>
-And all the values before a certain one:
+
+And all elements up to but excluding index 3:
 <pre class="prettyprint linenums">print my_list[:3]
 [out]: ['Quant', 'Connect', 1]
 </pre>
+
+If you wish to add or remove an element from a list, you can use the append() and remove() methods for lists as follows:
+<pre class="prettyprint linenums">my_list = ['Hello', 'Quant']
+my_list.append('Hello')
+print my_list
+[out]: ['Hello', 'Quant', 'Hello']
+my_list.remove('Hello')
+print my_list
+[out]: ['Quant', 'Hello']
+</pre>
+
+When there are repeated instances of "Hello", the first one is removed.
+
 <h3>Tuple</h3>
+
 A tuple is a data structure type similar to a list. The difference is that a tuple is immutable, which means you can't change the elements in it once it's defined. We create a tuple by putting comma-separated values between parentheses.
 <pre class="prettyprint linenums">my_tuple = ('Welcome','to','QuantConnect')
 </pre>
+
 Just like a list, a tuple can be sliced by using index.
 <pre class="prettyprint linenums">my_tuple = ('Welcome','to','QuantConnect')
 print my_tuple[1:]
 [out]: ('to', 'QuantConnect')
 </pre>
+
 <h3>Set</h3>
-A set is an unordered collection with no duplicate elements. The built-in function set() can be used to create sets.
+
+A set is an <strong>unordered</strong> collection with <strong>no duplicate</strong> elements. The built-in function set() can be used to create sets.
 <pre class="prettyprint linenums">stock_list = ['AAPL','GOOG','IBM','AAPL','IBM','FB','F','GOOG']
 stock_set = set(stock_list)
 print stock_set
 [out]: set(['GOOG', 'FB', 'AAPL', 'IBM', 'F'])
 </pre>
-Set is an easy way to remove duplicated elements from a list.
+Set is an easy way to remove duplicate elements from a list.
+
 <h3>Dictionary</h3>
-Dictionary is one of the most important data structures in python. Unlike sequences, which are indexed by a range of numbers, dictionaries are indexed by keys, which can be either strings or numbers. A dictionary is an unordered set of keys: value pairs, with the requirement that the keys are unique. We create a dictionary by placing a comma-separated list of key:value pair within the braces.
-<pre class="prettyprint linenums">my_dic = {'AAPL':'AAPLE', 'FB':'FaceBook', 'GOOG':'Alphabet'}
+
+A dictionary is one of the most important data structures in Python. Unlike sequences which are indexed by integers, dictionaries are indexed by keys which can be either strings or floats.
+
+A dictionary is an <strong>unordered</strong> collection of key : value pairs, with the requirement that the keys are unique. We create a dictionary by placing a comma-separated list of key : value pairs within the braces.
+<pre class="prettyprint linenums">my_dic = {'AAPL': 'Apple', 'FB': 'FaceBook', 'GOOG': 'Alphabet'}
 </pre>
+
 After defining a dictionary, we can access any value by indicating its key in brackets.
 <pre class="prettyprint linenums">print my_dic['GOOG']
 [out]: Alphabet
 </pre>
+
 We can also change the value associated with a specified key:
 <pre class="prettyprint linenums">my_dic['GOOG'] = 'Alphabet Company'
 print my_dic['GOOG']
 [out]: Alphabet Company
 </pre>
+
 The built-in method of the dictionary object dict.keys() returns a list of all the keys used in the dictionary.
 <pre class="prettyprint linenums">print my_dic.keys()
 [out]: ['GOOG', 'AAPL', 'FB']
 </pre>
+
 <h2>Common String Operations</h2>
-From the content above, we know the a string is essentially an immutable sequence. It can be sliced as tuple by index.
+
+A string is an immutable sequence of characters. It can be sliced by index just like a tuple:
 <pre class="prettyprint linenums">my_str = 'Welcome to QuantConnect'
 print my_str[8:]
 [out]: to QuantConnect
 </pre>
-There are many methods associated with the string object. We can use string.count() method to count a character in a string, use string.find() to return the index of a specific character, and use string.replace() to replace characters.
+
+There are many methods associated with strings. We can use string.count() to count the occurrences of a character in a string, use string.find() to return the index of a specific character, and use string.replace() to replace characters.
 <pre class="prettyprint linenums">
-print 'Counting the number of e appears in this sentence'.count('e')
-[out]: 7
+print "Counting the number of e's in this sentence".count('e')
+[out]: 6
 print 'The first time e appears in this sentence'.find('e')
 [out]: 2
 print 'all the a in this sentence now becomes e'.replace('a','e')
 [out]: ell the e in this sentence now becomes e
 </pre>
-The most commonly used method dealing with strings is string.split(). This method will split the string by the indicated character and return a list. Here we use a real example when we build a QC algorithm:
+
+The most commonly used method for strings is string.split(). This method will split the string by the indicated character and return a list:
 <pre class="prettyprint linenums">Time = '2016-04-01 09:43:00'
 splited_list = Time.split(' ')
 date = splited_list[0]
@@ -174,18 +209,22 @@ hour = time.split(':')[0]
 print hour
 [out]: 09
 </pre>
-When we debug an algorithm, we hope to replace part of the string by our variable. This is called string formatting.
-<pre class="prettyprint linenums">my_time = 'Hour: {}, Minute:{}'.format('09','43')
+
+We can replace parts of a string by our variable. This is called string formatting.
+<pre class="prettyprint linenums">my_time = 'Hour: {}, Minute: {}'.format(9, 43)
 print my_time
-[out]: Hour: 09, Minute:43
+[out]: Hour: 9, Minute: 43
 </pre>
-An alternative formatting way is to use '%' symbol.
-<pre class="prettyprint linenums">print 'the pi number is %f'%3.14
-[out]: the pi number is 3.140000
-print '%s to %s'%('Welcome','Quantconnect')
+
+Another way to format a string is to use the % symbol.
+<pre class="prettyprint linenums">print 'pi is %f' % 3.14
+[out]: pi is 3.140000
+print '%s to %s' % ('Welcome', 'Quantconnect')
 [out]: Welcome to Quantconnect
 </pre>
-Please note that '%s' indicates that this part should be string, similarly, '%f' for float and %i' for integer.
+
+%s is a placeholder that takes in a string. Similarly %f takes a float and %d takes an integer.
+
 <h2>Summary</h2>
-We have introduced the basic data types and data structures of python. It's important to keep practicing and playing with these data structures so that you can use them flexibly. In the next tutorial we will cover for/while loop and logical operations in python, which is an essential part of programming.
-<h2></h2>
+
+We have seen the basic data types and data structures in Python. It's important to keep practicing to become familiar with these data structures. In the next tutorial, we will cover for and while loops and logical operations in Python.

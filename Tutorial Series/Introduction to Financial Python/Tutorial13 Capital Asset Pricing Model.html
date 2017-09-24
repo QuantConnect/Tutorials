@@ -1,69 +1,92 @@
-In the last chapter we introduced modern portfolio theory and some very important concepts, which include portfolio variance, sharpe ratio, diversification, tangent portfolio, capital market line. In this chapter we will continue from the modern portfolio theory world and consider asset pricing.
-<h2>CAPM</h2>
-You maybe confused with the term 'asset pricing'. For any securities, 'price' and 'return' are the same thing, they just like the two faces of a coin. <strong>Capital Asset Pricing Model (CAPM)</strong> is the most classical model for asset pricing.
+﻿In the financial literature, you may hear terms like the "beta" or "market risk" of an asset. This chapter will explain where these terms come from and how they can be useful.
 
-Let's start from what we have learned.
+<h2>Capital Asset Pricing Model (CAPM)</h2>
+
+As we shall see later, the name "Asset Pricing" is a bit misleading because the CAPM tells us the expected return, rather than the price, of an asset.
+
+In the last chapter, we introduced the Capital Market Line (CML) shown in black:
 
 <img class="aligncenter size-full wp-image-2154" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/Unknown-2.png" alt="" width="1184" height="592" />
-In the last chapter we learned that all the investor should hold the securities on the capital market line(the red line above). We also know that all the assets on this line has the same sharpe ratio. for any two assets:
-\[SR =\frac{ r_i - r_f}{\sigma_i} = \frac{ r_j - r_f}{\sigma_j}\]
-This should also hold for the market portfolio, so we replace asset j with the market portfolio:
-\[SR =\frac{ r_i - r_f}{\sigma_i} = \frac{ r_m - r_f}{\sigma_m}\]
-We change the form of the above equation:
-\[r_i =r_f + \frac{\sigma_i}{\sigma_m} (r_m - r_f)\]
-We know that all the asset on the capital asset line is a two-asset portfolio consist with risk-free asset and market portfolio, thus the correlation of the portfolio i and the market portfolio must be 1 (perfect linear relation). We multiply the the numerator and the denominator of the second term at the same time:
-\[r_i =r_f + \frac{\rho \sigma_m\sigma_i}{\sigma_m^2} (r_j - r_j) = r_f + \frac{Cov_{i,m}}{Var_m} (r_j - r_j)\]
-If you are familiar enough with simple linear regression, you will found that If we set \(r_i-r_f\) as y, and \(r_m - r_f\) as x, the slope, or coefficient of this simple linear regression, \(\beta\), is:
-\[\beta = \frac{Cov_{i,m}}{Var_m}\]
-We use \(\beta\) to replace this term:
-\[r_i - r_f = \beta(r_m - r_f) + \epsilon\]
-This is the <strong>Capital Asset Pricing Model (CAPM)</strong>, where \(\alpha\) is the so called <strong> Jensen's alpha</strong> and \(\epsilon\) is the regression residual. In a Perfect CAPM world, all of the return can be explained by the model, so the \(\alpha\) should be zero.
-<h2>Beta</h2>
-In CAPM, beta is a synonym of 'risk'. This can be seen from the formula given below:
-\[\beta = \frac{\rho\sigma_m\sigma_p}{\sigma_m^2} = \frac{\rho\sigma_p}{\sigma_m}\]
-Under the CAPM assumption, All of the securities should lie on the capital allocation line, thus the correlation \(\rho\) should be 1. Beta represents the systematic risk that can not be diversified away because it is the exposure to the market.
 
-More straightforwardly, beta can be considered the relationship between the asset return and market return. If asset A has a beta of 1.2, that means when the market goes up 1%, the asset goes up 1.2%, and if the market goes down 1%, the asset would goes down 1.2%.
-<h3>Beta Computing in Practice</h3>
-The formula for the Capital Asset Pricing Model looks easy, but we have a lot of factors to consider when we use it in practice. We first need to choose the return period we use to computer the rate of return: We should use daily return, weekly return or monthly return? Then we need to consider the number of data points we use for the regression. If we use monthly return in the past one year to computer the beta, or use daily return to computer the beta in one month, neither of them make sense because the samples' size are too small.
+All investors should hold a portfolio on the CML, which is constructed by investing some fraction <em>w</em> of our wealth in the market portfolio and the remainder (1 &minus; <em>w</em>) in the riskless asset. So the return on a CML portfolio is
+\[ R = w R_{\text{market}} + (1-w) R_0 \]
 
-In the real world, beta is not unchanged for a given asset. The following plot is the daily rolling beta of GE stock with a 6-month rolling windows:
+If we let &beta; = w, then the equation above becomes
+\[ R - R_0 = \beta (R_{\text{market}} - R_0) \]
+
+Notice that &beta; is a measure of how sensitive our CML portfolio return is to the market return. Taking expectation on both sides results in the CAPM:
+\[ \mathbb{E}(R) - R_0 = \beta (\mathbb{E} (R_{\text{market}}) - R_0) \]
+
+Taking covariance on both sides instead yields
+\[ \text{Cov} (R - R_0, R_{\text{market}}) = \beta \text{Cov} (R_{\text{market}} - R_0, R_{\text{market}}) \]
+
+Now apply two basic facts about covariance:
+<ul>
+    <li>\( \text{Cov} (X + c, Y) = \text{Cov} (X, Y) \) where \( c \) is constant</li>
+    <li>\( \text{Cov} (X, X) = \text{Var} (X) \)</li>
+</ul>
+
+Hence we obtain
+\[ \beta = \frac {\text{Cov} (R, R_{\text{market}})} {\text{Var} (R_{\text{market}})} \]
+
+<h2>Computing &beta; in Practice</h2>
+
+While the Capital Asset Pricing Model is straightforward, applying it may not be. We first need to choose the timeframe for computing returns: should we use daily, weekly or monthly returns? Then we need to consider the number of data points available for linear regression. For example, if we compute beta using monthly returns in the past 1 year, then we only have 12 data points which is too few.
+
+Furthermore, the &beta; of an asset can change over time. The following plot is the daily rolling beta of GE stock with a 6-month rolling windows:
+
 <img class="aligncenter size-full wp-image-2161" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/Unknown-3.png" alt="" width="1156" height="558" />
-As you can see, the beta of this asset ranged approximately from 0.1 to 0.5, which is a very wide range! This is the reason why you need to be careful when using beta. It makes no sense to talk about beta without resolution and computing period.
+
+The &beta; of GE ranged from 0.1 to 0.5 approximately. This is why you need to be careful when using &beta;. It makes no sense to talk about &beta; without a timeframe in mind.
+
 The following graph is the rolling p-value of beta. The p-value stays close to zero most of the time. However, during some period it suddenly increased close to 0.1, which corresponds to a 90% confidence interval. This might be caused by some mispricing or market turmoil.
+
 <img class="aligncenter size-full wp-image-2164" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/Unknown-4.png" alt="" width="1163" height="558" />
-<h3>Market-neutral</h3>
-A portfolio is considered to be <strong>Market Neutral</strong> if it seeks to avoid the market risk. Some classical market-neutral strategies are pairs trading, beta-hedged equity portfolio and other derivatives strategies.
 
-Technically speaking, market neutral means totally the portfolio's beta is zero. This means the portfolio's return would not be affected by the market return. A market-neutral portfolio is usually construct by long/short because most of the fundamental assets have positive betas. Here we try to construct a simple market-neutral portfolio by hedging out beta.
+<h2>Market-Neutral</h2>
 
-We used Dow 30 companies as out stock universe. The idea is straightforward: we calculate the rolling beta of each stock, and find the stocks who's rolling beta is highly correlated with each other. If we can find the linear relationship between two rolling betas, we can cancel out the portfolio's beta by long and short.
+A portfolio is market-neutral if its <strong>&beta; is zero</strong>. In other words, the portfolio's returns are uncorrelated with market returns. We say that it has no "market risk". Some classical market-neutral strategies are pairs trading, beta-hedged equity portfolio and other derivatives strategies.
 
-Let's say we have stock A and stock B, given that:
-\[r_A = r_f + \beta_A(r_m - r_f)\]
-\[r_B = r_f + \beta_B(r_m - r_f)\]
-Although \(\beta_A\) and \(\beta_B\) are always changing, as long as we can find the linear relationship between them, we can construct a market-neutral portfolio. If:
-\[\beta_B = a + b\beta_A\]:
-Replacing \(\beta_B\) with \(\beta_A\):
-\[r_B = r_f = (a + b\beta_A)*(r_m - r_f)\]
-Let's allocate \(w_A\) on stock A and \(w_B\) on stock B, we only need to solve two linear equations:
-\[w_A + w_B = 1\]
-\[w_A + b*w_B = 0\]
-As you may noticed, we are not perfectly hedging here because the exists of the intercept \(\a\). If the significance level of \(\a\) is low or the value of it is small enough to be neglected, we can achieve our goal by just using two stocks. Otherwise we need to use three stocks to cancel out the intercept amount of the market risk. Anyway we by using two asset we have already hedged out most of the market risk exposure.
+We have daily returns of Dow 30 stocks from March 2012 to Jan 2015. For each stock, its &beta; on any given day is computed using the past 6 months' returns. As this 6-month window moves forward in time, &beta; will of course change.
 
-We used daily return data from March 2012 to Jan 2015, which is an approximately two year in sample period. After calculating the daily rolling beta with a 6-month rolling windows length, we drew the correlation chart of their rolling betas:
+Once we know how each stock's &beta; has changed over time, we can ask: which stocks' betas are correlated with each other? The table below shows the correlation between each stock's beta.
+
 <img src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/Unknown-5.png" alt="" width="1056" height="578" class="aligncenter size-full wp-image-2174" />
-We selected PG and KO stocks, who's rolling betas have a correlation of 0.95.
-We use OLS regression to find the relationship between two beta. The model shows that:
-\[\beta_{KO} = -0.0097 + 0.969\beta_{PG}\]
-With 57.98 t-stats score on beta and 0.87 r-squared. We confirm that there exist linear relationship.
-After solving the linear equations demonstrated above, we obtained the hedge weight:
-\[w_{KO} = -24\]
-\[w_{PG} = 25\]
-We scaled the weight by dividing all of the weights by 25, we got \(w_{KO} = -0.48\) and \(w_{PG} = 0.5\). We test this portfolio both in sample and out of sample, and it achieved a beta of 0.01 and -0.004. The two backtesting results are attached at the end.
+
+How can we construct a market-neutral portfolio? Consider two stocks A and B:
+\[ R_A = R_0 + \beta_A (R_{\text{market}} - R_0) \]
+\[ R_B = R_0 + \beta_B (R_{\text{market}} - R_0) \]
+
+Let's allocate <em>w</em> on stock A and (1 &minus; <em>w</em>) on stock B, then market neutrality means
+\[ w\beta_A + (1-w) \beta_B = 0 \qquad \Rightarrow \qquad
+   w = \frac{\beta_B}{\beta_B - \beta_A} \]
+
+As mentioned earlier, \(\beta_A\) and \(\beta_B\) will change with time, so will \(w\) in a market-neutral portfolio. However we can achieve market neutrality with constant \(w\) so long as \(\beta_A\) and \(\beta_B\) have a linear relationship:
+\[ \beta_A = m\beta_B + c \]
+
+Then eliminate \(\beta_A\) to get
+\[ w = \frac{\beta_B}{(1-m) \beta_B - c} \]
+
+If <em>c</em> &approx; 0 then <em>w</em> is roughly constant:
+\[ w = \frac{1}{1-m} \]
+
+Note: If <em>c</em> is signficant, then we need 3 stocks to get zero net beta. Usually 2 stocks are sufficient to cancel out most of the market risk.
+
+<h3>Example</h3>
+
+The 6-month rolling betas of PG and KO stocks have a correlation of 93%. The linear relationship between their betas is
+\[ \beta_{KO} = -0.0097 + 0.969 \beta_{PG} \]
+
+Therefore the market neutral weights are
+\[ w_{KO} = \frac{1}{1-0.969} = 32.3 \qquad w_{PG} = 1 - w_{KO} = -31.3 \]
+
+We tested this portfolio both in-sample (March 2012 to Jan 2015) and out-of-sample. It achieved a beta of 0.01 and -0.004 respectively. See the backtest below.
 
 <h2>Summary</h2>
-In this chapter we deduced the Capital Asset Pricing Model formula from the modern portfolio theory, and show some practice to build a market-neutral portfolio. In the next chapter we will expand CAPM into multi-factor models, which include the most commonly used Fama-French 3 factor and 5 factor models.
+
+This chapter has explained what market risk means in the context of CAPM, and how market risk can be reduced. In the next chapter we will generalize CAPM to multi-factor models, such as the Fama-French models.
+
 <h2>Algorihtm</h2>
+
 <script src='https://www.quantconnect.com/terminal/backtest.js?sid=8bac244b346cbd9bc3b39dca76192919'></script>
 <script src='https://www.quantconnect.com/terminal/backtest.js?sid=5c75197259238b36a6cea72832c9e709'></script>
