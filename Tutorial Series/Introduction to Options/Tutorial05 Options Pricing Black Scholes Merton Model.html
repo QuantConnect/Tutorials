@@ -1,176 +1,140 @@
 <h2>Introduction</h2>
-Last few chapters we introduced about the basic principles and mechanism of options trading. We already knew what an option contract is and basic relationship between call and options price. But how do these contracts traded in the exchange are being priced and where does the option premium come from? In the next few chapters, we will discuss the pricing of options.
-<h2>Stochastic Process</h2>
-In order to value the derivatives like options, the most significant part is to find a model to represent the underlying stock price so that we can price the options based on the underlying price.  We usually use the stochastic process to model the security price.
+In the last chapter, we modeled the stock price with the Geometric Brownian motion. Then the logarithm of return \(\text{ln}(S_T/S_0)\) follows the normal distribution \(N\left[(\mu-\sigma^2/2)T,\sigma^2T\right]\). It means the logarithm of stock price\(\text{ln}(S_T)\)follows the normal distribution \(N\left[\text lnS_0+(\mu-\sigma^2/2)T,\sigma^2T\right]\). Based on this basic assumption, in this chapter, we will talk about a famous option pricing model: Black Scholes Merton Model.
+<h2>Determinants of  Option Price</h2>
+In different kinds of asset pricing model like bond pricing, <span class="s1">enterprise valuation, </span>the most commonly used valuation method is to calculate the present value of the expected cash flows of that asset. But options have some characteristics that are different from the common asset. For example, the options value depends on its underlying assets. In addition, the cash flows on options are not constant in each time period but depend on the occurrence of specific events which are not predictable. In fact, the value of the option is determined by lots of variables.
+<ol>
+ 	<li><strong>the underlying price:</strong> Change in the value of the underlying asset is the most important factor which affects the options price. For the call option, holders can earn profit from the price rising and put option holders earn profits from the price decline. Therefore, call options become more valuable as the underlying prices increase while the put options will become less valuable.</li>
+ 	<li><strong>The volatility of the underlying asset:</strong> In tuition, volatility is a measure of the degree of fluctuation of the underlying stock price. It is a forward volatility, which means it is a prediction of how much the stock price of the underlying will move in the future over a certain period of time. The higher the predicted volatility is, the higher the probability that the underlying price will move a lot. Thus the greater will the value of the option is both for calls and puts. We will further discuss the different type of volatilities in the subsequent tutorials.</li>
+ 	<li><strong>The strike price of the option:</strong> Call options gain profit when stock prices greater than the strike, it is easy to understand that the higher the strike price is for the call option, the fewer profits the holder can get, the less valuable of the call option. Thus for the put options, options with higher strike price are more valuable.</li>
+ 	<li><strong>Time to expiration: </strong>If the current date is t, the expiration date of the option contract is T. Then the time to expiration is T-t. For v=both call and put options, the longer time to expiration means there are more changes for the function of stocks prices, and higher probability for the option holders to gain profits from price movement.</li>
+ 	<li><strong><strong>The risk-free interest rate: </strong></strong>As interest rates increase, the expected return required by investors from the stock tends to increase. On the other hand, the present value of discounted cash flow will decrease. Thus the increase in interest rate will increase the call option price and will decrease the put option price.</li>
+ 	<li><strong>The dividend yield: </strong>After the dividends paid, the share price of the stock will decrease. During the options holding period, the decline in underlying price is unfavorable for call options holder. Therefore, the increase in dividend yield will decrease the price of call options and increase the price of put options.</li>
+</ol>
+<h2>Factors in the BSM model</h2>
+After we get an intuition about affecting factors of options price. Now we will introduce the BSM option pricing model. The Black-Scholes model for pricing stock options was developed by Fischer Black, Myron Scholes and Robert Merton in the early 1970’s.
 
-First, you need to know what the stochastic process is. We say any variable that changes over time in an uncertain way follows a stochastic process. The price of a certain stock at a future time t is unknown at the present so it is a random variable \(S_t\). Then we can think of the movement path of the stock price is a stochastic process since\(S_t\) is a random variable at each time t in the future.
-<h3>1. Brownian motion</h3>
-Markov process is a special case of the stochastic process. It means that only the current value of a random variable is relevant for future prediction. In general, we usually assume that the stock price follows a Markov stochastic process, which means only the current stock price is relevant for predicting the future price, it is not correlated with the past price.
-<div class="page" title="Page 327">
+First, we introduce the factors in the model. For all the factors listed below, only volatility is not known.  There are many types of volatilities. Then which volatility should be used is a critical question in option pricing model. We will further discuss this part in the next few chapters.
+<table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2">Factors in the model</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> Stock Price</td>
+<td>S</td>
+</tr>
+<tr>
+<td> Strike Price</td>
+<td> K</td>
+</tr>
+<tr>
+<td> Time to Expiration</td>
+<td> T-t</td>
+</tr>
+<tr>
+<td> Interest Rates</td>
+<td> r</td>
+</tr>
+<tr>
+<td> Future Volatility of the underlying Stock</td>
+<td> σ</td>
+</tr>
+</tbody>
+</table>
+<div class="page" title="Page 58">
+<div class="layoutArea">
+<div class="column">
+<pre class="prettyprint linenums">class BsmModel:
+    def __init__(self, option_type, price, strike, interest_rate, expiry, volatility, dividend_yield=0):
+        self.s = price # Underlying asset price
+        self.k = strike # Option strike K
+        self.r = interest_rate # Continuous risk fee rate
+        self.q = dividend_yield # Dividend continuous rate
+        self.T = expiry # time to expiry (year)
+        self.sigma = volatility # Underlying volatility
+        self.type = option_type # option type "p" put option "c" call option
+</pre>
+There are some details we need to pay attention to about the input of BSM model. Firstly, the model works in continuous time, rather than discrete time. Therefore the risk-free rate r has to be modified to the continuous form. Secondly, the time to expiration should be converted to year. The volatility is the annual volatlity.
+<h2>Assumptions</h2>
+The market assumptions behind the Black–Scholes formula for pricing European options are as follows:
+<ol>
+ 	<li>The volatility of the underlying assets is constant over time</li>
+ 	<li>The underlying asset price follows lognormal distribution, this means that the log-returns of stock prices are normally distributed</li>
+ 	<li>The underlying asset can be traded continuously</li>
+ 	<li>The underlying stock does not pay dividends during the option's life. But the basic Black-Scholes model was later adjusted for dividends, here we demonstrate the later version with dividend yields.</li>
+ 	<li>There are no transaction costs or taxes</li>
+ 	<li>All securities are perfectly divisible, meaning that it is possible to buy any fraction of a share</li>
+ 	<li>The risk-free rate of interest, r, is constant and the same for all maturities</li>
+</ol>
+</div>
+<h2>Equations</h2>
+The derivation of the Black-Scholes model is far too complicated to present here, we only show the formula here. The basic principle is based on the idea of creating a portfolio of the underlying asset and the riskless asset with the same cash flows and hence the same cost as the option being valued. Then we get the Black–Scholes–Merton differential equation. The solutions to the differential equation are the Black-Scholes-Merton formulas for the price of European call and put options
+
+\[c = S_0N(d_1)-Ke^{-rT}N(d_2)\]
+
+\[p =Ke^{-rT}N(-d_2)- S_0N(-d_1)\]
+
+\[d_1=\frac{ln(S_0/K)+(r+\sigma^2/2)T}{\sigma\sqrt{T}}\]
+<div class="column">
+
+\[d_2=\frac{ln(S_0/K)+(r-\sigma^2/2)T}{\sigma\sqrt{T}}=d_1-\sigma\sqrt{T}\]
+<div class="page" title="Page 359">
 <div class="layoutArea">
 <div class="column">
 
-Brownian motion is a particular type of Markov stochastic process or we can think of it as a family of random variables {\(W_t\mid t\geq0} \)} indexed by time t. The one-dimensional Brownian motion is called Wiener Process. (Brownian motion is n-dimensional Wiener processes which mean each dimension is just a standard Wiener process). It has the following properties:
-<ol>
- 	<li>\({W_0=0\)</li>
- 	<li>For \(t\geq0\) and \(\Delta t\geq0\), the increment \(W_{t+\Delta t}-W_t\) is normally distributed with mean 0 and standard deviation \(\sqrt{\Delta t}\) .</li>
- 	<li>For any partitions \(0\leq t_1&lt;t_2&lt;\cdot\cdot\cdot &lt;t_n\), the increments \(W_{t_1}- W_{t_0},W_{t_2}-W_{t_1},\cdot\cdot\cdot, W_{t_n}-W_{t_{n-1}}\) are independent random variables.</li>
- 	<li>With probability 1, the function W(t) is continuous at t.</li>
-</ol>
-Intuitively understanding of the definition, Wiener process has independent and normally distributed increments and has continuous sample path.
+N(x) is the cumulative probability distribution function for a variable with a standard normal distribution. It can be calculated by the integral of the probability density function of standard normal distribution from 0 to x. In Python, you can use the <code>norm.pdf(x)</code> in spicy.stats library. For the following chart, we plot the probability density curve of the standard normal distribution. For example, N(-1) is the area of the left hand of the red line under the curve.
+<pre class="prettyprint linenums">import scipy.stats as sp
+mu = 0
+variance = 1
+x = np.linspace(mu-3*variance,mu+3*variance, 100)
+y = [sp.norm.pdf(i) for i in x]
+plt.plot(x,y)
+d = [-1]
+plt.plot(d*100,np.linspace(0,sp.norm.pdf(d), 100))
+</pre>
+<img class="alignnone wp-image-2055" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/n-1-1-300x198.png" alt="" width="356" height="235" />
+Then in our BSM model class, we will calculate the European call and put option prices by using BSM formula.
+<pre class="prettyprint linenums">def n(self, d):
+    # cumulative probability distribution function of standard normal distribution
+    return norm.cdf(d)
 
-Next, we simulate the Wiener process and plot the paths attempting to gain an intuitive understanding of a stochastic process. Each path is an independent Wiener process.
-<pre class="prettyprint linenums">import numpy as np
-import matplotlib.pyplot as plt
-%pylab inline
-def wiener_process(T, N):
-    """
-    T: total time
-    N: The total number of steps
-    """
-    W0 = 0
-    dt = T/float(N)
-    # simulate the increments by normal random variable generator
-    increments = np.random.normal(0, 1*np.sqrt(dt), steps)
-    W = [0] + list(np.cumsum(increments))
-    return W
-t = np.linspace(0.0, N*dt, N+1)
-plt.figure(figsize=(15,10))
-for i in range(5):
-    W = wiener_process(10, 1000)
-    plt.plot(t, W)
-    plt.xlabel('time')
-    plt.ylabel('W')
-    plt.grid(True)
+def dn(self, d):
+    # the first order derivative of n(d)
+    return norm.pdf(d)
+
+def d1(self):
+    d1 = (log(self.s / self.k) + (self.r - self.q + self.sigma ** 2 * 0.5) * self.T) / (self.sigma * sqrt(self.T))
+    return d1
+
+def d2(self):
+    d2 = (log(self.s / self.k) + (self.r - self.q - self.sigma ** 2 * 0.5) * self.T) / (self.sigma * sqrt(self.T))
+    return d2
+
+def bsm_price(self):
+    d1 = self.d1()
+    d2 = d1 - self.sigma * sqrt(self.T)
+    if self.type == 'c':
+        price = exp(-self.r*self.T) * (self.s * exp((self.r - self.q)*self.T) * self.n(d1) - self.k * self.n(d2))
+        return price
+    elif self.type == 'p':
+        price = exp(-self.r*self.T) * (self.k * self.n(-d2) - (self.s * exp((self.r - self.q)*self.T) * self.n(-d1)))
+        return price
+    else:
+        print "option type can only be c or p"
+
+a = BsmModel('c', 42, 35, 0.1, 90.0/365, 0.2)
+a.bsm_price()
 </pre>
 </div>
-</div>
-</div>
-<img class="alignnone size-full wp-image-2233" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/wiener-process.png" alt="" width="890" height="592" />
-<div class="page" title="Page 328">
-<div class="layoutArea">
-<div class="column">
-
-[ref]Hull J C. Options, futures, and other derivatives[M]. Pearson Education India, 2006.[/ref]In ordinary calculus,\(\text{d}x=a\ \text{d}t\) is used to indicate that\(\Delta x=a\Delta t\) as \( \Delta t\rightarrow0\). We use the similar notation here. The mean change per unit time for a stochastic process is known as the drift rate and the variance per unit time is known as the variance rate. We can write the derivative of Wiener process over time t in this form: \(dW_t\) with zero drift rate and 1 variance rate per unit time. If we extend the concept of Wiener process, we can get the generalized Wiener process in the form: \(\text d\ x_t=a\ \text d t+b\ \text dW_t\) which has non-zero constant drift rate and variance rate. If we write it as approximate discrete form as
-
-\[\Delta x=x_{t+\Delta t}-x_t=a\Delta t+b\epsilon\sqrt{\Delta t}\]
-
-Where ε follows the standard normal distribution N(0,1). Thus \(\Delta x\) has normal distribution with mean being \(a\Delta t\), variance being \(b^2\Delta t\). And because \(\Delta t\) is independent, from time 0 to time T, the change in the value of x is just the sum of \(\Delta x\) in each small time interval. It means that the change in the value of x follows the normal distribution \(N(aT,b^2T)\).
-<h3>2. Stochastic process followed by stock price</h3>
-Then we go back to the stock price. If we use the generalized Wiener process to model the stock price, for example, the share price of a stock is $30 now, then the percentage change in price from now to say the end of this year is normally distributed with constant mean and variance. But there is a problem that for normal distribution assumption of return, there is the possibility that the stock price will be negative this is unrealistic for stock prices. For example, this percentage change could be -1.1, which means the stock price at the end of the year is -$3.
-
-On the other hand, if the spot price is small for a stock, then it tends to have small increments in price over a given time interval, on the contrary, stocks with high prices tend to have much larger increments in price on the same interval. But Wiener process has a variance which depends on just the time interval but not on the price itself. Thus it is not appropriate to assume that a stock price follows a generalized Wiener process with constant drift rate and variance rate.
-
-In order to characterize the dynamics of a stock price process and fix this problem, we model the proportional increase in the stock price as follows(This kind of equation is often called the stochastic differential equation (SDE)):
+For a call option which expires in 90 days and no dividends paid, the underlying price is $42, the strike is $35, the risk-free rate is 0.1, the volatility is 0.2. The price of this option is $6.157.
 
 </div>
 </div>
 </div>
-<div class="page" title="Page 84">
-<div class="layoutArea">
-<div class="column">
-
-\[\text dS_t=\mu S_t\ \text d t+\sigma S_t\ \text dW_t \cdot\cdot\cdot\cdot\cdot\cdot(1)\]
-
-Where \(dS_t\) is the change in the stock price over a short time period from t to\(t+\Delta t\). μ is the drift term and can be deemed as the annual expected level of the stock return, σ is the annual volatility of the stock. Here \(dS_t\) at different time t are independent, which means today's price change is independent with tomorrows change. \(W_t\) is a standard Wiener process (1) we discussed above.
-<div class="page" title="Page 338">
-<div class="layoutArea">
-<div class="column">
-
-Now in the above equation, the drift and variance rate of stock price S is not only correlated with time t but also a function of both S itself and time t.
-
 </div>
-</div>
-</div>
-The discrete approximation form of (1) is
+<h2 class="page" title="Page 354"> Summary</h2>
+This tutorial discussed the factors affecting the options price and introduced a famous option pricing model including the input parameters, the assumptions and the formula.
 
-\[\Delta S=\mu S\Delta t+\sigma S\epsilon\sqrt{\Delta t}\]
-
-We can also derive the process that \(lnS_t\) follows is(Here we just give the result, the derivation should use the Ito Lemma):
-
-\[\text d\ ln(S_t)=(\mu-\frac{\sigma^2}{2}) \ \text d t+\sigma \ \text dW_t \cdot\cdot\cdot\cdot\cdot\cdot(2)\]
-
-Here ln S follows a generalized Wiener process as which has constant drift rate and variance rate. That means the change in ln S during time interval  \(\Delta t\) is normally distributed. This is the lognormal property of stock prices.
-
-\[lnS_{t+\Delta t}-lnS_t\sim N\left[(\mu-\frac{\sigma^2}{2})\Delta t,\sigma^2\Delta t\right]\]
-
-\[lnS_{t+\Delta t}\sim N\left[\text ln{S_t}+(\mu-\frac{\sigma^2}{2})\Delta t,\sigma^2\Delta t\right]\]
-
-Now the logarithm stock price follows the normal distribution.We write (2) into discrete approximation form as:
-
-\[ln(S_{t+\Delta t})-ln(S_{t})=(\mu-\frac{\sigma^2}{2})\ \Delta t+\sigma \epsilon\sqrt{\Delta t}\]
-
-Equivalently
-
-\[S_{t+\Delta t}=S_{t}\exp\left[(\mu-\frac{\sigma^2}{2})\ \Delta t+\sigma \epsilon\sqrt{\Delta t}\right]\cdot\cdot\cdot\cdot\cdot\cdot(3)\]
-
-If we change t to 0 and change \(\Delta t\) to T, we get
-
-\[S_{T}=S_{0}\exp\left[(\mu-\frac{\sigma^2}{2})\ T+\sigma \epsilon\sqrt{T}\right]\]
-
-according to the above equation, we know the stock price at time T should always greater than 0, the problem for negative price is fixed. Thus we say stock price S is a Geometric Brownian motion because the logarithm of S follows a Brownian motion.
-<div class="page" title="Page 333">
-<div class="layoutArea">
-<div class="column">
-<h2>Monte Carlo Method</h2>
-Monte Carlo simulation is a commonly used method for derivatives where the payoff is dependent on the history of the underlying asset or where there are several underlying variables. It divides a time interval into many small time steps and randomly sampling possible paths for the variable, then repeats this process many times attempting to predict all the possible future outcomes of random variables.
-
-The essence of using Monte Carlo method to price the options is to simulate the possible paths for stock prices then we can get all the possible value of stock price at expiration.
-<ol>
- 	<li>First, we need to divide the maturity T of options into N small time intervals, the length of each time interval is \(\Delta t\), N is the number of steps</li>
- 	<li>Sample the possible random paths for the stock price according to equation (3) and get the stock price \(S_T\)at maturity T.</li>
- 	<li>Calculate the payoff of options according to the \(S_T\)</li>
- 	<li>Discount the payoff at the risk-free rate to get one estimate of options' price</li>
- 	<li>Repeat the step 1 to 4 for a reasonable number of times and get many estimates of options price and then the average of these price estimates is the final options price.</li>
-</ol>
-We apply this technique to modeling stock prices in order to look at the potential evolution of stock prices over time and then demonstrate how to price the European options. Here we use Google as an example. Suppose today is 07/31/2017, the share price of GOOG is $930.5. We use the historical close price from 01/2015 to 07/2017 to compute the historical annual return and volatility as the mu and sigma parameters. (Note, we do not need to concern with the detailed determinants of 􏰯\(\mu\) because the value of options written on a stock is, in general, independent of􏰯 \(\mu\). In contrast, the stock price volatility \(\sigma\) is of crucial importance to the determination of the value of options). Then we apply Monte Carlo to simulate 500 price paths in the next three months.
-<pre class="prettyprint linenums">import quandl
-quandl.ApiConfig.api_key = 'NxTUTAQswbKs5ybBbwfK'
-data = quandl.get('WIKI/GOOG')
-close = data['2015-01':'2017-07']['Adj. Close']
-annual_return = (close[-1]/close[1])** (365.0/len(close)) - 1
-annual_vol = (close/close.shift(1)-1)[1:].std()*np.sqrt(252)
-mu = annual_return
-sigma = annual_vol
-s0 = close[-1]
-T = 3.0/12
-delta_t = 0.001
-num_reps = 500
-steps = T/delta_t
-plt.figure(figsize=(15,10))
-for j in range(num_reps):
-    price_path = [s0]
-    st = s0
-    for i in range(int(steps)):
-        st = st*e**((mu-0.5*sigma**2)*delta_t + sigma*np.sqrt(delta_t)*np.random.normal(0, 1))
-        price_path.append(st)
-    plt.plot(price_path)
-plt.ylabel('stock price',fontsize=15)
-plt.xlabel('steps',fontsize=15)</pre>
-</div>
-</div>
-</div>
-<img class="alignnone size-full wp-image-2293" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/07/stoc-price-path.png" alt="" width="899" height="597" />
-<pre class="prettyprint linenums">def mc_euro_options(option_type,s0,strike,maturity,mu,sigma,num_reps):
-    payoff_sum = 0
-    for j in range(num_reps):
-        st = s0
-        st = st*e**((mu-0.5*sigma**2)*maturity + sigma*np.sqrt(maturity)*np.random.normal(0, 1))
-        if option_type == 'c':
-            payoff = max(0,st-strike)
-        elif option_type == 'p':
-            payoff = max(0,strike-st)
-        payoff_sum += payoff
-    premium = payoff_sum/num_reps
-    return premium
-mc_euro_options('c',927.96,785,100.0/252,0,0.23,500)
-</pre>
-A European call option with strike price being $785 and expires in 100 days, the spot price is $927, the premium by using Monte Carlo method is $149.
-<h2>Summary</h2>
-In this chapter, we modeled stock price with the stochastic process. The stochastic process usually assumed for a stock price is geometric Brownian motion.The Black–Scholes–Merton model, which we cover in the next chapter, is based on the geometric Brownian motion assumption. Under this process, the logarithm of stock return in a small period of time is normally distributed and the returns in two nonoverlapping periods are independent.
-
-In the second part of the tutorial,  we applied Monte Carlo method to simulate the stock price in order to gain an intuitive understanding of the stochastic process followed by stock price. Then we discussed how to use Monte Carlo method to price the options based on the underlying prices paths.
-
-</div>
-</div>
 </div>
