@@ -64,10 +64,9 @@ class DataConsolidationAlgorithm(QCAlgorithm):
         self.SubscriptionManager.AddConsolidator("SPY", thirtyMinuteConsolidator)
 
     def ThirtyMinuteBarHandler(self, sender, bar):
-        '''This is our event handler for our 30-minute trade bar defined above in Initialize(). So each time the consolidator produces a new 30-minute bar, this function will be called automatically. The 'sender' parameter will be the instance of the IDataConsolidator that invoked the event, but you'll almost never need that!'''
+        '''This is our event handler for our 30-minute trade bar defined above in Initialize(). So each time the consolidator produces a new 30-minute bar, this function will be called automatically. The sender parameter will be the instance of the IDataConsolidator that invoked the event '''
         self.Debug(str(self.Time) + " " + str(bar))
     def OnData(self, data):
-        '''We need to declare this method'''
         pass
 </pre>
 The LEAN API also has other consolidator types to handle working with Ticks and RenkoBars.
