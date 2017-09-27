@@ -38,7 +38,7 @@ You can place several types of orders including:
 </tbody>
 </table>
 <h2>Updating Orders</h2>
-Once you have an order ticket you can use it to get order fields:
+Once you have an order ticket you can use it to get order fields. In <b>C#</b> it looks like:
 <pre class="prettyprint linenums">var currentStopPrice = _ticket.Get(OrderField.StopPrice);</pre>
 Or update the order fields (LimitPrice, StopPrice, Tag or Quantity):
 <pre class="prettyprint linenums">_ticket.Update(new UpdateOrderFields
@@ -48,6 +48,17 @@ Or update the order fields (LimitPrice, StopPrice, Tag or Quantity):
 });</pre>
 You can also cancel your order if required:
 <pre class="prettyprint linenums">_ticket.Cancel();</pre>
+In <b>Python</b>, you can update order like this:
+<pre class="prettyprint linenums"># Retrive the 'StopPrice' for an order from the ticket
+currentStopPrice = _ticket.Get(OrderField.StopPrice)
+# update the order fields (LimitPrice, StopPrice, Tag or Quantity)
+updateOrderFields = UpdateOrderFields()
+updateOrderFields.LimitPrice = newLongLimit
+updateOrderFields.Tag = "Update #{0}".format(len(ticket.UpdateRequests) + 1)
+ticket.Update(updateOrderFields)
+# cancel your order if required
+_ticket.Cancel()
+</pre>
 In the video below we demonstrate putting it all together to create a moving take-profit order which gradually decreases its profit target as time passes.
 
-https://www.youtube.com/watch?v=HykXfstdNW0
+[embedyt] https://www.youtube.com/watch?v=HykXfstdNW0[/embedyt]
