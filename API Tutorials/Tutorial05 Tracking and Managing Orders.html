@@ -54,8 +54,8 @@ currentStopPrice = _ticket.Get(OrderField.StopPrice)
 # update the order fields (LimitPrice, StopPrice, Tag or Quantity)
 updateOrderFields = UpdateOrderFields()
 updateOrderFields.LimitPrice = newLongLimit
-updateOrderFields.Tag = "Update #{0}".format(len(ticket.UpdateRequests) + 1)
-ticket.Update(updateOrderFields)
+updateOrderFields.Tag = "Update #{0}".format(len(_ticket.UpdateRequests) + 1)
+_ticket.Update(updateOrderFields)
 # cancel your order if required
 _ticket.Cancel()
 </pre>
