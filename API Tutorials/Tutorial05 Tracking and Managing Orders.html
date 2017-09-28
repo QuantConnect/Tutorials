@@ -61,13 +61,13 @@ _ticket.Cancel()
 </pre>
 In the video below we demonstrate putting it all together to create a moving take-profit order which gradually decreases its profit target as time passes.
 https://www.youtube.com/watch?v=HykXfstdNW0
+
 <h2>Full Python Example</h2>
-This is a complete port from C# to Python of the Quick Start Lesson 6: Tracking and Managing Orders. 
+This is a complete port from C# to Python of this Quick Start Lesson.
 <pre class="prettyprint linenums">
-"""Lesson 6 - Tracking and Managing Orders
-Immediately place 4 orders. Plot end of day price of each order in "Order 
-Tickets" plot. Debug log filled orders.
-"""
+```Lesson 6 - Tracking and Managing Orders: 
+Immediately place 4 orders. Plot end of day price of each order in 'Order Tickets' plot. Debug log filled orders.
+```
 import numpy as np
 from decimal import Decimal
 
@@ -108,7 +108,7 @@ class BasicTemplateAlgorithm(QCAlgorithm):
 
 
     def OnEndOfDay(self):
-        """End of each day, plot our asset & order prices."""
+        ```End of each day, plot our asset & order prices```
         if self._limitTicket is None:
             return
         
@@ -123,8 +123,8 @@ class BasicTemplateAlgorithm(QCAlgorithm):
                       self._stopLimitTicket.Get(OrderField.LimitPrice))
 
     def OnOrderEvent(self, OrderEvent):
-        """Event when the order is filled. Debug log the order fill. :OrderEvent:
-        """
+        ```Event when the order is filled. Debug log the order fill. :OrderEvent:``` 
+        
         if OrderEvent.FillQuantity == 0:
             return
         
