@@ -65,11 +65,9 @@ https://www.youtube.com/watch?v=HykXfstdNW0
 This is a complete port from C# to Python of the Quick Start Lesson 6: Tracking and Managing Orders. 
 <pre class="prettyprint linenums">
 """Lesson 6 - Tracking and Managing Orders
-
 Immediately place 4 orders. Plot end of day price of each order in "Order 
 Tickets" plot. Debug log filled orders.
 """
-
 import numpy as np
 from decimal import Decimal
 
@@ -79,26 +77,28 @@ class BasicTemplateAlgorithm(QCAlgorithm):
         self._limitTicket = None
         self._stopMarketTicket = None
         self._stopLimitTicket = None
-        
         self.SetCash(25000)
         self.SetStartDate(2009,1,1)
         self.SetEndDate(2009,6,1)
         self.spy = self.AddEquity("SPY", Resolution.Minute).Symbol
         
-
     def OnData(self, slice):
         if self._limitTicket is None:
+        
             self.MarketOrder(self.spy, 100)
+            
             self._limitTicket = self.LimitOrder(
                 self.spy, 
                 100, 
                 slice["SPY"].Close * Decimal(0.9), 
                 "limit order")
+                
             self._stopMarketTicket = self.StopMarketOrder(
                 self.spy,
                 -100,
                 slice["SPY"].Close * Decimal(0.95),
                 "stop market")
+                
             self._stopLimitTicket = self.StopLimitOrder(
                 self.spy,
                 -100,
@@ -122,13 +122,8 @@ class BasicTemplateAlgorithm(QCAlgorithm):
             self.Plot("Order Tickets", "Limit Price", 
                       self._stopLimitTicket.Get(OrderField.LimitPrice))
 
-
     def OnOrderEvent(self, OrderEvent):
-        """Event when the order is filled.
-        
-        Debug log the order fill.
-        
-        :OrderEvent:
+        """Event when the order is filled. Debug log the order fill. :OrderEvent:
         """
         if OrderEvent.FillQuantity == 0:
             return
@@ -140,4 +135,4 @@ class BasicTemplateAlgorithm(QCAlgorithm):
                            str(OrderEvent.Symbol), 
                            str(OrderEvent.FillQuantity), 
                            str(OrderEvent.Direction)))
-<pre>
+</pre>
