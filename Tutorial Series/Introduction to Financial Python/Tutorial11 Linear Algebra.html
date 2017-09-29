@@ -3,19 +3,18 @@
 <h2>Vectors</h2>
 
 A vector can be thought of as an arrow pointing from the origin to a specific point. Any vector or point can be represented by its coordinates i.e. an array of numbers, such as \((x,y)\) for a 2-dimensional vector, or \((x,y,z)\) for a 3-dimensional one. We usually write a vector as a column:
-\[ \bm{v} = \begin{pmatrix}
+\[ \mathbf{v} = \begin{pmatrix}
 x \\ y \\ z
 \end{pmatrix} \]
-
 <a name="scalar"></a>
-The <strong>scalar product</strong> of two vectors \( \bm{x} \) and \( \bm{y} \) in 2-dimensional space is defined as:
-\[ \bm{x}^T \bm{y} = \begin{pmatrix} x_1 &amp; x_2 \end{pmatrix} \begin{pmatrix} y_1 &amp; y_2 \end{pmatrix} = x_1 y_1 + x_2 y_2 \]
+The <strong>scalar product</strong> of two vectors \( \mathbf{x} \) and \( \mathbf{y} \) in 2-dimensional space is defined as:
+\[ \mathbf{x}^T \mathbf{y} = \begin{pmatrix} x_1 &amp; x_2 \end{pmatrix} \begin{pmatrix} y_1 \\ y_2 \end{pmatrix} = x_1 y_1 + x_2 y_2 \]
 
 This definition can be easily generalized to <em>n</em> dimensional space. Clearly, we cannot take the scalar product of two vectors with different dimensions.
 
 <h2>Matrices</h2>
 
-If we have a few vectors \( \bm{v}_1, \bm{v}_2, \dots, \bm{v}_n\) with the same dimension, then we can put them side-by-side to form a <strong>matrix</strong>. For example, the vectors
+If we have a few vectors \( \mathbf{v}_1, \mathbf{v}_2, \dots, \mathbf{v}_n \) with the same dimension, then we can put them side-by-side to form a <strong>matrix</strong>. For example, the vectors
 \[ v_1 = \begin{pmatrix} 1 \\ 2 \\ 3 \end{pmatrix} \qquad
    v_2 = \begin{pmatrix} 2 \\ 2 \\ 2 \end{pmatrix} \qquad
    v_3 = \begin{pmatrix} 3 \\ 1 \\ 1 \end{pmatrix} \]
@@ -27,7 +26,7 @@ can be combined to produce a matrix:
 3 &amp; 1 &amp; 1
 \end{pmatrix} \]
 
-m is a 3 &amp;times; 3 matrix. We typically describe the dimensions of a matrix as \(m \times n\) where m = number of rows and n = number of columns.
+m is a 3 &times; 3 matrix. We typically describe the dimensions of a matrix as \(m \times n\) where m = number of rows and n = number of columns.
 
 A <strong>square</strong> matrix is one with as many rows as columns.
 
@@ -79,10 +78,10 @@ x_{31} &amp; x_{32}
 \end{pmatrix} \]
 
 Then
-\[ x_{11} = a_{11} b_{11} + a_{12} b_{12} \]
-\[ x_{12} = a_{11} b_{12} + a_{12} b_{22} \]
-\[ x_{21} = a_{21} b_{11} + a_{21} b_{21} \]
-\[ x_{22} = a_{21} b_{12} + a_{22} b_{22} \]
+\[ x_{\color{red}11} = a_{{\color{red}1} 1} b_{1{\color{red} 1}} + a_{{\color{red}1} 2} b_{2 {\color{red}1}} \]
+\[ x_{\color{red}12} = a_{{\color{red}1} 1} b_{1 {\color{red}2}} + a_{{\color{red}1} 2} b_{2 {\color{red}2}} \]
+\[ x_{\color{red}21} = a_{{\color{red}2} 1} b_{1 {\color{red}1}} + a_{{\color{red}2} 2} b_{2 {\color{red}1}} \]
+\[ x_{\color{red}22} = a_{{\color{red}2} 1} b_{1 {\color{red}2}} + a_{{\color{red}2} 2} b_{2 {\color{red}2}} \]
 \[ \vdots \]
 
 In NumPy, we can multiply matrices with the dot() function:
@@ -97,7 +96,7 @@ print x
  [16 16]]
 </pre>
 
-Since matrix multiplication is defined in terms of scalar products, the matrix product \(AB\) exists only if \(A\) has as many columns as \(B\) has rows. It's useful to remember this shorthand: (m &amp;times; n) &amp;times; (n &amp;times; p) = (m &amp;times; p) which means that an (m &amp;times; n) matrix multiplied by an (n &amp;times; p) matrix yields an (m &amp;times; p) matrix.
+Since matrix multiplication is defined in terms of scalar products, the matrix product \(AB\) exists only if \(A\) has as many columns as \(B\) has rows. It's useful to remember this shorthand: (m &times; n) &times; (n &times; p) = (m &times; p) which means that an (m &times; n) matrix multiplied by an (n &times; p) matrix yields an (m &times; p) matrix.
 
 Reversing the order of multiplication results in an error since B does not have as many columns as A has rows:
 
@@ -186,18 +185,16 @@ If we let:
    2  &amp; 1  &amp; -1 \\
    -3 &amp; -1 &amp; 2  \\
    -2 &amp; 1  &amp; 2
-\end{pmatrix} \]
+\end{pmatrix} \qquad
+\mathbf{x} = \begin{pmatrix} x \\  y  \\ z  \end{pmatrix} \qquad
+\mathbf{b} = \begin{pmatrix} 8 \\ -11 \\ -3 \end{pmatrix} \]
 
-and
-\[ \bm{x} = \begin{pmatrix} x \\  y  \\ z  \end{pmatrix} \qquad
-   \bm{b} = \begin{pmatrix} 8 \\ -11 \\ -3 \end{pmatrix} \]
-
-Then the linear equations above can be written as \( A\bm{x} = \bm{b} \)
+Then the linear equations above can be written as \( A\mathbf{x} = \mathbf{b} \)
 
 If A is invertible, then we can multiply \(A^{-1}\) on both sides of the equation to obtain the solution:
-\[ A^{-1}A \bm{x} = A^{-1}\bm{b} \]
+\[ A^{-1}A \mathbf{x} = A^{-1}\mathbf{b} \]
 Hence
-\[ \bm{x} = A^{-1}\bm{b} \]
+\[ \mathbf{x} = A^{-1}\mathbf{b} \]
 
 As long as \(A^{-1}\) exists, we can compute it to solve the linear equations:
 
@@ -211,7 +208,7 @@ print np.dot(inv_A, b)
  [-1.]]
 </pre>
 
-The solution is <em>x</em> = 2, <em>y</em> = 3, <em>z</em> = &amp;minus;1. However, computing the inverse matrix is not recommended, since it is numerically unstable i.e. small rounding errors can dramatically affect the result.
+The solution is <em>x</em> = 2, <em>y</em> = 3, <em>z</em> = &minus;1. However, computing the inverse matrix is not recommended, since it is numerically unstable i.e. small rounding errors can dramatically affect the result.
 
 Instead, NumPy solves linear equations by <a href="https://www.youtube.com/watch?v=m3EojSAgIao" target="_blank">LU decomposition</a>:
 
