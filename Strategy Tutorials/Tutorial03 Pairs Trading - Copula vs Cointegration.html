@@ -67,7 +67,7 @@ We use the first 3 years of data to choose the best fitting copula and asset pa
 <h3>Step 1: Selecting the Paired Stocks</h3>
 The general method of pair selection is based on both fundamental and statistical analysis.[ref]<strong>Jean Folger</strong>. Pairs Trading Example <a href="http://www.investopedia.com/university/guide-pairs-trading/pairs-trade-example.asp"> Online Copy</a>[/ref]
 <h4><strong>1) Assemble a list of potentially related pairs</strong></h4>
-Any random pairs could be correlated. It is possible that those variables are not causally related to each other, but because of a spurious relationship due to either coincidence or the presence of a certain third, unseen factor. Thus, it is important for us to start with a list of securities that have something in common. For this demonstration, we choose some of the most liquid ETFs traded on the Nasdaq or the NYSE.  The relationship for those potentially related pairs could be due to an index, sector or asset class overlap. e.g. SPY and DIA are two ETFs which track the market leading indices.
+Any random pairs could be correlated. It is possible that those variables are not causally related to each other, but because of a spurious relationship due to either coincidence or the presence of a certain third, unseen factor. Thus, it is important for us to start with a list of securities that have something in common. For this demonstration, we choose some of the most liquid ETFs traded on the Nasdaq or the NYSE.  The relationship for those potentially related pairs could be due to an index, sector or asset class overlap. e.g. QQQ and XLK are two ETFs which track the market leading indices.
 <h4><strong>2) Filter the trading pair with statistical correlation</strong></h4>
 <div class="page" title="Page 12">
 <div class="section">
@@ -109,7 +109,7 @@ We get the daily historical closing price of our ETFs pair by using the History
 
 \[R_x = ln(\frac{P_{x,t}}{P_{x,t-1}}),   R_y = ln(\frac{P_{y,t}}{P_{y,t-1}})\]   t = 1,2,...,n where n is the number of price data
 <pre class="prettyprint linenums">def _pair_selection(self):
-    tick_syl =  [["SPY","AGG","XME","TNA","FAS","XLF","EWC","QLD"],["DIA","JNK","EWG","TLT","FAZ","XLU","EWA","QID"]]
+    tick_syl =  [["QQQ","AGG","XME","TNA","FAS","XLF","EWC","QLD"],["XLK","JNK","EWG","TLT","FAZ","XLU","EWA","QID"]]
     logreturn={}
     for i in range(2):
         syl = [self.AddSecurity(SecurityType.Equity, x, Resolution.Daily).Symbol for x in tick_syl[i]]
@@ -229,7 +229,7 @@ The density functions of each copula function are as follows:
         pdf = c * (u*v)**(-1) * (A**(-2+2/theta)) * ((np.log(u)*np.log(v))**(theta-1)) * (1+(theta-1)*A**(-1/theta))
     return np.log(pdf)
 </pre>
-The copula that provides the best fit is the one that corresponds to the lowest value of AIC criterion. The chosen pair is "SPY" &amp; "DIA".
+The copula that provides the best fit is the one that corresponds to the lowest value of AIC criterion. The chosen pair is "QQQ" &amp; "XLK".
 <pre class="prettyprint linenums">self.family = ['clayton', 'frank', 'gumbel']
 tau = kendalltau(x, y)[0]  # estimate Kendall'rank correlation
 AIC ={}  # generate a dict with key being the copula family, value = [theta, AIC]
@@ -429,7 +429,6 @@ Generally, ETFs are not very volatile and so mean-reversion did not provide many
 It is observed that the use of copula in pairs trading provides more trading opportunities as it does not require any rigid assumptions[ref]Liew R Q, Wu Y. Pairs trading: A copula approach[J]. Journal of Derivatives &amp; Hedge Funds, 2013, 19(1): 12-30.[/ref].
 <h2>Backtest</h2>
 Backtest for copula method
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=ec8d510e7b213b2f7bdf535fcd08ddf4'></script>
-
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=a2173bc42a6510f2b8d229a274e470b2'></script>
 Backtest for cointegration method
 <script src='https://www.quantconnect.com/terminal/backtest.js?sid=aaffc843fcd213ebd82e10a241b40bc2'></script>
