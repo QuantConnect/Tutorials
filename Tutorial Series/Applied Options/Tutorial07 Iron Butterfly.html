@@ -106,4 +106,7 @@ self.Buy(self.otm_put.Symbol ,1)
 <h2>Summary</h2>
 In this algorithm, on 04/03/2017, the share price of Google is $832.8. We buy OTM put(strike = $805) at $2, OTM call(strike = $860) and sell an ATM call and an ATM put. At the expiry 04/21/2017, the share price is $841.53. The ATM call is exercised and the other 3 options expire worthless. As we hold the short position of ATM call, after expiration we hold 100 short positions of GOOG stock.
 <h2>Algorithm</h2>
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=f5baccbefeb4e376cc87dce808155e43'></script>
+Backtest using SetFilter
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=7d1b9bec2581b8eef7f2aab4e59ef8d7'></script>
+Backtest using OptionChainProvider
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=650efa8ae186d724215e7eb4858e93ff'></script>

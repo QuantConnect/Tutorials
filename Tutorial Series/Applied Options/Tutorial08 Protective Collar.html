@@ -27,7 +27,7 @@ plt.ylabel('payoff',fontsize = 15)
 plt.title('Protective Collar Strategy - Payoff',fontsize = 20)
 plt.grid(True)
 </pre>
-<img src="images/protective_clooar.png" alt="protective collar strategy payoff"/>
+<img src="images/protective_collar.png" alt="protective collar strategy payoff"/>
 
 According to the payoff plot, the maximum profit is the strike price of short call minus the purchase price of the underlying asset add the net credit from the premium. It occurs when the stock price is beyond the strike price of the short call option. The maximum loss is the purchase price of the underlying asset minus the strike price of the long put minus the net credit from the premium. It occurs when the stock price is below the strike price of the long put. It is a strategy with limit risk and limit profit.
 <h2>Implementation</h2>
@@ -79,4 +79,7 @@ Step 4: In Ondata, if there is no assets in portfolio, we buy the undelying stoc
 <h2>Summary</h2>
 In this algorithm, at the beginning  01/04/2016, we purchased 100 GOOG shares. At the same time, we purchased a $715 put at $6 and sells a $772.5 call at $2.45. The share price of GOOG is $739.32, which is between the strike prices of two out-the-money options. At the expiry 01/15/2016, the share price of GOOG drops to $714.32. The call option expire worthless but the put option is exercised. Then we sell 100 GOOG shares at $715. Then we hold neither option positions and stock positions.
 <h2>Algorithm</h2>
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=17fe4dea031c6a063f2e0b716db294a4'></script>
+Backtest using SetFilter
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=c72134bc03b7cc6d583abf0e76781a6c'></script>
+Backtest using OptionChainProvider
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=9ba6caf7ed2230865185919e3fe856a9'></script>

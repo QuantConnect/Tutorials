@@ -104,4 +104,7 @@ self.Buy(self.otm_call_higher.Symbol ,1)
 <h2>Summary</h2>
 The iron condor is an option strategy that earns money as long as the underlying asset price does move out of a predetermined price range. In this algorithm, that range is $775 to $827.5. At 02/01/2017, we long $750 put at $1.25 and short $775 put at $3.5. At the same time, we short $827.5 call at$2.3 and long $850 call at $0.75. At this moment, the GOOG share price is $799.55 all the options are out the money. At expiration date 02/17/2017, the share price of GOOG is $828.07. The long put, short put and long call expire worthless. The short call is exercised. Thus we get the short position of 100 GOOG shares.
 <h2>Algorithm
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=759735d6e9920f86fe18f3cc8789a583'></script></h2>
+Backtesing using SetFilter
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=94d9084705e314dcd3073e75d25d30d4'></script>
+Backtest using OptionChainProvider
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=30f0460eaf9fd4c42dc2613f55f7f918'></script>
