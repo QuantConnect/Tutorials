@@ -37,7 +37,7 @@ Alternatively, we can eliminate \(w_0\) to get
 Our <strong>expected</strong> portfolio return is
 \[ \mathbb{E}(R_P) = w_0 R_0 + w_1 \mathbb{E}(R_1) + \dots + w_n \mathbb{E}(R_n) \]
 
-Note that \( \mathbb{E}(R_0) \) is simply \( R_0 \) since the riskless return is known with certainty, by definition.
+Note that \( \mathbb{E}(R_0) = R_0 \) since the riskless return is known with certainty, by definition.
 <a name="correlation"></a>
 <h3>Correlation</h3>
 
@@ -56,29 +56,25 @@ Now we are ready to compute portfolio risk, as measured by the variance of portf
 
 Recall that \( \text{Var}(X + c) = \text{Var}(X) \) if <em>c</em> is a known constant, so the term \( w_0 R_0 \) involving the riskless return can be omitted. It will be convenient to use <a href="https://www.mathsisfun.com/algebra/sigma-notation.html" target="_blank">sigma notation</a>:
 
-\[ \begin{align*}
-\text{Var}(R_P) &amp;= \text{Var} \left( \sum_{k=1}^n w_k R_k \right) \\
-&amp;= \mathbb{E} \left[\left( \sum_{k=1}^n w_k R_k - \mathbb{E} \left( \sum_{k=1}^n w_k R_k \right) \right)^2\right] \\
-&amp;= \mathbb{E} \left[\left( \sum_{k=1}^n w_k \, \left( R_k - \mathbb{E}(R_k) \right) \right)^2\right]
-\end{align*} \]
+\[ \text{Var}(R_P) = \text{Var} \left( \sum_{k=1}^n w_k R_k \right) \]
+\[ = \mathbb{E} \left[\left( \sum_{k=1}^n w_k R_k - \mathbb{E} \left( \sum_{k=1}^n w_k R_k \right) \right)^2\right] \]
+\[ = \mathbb{E} \left[\left( \sum_{k=1}^n w_k \, \left( R_k - \mathbb{E}(R_k) \right) \right)^2\right] \]
 
-So we must square a sum of <em>n</em> terms... How?
+So we have a squared sum of <em>n</em> terms. How do we expand it?
 \[ \left( \sum_{k=1}^n u_k \right)^2 = (u_1 + \dots + u_n) \, (u_1 + \dots + u_n) \]
 
 If we expand the brackets on the right hand side, every term has the form \( u_i u_j \) where <em>i</em> and <em>j</em> can be 1, 2, ... , or <em>n</em>.
 \[ \left( \sum_{k=1}^n u_k \right)^2 = \sum_{i=1}^n \sum_{j=1}^n u_i u_j \]
 
 Therefore
-\[ \begin{align*}
-\text{Var}(R_P) &amp;= \mathbb{E} \left[ \sum_{i=1}^n \sum_{j=1}^n w_i \, w_j \, (R_i - \mathbb{E}(R_i)) (R_j - \mathbb{E}(R_j)) \right] \\
-&amp;= \sum_{i=1}^n \sum_{j=1}^n w_i \, w_j \, \text{Cov}(R_i, R_j)
-\end{align*} \]
+\[ \text{Var}(R_P) = \mathbb{E} \left[ \sum_{i=1}^n \sum_{j=1}^n w_i \, w_j \, (R_i - \mathbb{E}(R_i)) (R_j - \mathbb{E}(R_j)) \right] \]
+\[ = \sum_{i=1}^n \sum_{j=1}^n w_i \, w_j \, \text{Cov}(R_i, R_j) \]
 
 The last step arises from the definition of <a href="#correlation">covariance</a>. The only thing left is to express portfolio risk in matrix notation:
 
-\[ \text{Var}(R_P) = \bm{w}^T \Sigma \bm{w} \]
+\[ \text{Var}(R_P) = \mathbf{w}^T \Sigma \mathbf{w} \]
 where
-\[ \bm{w} = \begin{pmatrix} w_1 \\ \vdots \\ w_n \end{pmatrix} \qquad
+\[ \mathbf{w} = \begin{pmatrix} w_1 \\ \vdots \\ w_n \end{pmatrix} \qquad
 \Sigma = \begin{bmatrix}
 \text{Cov}(R_1, R_1) & \text{Cov}(R_1, R_2) & ... & \text{Cov}(R_1, R_n) \\
 \text{Cov}(R_2, R_1) & \text{Cov}(R_2, R_2) & ... & \text{Cov}(R_2, R_n) \\
@@ -96,7 +92,7 @@ Portfolio risk can be reduced by choosing two assets that are negatively correla
 
 <h2>Mean-Variance Analysis</h2>
 
-We now try to find a portfolio \( \bm{w} = (w_1, ..., w_n) \) that minimizes risk and maximizes return.
+We now try to find a portfolio \( \mathbf{w} = (w_1, ..., w_n) \) that minimizes risk and maximizes return.
 
 The chart below has risk (standard deviation of returns) on the horizontal axis and expected return on the vertical axis. The 10 black points represent individual stocks, while each green / blue point is a portfolio of stocks:
 
@@ -114,21 +110,21 @@ Every point on the CML represents a portfolio comprising the market portfolio an
 
 Suppose some fraction <em>w</em> of a CML portfolio is the market portfolio, and the remainder (1 &minus; <em>w</em>) is the riskless asset. Then its expected return is
 
-\[ \mathbb{E} (R_{\text{CML}}) = w \mathbb{E} (R_{\text{market}}) + (1-w) R_0 \]
+\[ \mathbb{E} (R_P) = w \mathbb{E} (R_{\text{market}}) + (1-w) R_0 \]
 
 Since there is only <em>n</em> = 1 risky asset, the variance of the CML portfolio return is
 
-\[ \text{Var} (R_{\text{CML}}) = w^2 \text{Var} (R_{\text{market}}}) \]
+\[ \text{Var} (R_P) = w^2 \text{Var} (R_{\text{market}}}) \]
 
 Taking square roots, we deduce that a CML portfolio's risk is proportional to the market portfolio's weight:
 
-\[ \sigma_{\text{CML}} = w \sigma_{\text{market}} \]
+\[ \sigma_P = w \sigma_{\text{market}} \]
 
 This equation can be used to eliminate <em>w</em> in the calculation of expected return:
 
-\[ \mathbb{E} (R_{\text{CML}}) = R_0 + \frac{\mathbb{E} (R_{\text{market}}) - R_0}{\sigma_{\text{market}}} \sigma_{\text{CML}} \]
+\[ \mathbb{E} (R_P) = R_0 + \frac{\mathbb{E} (R_{\text{market}}) - R_0}{\sigma_{\text{market}}} \sigma_P \]
 
-This proves that when \( \mathbb{E} (R_{\text{CML}}) \) is plotted against \( \sigma_{\text{CML}} \), we will obtain a straight line: the CML.
+This proves that when \( \mathbb{E} (R_P) \) is plotted against \( \sigma_P \), we will obtain a straight line: the CML.
 
 <h3>Portfolio Selection</h3>
 
@@ -150,7 +146,7 @@ This demonstrates why diversification is often said to be a "free lunch" in inve
 
 <h2>Summary</h2>
 
-In this chapter we have learnt about the modern portfolio theory. It recommends investors to spread their wealth across many asset classes to maximize returns while minimizing risk. In the next chapter, we will introduce asset pricing with CAPM, which is a classical asset pricing model.
+In this chapter we have learnt about the modern portfolio theory. It recommends investors to spread their wealth across many asset classes to maximize returns while minimizing risk. In the next chapter, we will introduce the Capital Asset Pricing Model.
 
 <h2>Algorithm:</h2>
 

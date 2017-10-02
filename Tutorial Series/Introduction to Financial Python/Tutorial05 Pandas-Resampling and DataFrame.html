@@ -1,17 +1,15 @@
-<h2>Introduction</h2>
-In the last chapter we had a glimpse of Pandas. In this chapter we will learn resampling methods and DataFrame manipulating with real financial data. DataFrame is a very powerful tool for data analysis, and we will cover some commonly used methods dealing with financial data.
+In the last chapter we had a glimpse of Pandas. In this chapter we will learn about resampling methods and the DataFrame object, which is a powerful tool for financial data analysis.
 
-Here we use the data from yahoo_finance API.
+Here we use data from the yahoo_finance API.
 <pre class="prettyprint linenums">import quandl
-quandl.ApiConfig.api_key = 'dRQxJ15_2nrLznxr1Nn4'
-aapl_table = quandl.get('WIKI/AAPL')
+quandl.ApiConfig.api_key = 'dRQxJ15_2nrLznxr1Nn4'</pre>
+
+We will create a Series named "aapl" whose values are Apple's daily closing prices, which are of course indexed by dates:
+<pre class="prettyprint linenums">aapl_table = quandl.get('WIKI/AAPL')
 aapl = aapl_table['Adj. Close']['2017']
-</pre>
-<h2>Resampling</h2>
-Last time we discussed how to access to series data by date index. Let's start from here using real financial time series data. aapl is a series who's values are Apple stock's daily close price, and the index is date. We will introduce how to obtain this series later.
-<pre class="prettyprint linenums">print aapl
-</pre>
-We have already known that we can access to a specific data point using series['yyyy-mm-dd']. We can also get access to the data in a specific month by simply using series['yyyy-mm'].
+print aapl</pre>
+
+Recall that we can fetch a specific data point using series['yyyy-mm-dd']. We can also fetch the data in a specific month using series['yyyy-mm'].
 <pre class="prettyprint linenums">print aapl['2017-3']
 Date
 2017-03-01    138.657681
@@ -36,15 +34,15 @@ Date
 2017-03-28    142.635200
 2017-03-29    142.952608
 2017-03-30    142.764147
-2017-03-31    142.496334
-</pre>
-Or in some consecutive months:
-<pre class="prettyprint linenums">aapl['2017-2':'2017-4']
-</pre>
-seires.head() and series.tail() are also useful method to quickly get access to the first or last N elements.
-<pre class="prettyprint linenums">print aapl.head(5)
-print aapl.tail(10)
-</pre>
+2017-03-31    142.496334</pre>
+
+Or in several consecutive months:
+<pre class="prettyprint linenums">aapl['2017-2':'2017-4']</pre>
+
+.head(N) and .tail(N) are methods for quickly accessing the first or last N elements.
+<pre class="prettyprint linenums">print aapl.head()
+print aapl.tail(10)</pre>
+
 The output:
 <pre class="prettyprint linenums">
 Date
@@ -65,12 +63,16 @@ Date
 2017-08-17    157.870000
 2017-08-18    157.500000
 2017-08-21    157.210000
-Name: Adj. Close, dtype: float64
-</pre>
-Now we introduce a very powerful method: resample(). series.resample(freq) is a class called 'resampler'. The Argument freq tells the resampler the frequency for aggregating data. series.resample.mean() is a complete statement that aggregate the data by mean by a certain frequency. For example, if we want to aggregate the daily data into monthly data by mean:
-<pre class="prettyprint linenums">
-by_month = aapl.resample('M').mean()
+Name: Adj. Close, dtype: float64</pre>
+
+<h2>Resampling</h2>
+
+series.resample(freq) is a class called "DatetimeIndexResampler" which groups data in a Series object into regular time intervals. The argument "freq" determines the length of each interval.
+
+series.resample.mean() is a complete statement that groups data into intervals, and then compute the mean of each interval. For example, if we want to aggregate the daily data into monthly data by mean:
+<pre class="prettyprint linenums">by_month = aapl.resample('M').mean()
 print by_month
+
 Date
 2017-01-31    118.093136
 2017-02-28    132.456268
@@ -79,11 +81,12 @@ Date
 2017-05-31    151.386305
 2017-06-30    147.233064
 2017-07-31    147.706190
-2017-08-31    157.444303
-</pre>
+2017-08-31    157.444303</pre>
+
 We can also aggregate the data by week:
 <pre class="prettyprint linenums">by_week = aapl.resample('W').mean()
 print by_week.head()
+
 Date
 2017-01-31    120.932434
 2017-02-28    136.551200
@@ -91,24 +94,22 @@ Date
 2017-04-30    144.179981
 2017-05-31    156.100000
 2017-06-30    155.450000
-2017-07-31    153.460000
-</pre>
-Virtually we can use almost any frequency we want by simply use the format 'nf', where 'n' is an integer and 'f' is M for month, W for week and D for day.
-<pre class="prettyprint linenums">
-three_day = aapl.resample('3D').mean()
-two_week = aapl.resample('2W').mean()
-two_month = aapl.resample('2M').mean()
-</pre>
-We can also change the aggregating method. By default we can use mean(), std(), max(), min(), which are mean, standard deviation, maximum value and minimum value respectively.
-<pre class="prettyprint linenums">
-std = aapl.resample('W').std()
-max = aapl.resample('W').max()
-min = aapl.resample('W').min()
-</pre>
-However, most of the time we don't want to aggregate in these methods. For example, if we want to calculate monthly return of the stock, we may just want to access the data for the last day of a month. Fortunately, we can customize the aggregating method. We write our function in series.resample.agg().
-<pre class="prettyprint linenums">
-last_day = aapl.resample('M').agg(lambda x: x[-1])
+2017-07-31    153.460000</pre>
+
+We can choose almost any frequency by using the format 'nf', where 'n' is an integer and 'f' is M for month, W for week and D for day.
+<pre class="prettyprint linenums">three_day = aapl.resample('3D').mean()
+two_week  = aapl.resample('2W').mean()
+two_month = aapl.resample('2M').mean()</pre>
+
+Besides the mean() method, other methods can also be used with the resampler:
+<pre class="prettyprint linenums">std = aapl.resample('W').std()    # standard deviation
+max = aapl.resample('W').max()    # maximum value
+min = aapl.resample('W').min()    # minimum value</pre>
+
+OFten we want to calculate monthly returns of a stock, based on prices on the last day of each month. To fetch those prices, we use the series.resample.agg() method:
+<pre class="prettyprint linenums">last_day = aapl.resample('M').agg(lambda x: x[-1])
 print last_day
+
 Date
 2017-01-31    119.851150
 2017-02-28    135.880362
@@ -117,12 +118,12 @@ Date
 2017-05-31    152.142689
 2017-06-30    143.438008
 2017-07-31    148.248489
-2017-08-31    157.210000
-</pre>
+2017-08-31    157.210000</pre>
+
 Or directly calculate the monthly rates of return using the data for the first day and the last day:
-<pre class="prettyprint linenums">
-monthly_return = aapl.resample('M').agg(lambda x: x[-1]/x[1] - 1)
+<pre class="prettyprint linenums">monthly_return = aapl.resample('M').agg(lambda x: x[-1]/x[1] - 1)
 print monthly_return
+
 Date
 2017-01-31    0.045940
 2017-02-28    0.070409
@@ -131,31 +132,20 @@ Date
 2017-05-31    0.039829
 2017-06-30   -0.073528
 2017-07-31    0.033035
-2017-08-31    0.004505
-</pre>
+2017-08-31    0.004505</pre>
+
 Series object also provides us some convenient methods to do some quick calculation.
-<pre class="prettyprint linenums">
-print monthly_return.mean()
+<pre class="prettyprint linenums">print monthly_return.mean()
 print monthly_return.std()
 print monthly_return.max()
 [out]: 0.0208974076157
        0.0476398315185
-       0.0704090212384
-</pre>
-We can also check the statistical summaries of a series.
-<pre class="prettyprint linenums">print aapl.describe()
-count    159.000000
-mean     141.555690
-std       11.555853
-min      114.586983
-25%      137.695538
-50%      142.853418
-75%      149.842024
-max      161.600000
-</pre>
-Another two frequently used method is series.diff() and series.pct_change(). This first method calculates the different between consecutive elements, and the second one calculates the percentage changes.
+       0.0704090212384</pre>
+
+Another two methods frequently used on Series are .diff() and .pct_change(). The former calculates the difference between consecutive elements, and the latter calculates the percentage change.
 <pre class="prettyprint linenums">print last_day.diff()
 print last_day.pct_change()
+
 Date
 2017-01-31          NaN
 2017-02-28    16.029211
@@ -174,13 +164,14 @@ Date
 2017-05-31    0.067770
 2017-06-30   -0.057214
 2017-07-31    0.033537
-2017-08-31    0.060449
-</pre>
-You may noticed that we induced a NaN value while calculating the percentage change, or rate or return.
-When dealing with NaN, we usually either removing the data point or fill it with a specific value. Here we fill it with value 0:
-<pre class="prettyprint linenums">
-daily_return = last_day.pct_change()
+2017-08-31    0.060449</pre>
+
+Notice that we induced a NaN value while calculating percentage changes i.e. returns.
+
+When dealing with NaN values, we usually either removing the data point or fill it with a specific value. Here we fill it with 0:
+<pre class="prettyprint linenums">daily_return = last_day.pct_change()
 print daily_return.fillna(0)
+
 Date
 2017-01-31    0.000000
 2017-02-28    0.133743
@@ -189,12 +180,12 @@ Date
 2017-05-31    0.067770
 2017-06-30   -0.057214
 2017-07-31    0.033537
-2017-08-31    0.060449
-</pre>
-We fill it with the next fitted value. This is called 'backward fill', or 'bfill' in short:
-<pre class="prettyprint linenums">
-daily_return = last_day.pct_change()
+2017-08-31    0.060449</pre>
+
+Alternatively, we can fill a NaN with the next fitted value. This is called 'backward fill', or 'bfill' in short:
+<pre class="prettyprint linenums">daily_return = last_day.pct_change()
 print daily_return.fillna(method = 'bfill')
+
 Date
 2017-01-31    0.133743
 2017-02-28    0.133743
@@ -203,43 +194,54 @@ Date
 2017-05-31    0.067770
 2017-06-30   -0.057214
 2017-07-31    0.033537
-2017-08-31    0.060449
-</pre>
-As you expected, since there is a 'backward fill' method, there must be a 'forward fill' method, or 'ffill' in short. However we can't use it here because the NaN is the first value.
-We can also simply remove the NaN data point by series.dropna().
+2017-08-31    0.060449</pre>
+
+As expected, since there is a 'backward fill' method, there must be a 'forward fill' method, or 'ffill' in short. However we can't use it here because the NaN is the first value.
+
+We can also simply remove NaN values by <strong>.dropna()</strong>
 <pre class="prettyprint linenums">daily_return = last_day.pct_change().dropna()
 print daily_return
+
 Date
 2017-02-28    0.133743
 2017-03-31    0.048690
 2017-04-30   -0.000070
 2017-05-31    0.067770
 2017-06-30   -0.057214
-2017-07-31    0.038050
-</pre>
-<h2>DataFrame</h2>
-After the long introduction to Series, finally we are going to discuss the most commonly used Pandas data structure: Pandas DataFrame. A DataFrame is essentially a group of series, thus it's not hard to understand how a DataFrames works if we master the series.
+2017-07-31    0.038050</pre>
 
-DataFrame is a 2-dimensional labeled data structure with columns of potentially different types. You can think it like a spreadsheet or SQL table. Like series, DataFrame accepts many different kinds of input: dictionary, 2-D numpy.ndarray, a series and other DataFrame.
+<h2>DataFrame</h2>
+
+The <strong>DataFrame</strong> is the most commonly used data structure in Pandas. It is essentially a table, just like an Excel spreadsheet.
+
+More precisely, a DataFrame is a collection of Series objects, each of which may contain different data types. A DataFrame can be created from various data types: dictionary, 2-D numpy.ndarray, a Series or another DataFrame.
+
 <h3>Create DataFrames</h3>
-The most commonly used method to create a DataFrame is passing a data dictionary.
-<pre class="prettyprint linenums">dict = {'AAPL': [143.5, 144.09, 142.73, 144.18, 143.77],'GOOG':[898.7, 911.71, 906.69, 918.59, 926.99],
-        'IBM':[155.58, 153.67, 152.36, 152.94, 153.49]}
-data_index = pd.date_range('2017-07-03',periods = 5, freq = 'D')
-df = pd.DataFrame(dict, index = data_index)
+
+The most common method of creating a DataFrame is passing a dictionary:
+<pre class="prettyprint linenums">dict = {'AAPL': [143.5,  144.09, 142.73, 144.18, 143.77],
+        'GOOG': [898.7,  911.71, 906.69, 918.59, 926.99],
+        'IBM':  [155.58, 153.67, 152.36, 152.94, 153.49]}
+dates = pd.date_range('2017-07-03', periods = 5, freq = 'D')
+df = pd.DataFrame(dict, index = dates)
 print df
+
               AAPL    GOOG     IBM
 2017-07-03  143.50  898.70  155.58
 2017-07-04  144.09  911.71  153.67
 2017-07-05  142.73  906.69  152.36
 2017-07-06  144.18  918.59  152.94
-2017-07-07  143.77  926.99  153.49
-</pre>
+2017-07-07  143.77  926.99  153.49</pre>
+
 <h3>Manipulating DataFrames</h3>
-We can access to the values in a DataFrame by columns and index. Each columns in a DataFrame is essentially a pandas series. We can access to a column by square brackets df['column_name']. The columns names are also properties of the DataFrame, so we can also use df.column_name to get the columns. In the previous demonstration, we used exactly this method to access to the Apple stock close price series.
+
+We can fetch values in a DataFrame by columns and index. Each column in a DataFrame is essentially a Pandas Series. We can fetch a column by square brackets: <strong>df['column_name']</strong>
+
+If a column name contains no spaces, then we can also use df.column_name to fetch a column:
 <pre class="prettyprint linenums">df = aapl_table
 print df.Close.tail(5)
 print df['Adj. Volume'].tail(5)
+
 Date
 2017-07-24    152.09
 2017-07-25    152.74
@@ -253,13 +255,13 @@ Date
 2017-07-26    15172136.0
 2017-07-27    32175875.0
 2017-07-28    16832947.0
-Name: Adj. Volume, dtype: float64
-</pre>
-All the methods we apply to a series index such as iloc[], loc[], and resampling methods, can also be applied to a DataFrame:
+Name: Adj. Volume, dtype: float64</pre>
+
+All the methods we applied to a Series index such as iloc[], loc[] and resampling methods, can also be applied to a DataFrame:
 <pre class="prettyprint linenums">aapl_2016 = df['2016']
 aapl_month = aapl_2016.resample('M').agg(lambda x: x[-1])
-print aapl_month
-</pre>
+print aapl_month</pre>
+
 <pre class="prettyprint linenums">
               Open      High     Low   Close      Volume  Ex-Dividend  \
 Date
@@ -304,11 +306,12 @@ Date
 2016-09-30   36379106.0
 2016-10-31   26419398.0
 2016-11-30   36162258.0
-2016-12-31   30586265.0
-</pre>
-It's easy to access to multiple columns to form a subset of the original DataFrame:
+2016-12-31   30586265.0</pre>
+
+We may select certain columns of a DataFrame using their names:
 <pre class="prettyprint linenums">aapl_bar = aapl_month[['Open', 'High', 'Low', Close']]
 print aapl_bar
+
               Open      High     Low   Close
 Date
 2016-01-31   94.79   97.3400   94.35   97.34
@@ -322,20 +325,22 @@ Date
 2016-09-30  112.46  113.3700  111.80  113.05
 2016-10-31  113.65  114.2300  113.20  113.54
 2016-11-30  111.56  112.2000  110.27  110.52
-2016-12-31  116.65  117.2000  115.43  115.82
-</pre>
-We can also combined the methods above using loc[ ]. We separate the index and columns by comma to specify the range of data we want:
-<pre class="prettyprint linenums">print aapl_month.loc['2016-03':'2016-06',['Open', 'High', 'Low', 'Close']]
+2016-12-31  116.65  117.2000  115.43  115.82</pre>
+
+We can even specify both rows and columns using loc[]. The row indices and column names are separated by a comma:
+<pre class="prettyprint linenums">print aapl_month.loc['2016-03':'2016-06', ['Open', 'High', 'Low', 'Close']]
+
               Open    High     Low   Close
 Date
 2016-03-31  109.72  109.90  108.88  108.99
 2016-04-30   93.99   94.72   92.51   93.74
 2016-05-31   99.60  100.40   98.82   99.86
-2016-06-30   94.44   95.77   94.30   95.60
-</pre>
-The subset methods in DataFrame is very powerful. By writing logical statements in square brackets, we can make customized subsets:
+2016-06-30   94.44   95.77   94.30   95.60</pre>
+
+The subset methods in DataFrame is quite useful. By writing logical statements in square brackets, we can make customized subsets:
 <pre class="prettyprint linenums">above = aapl_bar[aapl_bar.Close &gt; np.mean(aapl_bar.Close)]
 print above
+
               Open      High     Low   Close
 Date
 2016-03-31  109.72  109.9000  108.88  108.99
@@ -344,10 +349,13 @@ Date
 2016-10-31  113.65  114.2300  113.20  113.54
 2016-11-30  111.56  112.2000  110.27  110.52
 2016-12-31  116.65  117.2000  115.43  115.82</pre>
+
 <h3>Data Validation</h3>
-As we mentioned, all the series methods can be apply to a DataFrame in the same way. Here we create a new column from an existing DataFrame:
+
+As mentioned, all methods that apply to a Series can also be applied to a DataFrame. Here we add a new column to an existing DataFrame:
 <pre class="prettyprint linenums">aapl_bar['rate_return'] = aapl_bar.Close.pct_change()
 print aapl_bar
+
               Open      High     Low   Close  rate_return
 Date
 2016-01-31   94.79   97.3400   94.35   97.34          NaN
@@ -361,13 +369,14 @@ Date
 2016-09-30  112.46  113.3700  111.80  113.05     0.065504
 2016-10-31  113.65  114.2300  113.20  113.54     0.004334
 2016-11-30  111.56  112.2000  110.27  110.52    -0.026599
-2016-12-31  116.65  117.2000  115.43  115.82     0.047955
-</pre>
-Here the calculation introduced a NaN value. If the DataFrame is large, we would not be able to observe it. isnull() provides a convenient way to check abnormal values.
+2016-12-31  116.65  117.2000  115.43  115.82     0.047955</pre>
+
+Here the calculation introduced a NaN value. If the DataFrame is large, we would not be able to observe it. <strong>isnull()</strong> provides a convenient way to check abnormal values.
 <pre class="prettyprint linenums">missing = aapl_bar.isnull()
 print missing
-print '------------------ separate line ------------'
+print '---------------------------------------------'
 print missing.describe()
+
              Open   High    Low  Close rate_return
 Date
 2016-01-31  False  False  False  False        True
@@ -383,27 +392,32 @@ Date
 2016-11-30  False  False  False  False       False
 2016-12-31  False  False  False  False       False
 
------------------- separate line -----------------
+---------------------------------------------
 
          Open   High    Low  Close rate_return
 count      12     12     12     12          12
 unique      1      1      1      1           2
 top     False  False  False  False       False
-freq       12     12     12     12          11
-</pre>
-Note that the only column with value 2 in row 'unique' is 'rate_return'. This indicate that there are at least one missing value in the column 'rate_return'. We can even know the number of missing values by comparing 'count' and 'freq'. There are 12 counts and 11 'False', we know there is one 'True', which is the missing value.
+freq       12     12     12     12          11</pre>
+
+The row labelled "unique" indicates the number of unique values in each column. Since the "rate_return" column has 2 unique values, it has at least one missing value.
+
+We can deduce the number of missing values by comparing "count" with "freq". There are 12 counts and 11 False values, so there is one True value which corresponds to the missing value.
+
 We can also find the rows with missing values easily:
 <pre class="prettyprint linenums">print missing[missing.rate_return == True]
+
              Open   High    Low  Close rate_return
 Date
-2016-01-31  False  False  False  False        True
-</pre>
-Usually when dealing with missing data, we either delete the whole row or fill it with some value. As we introduced in the series chapter, the same method df.dropna() and df.fillna() can be applied to a DataFrame.
+2016-01-31  False  False  False  False        True</pre>
+
+Usually when dealing with missing data, we either delete the whole row or fill it with some value. As we introduced in the Series chapter, the same method <strong>dropna()</strong> and <strong>fillna()</strong> can be applied to a DataFrame.
 <pre class="prettyprint linenums">drop = aapl_bar.dropna()
 print drop
-print '---------------------- separate ----------------------'
+print '\n--------------------------------------------------\n'
 fill = aapl_bar.fillna(0)
 print fill
+
               Open      High     Low   Close  rate_return
 Date
 2016-02-29   96.86   98.2300   96.65   96.69    -0.006678
@@ -418,7 +432,7 @@ Date
 2016-11-30  111.56  112.2000  110.27  110.52    -0.026599
 2016-12-31  116.65  117.2000  115.43  115.82     0.047955
 
----------------------- separate line--------------------
+--------------------------------------------------
 
               Open      High     Low   Close  rate_return
 Date
@@ -433,30 +447,33 @@ Date
 2016-09-30  112.46  113.3700  111.80  113.05     0.065504
 2016-10-31  113.65  114.2300  113.20  113.54     0.004334
 2016-11-30  111.56  112.2000  110.27  110.52    -0.026599
-2016-12-31  116.65  117.2000  115.43  115.82     0.047955
-</pre>
+2016-12-31  116.65  117.2000  115.43  115.82     0.047955</pre>
+
 <h3>DataFrame Concat</h3>
-We have already known how to extract a series from a dataFrame. Now we need to consider how to merge a series or a DataFrame into another one.
-In Pandas, the function concat handles almost all of the merge tasks.
-We can merge multiple series into a DataFrame:
+
+We have seen how to extract a Series from a dataFrame. Now we need to consider how to merge a Series or a DataFrame into another one.
+
+In Pandas, the function <strong>concat()</strong> allows us to merge multiple Series into a DataFrame:
 <pre class="prettyprint linenums">s1 = pd.Series([143.5, 144.09, 142.73, 144.18, 143.77], name = 'AAPL')
 s2 = pd.Series([898.7, 911.71, 906.69, 918.59, 926.99], name = 'GOOG')
-data_frame = pd.concat([s1,s2], axis = 1)
+data_frame = pd.concat([s1, s2], axis = 1)
 print data_frame
+
      AAPL    GOOG
 0  143.50  898.70
 1  144.09  911.71
 2  142.73  906.69
 3  144.18  918.59
-4  143.77  926.99
-</pre>
-joining two DataFrames by axis:
+4  143.77  926.99</pre>
+
+The "axis = 1" parameter will join two DataFrames by columns:
 <pre class="prettyprint linenums">log_price = np.log(aapl_bar.Close)
 log_price.name = 'log_price'
 print log_price
-print '\n---------------------- separate line--------------------\n'
+print '\n--------------------------------------------\n'
 concat = pd.concat([aapl_bar, log_price], axis = 1)
 print concat
+
 Date
 2016-01-31    4.578210
 2016-02-29    4.571510
@@ -472,7 +489,7 @@ Date
 2016-12-31    4.752037
 Freq: M, Name: log_price, dtype: float64
 
----------------------- separate line--------------------
+--------------------------------------------
 
               Open      High     Low   Close  rate_return  log_price
 Date
@@ -487,14 +504,15 @@ Date
 2016-09-30  112.46  113.3700  111.80  113.05     0.065504   4.727830
 2016-10-31  113.65  114.2300  113.20  113.54     0.004334   4.732155
 2016-11-30  111.56  112.2000  110.27  110.52    -0.026599   4.705197
-2016-12-31  116.65  117.2000  115.43  115.82     0.047955   4.752037
-</pre>
-When we joining a DataFrame into another, we can indicate whether we want to merge by index.
-<pre class="prettyprint linenums">df_volume = aapl_table.loc['2016-10':'2017-04',['Volume', 'Split Ratio']].resample('M').agg(lambda x: x[-1])
+2016-12-31  116.65  117.2000  115.43  115.82     0.047955   4.752037</pre>
+
+We can also join two DataFrames by rows. Consider these two DataFrames:
+<pre class="prettyprint linenums">df_volume = aapl_table.loc['2016-10':'2017-04', ['Volume', 'Split Ratio']].resample('M').agg(lambda x: x[-1])
 print df_volume
-print '\n---------------------- separate line--------------------\n'
-df_2017 = aapl_table.loc['2016-10':'2017-04',['Open', 'High', 'Low', 'Close']].resample('M').agg(lambda x: x[-1])
+print '\n-------------------------------------------\n'
+df_2017 = aapl_table.loc['2016-10':'2017-04', ['Open', 'High', 'Low', 'Close']].resample('M').agg(lambda x: x[-1])
 print df_2017
+
                 Volume  Split Ratio
 Date
 2016-10-31  26419398.0          1.0
@@ -505,7 +523,7 @@ Date
 2017-03-31  19661651.0          1.0
 2017-04-30  20247187.0          1.0
 
----------------------- separate line--------------------
+-------------------------------------------
 
               Open     High     Low   Close
 Date
@@ -515,11 +533,12 @@ Date
 2017-01-31  121.15  121.390  120.62  121.35
 2017-02-28  137.08  137.435  136.70  136.99
 2017-03-31  143.72  144.270  143.01  143.66
-2017-04-30  144.09  144.300  143.27  143.65
-</pre>
-Using the methods we have already learned, we subset two DataFrames from the original one. Now we are going to merge the them with our DataFrame 'aapl_bar'
-<pre class="prettyprint linenums">concat = pd.concat([aapl_bar,df_volume],axis = 1)
+2017-04-30  144.09  144.300  143.27  143.65</pre>
+
+Now we merge the DataFrames with our DataFrame 'aapl_bar'
+<pre class="prettyprint linenums">concat = pd.concat([aapl_bar, df_volume], axis = 1)
 print concat
+
               Open      High     Low   Close  rate_return      Volume  \
 Date
 2016-01-31   94.79   97.3400   94.35   97.34          NaN         NaN
@@ -556,11 +575,12 @@ Date
 2017-01-31          1.0
 2017-02-28          1.0
 2017-03-31          1.0
-2017-04-30          1.0
-</pre>
-By default the the DataFrame are joined with all of the data. This default options results in zero information loss. We can also merge them by intersection, this is called 'inner join':
-<pre class="prettyprint linenums">concat = pd.concat([aapl_bar,df_volume],axis = 1, join = 'inner')
+2017-04-30          1.0</pre>
+
+By default the DataFrame are joined with all of the data. This default options results in zero information loss. We can also merge them by intersection, this is called 'inner join':
+<pre class="prettyprint linenums">concat = pd.concat([aapl_bar, df_volume], axis = 1, join = 'inner')
 print concat
+
               Open    High     Low   Close  rate_return      Volume  \
 Date
 2016-10-31  113.65  114.23  113.20  113.54     0.004334  26419398.0
@@ -625,9 +645,10 @@ Date
 2017-04-30  143.65  144.3000  143.27  144.09          NaN
 </pre>
 Please note that if the two DataFrame have some columns with the same column names, these columns are considered to be the same and will be merged. It's very important to have the right column names. If we change a column names here:
-<pre class="prettyprint linenums">df_2017.columns = ['Change', 'High','Low','Close']
+<pre class="prettyprint linenums">df_2017.columns = ['Change', 'High', 'Low', 'Close']
 concat = pd.concat([aapl_bar, df_2017], axis = 0)
 print concat
+
             Change   Close      High     Low    Open  rate_return
 Date
 2016-01-31     NaN   97.34   97.3400   94.35   94.79          NaN
@@ -648,8 +669,10 @@ Date
 2017-01-31  121.15  121.35  121.3900  120.62     NaN          NaN
 2017-02-28  137.08  136.99  137.4350  136.70     NaN          NaN
 2017-03-31  143.72  143.66  144.2700  143.01     NaN          NaN
-2017-04-30  144.09  143.65  144.3000  143.27     NaN          NaN
-</pre>
+2017-04-30  144.09  143.65  144.3000  143.27     NaN          NaN</pre>
+
 Since the column name of 'Open' has been changed, the new DataFrame has an new column named 'Change'.
+
 <h2>Summary</h2>
-Hereby we introduced the most import part of python: resampling and DataFrame manipulation. We only introduced the most commonly used method in Financial data analysis. There are also many methods used in data mining, which are also beneficial. You can always check the <a href="https://pandas.pydata.org/pandas-docs/stable/index.html#">Pandas</a> official documentations for help.
+
+Hereby we introduced the most import part of python: resampling and DataFrame manipulation. We only introduced the most commonly used method in Financial data analysis. There are also many methods used in data mining, which are also beneficial. You can always check the <a href="https://pandas.pydata.org/pandas-docs/stable/index.html">Pandas</a> official documentations for help.
