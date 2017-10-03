@@ -365,7 +365,7 @@ Using the standard deviation of spread during the rolling formation period, a t
 
 </div>
 <pre class="prettyprint linenums">def _set_signal(self):
-    history = self.History(self.numdays,Resolution.Daily)
+    history = self.History(self.numdays,Nullable[Resolution](Resolution.Daily))
     logprice = {}
     for j in range(len(self.syl)):
         close = []
@@ -380,6 +380,24 @@ Using the standard deviation of spread during the rolling formation period, a t
     self.coef = reg.coef_    # reg.intercept_
     self.spread = y - self.coef * x  #compute the spread series based on regression result
     self.mean, self.std = np.mean(self.spread),np.std(self.spread)
+
+    logprice_x = np.log(float(self.Portfolio[self.syl[0]].Price))
+    logprice_y = np.log(float(self.Portfolio[self.syl[1]].Price))
+
+    syl_x, syl_y = self.syl[0],self.syl[1]
+    quantity = float(self.CalculateOrderQuantity(syl_x,0.4))
+
+    current_spread = float(logprice_y) - self.coef * float(logprice_x)
+
+    if current_spread > self.mean + self.threshold * self.std:
+        self.Sell(syl_y, np.exp(self.coef) * quantity)
+        self.Buy(syl_x,  quantity)
+    elif current_spread < self.mean - self.threshold * self.std:
+        self.Buy(syl_y, np.exp(self.coef) * quantity )
+        self.Sell(syl_x,  quantity)
+    if self.Portfolio[self.syl[0]].Quantity != 0 and self.Portfolio[self.syl[1]].Quantity != 0:
+        if  current_spread < 0.5 * self.std and current_spread > -0.5 * self.std:
+            self.Liquidate()
 </pre>
 </div>
 </div>
@@ -415,10 +433,10 @@ The value of mean and standard deviation are calculated from the rolling format
 </tr>
 <tr>
 <td style="text-align: center;">Cointegration</td>
-<td style="text-align: center;">39</td>
-<td style="text-align: center;">14.6%</td>
-<td style="text-align: center;">0.33</td>
-<td style="text-align: center;">11.7%</td>
+<td style="text-align: center;">33</td>
+<td style="text-align: center;">71.2%</td>
+<td style="text-align: center;">0.781</td>
+<td style="text-align: center;">15.6%</td>
 </tr>
 </tbody>
 </table>
@@ -431,4 +449,4 @@ It is observed that the use of copula in pairs trading provides more trading opp
 Backtest for copula method
 <script src='https://www.quantconnect.com/terminal/backtest.js?sid=a2173bc42a6510f2b8d229a274e470b2'></script>
 Backtest for cointegration method
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=aaffc843fcd213ebd82e10a241b40bc2'></script>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=d5ac7544325b16b3536fa13dc2d34214'></script>
