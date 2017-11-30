@@ -19,10 +19,10 @@ Here Schedule.On(DateRules, TimeRules, Action()) will trigger every trading day 
 <img src="images/dual thrust price range.png" alt="dual thrust price range”/>
 
 In order to calculate the range, each trading day we need the close, high and low price data over the most recent N days. In addition, the open price of the current day is required in order to generate the signals. QuantConnect provides History(Symbol, TimeSpan, Resolution) method to get the history data like open, close, high and low for all configured securities over the requested N-days time span. Then the range is calculated by \[range = max(HH-LC, HC-LL)\]. In this implementation we choose N=4. It is less than one week and the range would reflect the recent price change.
-<pre class="prettyprint linenums">for slice in history:
-            self.high.append(slice.High)
-            self.low.append(slice.Low)
-            self.close.append(slice.Close)
+<pre class="prettyprint linenums">history = self.History([self.syl.Value], 4, Resolution.Daily)
+  self.high = history.loc[self.syl.Value]['high']
+  self.low = history.loc[self.syl.Value]['low']
+  self.close = history.loc[self.syl.Value]['close']
 </pre>
 <h3>Step 3: Trading Implementation</h3>
 The long signal is calculated by \[cap = open + K_1 \times Range\]. The short signal is calculated by \[floor = open – K_2 \times  Range\] where K1 and K2 are the parameters. When K1 is greater than K2, it is much easier to trigger the long signal and vice versa. For demonstration, here we choose K1 = K2 = 0.5. In live trading, we can still use historical data to optimize those parameters or adjust the parameters according to the market trend. K1 should be small than k2 if you are bullish on the market and k1 should be much bigger if you are bearish on the market.
@@ -46,4 +46,4 @@ We tested this strategy on the S&amp;P 500 ETF SPY from 2004 to 2017. During th
 This is just a basic implementation and the parameters K1 and K2 are fixed. The strategy can be further extended to Futures and Forex markets. When K1 is smaller than k2, buy signals are prone to trigger and vice versa. To improve the model we can apply technical indicators to judge the trend of price and adjust the value of two parameters dynamically and apply risk control in the position sizing.
 <h2>Algorithm</h2>
 Backtest result for ETF: SPY from 2004 to 2017
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=4d0688ea3763f651081eee7e7dd981cc'></script>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=c3816a8e2704a903c6c929f743fc6a62'></script>

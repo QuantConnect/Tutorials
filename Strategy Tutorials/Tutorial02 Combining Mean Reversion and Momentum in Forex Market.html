@@ -28,7 +28,7 @@ Fama and French and Summers [ref]<strong>Fama, E., 1984. </strong>Forward and sp
 
 \[x^{i}_t = (1 - \delta ^{i})\mu ^{i} + \delta ^{i}x^{i}_{t-1} + \sum_{j=1}^{J}\rho ^{i}(x^{i}_{t-1} - x^{i}_{t-j-1}) + \epsilon ^{u}_t\]
 
-Using the equation above Serban adapts it to find abnormal return in the forex market. The \(\delta \) represents the speed of mean reversion and can differ by country, while the \(\rho \) represents the momentum strength and can vary by country and by lag. The parameter \(\mu \) also varies by country. Accounting for these changes:
+Using the equation above Serban adapts it to find the abnormal return in the forex market. The \(\delta \) represents the speed of mean reversion and can differ by country, while the \(\rho \) represents the momentum strength and can vary by country and by lag. The parameter \(\mu \) also varies by country. Accounting for these changes:
 
 \[y^{i}_t = -(1 - \delta ^{i})(x^{i}_{t-1} - \mu ^{i}) + \sum_{j=1}^{J}\rho ^{i}(x^{i}_{t-1} - x^{i}_{t-j-1}) + \epsilon ^{u}_t\]
 <h3>Trading Strategy</h3>
@@ -40,33 +40,36 @@ To limit the number of parameters we need to estimate and find a solution easily
 
 When applying the above equation, we found that the scale of the mean reversion for each currency are very different, and this difference in scale is large enough to affect the accuracy of our rank. We made an adjustment to standardize the mean-reversion. While calculating \(\mu \) (the mean of the log prices) we also calculated standard deviation σ. In this tutorial we replace \(x-\mu \) with \(\frac{x - \mu}{\sigma } \). This captures the mean reversion factor better than the author's technique.
 <h3>Data Description</h3>
-The paper used monthly exchange rate data for the Canadian Dollar/USD, German Mark/Euro, UK Pound/USD and Japanese Yen/USD, from 1978 to 2008. Due to data availability we used Euro/USD instead of German Mark/Euro, and the earliest data available starts from 2004. Each time we launch the strategy we use all of the available historical data prior to the start date to build the OLS model, and uses that model for the entire backtest. The paper used 1/3 of their data as the training dataset and the rest for the test set. We directly test our model on backtesting, because QuantConnect makes this easier.
+The paper used monthly exchange rate data for the Canadian Dollar/USD, German Mark/Euro, UK Pound/USD and Japanese Yen/USD, from 1978 to 2008. Due to data availability, we used Euro/USD instead of German Mark/Euro, and the earliest data available starts from 2004. Each time we launch the strategy we use all of the available historical data prior to the start date to build the OLS model and uses that model for the entire backtest. The paper used 1/3 of their data as the training dataset and the rest of the test set. We directly test our model on backtesting, because QuantConnect makes this easier.
 <h2>Method</h2>
 In order to apply the model, we need to first pull history data to build it. The project can be briefly divided into four parts: the historical data request, model training, prediction and execution.
 <h3>Step 1: Request Historical Data</h3>
-The first function takes two arguments: symbol and number of daily data points requested. This function requests historical <a href="https://www.quantconnect.com/docs#Consolidating-Data-TradeBars-vs-QuoteBars">QuoteBars</a> and builds it into a pandas DataFrame. For more information about pandas DataFrame, please refer to the help documentation <a href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html">DataFrame</a>. The calculate_return function takes a DataFrame as argument to calculate the mean and standard deviation of the log prices, and create new columns for the DataFrame (return, reversal factor and momentum) - it prepares the DataFrame for multiple linear regression.
-<pre class="prettyprint linenums">def get_history(self, symbol, num):
+The first function takes two arguments: symbol and number of daily data points requested. This function requests historical <a href="https://www.quantconnect.com/docs#Consolidating-Data-TradeBars-vs-QuoteBars">QuoteBars</a> and builds it into a pandas DataFrame. For more information about pandas DataFrame, please refer to the help documentation <a href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html">DataFrame</a>. The calculate_return function takes a DataFrame as an argument to calculate the mean and standard deviation of the log prices, and create new columns for the DataFrame (return, reversal factor and momentum) - it prepares the DataFrame for multiple linear regression.
+<pre class="prettyprint linenums">def get_history(self,symbol,num):
     data = {}
-    dates, price = [],[]
-    sym = List[Symbol]()
-    sym.Add(symbol)
-    history = self.History(sym,num)
-    for i in map(lambda x: x[symbol],history):
-    	dates.append(i.EndTime)
-    	price.append(np.log(float(i.Close)))
-    # return a pandas DataFrame contain log price and python datetime
-    df = pd.DataFrame(price,index = dates, columns = ['price'])
+    dates = []
+    history = self.History([symbol], num, Resolution.Daily).loc[symbol]['close'] #request the historical data for a single symbol
+    for time in history.index:
+        t = time.to_pydatetime().date()
+        dates.append(t)
+    dates = pd.to_datetime(dates)
+    df = pd.DataFrame(history, index=dates)
+    df.columns = ['price']
     return df
 
-def calculate_return(self, df):
-    # calculate the mean,which is used as μ
+def calculate_return(self,df):
+    #calculate the mean for further use
     mean = np.mean(df.price)
     # cauculate the standard deviation
     sd = np.std(df.price)
     # pandas method to take the last datapoint of each month.
     df = df.resample('BM',how = lambda x: x[-1])
+    # the following three lines are for further experiment purpose
+    # df['j1'] = df.price.shift(1) - df.price.shift(2)
+    # df['j2'] = df.price.shift(2) - df.price.shift(3)
+    # df['j3'] = df.price.shift(3) - df.price.shift(4)
     # take the return as depend variable
-    df['return'] = df.price - df.price.shift(1)
+    df['log_return'] = df.price - df.price.shift(1)
     # calculate the reversal factor
     df['reversal'] = (df.price.shift(1) - mean)/sd
     # calculate the momentum factor
@@ -77,7 +80,7 @@ def calculate_return(self, df):
 The concat function requests history and joins the results into a single DataFrame. As \(\mu \) varies by country so we assign the mean and standard deviation to the symbol for each currency for future use. The OLS function takes the resulting DataFrame to conduct an OLS regression. We write it into a function because it's easier to change the formula here if we need.
 <pre class="prettyprint linenums">def concat(self):
     # we requested as many daily tradebars as we can
-    his = self.get_history(self.quoted[0],20*365)
+    his = self.get_history(self.quoted[0].Value,20*365)
     # get the clean DataFrame for linear regression
     his = self.calculate_return(his)
     # add property to the symbol object for further use.
@@ -86,7 +89,7 @@ The concat function requests history and joins the results into a single DataFra
     df = his[0]
     # repeat the above procedure for each symbols, and concat the dataframes
     for i in range(1,len(self.quoted)):
-        his = self.get_history(self.quoted[i],20*365)
+        his = self.get_history(self.quoted[i].Value,20*365)
         his = self.calculate_return(his)
         self.quoted[i].mean = his[1]
         self.quoted[i].sd = his[2]
@@ -105,13 +108,13 @@ The predict function uses the history for the last 3 months, merges it into a D
     # get current month in string
     month = str(self.Time).split(' ')[0][5:7]
     # request the data in the last three months
-    res = self.get_history(symbol, 33*3)
+    res = self.get_history(symbol.Value,33*3)
     # pandas method to take the last datapoint of each month
     res = res.resample('BM',how = lambda x: x[-1])
     # remove the data points in the current month
     res = res[res.index.month != int(month)]
     # calculate the variables
-    res = self.calculate_input(res, symbol.mean, symbol.sd)
+    res = self.calculate_input(res,symbol.mean,symbol.sd)
     res = res.ix[0]
     # take the coefficient. The first one will not be used for sum-product because it's the intercept
     params = self.formula.params[1:]
@@ -135,8 +138,15 @@ There are a few points of note:
 <h3>Step 4: Initializing the Model</h3>
 In the Initialize function we prepare the data and conduct a linear regression. The class property 'self.formula' is the result of the OLS regression. We will use this object each time we rebalance the portfolio.
 <pre class="prettyprint linenums">def Initialize(self):
-    # prepare the aggregated DataFrame for linear regression
+    self.SetStartDate(2013,6,1)
+    self.SetEndDate(2016,6,1)
+    self.SetCash(10000)
+    self.syls = ['EURUSD','GBPUSD','USDCAD','USDJPY']
+    self.quoted = []
+    for i in range(len(self.syls)):
+        self.quoted.append(self.AddForex(self.syls[i],Resolution.Daily,Market.Oanda).Symbol)
     df = self.concat()
+    self.Log(str(df))
     self.formula = self.OLS(df)
     self.Schedule.On(self.DateRules.MonthStart(), self.TimeRules.At(9,31), Action(self.action))</pre>
 <h3>Step 5: Performing Monthly Rebalancing</h3>
@@ -145,20 +155,24 @@ Every month we rebalance the portfolio using the <a href="https://www.quantconne
     rank = []
     long_short = []
     for i in self.quoted:
-    	rank.append((i,self.predict(i)))
-    # rank the symbols by their expected return
-    rank.sort(key = lambda x: x[1], reverse = True)
-    # the first element in long_short is the one with the highest expected return with which to go long, and the second one is to be shorted.
+        rank.append((i,self.predict(i)))
+# rank the symbols by their expected return
+    rank.sort(key = lambda x: x[1],reverse = True)
+# the first element in long_short is the one with the highest expected return, which we are going to long, and the second one is going to be shorted.
     long_short.append(rank[0])
     long_short.append(rank[-1])
     self.Liquidate()
 
-    # the product &lt; 0 means the expected return of the first one is positive and that of the second one is negative--we are going to long and short.
-    if long_short[0][1]*long_short[1][1] &lt; 0: self.SetHoldings(long_short[0][0],1) self.SetHoldings(long_short[1][0],-1) # this means we long only because all of the expected return is positive elif long_short[0][1] &gt; 0 and long_short[1][1] &gt; 0:
-        self.SetHoldings(long_short[0][0], 1)
-    # short only
+# the product &lt; 0 means the expected return of the first one is positive and that of the second one is negative--we are going to long and short.
+    if long_short[0][1]*long_short[1][1] &lt; 0:
+        self.SetHoldings(long_short[0][0],1)
+        self.SetHoldings(long_short[1][0],-1)
+        # this means we long only because all of the expected return is positive
+    elif long_short[0][1] &gt; 0 and long_short[1][1] &gt; 0:
+        self.SetHoldings(long_short[0][0],1)
+# short only
     else:
-        self.SetHoldings(long_short[1][0], -1)</pre>
+        self.SetHoldings(long_short[1][0],-1)</pre>
 <h2>Results</h2>
 The following regression output is obtained by backtesting the time period from Jun 2013 to Jun 2016. We can see the results are fairly close to those from the source paper with a R-squared value of 3.1% compared to the paper's 3.89%. Our momentum coefficient, ρ, is 0.0344 compared to the paper's 0.042. We obtained 0.9955 mean reversion coefficient (1 - 0.0045), and the paper got 0.9859.
 <img class=" wp-image-565 alignleft" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/06/WX20170602-123108@2x-300x162.png" alt="" width="522" height="282" />
@@ -171,4 +185,4 @@ The compound annual returns are quite stable, however, the paper claimed that th
 <h2>Conclusion</h2>
 The paper demonstrates there are inefficiencies in the UIP which can be exploited with a hybrid momentum and mean reversion strategy. Although the sample size of the paper is much larger than ours the parameter and significance level of the two models are very close. The strategies we discussed above keep \(\rho \) fixed and only allow \(\mu \) to change by country. If we let \(\rho \) change by lag the significance level of the model might increase, but this could potentially make modeling more difficult by introducing multicollinearity. To test this we wrote this implementation in the algorithm and commented out the lines. If you are interested in exploring this extension to the model you can change these lines to test your strategy.
 <h2>Algorithm</h2>
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=407e4358f2019d9e116234e07e58317c'></script>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=840ec7776065aaf7ae2f153c423d24cb'></script>
