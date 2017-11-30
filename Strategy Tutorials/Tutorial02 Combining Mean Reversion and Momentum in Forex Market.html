@@ -164,7 +164,11 @@ Every month we rebalance the portfolio using the <a href="https://www.quantconne
     self.Liquidate()
 
 # the product &lt; 0 means the expected return of the first one is positive and that of the second one is negative--we are going to long and short.
-    if long_short[0][1]*long_short[1][1] &lt; 0: self.SetHoldings(long_short[0][0],1) self.SetHoldings(long_short[1][0],-1) # this means we long only because all of the expected return is positive elif long_short[0][1] &gt; 0 and long_short[1][1] &gt; 0:
+    if long_short[0][1]*long_short[1][1] &lt; 0:
+        self.SetHoldings(long_short[0][0],1)
+        self.SetHoldings(long_short[1][0],-1)
+        # this means we long only because all of the expected return is positive
+    elif long_short[0][1] &gt; 0 and long_short[1][1] &gt; 0:
         self.SetHoldings(long_short[0][0],1)
 # short only
     else:
