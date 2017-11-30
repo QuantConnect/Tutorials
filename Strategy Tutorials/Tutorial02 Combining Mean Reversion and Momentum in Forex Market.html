@@ -28,7 +28,7 @@ Fama and French and Summers [ref]<strong>Fama, E., 1984. </strong>Forward and sp
 
 \[x^{i}_t = (1 - \delta ^{i})\mu ^{i} + \delta ^{i}x^{i}_{t-1} + \sum_{j=1}^{J}\rho ^{i}(x^{i}_{t-1} - x^{i}_{t-j-1}) + \epsilon ^{u}_t\]
 
-Using the equation above Serban adapts it to find abnormal return in the forex market. The \(\delta \) represents the speed of mean reversion and can differ by country, while the \(\rho \) represents the momentum strength and can vary by country and by lag. The parameter \(\mu \) also varies by country. Accounting for these changes:
+Using the equation above Serban adapts it to find the abnormal return in the forex market. The \(\delta \) represents the speed of mean reversion and can differ by country, while the \(\rho \) represents the momentum strength and can vary by country and by lag. The parameter \(\mu \) also varies by country. Accounting for these changes:
 
 \[y^{i}_t = -(1 - \delta ^{i})(x^{i}_{t-1} - \mu ^{i}) + \sum_{j=1}^{J}\rho ^{i}(x^{i}_{t-1} - x^{i}_{t-j-1}) + \epsilon ^{u}_t\]
 <h3>Trading Strategy</h3>
@@ -40,11 +40,11 @@ To limit the number of parameters we need to estimate and find a solution easily
 
 When applying the above equation, we found that the scale of the mean reversion for each currency are very different, and this difference in scale is large enough to affect the accuracy of our rank. We made an adjustment to standardize the mean-reversion. While calculating \(\mu \) (the mean of the log prices) we also calculated standard deviation σ. In this tutorial we replace \(x-\mu \) with \(\frac{x - \mu}{\sigma } \). This captures the mean reversion factor better than the author's technique.
 <h3>Data Description</h3>
-The paper used monthly exchange rate data for the Canadian Dollar/USD, German Mark/Euro, UK Pound/USD and Japanese Yen/USD, from 1978 to 2008. Due to data availability we used Euro/USD instead of German Mark/Euro, and the earliest data available starts from 2004. Each time we launch the strategy we use all of the available historical data prior to the start date to build the OLS model, and uses that model for the entire backtest. The paper used 1/3 of their data as the training dataset and the rest for the test set. We directly test our model on backtesting, because QuantConnect makes this easier.
+The paper used monthly exchange rate data for the Canadian Dollar/USD, German Mark/Euro, UK Pound/USD and Japanese Yen/USD, from 1978 to 2008. Due to data availability, we used Euro/USD instead of German Mark/Euro, and the earliest data available starts from 2004. Each time we launch the strategy we use all of the available historical data prior to the start date to build the OLS model and uses that model for the entire backtest. The paper used 1/3 of their data as the training dataset and the rest of the test set. We directly test our model on backtesting, because QuantConnect makes this easier.
 <h2>Method</h2>
 In order to apply the model, we need to first pull history data to build it. The project can be briefly divided into four parts: the historical data request, model training, prediction and execution.
 <h3>Step 1: Request Historical Data</h3>
-The first function takes two arguments: symbol and number of daily data points requested. This function requests historical <a href="https://www.quantconnect.com/docs#Consolidating-Data-TradeBars-vs-QuoteBars">QuoteBars</a> and builds it into a pandas DataFrame. For more information about pandas DataFrame, please refer to the help documentation <a href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html">DataFrame</a>. The calculate_return function takes a DataFrame as argument to calculate the mean and standard deviation of the log prices, and create new columns for the DataFrame (return, reversal factor and momentum) - it prepares the DataFrame for multiple linear regression.
+The first function takes two arguments: symbol and number of daily data points requested. This function requests historical <a href="https://www.quantconnect.com/docs#Consolidating-Data-TradeBars-vs-QuoteBars">QuoteBars</a> and builds it into a pandas DataFrame. For more information about pandas DataFrame, please refer to the help documentation <a href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html">DataFrame</a>. The calculate_return function takes a DataFrame as an argument to calculate the mean and standard deviation of the log prices, and create new columns for the DataFrame (return, reversal factor and momentum) - it prepares the DataFrame for multiple linear regression.
 <pre class="prettyprint linenums">def get_history(self,symbol,num):
     data = {}
     dates = []
@@ -96,7 +96,7 @@ The concat function requests history and joins the results into a single DataFra
         df = pd.concat([df,his[0]])
     df = df.sort_index()
     # remove outliers that outside the 99.9% confidence interval
-    df = df[df.apply(lambda x: np.abs(x - x.mean()) / x.std() < 3).all(axis=1)]
+    df = df[df.apply(lambda x: np.abs(x - x.mean()) / x.std() &lt; 3).all(axis=1)]
     return df
 
 def OLS(self,df):
@@ -163,12 +163,8 @@ Every month we rebalance the portfolio using the <a href="https://www.quantconne
     long_short.append(rank[-1])
     self.Liquidate()
 
-# the product < 0 means the expected return of the first one is positive and that of the second one is negative--we are going to long and short.
-    if long_short[0][1]*long_short[1][1] < 0:
-        self.SetHoldings(long_short[0][0],1)
-        self.SetHoldings(long_short[1][0],-1)
-# this means we long only because all of the expected return is positive
-    elif long_short[0][1] > 0 and long_short[1][1] > 0:
+# the product &lt; 0 means the expected return of the first one is positive and that of the second one is negative--we are going to long and short.
+    if long_short[0][1]*long_short[1][1] &lt; 0: self.SetHoldings(long_short[0][0],1) self.SetHoldings(long_short[1][0],-1) # this means we long only because all of the expected return is positive elif long_short[0][1] &gt; 0 and long_short[1][1] &gt; 0:
         self.SetHoldings(long_short[0][0],1)
 # short only
     else:
