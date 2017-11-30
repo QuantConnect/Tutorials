@@ -148,7 +148,7 @@ In the Initialize function we prepare the data and conduct a linear regression.
     df = self.concat()
     self.Log(str(df))
     self.formula = self.OLS(df)
-    self.Schedule.On(self.DateRules.MonthStart(), self.TimeRules.At(9,31), Action(self.action))
+    self.Schedule.On(self.DateRules.MonthStart(), self.TimeRules.At(9,31), Action(self.action))</pre>
 <h3>Step 5: Performing Monthly Rebalancing</h3>
 Every month we rebalance the portfolio using the <a href="https://www.quantconnect.com/docs#Scheduled-Events">Schedule Event</a> helper method. The predicted returns are added to the rank array and then sorted by return. The first element in the list is the best return paired with the associated symbol. When all the expected returns in the rank array are positive we only go long the pair with the highest expected return. When all returns are negative, we only go short the pair with the lowest expected return.
 <pre class="prettyprint linenums">def action(self):
