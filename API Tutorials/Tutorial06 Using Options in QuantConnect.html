@@ -20,7 +20,7 @@ fillDataForward)</td>
 </tbody>
 </table>
 <pre class="prettyprint linenums">def Initialize(self):
-    self.SetStartDate(2017, 01, 01)  #Set Start Date	
+    self.SetStartDate(2017, 01, 01)  #Set Start Date
     self.SetEndDate(2017, 06, 30)  #Set End Date
     self.SetCash(50000)  #Set Strategy Cash
     equity = self.AddEquity("GOOG", Resolution.Daily) # Add the underlying stock: Google
@@ -54,11 +54,11 @@ Here parameters <em>min Strike</em> and <em>max Strike</em> are the relative va
 For the strike, the exchange normally chooses the strike prices at which options can be written so that they are spaced $2.50, $5, or $10 apart. Typically the spacing is $2.50 when the stock price is between $5 and $25, $5 when the stock price is between $25 and $200, and $10 for stock prices above $200. So you should carefully choose the parameters of <em>min strike</em> and <em>max Strike</em> in case there is no contracts satisfy the filter criteria if the range is too small, less than the minimum units of strike prices change.
 
 For the expiry, there are many expiration dates that apply to the different series of options. An option cycle is the pattern of months in which options contracts expire. There are three kinds of common option cycles. The options on the January cycle have contracts available in the first month of each quarter (January, April, July and October). Options assigned to the February cycle use the middle month of each quarter (February, May, August and November). And options in the March cycle have options available during the last month of each quarter (March, June, September and December). In addition, individual stock options typically expire in the current month and the subsequent month.
-<pre class="prettyprint linenums"># filter the contracts with strikes between (market price - 10, market price + 10) 
+<pre class="prettyprint linenums"># filter the contracts with strikes between (market price - 10, market price + 10)
 option.SetFilter(-10,10)
 # filter the contracts which expires more than 30 days but no longer than 60 days
 option.SetFilter(TimeSpan.FromDays(30),TimeSpan.FromDays(60))
-# filter the contracts with strikes between(ATM Strike - 10 * strike space value, market price + 10 * strike space value) and with expiration days less than 180 days 
+# filter the contracts with strikes between(ATM Strike - 10 * strike space value, market price + 10 * strike space value) and with expiration days less than 180 days
 option.SetFilter(-10, +10, timedelta(0), timedelta(180))</pre>
 <div class="page" title="Page 242">
 <div class="layoutArea">
@@ -105,8 +105,8 @@ For QuantConnect API, <a href="https://www.quantconnect.com/lean/docs#topic3838.
 <tr>
 <td><code>x.Right</code></td>
 <td>Get the right being purchased
-x.Right ＝ 1  call option[right to buy]
-x.Right ＝ 0  put option[right to sell]</td>
+x.Right ＝ OptionRight.Call  call option[right to buy]
+x.Right ＝ OptionRight.Put  put option[right to sell]</td>
 </tr>
 <tr>
 <td><code>x.UnderlyingLastPrice</code></td>
@@ -119,10 +119,10 @@ x.Right ＝ 0  put option[right to sell]</td>
 </tbody>
 </table>
 We can print out the details of the contract after filtering with Python data frame to show these properties. Assume today is 01/03/2017.  The stock price at 01/03/2017 09:31:00 is $776.01 per share. Here we use  <code>SetFilter(-1, +1, timedelta(0), timedelta(60)) </code>to filter the contracts.
-<pre class="prettyprint linenums">def OnData(self,slice):   
+<pre class="prettyprint linenums">def OnData(self,slice):
     for i in slice.OptionChains:
         if i.Key != self.symbol: continue
-	optionchain = i.Value 
+	optionchain = i.Value
 	self.Log("underlying price:" + str(optionchain.Underlying.Price))
 	df = pd.DataFrame([[x.Right,float(x.Strike),x.Expiry,float(x.BidPrice),float(x.AskPrice)] for x in optionchain],
 			   index=[x.Symbol.Value for x in optionchain],
@@ -227,11 +227,11 @@ contracts = sorted(contracts, key = lambda x:x.Expiry, reverse = True)
 </pre>
 Finally, we trade the options by using the contract's symbol.
 <pre class="prettyprint linenums">if len(contracts) == 0: continue
-# trade the contracts with the farthest expiration 
-symbol = contracts[0].Symbol   
+# trade the contracts with the farthest expiration
+symbol = contracts[0].Symbol
 self.MarketOrder(symbol, 1)
 self.MarketOnCloseOrder(symbol, -1)
- 
+
 </pre>
 <h2>Algorithm</h2>
 This simple example demonstrates how you can inspect the option chain to pick a specific option contract to trade.
