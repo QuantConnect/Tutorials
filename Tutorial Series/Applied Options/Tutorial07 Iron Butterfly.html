@@ -65,8 +65,8 @@ The maximum loss occurs if the underlying price is either below the OTM put stri
 <h2>Implementation</h2>
 Step 1: Initialize your algorithm which includes setting the start date and end date, setting the cash and implement the coarse selection of option contracts.
 <pre class="prettyprint linenums">def Initialize(self):
-	self.SetStartDate(2017, 02, 01)
-	self.SetEndDate(2017, 03, 31)
+	self.SetStartDate(2017, 2, 1)
+	self.SetEndDate(2017, 3, 31)
 	self.SetCash(300000)
 	equity = self.AddEquity("GOOG", Resolution.Minute)
 	option = self.AddOption("GOOG", Resolution.Minute)
@@ -107,6 +107,6 @@ self.Buy(self.otm_put.Symbol ,1)
 In this algorithm, on 04/03/2017, the share price of Google is $832.8. We buy OTM put(strike = $805) at $2, OTM call(strike = $860) and sell an ATM call and an ATM put. At the expiry 04/21/2017, the share price is $841.53. The ATM call is exercised and the other 3 options expire worthless. As we hold the short position of ATM call, after expiration we hold 100 short positions of GOOG stock.
 <h2>Algorithm</h2>
 Backtest using SetFilter
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=7d1b9bec2581b8eef7f2aab4e59ef8d7'></script>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=66cf0da6069a3cdf9a3db53dc77f68fd'></script>
 Backtest using OptionChainProvider
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=650efa8ae186d724215e7eb4858e93ff'></script>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=fd29a25361c8565f3fcd65c1c9e7dccd'></script>

@@ -29,7 +29,7 @@ From the payoff plot, the most that you can lose in a Long Strangle is the total
 <h2>Implementation</h2>
 Step 1: Initialize your algorithm including setting the start and end date, setting the cash and filtering the options contracts. Note here in SetFilter, the strike price should range from negative to positive because we need to choose out-of-the-money put and call options from candidate contracts. The strike price of OTM call should be greater than ATM options and the strike price of OTM put should be lower than ATM options.
 <pre class="prettyprint linenums">def Initialize(self):
-	self.SetStartDate(2017, 4, 01)
+	self.SetStartDate(2017, 4, 1)
 	self.SetEndDate(2017, 5, 30)
 	self.SetCash(100000)
 	equity = self.AddEquity("GOOG", Resolution.Minute)
@@ -72,6 +72,6 @@ You can enter into Long Strangle if you have no clear idea of market direction b
 </div>
 <h2>Algorithm</h2>
 Backtest using SetFilter
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=122dfcfa17e39bd9a4e499f93a7eef67'></script>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=33274c008409580598b3b12f64aed847'></script>
 Backtest using OptionChainProvider
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=256c926fb63b9038d9548bbc5ed15889'></script>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=7f244df15dc01b09786598e8bb406415'></script>
