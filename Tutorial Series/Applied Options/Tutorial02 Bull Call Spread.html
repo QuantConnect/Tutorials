@@ -30,8 +30,8 @@ From the payoff plot we can see, the maximum profit of the strategy is the diffe
 <h2>Implementation</h2>
 Step 1: First, you need to initialize the algorithm including set the start date, end date and the cash required. Then use <code>option.SetFilter(-6, 6, timedelta(30), timedelta(60))</code> to filter the candidate contracts which expire in 30 days to 60 days from now on. The strike price range involves both ITM and OTM options. Then we get the option chains of GOOG.
 <pre class="prettyprint linenums">def Initialize(self):
-	self.SetStartDate(2016, 5, 01)
-	self.SetEndDate(2016, 10, 01)
+	self.SetStartDate(2016, 5, 1)
+	self.SetEndDate(2016, 10, 1)
 	self.SetCash(200000)
 	equity = self.AddEquity("GOOG", Resolution.Minute)
 	option = self.AddOption("GOOG", Resolution.Minute)
@@ -70,6 +70,6 @@ Note here you need to add the following rules in <code>OnData(self,slice)</code>
 This strategy can be implemented when you have a moderate outlook on the stock because the payoff reaches its maximum when the price is between the strike price range of two traded options. The strategy protects the downside move of the stock price. But when the price is above the higher strike, the profit is capped.
 <h2>Algorithm</h2>
 Backtest (SetFilter)
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=e3fc8eb5d91b7a43179071f603b9d710'></script>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=341ee20242a302f09496e71ecc5edcfd'></script>
 Backtest (OptionChainProvider)
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=d3ba703113941fa2c43e5ba456ac222b'></script>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=bdad11049a41b9a5563ffb2f86d5c760'></script>

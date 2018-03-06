@@ -33,8 +33,8 @@ According to the payoff plot, the maximum profit is the strike price of short ca
 <h2>Implementation</h2>
 Step 1: Initialize your algorithm that involves setting the start date and the end date, setting the cash and implement the coarse selection of option contracts.
 <pre class="prettyprint linenums">def Initialize(self):
-	self.SetStartDate(2016, 1, 01)
-	self.SetEndDate(2016, 3, 01)
+	self.SetStartDate(2017, 4, 1)
+	self.SetEndDate(2017, 5, 30)
 	self.SetCash(1000000)
 	equity = self.AddEquity("GOOG", Resolution.Minute)
 	option = self.AddOption("GOOG", Resolution.Minute)
@@ -80,6 +80,6 @@ Step 4: In Ondata, if there is no assets in portfolio, we buy the undelying stoc
 In this algorithm, at the beginning  01/04/2016, we purchased 100 GOOG shares. At the same time, we purchased a $715 put at $6 and sells a $772.5 call at $2.45. The share price of GOOG is $739.32, which is between the strike prices of two out-the-money options. At the expiry 01/15/2016, the share price of GOOG drops to $714.32. The call option expire worthless but the put option is exercised. Then we sell 100 GOOG shares at $715. Then we hold neither option positions and stock positions.
 <h2>Algorithm</h2>
 Backtest using SetFilter
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=c72134bc03b7cc6d583abf0e76781a6c'></script>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=1c5489477989a11a13f5ba5832d8fb04'></script>
 Backtest using OptionChainProvider
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=9ba6caf7ed2230865185919e3fe856a9'></script>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=2f55a1e05b90092e5b146152a704eddc'></script>

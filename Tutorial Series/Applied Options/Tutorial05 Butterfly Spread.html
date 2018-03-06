@@ -61,7 +61,7 @@ plt.grid(True)
 <h2>Implementation</h2>
 Step 1: Initialize your algorithm including setting the start date and the end date, setting the cash and implement a coarse selection of option contract. <code>SetFilter(-9, 9, timedelta(30), timedelta(60))</code> helps us choose the contracts which expire in 30 to 60 days from now on. Since ITM call strike and OTM call strike are symmetrical with ATM call strike. For the strike parameter, the first parameter is the minimum strike rank relative to market price,  the second parameter is the maximum strike rank relative to market price. The rank of ATM contract is 0. Here we need to choose 2 numbers which are symmetrical with 0.
 <pre class="prettyprint linenums">def Initialize(self):
-	self.SetStartDate(2017, 4, 01)
+	self.SetStartDate(2017, 4, 1)
 	self.SetEndDate(2017, 5, 30)
 	self.SetCash(150000)
 	equity = self.AddEquity("GOOG", Resolution.Minute)
@@ -100,6 +100,6 @@ self.Buy(self.otm_call.Symbol ,1)
 From the following algorithm, at time 0, the GOOG share price is $832.8. We purchase 1 OTM call option strike at $855, 1 ITM call option strike at $810 and sell 2 ATM options strike at 835. At the expiry 05/19/2017, the share price is $930, then the long positions of the ITM option and the OTM option are all exercised, we buy 100 GOOG  shares at $810 and buy another 100 shares at $855. At the same time, the 2 short positions of the ATM option are also exercised. We have to sell 200  GOOG shares to option holder at $835. Then we no longer hold positions after the expiration of this Long Call Butterfly Spread. Since the stock price had a sharp increase during the life of options, we make no profits from this strategy.
 <h2>Algorithm</h2>
 Backtest using SetFilter
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=f3818f201e57bef5da4efda7f42fc361'></script>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=9ea3de0a9067624820464164334e15bd'></script>
 Backtest using OptionChainProvider
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=e512d433bc5fe84c2031f5e07862b120'></script>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=196889bfa6dfba635dcdb218a8db4437'></script>

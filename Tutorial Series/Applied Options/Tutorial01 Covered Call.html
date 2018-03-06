@@ -29,8 +29,8 @@ plt.grid(True)
 <h3>Step 1: Initialize the Algorithm</h3>
 At the beginning of your algorithm, you need to set the start date, the end date and the cash required for the algorithm. For options algorithm, you need to add the equity and the options written on this equity.
 <pre class="prettyprint linenums">def Initialize(self):
-   self.SetStartDate(2016, 01, 01)
-   self.SetEndDate(2016, 03, 01)
+   self.SetStartDate(2016, 1, 1)
+   self.SetEndDate(2016, 3, 1)
    self.SetCash(100000)
    equity = self.AddEquity("IBM", Resolution.Minute)
    option = self.AddOption("IBM", Resolution.Minute)
@@ -81,6 +81,6 @@ Fourth, at the expiration date we print out the price and position information
 From the above strategy we can see,  the share price of IBM had been increasing during the backtesting period from January 2016 to June 2016. The drawdown is small. The Covered Call strategy performs better than a simple buy-and-hold strategy of underlying stock in a bearish market. The benefit of Covered Call is that you keep the premium, stock gains up to the strike price, and accrued dividends during the stock holding period. But in a bullish market, you will lose the potential gains over the strike price.
 <h2>Algorithm</h2>
 Backtest using SetFilter
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=82108c1c9f30feb6ad76a31974c45f05'></script>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=bf562b82727fb0070c774d9e828caa68'></script>
 Backtest using OptionChainProvider
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=7af45cfd6fca1c704f9fce999fe2d5cb'></script>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=cf74ca719d2579ec5afb2603bedd4b7a'></script>
