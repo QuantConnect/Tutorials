@@ -98,7 +98,7 @@ The concat function requests history and joins the results into a single DataFra
         df = pd.concat([df,his[0]])
     df = df.sort_index()
     # remove outliers that outside the 99.9% confidence interval
-    df = df[df.apply(lambda x: np.abs(x - x.mean()) / x.std() < 3).all(axis=1)]
+    df = df[df.apply(lambda x: np.abs(x - x.mean()) / x.std() &lt; 3).all(axis=1)]
     return df
 
 def OLS(self,df):
