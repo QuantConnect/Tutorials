@@ -45,7 +45,7 @@ The paper used monthly exchange rate data for the Canadian Dollar/USD, German Ma
 In order to apply the model, we need to first pull history data to build it. The project can be briefly divided into four parts: the historical data request, model training, prediction and execution.
 <h3>Step 1: Request Historical Data</h3>
 The first function takes two arguments: symbol and number of daily data points requested. This function requests historical <a href="https://www.quantconnect.com/docs#Consolidating-Data-TradeBars-vs-QuoteBars">QuoteBars</a> and builds it into a pandas DataFrame. For more information about pandas DataFrame, please refer to the help documentation <a href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html">DataFrame</a>. The calculate_return function takes a DataFrame as an argument to calculate the mean and standard deviation of the log prices, and create new columns for the DataFrame (return, reversal factor and momentum) - it prepares the DataFrame for multiple linear regression.
-<pre class="prettyprint linenums">def get_history(self,symbol,num):
+<pre class="prettyprint linenums">def get_history(self,symbol, num):
     data = {}
     dates = []
     history = self.History([symbol], num, Resolution.Daily).loc[symbol]['close'] #request the historical data for a single symbol
@@ -53,7 +53,9 @@ The first function takes two arguments: symbol and number of daily data points r
         t = time.to_pydatetime().date()
         dates.append(t)
     dates = pd.to_datetime(dates)
-    df = pd.DataFrame(history, index=dates)
+    df = pd.DataFrame(history)
+    df.reset_index(drop=True)
+    df.index = dates
     df.columns = ['price']
     return df
 
@@ -96,7 +98,7 @@ The concat function requests history and joins the results into a single DataFra
         df = pd.concat([df,his[0]])
     df = df.sort_index()
     # remove outliers that outside the 99.9% confidence interval
-    df = df[df.apply(lambda x: np.abs(x - x.mean()) / x.std() &lt; 3).all(axis=1)]
+    df = df[df.apply(lambda x: np.abs(x - x.mean()) / x.std() < 3).all(axis=1)]
     return df
 
 def OLS(self,df):
@@ -148,6 +150,11 @@ In the Initialize function we prepare the data and conduct a linear regression.
     df = self.concat()
     self.Log(str(df))
     self.formula = self.OLS(df)
+    self.Log(str(self.formula.summary()))
+    self.Log(str(df))
+    self.Log(str(df.describe()))
+    for i in self.quoted:
+        self.Log(str(i.mean) + '   ' + str(i.sd))
     self.Schedule.On(self.DateRules.MonthStart(), self.TimeRules.At(9,31), Action(self.action))</pre>
 <h3>Step 5: Performing Monthly Rebalancing</h3>
 Every month we rebalance the portfolio using the <a href="https://www.quantconnect.com/docs#Scheduled-Events">Schedule Event</a> helper method. The predicted returns are added to the rank array and then sorted by return. The first element in the list is the best return paired with the associated symbol. When all the expected returns in the rank array are positive we only go long the pair with the highest expected return. When all returns are negative, we only go short the pair with the lowest expected return.
@@ -185,4 +192,4 @@ The compound annual returns are quite stable, however, the paper claimed that th
 <h2>Conclusion</h2>
 The paper demonstrates there are inefficiencies in the UIP which can be exploited with a hybrid momentum and mean reversion strategy. Although the sample size of the paper is much larger than ours the parameter and significance level of the two models are very close. The strategies we discussed above keep \(\rho \) fixed and only allow \(\mu \) to change by country. If we let \(\rho \) change by lag the significance level of the model might increase, but this could potentially make modeling more difficult by introducing multicollinearity. To test this we wrote this implementation in the algorithm and commented out the lines. If you are interested in exploring this extension to the model you can change these lines to test your strategy.
 <h2>Algorithm</h2>
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=840ec7776065aaf7ae2f153c423d24cb'></script>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=c1eea4df64cf986eba481f5e5e376e8a'></script>
