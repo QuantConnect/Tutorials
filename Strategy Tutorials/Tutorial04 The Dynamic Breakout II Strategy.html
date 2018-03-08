@@ -12,7 +12,7 @@ We backtested the strategy on EURUSD and GBPUSD over 6 years period.  The resul
 The lookback period is the number of bars back from the most recent bar that the price or indicator looks at to make the momentum calculations.[ref]<strong>Robert C. Miner(October 20, 2008)</strong>. High Probability Trading Strategies: Entry to Exit Tactics for the Forex, Futures, and Stock Markets, page 37, <a href="https://www.amazon.com/High-Probability-Trading-Strategies-Tactics/dp/0470181664"> Online Copy</a>[/ref]   <b> </b>
 
 To start the look back period is set to 20 days to determine its buy and sell levels. We change the number of look back days in proportion to changes in market volatility. Through this method the number of look back days changes on a daily basis. At the end of each day, the current market volatility is calculated by the standard deviation of the past 30 day's closing prices.
-<pre class="prettyprint linenums">close = self.PullHistory(self.syl, self.numdays, Resolution.Daily, 'close')
+<pre class="prettyprint linenums">close = self.History(self.syl, 31, Resolution.Daily)['close']
    todayvol = np.std(close[1:self.numdays+1])
    yesterdayvol = np.std(close[0:self.numdays])
    deltavol = (todayvol - yesterdayvol) / todayvol
@@ -41,8 +41,12 @@ QuantConnect provides more than 100 technical indicators for you to use in your 
 </pre>
 <h3>Step 3: Choose the algorithm liquidation point</h3>
 The exit signal for an existing holding is determined by calculating a simple moving average of closing prices for the past look back days. That is to say, we liquidate a long position if the current price is lower than the moving average of the close price over the look back period, and vice versa for selling a short position.
-<pre class="prettyprint linenums">longLiqPoint = np.mean(self.PullHistory(self.syl, self.numdays, Resolution.Daily, 'close'))
-shortLiqPoint = np.mean(self.PullHistory(self.syl, self.numdays, Resolution.Daily, 'close'))
+<pre class="prettyprint linenums">self.buypoint = max(self.high)
+self.sellpoint = min(self.low)
+historyclose = self.History(self.syl, self.numdays, Resolution.Daily)['close']
+self.longLiqPoint = np.mean(historyclose)
+self.shortLiqPoint = np.mean(historyclose)
+self.yesterdayclose = historyclose.iloc[-1]
 </pre>
 <h2>Conclusion</h2>
 For six years backtesting of EURUSD, the overall statistics show an annual rate of return of 2.3% and with a Sharpe Ratio of 0.31. EURUSD has a significant uptrend from 2010 to 2012. This momentum strategy outperforms the market and seems to be profitable from 2010 to 2014.  The maximum drawdown occurs in May 2015 to December 2015 and is roughly 14%. From our results we find the strategy works best in an trending forex market.
@@ -55,7 +59,6 @@ Here we use the standard deviation of price as a measure of market volatility. T
 
 <h2>Algorithm</h2>
 Backtest for EURUSD
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=6d37bde5896a66ad05146385c1582c57&bm='></script>
-
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=87d3047e8c358ea9b4779e0b5d238a74'></script>
 Backtest for GBPUSD
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=9b52d58e45bf34f558d2c6562454f8f0&bm='></script>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=4bacf930111e3502993b7e7c9b315be0'></script>
