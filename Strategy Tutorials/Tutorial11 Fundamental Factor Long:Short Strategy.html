@@ -26,7 +26,7 @@ This function is a filter for the whole asset universe(around 8000 stocks). We s
 def CoarseSelectionFunction(self, coarse):
     # if the rebalance flag is not 1, return null list to save time.
     if self.reb != 1:
-        return []
+        return return self.long + self.short
 
     # make universe selection once a month
     # drop stocks which have no fundamental data or have too low prices
@@ -42,10 +42,9 @@ def CoarseSelectionFunction(self, coarse):
 Here is the core function. The process is that we make three sorted list to store the stocks, and then use a dictionary to store the score information. For the dictionary, the keys are Symbols and the values are their scores. Finally we sort the dictionary to get the final rank. we store the top 20 stocks to long in the list self.long and the bottom 20 stocks to short in the list self.short.
 <pre class="prettyprint linenums">
   def FineSelectionFunction(self, fine):
-  # return null list if it's not time to rebalance
+      # return the same symbol list if it's not time to rebalance
       if self.reb != 1:
-          return []
-
+          return self.long+self.short
       self.reb = 0
 
   # drop stocks which don't have the information we need.
@@ -77,11 +76,10 @@ Here is the core function. The process is that we make three sorted list to stor
       sorted_symbol = [x[0] for x in self.sorted_stock]
 
       # sotre the top stocks into the long_list and the bottom ones into the short_list
-      self.long = [x for x in sorted_symbol[:self.num_fine]]
-      self.short = [x for x in sorted_symbol[-self.num_fine:]]
+      self.long = [x.Symbol for x in sorted_symbol[:self.num_fine]]
+      self.short = [x.Symbol for x in sorted_symbol[-self.num_fine:]]
 
-      topFine = self.long + self.short
-      return [i.Symbol for i in topFine]</pre>
+      return self.long+self.short</pre>
 <h3>Rebalance</h3>
 Our portfolio is rebalanced monthly, so first of all we should write a ScheduledEvent handler in the Initialize function:
 <pre class="prettyprint linenums">
@@ -108,4 +106,4 @@ The paper strategy was backtest at a 60-year timespan. It's persistent, systemat
 For further development, we can try to rank a large number of stocks, and do some portfolio optimization instead of holding stocks equally.
 
 <h2>Algorithm</h2>
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=7a4b97afbe8a2d17de7c5006e394ffa5'></script>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=56878e349b15cf73edc52a34d49c4973'></script>
