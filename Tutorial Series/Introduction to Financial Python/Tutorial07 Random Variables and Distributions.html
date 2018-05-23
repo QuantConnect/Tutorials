@@ -30,7 +30,7 @@ plt.ylabel('Occurences')
 plt.grid()
 plt.show()
 </pre>
-<img class="aligncenter size-full wp-image-2206" src="https://github.com/ShallweXiaowei/Tutorials/blob/master/Tutorial%20Series/Introduction%20to%20Financial%20Python/images/Tutorial07-plot1.png?raw=true" alt="" width="600" height="450" />
+<img src="images/Tutorial07-plot1.png" alt="plot1" />
 Let's say we want to know the frequency that the observations are less than or equal to 3. In other words we want to seek the value of \(P(X&lt;3)\).
 <pre class="prettyprint linenums">print len([x for x in series if x &lt;= 3])/float(len(series))
 [out]: 0.4956
@@ -111,7 +111,7 @@ plt.bar(range(1,11),prob)
 plt.grid()
 plt.show()
 </pre>
-<img class="aligncenter size-full wp-image-2206" src="https://github.com/ShallweXiaowei/Tutorials/blob/master/Tutorial%20Series/Introduction%20to%20Financial%20Python/images/Tutorial07-plot2.png?raw=true" alt="" width="600" height="450" />
+<img src="images/Tutorial07-plot2.png" alt="plot2" />
 Another good property of binomial distribution is that its mean and variance are simple enough:
 \[\bar{u} = np\]
 \[\sigma^2 = np(1-P)\]
@@ -129,7 +129,7 @@ Now let's simulate a standard normal distribution using Python packages to see w
 norm.plot.density()
 plt.show()
 </pre>
-<img class="aligncenter size-full wp-image-2206" src="https://github.com/ShallweXiaowei/Tutorials/blob/master/Tutorial%20Series/Introduction%20to%20Financial%20Python/images/Tutorial07-plot3.png?raw=true" alt="" width="600" height="450" />
+<img src="images/Tutorial07-plot3.png" alt="plot3" />
 Financial data is highly disordered and is considered to has lots of noise. Most of the time we believe those noise follows normal distribution. It's also widely believed that the return on an asset over a short period of time follows normal distribution. Let's check it with the daily logarithm rates of return on SPY:
 <pre class="prettyprint linenums">import quandl
 quandl.ApiConfig.api_key = 'tAyfv1zpWnyhmDsp91yv'
@@ -144,13 +144,13 @@ Let's first have a look at the what the time-series return data looks like:
 spy.log_return.plot()
 plt.show()
 </pre>
-<img class="aligncenter size-full wp-image-2206" src="https://github.com/ShallweXiaowei/Tutorials/blob/master/Tutorial%20Series/Introduction%20to%20Financial%20Python/images/Tutorial07-plot4.png?raw=true" alt="" width="600" height="450" />
+<img src="images/Tutorial07-plot4.png" alt="plot4" />
 This is a classic daily return chart. Let's now plot the density chart of the returns:
 <pre class="prettyprint linenums">plt.figure(figsize = (20,10))
 spy.log_return.plot.density()
 plt.show()
 </pre>
-<img class="aligncenter size-full wp-image-2206" src="https://github.com/ShallweXiaowei/Tutorials/blob/master/Tutorial%20Series/Introduction%20to%20Financial%20Python/images/Tutorial07-plot5.png?raw=true" alt="" width="600" height="450" />
+<img src="images/Tutorial07-plot5.png" alt="plot5" />
 If we observe the x-axis and y-axis carefully, we can see the return of asset is not a standard normal distribution. The peak of the standard normal distribution plot is around 0.4, while it's over 0.6 for this chart. This is because the standard deviation \(\sigma\) of the return is obviously not 1.
 We can demonstrate the normal distribution with different mean and variance by simulation:
 <pre class="prettyprint linenums">de_2 = pd.Series(np.random.normal(0,2,10000),name = 'μ = 0, σ = 2')
@@ -162,6 +162,6 @@ plt.figure(figsize=(20,10))
 df.plot.density()
 plt.show()
 </pre>
-<img class="aligncenter size-full wp-image-2206" src="https://github.com/ShallweXiaowei/Tutorials/blob/master/Tutorial%20Series/Introduction%20to%20Financial%20Python/images/Tutorial07-plot6.png?raw=true" alt="" width="600" height="450" />
+<img src="images/Tutorial07-plot6.png" alt="plot6" />
 <h2>Summary</h2>
 In this chapter we introduced random variable, the difference between discrete random distribution and continuous random distribution, and most importantly, normal distribution. In the next chapter we will introduce how to use these distributions to test our idea or generating trading signals.
