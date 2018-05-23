@@ -232,9 +232,7 @@ fama_df = pd.concat([fama, amzn_log], axis = 1)
 fama_model = sm.ols(formula = 'Close~MKT+SMB+HML+RMW+CMA', data = fama_df).fit()
 print fama_model.summary()
 </pre>
-
-<img class="aligncenter size-full wp-image-2206" src="https://github.com/ShallweXiaowei/Tutorials/blob/master/Tutorial%20Series/Introduction%20to%20Financial%20Python/images/Tutorial10-fama.png?raw=true" alt="" width="600" height="450" />
-
+<img src="images/Tutorial10-fama.png" alt="fama" />
 The Fama-French 5-factor model has a higher \( R^2 \) of 0.387. We can compare the predictions from simple linear regression and Fama-French multiple regression by plotting them together on one chart:
 
 <pre class="prettyprint linenums">
@@ -250,9 +248,7 @@ plt.plot(result['2016-7':'2016-9'].index,result.loc['2016-7':'2016-9','sample'])
 plt.legend()
 plt.show()
 </pre>
-
-<img class="aligncenter size-full wp-image-2206" src="https://github.com/ShallweXiaowei/Tutorials/blob/master/Tutorial%20Series/Introduction%20to%20Financial%20Python/images/Tutorial10-compare.png?raw=true" alt="" width="600" height="450" />
-
+<img src="images/Tutorial10-compare.png" alt="compare" />
 Although it's hard to see from the chart above, the predicted return from multiple regression is closer to the actual return. Usually we don't plot the predictions to determine which model is better; we read the summary table.
 
 <h2>Model Significance Test</h2>
@@ -286,8 +282,7 @@ The residuals of a linear model usually has a normal distribution. We can plot t
 fama_model.resid.plot.density()
 plt.show()
 </pre>
-
-<img class="aligncenter size-full wp-image-2206" src="https://github.com/ShallweXiaowei/Tutorials/blob/master/Tutorial%20Series/Introduction%20to%20Financial%20Python/images/Tutorial10-residual.png?raw=true" alt="" width="600" height="450" />
+<img src="images/Tutorial10-residual.png" alt="residual" />
 
 As seen from the plot, the residual is normally distributed. By the way, the residual mean is always zero, up to machine precision:
 
@@ -309,9 +304,7 @@ plt.xlabel('x value')
 plt.ylabel('residual')
 plt.show()
 </pre>
-
-<img class="aligncenter size-full wp-image-2206" src="https://github.com/ShallweXiaowei/Tutorials/blob/master/Tutorial%20Series/Introduction%20to%20Financial%20Python/images/Tutorial10-variance.png?raw=true" alt="" width="600" height="450" />
-
+<img src="images/Tutorial10-variance.png" alt="variance" />
 As seen from the chart, the residuals' variance doesn't increase with X. The three outliers do not change our conclusion. Although we can plot the residuals for simple regression, we can't do this for multiple regression, so we use statsmodels to test for heteroskedasticity:
 
 <pre class="prettyprint linenums">from statsmodels.stats import diagnostic as dia

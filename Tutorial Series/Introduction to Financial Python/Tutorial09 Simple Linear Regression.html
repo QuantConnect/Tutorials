@@ -58,7 +58,7 @@ plt.figure(figsize = (15,10))
 plt.scatter(df.spy,df.amzn)
 plt.show()
 </pre>
-<img class="aligncenter size-full wp-image-2206" src="https://github.com/ShallweXiaowei/Tutorials/blob/master/Tutorial%20Series/Introduction%20to%20Financial%20Python/images/Tutorial9-plot1.png?raw=true" alt="" width="600" height="450" />
+<img src="images/Tutorial9-plot1.png" alt="plot1" />
 The plot is scattered, but we can see they are approximately correlated: generally the higher SPX's daily return is, the higher Amazon stock's return is. This is called <strong>positively correlated</strong>. We will cover it in the following tutorials.
 <h2>Slope and Intercept</h2>
 It's natural that we want to model the relation between these two rates of return. Intuitively we use a straight line to model it, this is called <strong>Linear Regression</strong>. In order to find the best straight line, it's natural to think that the vertical distances between the points of the data set and the fitted line should be minimized. Those vertical distances are called <strong>residual</strong>. Our objective is to make the sum of squared residuals as small as possible. This method is called <strong>ordinary least square</strong>, or <strong>OLS</strong> method.
@@ -76,7 +76,7 @@ In python, we have a very power package for mathematical models, which is named 
 model = sm.ols(formula = 'amzn~spy',data = df).fit()
 print model.summary()
 </pre>
-<img class="aligncenter size-full wp-image-2206" src="https://github.com/ShallweXiaowei/Tutorials/blob/master/Tutorial%20Series/Introduction%20to%20Financial%20Python/images/Tutorial9-regression%20table.png?raw=true" alt="" width="600" height="450" />
+<img src="images/Tutorial9-plot2.png" alt="plot2" />
 We built a simple linear regression model above by using the ols() function in statsmodels. The 'model' instance has lots of properties. The most commonly used one is parameters, or slope and intercept. We can access to them by:
 <pre class="prettyprint linenums">print 'pamameters: ',model.params
 [out]: pamameters:  Intercept    0.000012
@@ -99,7 +99,7 @@ plt.ylabel('amzn_return')
 plt.plot(df.spy,model.predict(),color = 'red')
 plt.show()
 </pre>
-<img class="aligncenter size-full wp-image-2206" src="https://github.com/ShallweXiaowei/Tutorials/blob/master/Tutorial%20Series/Introduction%20to%20Financial%20Python/images/Tutorial9-plot2.png?raw=true" alt="" width="600" height="450" />
+<img src="images/Tutorial9-head.png" alt="head" />
 The red line is the fitted linear regression straight line.
 As we can see there are lot of statistical results in the summary table. Now let's talk about some important statistical parameters.
 <h2>Parameter Significance</h2>
