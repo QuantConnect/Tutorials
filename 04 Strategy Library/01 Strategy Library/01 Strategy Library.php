@@ -10,17 +10,17 @@ $strategyMap = [
     [
         'name' => 'Example 1',
         'link' => 'strategy-library/example-1',
-        'description' => 'Testing description of testing tutorial 1'
+        'description' => 'Testing description of testing tutorial 1 eggs'
     ],
     [
         'name' => 'Example 2',
         'link' => 'strategy-library/example-2',
-        'description' => 'Testing description of testing tutorial 2'
+        'description' => 'Testing description of testing tutorial 2 milk'
     ],
     [
         'name' => 'Example 3',
         'link' => 'strategy-library/example-3',
-        'description' => 'Testing description of testing tutorial 3'
+        'description' => 'Testing description of testing tutorial 3 cake'
     ],
 ];
 
@@ -31,7 +31,7 @@ $strategyMap = [
     </div>
 </div>
 <br>
-<table class="table table-striped qc-table strategy-table">
+<table id="strategy-library-table" class="table table-striped qc-table">
     <thead>
     <tr>
         <th>
@@ -51,7 +51,6 @@ $strategyMap = [
     </tbody>
 </table>
 <style>
-
     .documentation .page-sub-heading {
         display: none;
     }
@@ -68,7 +67,7 @@ $strategyMap = [
         display: inline;
     }
 
-    .documentation #doc-content .strategy-table tbody > tr > td > a {
+    .documentation #doc-content #strategy-library-table tbody > tr > td > a {
         font-size: 24px;
         margin-top: 16px;
         display: block;
