@@ -1,0 +1,102 @@
+<p>
+    <code>Consolidators</code> are used to combine data together from finer resolutions into larger ones. This can be
+    useful for indicators with specific data requirements or to perform long term analysis in conjunction with short
+    term signals.
+    Consolidators should be constructed and setup in your Initialize() method; this ensures they are only initialized
+    once. There are three key steps to create and register a consolidator:
+</p>
+<ol>
+    <li>Create the consolidator object.</li>
+    <li>Bind an event handler to handle the new bars.</li>
+    <li>Register it with the subscription manager to start receiving data.</li>
+</ol>
+In <b>C#</b> this looks like:
+
+<div class="section-example-container">
+	<pre class="csharp">public class ConsolidatorDemoAlgorithm : QCAlgorithm
+{
+	public override void Initialize()
+	{
+		// backtest parameters
+		SetStartDate(2016, 1, 1);
+		SetEndDate(DateTime.Now);
+
+		// cash allocation
+		SetCash(25000);
+
+		//assets or universe selection
+		AddEquity("SPY", Resolution.Minute);
+
+		//create a consolidator object; for tradebars; for a timespan of 30 minutes
+		var thirtyMinutes = new TradeBarConsolidator(TimeSpan.FromMinutes(30));
+
+		//bind event handler to data consolidated event.
+		thirtyMinutes.DataConsolidated += OnHalfHour;
+
+		//register the consolidator for data.
+		SubscriptionManager.AddConsolidator("SPY", thirtyMinutes);
+	}
+
+	//event handler for data!
+	public void OnHalfHour(object sender, TradeBar bar) {
+		Debug(Time.ToString("u") + " " + bar);
+	}
+
+	public override void OnData(Slice data)
+	{ }
+}</pre>
+    <pre class="python">from datetime import datetime, timedelta
+class DataConsolidationAlgorithm(QCAlgorithm):
+
+    def Initialize(self):
+        '''Initialise the data and resolution required, as well as the cash and start-end dates for your algorithm. All algorithms must initialized.'''
+
+        self.SetStartDate(2016,1,1)  #Set Start Date
+        self.SetEndDate(datetime.now())   #Set End Date
+        # Find more symbols here: http://quantconnect.com/data
+        self.AddEquity("SPY", Resolution.Minute)
+
+        # define our 30 minute trade bar consolidator. we can
+        # access the 30 minute bar from the DataConsolidated events
+        thirtyMinuteConsolidator = TradeBarConsolidator(timedelta(minutes=30))
+
+        # attach our event handler. The event handler is a function that will
+        # be called each time we produce a new consolidated piece of data.
+        thirtyMinuteConsolidator.DataConsolidated += self.ThirtyMinuteBarHandler
+
+        # this call adds our 30-minute consolidator to
+        # the manager to receive updates from the engine
+        self.SubscriptionManager.AddConsolidator("SPY", thirtyMinuteConsolidator)
+
+    def ThirtyMinuteBarHandler(self, sender, bar):
+        '''This is our event handler for our 30-minute trade bar defined above in Initialize(). So each time the consolidator produces a new 30-minute bar, this function will be called automatically. The sender parameter will be the instance of the IDataConsolidator that invoked the event '''
+        self.Debug(str(self.Time) + " " + str(bar))
+    def OnData(self, data):
+        pass
+</pre>
+</div>
+
+The LEAN API also has other consolidator types to handle working with Ticks and RenkoBars.
+
+<div class="section-example-container">
+	<pre class="csharp">// From tick data sources
+var tickConsolidator = new TickConsolidator(TimeSpan.FromMinutes(30));
+
+//from renko bars
+var renkoConsolidator = new RenkoConsolidator(TimeSpan.FromMinutes(30));
+</pre>
+    <pre class="python"></pre>
+</div>
+
+There are two key points to remember:
+<ol>
+    <li>Request a smaller resolution than what you want to produce.</li>
+    <li>In backtesting we only know the bar is ready on the next data point; so it may appear like daily bars are
+        triggered at odd times. In live trading, they are scanned to be triggered every second at a minimum.
+    </li>
+</ol>
+<p style="text-align: center;">The raw data of QuantConnect is provided in Tick, Minute, Second, Hour or Daily bars.
+    Using these building blocks you can combine data together to get any other resolution of data required.</p>
+
+https://www.youtube.com/watch?v=bbZy__qd1aA
+
