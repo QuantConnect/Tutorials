@@ -31,7 +31,7 @@ $strategyMap = [
     </div>
 </div>
 <br>
-<table class="table table-striped qc-table">
+<table class="table table-striped qc-table strategy-table">
     <thead>
     <tr>
         <th>
@@ -50,13 +50,27 @@ $strategyMap = [
     <?php } ?>
     </tbody>
 </table>
-
 <style>
+
+    .documentation .page-sub-heading {
+        display: none;
+    }
+
+    .documentation #strategy-library-search-box {
+        margin: 30px 0;
+    }
+
     .documentation #doc-content .pre-title-area > span {
         display: none;
     }
 
     .documentation #doc-content .pre-title-area > span:first-child {
         display: inline;
+    }
+
+    .documentation #doc-content .strategy-table tbody > tr > td > a {
+        font-size: 24px;
+        margin-top: 16px;
+        display: block;
     }
 </style>
