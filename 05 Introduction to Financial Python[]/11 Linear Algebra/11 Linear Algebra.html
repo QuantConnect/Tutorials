@@ -1,0 +1,225 @@
+﻿Many papers in statistics and quantitative finance make heavy use of linear algebra, so you need to have a working knowledge of it in order to read and apply them to your trading.
+
+<h2>Vectors</h2>
+
+A vector can be thought of as an arrow pointing from the origin to a specific point. Any vector or point can be represented by its coordinates i.e. an array of numbers, such as \((x,y)\) for a 2-dimensional vector, or \((x,y,z)\) for a 3-dimensional one. We usually write a vector as a column:
+\[ \mathbf{v} = \begin{pmatrix}
+x \\ y \\ z
+\end{pmatrix} \]
+<a name="scalar"></a>
+The <strong>scalar product</strong> of two vectors \( \mathbf{x} \) and \( \mathbf{y} \) in 2-dimensional space is defined as:
+\[ \mathbf{x}^T \mathbf{y} = \begin{pmatrix} x_1 &amp; x_2 \end{pmatrix} \begin{pmatrix} y_1 \\ y_2 \end{pmatrix} = x_1 y_1 + x_2 y_2 \]
+
+This definition can be easily generalized to <em>n</em> dimensional space. Clearly, we cannot take the scalar product of two vectors with different dimensions.
+
+<h2>Matrices</h2>
+
+If we have a few vectors \( \mathbf{v}_1, \mathbf{v}_2, \dots, \mathbf{v}_n \) with the same dimension, then we can put them side-by-side to form a <strong>matrix</strong>. For example, the vectors
+\[ v_1 = \begin{pmatrix} 1 \\ 2 \\ 3 \end{pmatrix} \qquad
+   v_2 = \begin{pmatrix} 2 \\ 2 \\ 2 \end{pmatrix} \qquad
+   v_3 = \begin{pmatrix} 3 \\ 1 \\ 1 \end{pmatrix} \]
+
+can be combined to produce a matrix:
+\[ m = \begin{pmatrix}
+1 &amp; 2 &amp; 3 \\
+2 &amp; 2 &amp; 2 \\
+3 &amp; 1 &amp; 1
+\end{pmatrix} \]
+
+m is a 3 &times; 3 matrix. We typically describe the dimensions of a matrix as \(m \times n\) where m = number of rows and n = number of columns.
+
+A <strong>square</strong> matrix is one with as many rows as columns.
+
+Notation: \(x_{ij}\) refers to a specific value in row \(i\) and column \(j\) of a matrix \(X\). For example, \(x_{23}\) is the number in the second row and third column of \(X\).
+
+<h3>Python Implementation</h3>
+
+In Python, the NumPy package deals with linear algebra. The array we learned in the NumPy chapter can be deemed as a vector:
+
+<pre class="prettyprint linenums">import numpy as np
+a = np.array([1,2,3])
+b = np.array([2,2,2])
+c = np.array([3,1,1])
+matrix = np.column_stack((a,b,c))
+print matrix
+print type(matrix)
+[out]:
+[[1 2 3]
+ [2 2 1]
+ [3 2 1]]
+</pre>
+
+It is worth noticing that we used column_stack() here to ensure that the vectors are vertical and placed side-by-side to form a matrix. Without the column_stack() function, the vectors will be made horizontal and stacked on top of one another:
+
+<pre class="prettyprint linenums">matrix2 = np.array([a,b,c])
+print matrix2
+[out]:
+[[1 2 3]
+ [2 2 2]
+ [3 1 1]]
+</pre>
+
+<h2>Matrix Multiplication</h2>
+
+How are two matrices multiplied? Suppose \(X = AB\). Each entry \(x_{ij}\) of matrix \(X\) is the <a href="#scalar">scalar product</a> of row \(i\) from matrix \(A\) with column \(j\) from matrix \(B\). This is best illustrated with an example:
+
+\[ AB = \begin{pmatrix}
+a_{11} &amp; a_{12} \\
+a_{21} &amp; a_{22} \\
+a_{31} &amp; a_{32}
+\end{pmatrix}
+\begin{pmatrix}
+b_{11} &amp; b_{12} \\
+b_{21} &amp; b_{22}
+\end{pmatrix} = \begin{pmatrix}
+x_{11} &amp; x_{12} \\
+x_{21} &amp; x_{22} \\
+x_{31} &amp; x_{32}
+\end{pmatrix} \]
+
+Then
+\[ x_{\color{red}11} = a_{{\color{red}1} 1} b_{1{\color{red} 1}} + a_{{\color{red}1} 2} b_{2 {\color{red}1}} \]
+\[ x_{\color{red}12} = a_{{\color{red}1} 1} b_{1 {\color{red}2}} + a_{{\color{red}1} 2} b_{2 {\color{red}2}} \]
+\[ x_{\color{red}21} = a_{{\color{red}2} 1} b_{1 {\color{red}1}} + a_{{\color{red}2} 2} b_{2 {\color{red}1}} \]
+\[ x_{\color{red}22} = a_{{\color{red}2} 1} b_{1 {\color{red}2}} + a_{{\color{red}2} 2} b_{2 {\color{red}2}} \]
+\[ \vdots \]
+
+In NumPy, we can multiply matrices with the dot() function:
+
+<pre class="prettyprint linenums">A = np.array([[2,3],[4,2],[2,2]])
+B = np.array([[4,2],[4,6]])
+x = np.dot(A,B)
+print x
+[out]:
+[[20 22]
+ [24 20]
+ [16 16]]
+</pre>
+
+Since matrix multiplication is defined in terms of scalar products, the matrix product \(AB\) exists only if \(A\) has as many columns as \(B\) has rows. It's useful to remember this shorthand: (m &times; n) &times; (n &times; p) = (m &times; p) which means that an (m &times; n) matrix multiplied by an (n &times; p) matrix yields an (m &times; p) matrix.
+
+Reversing the order of multiplication results in an error since B does not have as many columns as A has rows:
+
+<pre class="prettyprint linenums">x = np.dot(B,A)
+</pre>
+
+A natrual consequence of this fact is that matrix multiplication is <strong>not commutative</strong>. In other words, \(AB \neq BA\) in general.
+
+<h2>Inverse</h2>
+
+An <strong>identity</strong> matrix is a square matrix with ones on the main diagonal and zeros elsewhere. Here is an \(n \times n\) identity matrix:
+
+\[ I_n = \begin{pmatrix}
+   1 &amp; 0 &amp; 0 &amp; ... &amp; 0 \\
+   0 &amp; 1 &amp; 0 &amp; ... &amp; 0 \\
+   0 &amp; 0 &amp; 1 &amp; ... &amp; 0 \\
+   \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+   0 &amp; 0 &amp; 0 &amp; ... &amp; 1
+\end{pmatrix} \]
+
+Multiplying any matrix by an identity matrix (of the correct shape) is like multiplying a number by 1. Concretely, if \(A\) is an \(m \times n\) matrix, then:
+\[ I_mA = AI_n = A \]
+
+\( A^{-1} \) is the <strong>inverse</strong> matrix of a square matrix \(A\) if:
+\[ AA^{-1} = I = A^{-1}A \]
+
+Some caveats:
+<ul>
+    <li>A rectangular matrix will not have an inverse, but it may have a pseudoinverse (not covered in this tutorial).</li>
+    <li>A square matrix may not have an inverse i.e. it may be "singular".</li>
+    <li>If a square matrix has an inverse, then its inverse is unique.</li>
+</ul>
+
+Inverse matrices are computed using the <a href="https://www.mathsisfun.com/algebra/matrix-inverse-row-operations-gauss-jordan.html" target="_blank">Gauss-Jordan method</a>. In NumPy, we use the linalg.inv() function to do it:
+
+<pre class="prettyprint linenums">print matrix
+print '\n-------------------------\n'
+print np.linalg.inv(matrix)
+[out]:
+[[1 2 3]
+ [2 2 1]
+ [3 2 1]]
+
+-------------------------
+
+[[ 0.   -1.    1.  ]
+ [-0.25  2.   -1.25]
+ [ 0.5  -1.    0.5 ]]
+</pre>
+
+Now let's check if the multiplication is \(I\):
+
+<pre class="prettyprint linenums">inverse = np.linalg.inv(matrix)
+print np.dot(matrix, inverse)
+print '\n-------------------------\n'
+print np.dot(inverse,matrix)
+[out]:
+[[  1.00000000e+00  -6.66133815e-16   6.66133815e-16]
+ [  0.00000000e+00   1.00000000e+00   1.11022302e-16]
+ [  0.00000000e+00  -2.22044605e-16   1.00000000e+00]]
+
+-------------------------
+
+[[  1.00000000e+00  -4.44089210e-16  -2.22044605e-16]
+ [  6.66133815e-16   1.00000000e+00   0.00000000e+00]
+ [  0.00000000e+00   0.00000000e+00   1.00000000e+00]]
+</pre>
+
+Not surprisingly, we ended up with an identity matrix. We can form a non-invertible matrix by making one of its rows a multiple of another:
+
+<pre class="prettyprint linenums">singular = np.array([[1,2,3],[1,2,3],[3,3,3]])
+inv = np.linalg.inv(singular)
+[out]: numpy.linalg.linalg.LinAlgError: Singular matrix
+</pre>
+
+<h2>Linear Equations</h2>
+
+A common problem in linear algebra is solving linear equations. Consider the following linear equations:
+
+\[  2x + y - z = 8    \]
+\[ -3x - y + 2z = -11 \]
+\[ -2x + y + 2z = -3  \]
+
+If we let:
+\[ A = \begin{pmatrix}
+   2  &amp; 1  &amp; -1 \\
+   -3 &amp; -1 &amp; 2  \\
+   -2 &amp; 1  &amp; 2
+\end{pmatrix} \qquad
+\mathbf{x} = \begin{pmatrix} x \\  y  \\ z  \end{pmatrix} \qquad
+\mathbf{b} = \begin{pmatrix} 8 \\ -11 \\ -3 \end{pmatrix} \]
+
+Then the linear equations above can be written as \( A\mathbf{x} = \mathbf{b} \)
+
+If A is invertible, then we can multiply \(A^{-1}\) on both sides of the equation to obtain the solution:
+\[ A^{-1}A \mathbf{x} = A^{-1}\mathbf{b} \]
+Hence
+\[ \mathbf{x} = A^{-1}\mathbf{b} \]
+
+As long as \(A^{-1}\) exists, we can compute it to solve the linear equations:
+
+<pre class="prettyprint linenums">A = np.array([[2,1,-1],[-3,-1,2],[-2,1,2]])
+b = np.array([[8],[-11],[-3]])
+inv_A = np.linalg.inv(A)
+print np.dot(inv_A, b)
+[out]:
+[[ 2.]
+ [ 3.]
+ [-1.]]
+</pre>
+
+The solution is <em>x</em> = 2, <em>y</em> = 3, <em>z</em> = &minus;1. However, computing the inverse matrix is not recommended, since it is numerically unstable i.e. small rounding errors can dramatically affect the result.
+
+Instead, NumPy solves linear equations by <a href="https://www.youtube.com/watch?v=m3EojSAgIao" target="_blank">LU decomposition</a>:
+
+<pre class="prettyprint linenums">print np.linalg.solve(A, b)
+[out]:
+[[ 2.]
+ [ 3.]
+ [-1.]]
+</pre>
+
+Of course, we get the same solution. We can check the correctness of the solution by substituting <em>x</em>, <em>y</em> and <em>z</em> into the linear equations.
+
+<h2>Summary</h2>
+In this chapter we have introduced vectors, matrices, inverse matrices and linear equations. Some applications in finance include: finding arbitrage opportunities by solving linear equations, computing portfolio variance, etc. In the next chapter, we will introduce modern portfolio theory and CAPM.

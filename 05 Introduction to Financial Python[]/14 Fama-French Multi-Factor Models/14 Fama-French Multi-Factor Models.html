@@ -1,0 +1,96 @@
+﻿In previous chapters, we learnt that the Capital Asset Pricing Model (CAPM) treats the market return as the only factor affecting the return of any asset. This chapter will generalize CAPM to multi-factor models of the following form:
+\[ R = \alpha + \beta_1 f_1 + \beta_2 f_2 + \dots + \beta_n f_n \]
+where each \(f_i\) is a factor.
+
+<h2>Fama-French Three-Factor Model</h2>
+
+This model was proposed in 1993 by <strong>Eugene Fama</strong> and <strong>Kenneth French</strong> to describe stock returns.[ref] <strong>Fama, E F; French, K R</strong> (1993). Common risk factors in the returns on stocks and bonds. Journal of Financial Economics. 33: 3. CiteSeerX 10.1.1.139.5892 Freely accessible. doi:10.1016/0304-405X(93)90023-5[/ref]
+
+The 3-factor model is
+\[ R = \alpha + \beta_m MKT + \beta_s SMB + \beta_h HML \]
+
+where
+<ul>
+    <li>MKT is the excess return of the market.[ref]<a href="http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/Data_Library/f-f_factors.html" target="_blank">mba.tuck.dartmouth.edu/pages/faculty/ken.french/Data_Library/f-f_factors.html</a>[/ref] It's the value-weighted return of all CRSP firms incorporated in the US and listed on the NYSE, AMEX, or NASDAQ minus the 1-month Treasury Bill rate.</li>
+    <li>SMB (Small Minus Big) measures the excess return of stocks with small market cap over those with larger market cap.</li>
+    <li>HML (High Minus Low) measures the excess return of value stocks over growth stocks. Value stocks have high book to price ratio (B/P) than growth stocks.</li>
+</ul>
+
+Data on these factors can be downloaded from <a href="http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/Data_Library/f-f_factors.html" target="_blank">French's website</a>.
+
+<h2>Model test</h2>
+
+To test the 3-factor model, we use it to predict returns on NASDAQ US Small Cap Index and NASDAQ US Large Cap Index. We estimate the model with daily returns in the past 6 years.
+
+Results for US Small Cap returns:
+<img class="aligncenter size-full wp-image-2206" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/08/Screen-Shot-2017-08-01-at-5.20.02-PM.png" alt="" width="1342" height="830" />
+
+The coefficient of SMB is positive, so when small caps outperform large caps, the Small Cap Index will have higher returns, which is not surprising. By comparing the t statistics of those factors, we know that MKT and SMB are more important factors driving the Small Cap Index.
+
+Results for US Large Cap returns:
+<img class="aligncenter size-full wp-image-2205" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/08/Screen-Shot-2017-08-01-at-5.18.48-PM.png" alt="" width="1346" height="822" />
+
+As expected, the coefficient of SMB is negative for the Large Cap Index. The coefficient of HML is quite low, which suggests that value and growth stocks take approximately the same weight in the Large Cap Index.
+
+<h2>Factor Returns</h2>
+
+How do we find out the returns on a single factor? We can do so by constructing a <strong>tracking portfolio</strong> and computing its returns. For example, if we want a tracking portfolio of the HML factor, we only need to find 4 stocks to construct a portfolio that has MKT and SMB coefficients of 0 and HML coefficient of 1.
+
+Consider stocks A, B, C, and D whose returns can be explained by the 3-factor model:
+
+\[ R_A = \alpha_1 + \beta_{11} MKT + \beta_{12} SMB + \beta_{13} HML \]
+\[ R_B = \alpha_2 + \beta_{21} MKT + \beta_{22} SMB + \beta_{23} HML \]
+\[ \vdots \]
+
+Let their weights in the tracking portfolio be \(w_A,w_B,w_C,w_D\). We write the coefficients into a matrix:
+\[ \Sigma = \begin{pmatrix}
+   \alpha_1 &amp; \beta_{11} &amp; \beta_{12} &amp; \beta_{13} \\
+   \alpha_2 &amp; \beta_{21} &amp; \beta_{22} &amp; \beta_{23} \\
+   \alpha_3 &amp; \beta_{31} &amp; \beta_{32} &amp; \beta_{33} \\
+   \alpha_4 &amp; \beta_{41} &amp; \beta_{42} &amp; \beta_{43}
+\end{pmatrix} \]
+
+The tracking portfolio is determined by the solution to these linear equations:
+\[ w^T \Sigma = \begin{pmatrix} 0 \\ 0 \\ 0 \\ 1 \end{pmatrix} \]
+
+Economic interpretation: The 3 Fama-French factors represent "systematic risk" which cannot be reduced by diversification. Investors earn those factor returns for taking such risks. Any idiosyncratic risk, or firm-specific risk, can be diversified away and so investors are not paid to take such risks.
+
+<h2>Other Factors</h2>
+
+The Fama-French 5-Factor model comprises two more factors:
+<ul>
+    <li>RMW (Robust Minus Weak) measures the excess returns of firms with high operating profit margins over those with lower profits.</li>
+    <li>CMA (Conservative Minus Aggressive) measures the excess returns of firms investing less over those investing more.</li>
+</ul>
+
+RMW was proposed by Novy-Marx (2013)[ref]<strong>Robert Novy-Marx (2013)</strong> The Other Side of Value: The Gross Profitability Premium Journal of Financial Economics 108 (1), 1-28. Retrieved from <a href="http://rnm.simon.rochester.edu/research/OSoV.pdf" target="_blank">rnm.simon.rochester.edu/research/OSoV.pdf</a>[/ref] who wrote that:
+
+<blockquote>"Controlling for gross profitability explains most earnings related anomalies, and a wide range of seemingly unrelated profitable trading strategies."</blockquote>
+
+CMA was proposed by Fama and French (2014)[ref]<strong>Fama, E F; French, K R (2015)</strong>. A Five-Factor Asset Pricing Model. 116: 1–22. doi:10.1016/j.jfineco.2014.10.010. Retrieved from <a href="https://www8.gsb.columbia.edu/programs/sites/programs/files/finance/Finance%20Seminar/spring%202014/ken%20french.pdf" target="_blank">www8.gsb.columbia.edu/programs/sites/programs/files/finance/Finance%20Seminar/spring%202014/ken%20french.pdf</a>[/ref] who pointed out that:
+
+<blockquote>"A five-factor model directed at capturing the size, value, profitability, and investment patterns in average stock returns is rejected on the GRS test, but for applied purposes it provides an acceptable description of average returns."</blockquote>
+
+Finally, momentum is another commonly used factor. It captures excess returns of stocks with highest returns over those with lowest returns
+
+<h2>Summary</h2>
+
+In this chapter we expand Capital Asset Pricing Model (CAPM) into multi-factor models: the Fama-French factor models in particular. They are the most empirically successful multi-factor models by far, and are commonly used in practice.
+
+<h2>Algorithm</h2>
+
+Multi-factor strategies are <strong>stock picking</strong> strategies. Here we try to implement a 2013 paper published by AQR Capital Management.[ref]<strong>AQR (2013)</strong>. A New Core Equity Paradigm: Using Value, Momentum, and Quality to Outperform Markets. Retrieved from <a href="https://www.aqr.com/~/media/files/papers/aqr-a-new-core-equity-paradigm.pdf" target="_blank">www.aqr.com/~/media/files/papers/aqr-a-new-core-equity-paradigm.pdf</a>[/ref]
+
+The paper recommends picking stocks by their value, quality (profitability) and momentum.
+
+The empirically successful measure of value is book-to-price ratio (B/P), but other measures can be used simultaneously to form a more robust and reliable view of a stock's value. The paper uses 5 measures: book-to-price, earnings-to-price ratio (EPS), forecasted EPS, cash flow-to-enterprise value and sales-to-enterprise value.
+
+The paper suggested a few quality measures: total profit over assets, gross margin and free cash flow over assets.
+
+There are also various measures of momentum. 1-year momentum, fundamental momentum and returns around earnings announcement are good choices.
+
+In our backtested strategy, we used operating profit margin to measure quality, P/B value to measure value, and 1-month momentum. The portfolio was rebalanced every 2 months and our backtest period runs from Jan 2012 to Jan 2015.
+
+You can build your own version by changing the factor, the weight of each factor, and the rebalance period based on the backtested strategy.
+
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=480128b21eebc545b1321e0b8caa26d1'></script>
