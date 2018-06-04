@@ -1,0 +1,246 @@
+QuantConnect provides US options trade and quotes price data for approximately 4000 symbols, each of which has roughly 10 strikes on average. Data is available starting January 1st, 2010. In this tutorial, we will discuss how to use QuantConnect to start your options trading algorithm.
+<h2> Step 1: Add Options</h2>
+Before trading options, you need to add options for a given underlying equity and set the resolution in step <code>Initialize</code> with AddOption method. The commonly used parameters will be explained in the method table. Please refer to the link below for details of each method.
+<table class="table qc-table">
+<thead>
+<tr>
+<th>Method</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://www.quantconnect.com/lean/docs#topic117.html">AddOption</a>(underlying,
+resolution,
+fillDataForward)</td>
+<td><strong>underlying(string):</strong> The underlying equity symbol
+<strong>resolution:</strong> Tick, Second, Minute, Hour, or Daily. Default is minute
+<strong>fillDataForward(bool):</strong> If true, returns the last available data even if none in that time slice. The default value is true.</td>
+</tr>
+</tbody>
+</table>
+<pre class="prettyprint linenums">def Initialize(self):
+    self.SetStartDate(2017, 01, 01)  #Set Start Date
+    self.SetEndDate(2017, 06, 30)  #Set End Date
+    self.SetCash(50000)  #Set Strategy Cash
+    equity = self.AddEquity("GOOG", Resolution.Daily) # Add the underlying stock: Google
+    option = self.AddOption("GOOG", Resolution.Daily) # Add the option corresponding to underlying stock
+    self.symbol = option.Symbol
+</pre>
+The return value of AddOption method is an <a href="https://www.quantconnect.com/lean/docs#topic19245.html">option security object</a> , please refer to the link for detailed properties and methods of option class.
+<h2>Step 2: Filter Contracts - Coarse Selection</h2>
+After adding the options for specific underlying stock,  you can set the filter criteria with <a href="https://www.quantconnect.com/lean/docs#topic22332.html">SetFilter</a> method to pull contracts using the specified min and max strike and expiration range values you need for a given symbol.
+<table class="table qc-table">
+<thead>
+<tr>
+<th>Method</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://www.quantconnect.com/lean/docs#topic22332.html">SetFilter</a>(
+min strike,
+max strike,
+minexpiry,
+maxExpiry)</td>
+<td><strong>min Strike, max Strike:</strong> The min and max strike rank relative to market price
+<b><b>min Expiry, max Expiry: </b></b>The range of time to expiration to include, for example, TimeSpan.FromDays(10) would exclude contracts expiring in less than 10 days</td>
+</tr>
+</tbody>
+</table>
+Here parameters <em>min Strike</em> and <em>max Strike</em> are the relative values with respect to the market price. We use Google(NASDAQ: GOOG)<span lang="EN-GB"> as an example to describe the filter criteria. If today is 01/03/2017, the market price of underlying stock is $776, the strike prices of GOOG options are spaced $2.5. Then <code>SetFilter(-1, +2, timedelta(0), timedelta(90))</code> will fist look up at the money contracts with strike being K=$777.5 (Here K might not being $100 since rarely will option be ATM exactly). Then  filter will looks for options with strikes between and including (777.5 + 2.5*2, 777.5 - 2.5*1). The time to expiration of these options are restricted within 90 days from now on. </span>
+
+For the strike, the exchange normally chooses the strike prices at which options can be written so that they are spaced $2.50, $5, or $10 apart. Typically the spacing is $2.50 when the stock price is between $5 and $25, $5 when the stock price is between $25 and $200, and $10 for stock prices above $200. So you should carefully choose the parameters of <em>min strike</em> and <em>max Strike</em> in case there is no contracts satisfy the filter criteria if the range is too small, less than the minimum units of strike prices change.
+
+For the expiry, there are many expiration dates that apply to the different series of options. An option cycle is the pattern of months in which options contracts expire. There are three kinds of common option cycles. The options on the January cycle have contracts available in the first month of each quarter (January, April, July and October). Options assigned to the February cycle use the middle month of each quarter (February, May, August and November). And options in the March cycle have options available during the last month of each quarter (March, June, September and December). In addition, individual stock options typically expire in the current month and the subsequent month.
+<pre class="prettyprint linenums"># filter the contracts with strikes between (market price - 10, market price + 10)
+option.SetFilter(-10,10)
+# filter the contracts which expires more than 30 days but no longer than 60 days
+option.SetFilter(TimeSpan.FromDays(30),TimeSpan.FromDays(60))
+# filter the contracts with strikes between(ATM Strike - 10 * strike space value, market price + 10 * strike space value) and with expiration days less than 180 days
+option.SetFilter(-10, +10, timedelta(0), timedelta(180))</pre>
+<div class="page" title="Page 242">
+<div class="layoutArea">
+<div class="column">
+<h2>Step 3: Choose Contracts - Fine Selection</h2>
+For QuantConnect API, <a href="https://www.quantconnect.com/lean/docs#topic3838.html">Slice</a> class provides a data structure for all of an algorithm's data at a single time step. So you need use property <code>Slice.OptionChains</code> to request options data for this slice.
+
+<a href="https://www.quantconnect.com/lean/docs#topic19269.html">OptionChains</a> is a collection of  OptionChain keyed by the option's underlying symbol. The elements in <code>Slice.OptionChains</code> have properties <code>Key</code>(the underlying symbol object) <code>Value</code>(the option chain).
+
+<a href="https://www.quantconnect.com/lean/docs#topic19245.html">OptionChain</a>  represents an entire chain of option contracts for a single underlying security. In other words, It is a list of option contracts.
+
+<a href="https://www.quantconnect.com/lean/docs#topic19279.html">OptionContract</a> defines a single option contract at a specific expiration and strike price. For any contract x in option chain, you can use the following statements to check different options properties.
+<table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2">Properties of Option Contract x</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>x.Symbol.Value</code></td>
+<td> Get the string of option contract's symbol</td>
+</tr>
+<tr>
+<td><code>x.AskPrice, x.BidPrice</code></td>
+<td> Get the ask price,  Get the bid price</td>
+</tr>
+<tr>
+<td><code>x.Expiry</code></td>
+<td> Get the expiration date</td>
+</tr>
+<tr>
+<td><code>x.Strike</code></td>
+<td> Get the strike price</td>
+</tr>
+<tr>
+<td><code>x.ImpliedVolatility</code></td>
+<td> Get the implied volatility</td>
+</tr>
+<tr>
+<td><code>x.Greeks</code></td>
+<td>Get the Greeks letter</td>
+</tr>
+<tr>
+<td><code>x.Right</code></td>
+<td>Get the right being purchased
+x.Right ＝ OptionRight.Call  call option[right to buy]
+x.Right ＝ OptionRight.Put  put option[right to sell]</td>
+</tr>
+<tr>
+<td><code>x.UnderlyingLastPrice</code></td>
+<td>Get the last price the underlying security traded at</td>
+</tr>
+<tr>
+<td><code>x.UnderlyingSymbol</code></td>
+<td>Gets the underlying security's symbol</td>
+</tr>
+</tbody>
+</table>
+We can print out the details of the contract after filtering with Python data frame to show these properties. Assume today is 01/03/2017.  The stock price at 01/03/2017 09:31:00 is $776.01 per share. Here we use  <code>SetFilter(-1, +1, timedelta(0), timedelta(60)) </code>to filter the contracts.
+<pre class="prettyprint linenums">def OnData(self,slice):
+    for i in slice.OptionChains:
+        if i.Key != self.symbol: continue
+	optionchain = i.Value
+	self.Log("underlying price:" + str(optionchain.Underlying.Price))
+	df = pd.DataFrame([[x.Right,float(x.Strike),x.Expiry,float(x.BidPrice),float(x.AskPrice)] for x in optionchain],
+			   index=[x.Symbol.Value for x in optionchain],
+			   columns=['type(call 0, put 1)', 'strike', 'expiry', 'ask price', 'bid price'])
+        self.Log(str(df))
+</pre>
+<table class="table qc-table">
+<thead>
+<tr>
+<th>Symbol</th>
+<th>type(call 0, put 1)</th>
+<th>Strike</th>
+<th>Expiry</th>
+<th>Ask Price</th>
+<th>Bid Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GOOG 170217C00780000</td>
+<td>0</td>
+<td>780.0</td>
+<td>2017-02-17</td>
+<td>26.4</td>
+<td>27.9</td>
+</tr>
+<tr>
+<td>GOOG 170120P00782500</td>
+<td>1</td>
+<td>782.5</td>
+<td>2017-01-20</td>
+<td>14.7</td>
+<td>16.3</td>
+</tr>
+<tr>
+<td>GOOG 170120C00782500</td>
+<td>0</td>
+<td>782.5</td>
+<td>2017-01-20</td>
+<td>9.4</td>
+<td>10.2</td>
+</tr>
+<tr>
+<td>GOOG 170120P00780000</td>
+<td>1</td>
+<td>780.0</td>
+<td>2017-01-20</td>
+<td>13.4</td>
+<td>15.0</td>
+</tr>
+<tr>
+<td>GOOG 170120C00780000</td>
+<td>0</td>
+<td>780.0</td>
+<td>2017-01-20</td>
+<td>10.6</td>
+<td>11.5</td>
+</tr>
+<tr>
+<td>GOOG 170217P00780000</td>
+<td>1</td>
+<td>780.0</td>
+<td>2017-02-17</td>
+<td>28.9</td>
+<td>30.8</td>
+</tr>
+<tr>
+<td>GOOG 170120P00777500</td>
+<td>1</td>
+<td>777.5</td>
+<td>2017-01-20</td>
+<td>12.2</td>
+<td>13.7</td>
+</tr>
+<tr>
+<td>GOOG 170120C00777500</td>
+<td>0</td>
+<td>777.5</td>
+<td>2017-01-20</td>
+<td>11.8</td>
+<td>12.9</td>
+</tr>
+</tbody>
+</table>
+&nbsp;
+
+Here we give an example of how to find ATM, ITM OTM contracts for trading. First, we need to extract the OptionChain from OptionChains according to symbols we added in Initialize step. Secondly, we extract ATM, ITM and OTM contracts by using UnderlyingLastPrice and Strike properties. Note here the strikes of ATM options are not exactly the same as the market price of underlying stocks, thus here we first sort the contracts by the absolute values of the difference between the UnderlyingLastPrice and the Strike. Then we choose the contract with the minimum absolute value as the ATM contract.
+<pre class="prettyprint linenums">for i in slice.OptionChains:
+    if i.Key != self.symbol: continue
+    chain = i.Value
+# differentiate the call and put options
+call = [x for x in optionchain if chain.Right == 0]
+put = [x for x in optionchain if chain.Right == 1]
+# choose ITM contracts
+contracts = [x for x in call if call.UnderlyingLastPrice - x.Strike &gt; 0]
+# or choose ATM contracts
+contracts = sorted(optionchain, key = lambda x: abs(optionchain.Underlying.Price - x.Strike))[0]
+# or choose OTM contracts
+contracts = [x for x in call if call.UnderlyingLastPrice - x.Strike &lt; 0]
+# sort the contracts by their expiration dates
+contracts = sorted(contracts, key = lambda x:x.Expiry, reverse = True)
+</pre>
+Finally, we trade the options by using the contract's symbol.
+<pre class="prettyprint linenums">if len(contracts) == 0: continue
+# trade the contracts with the farthest expiration
+symbol = contracts[0].Symbol
+self.MarketOrder(symbol, 1)
+self.MarketOnCloseOrder(symbol, -1)
+
+</pre>
+<h2>Algorithm</h2>
+This simple example demonstrates how you can inspect the option chain to pick a specific option contract to trade.
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=c4467dd2b39f215cd685caaac9069ef3'></script>
+<h2>Summary</h2>
+After mastering the basic knowledge of options market, this tutorial we take a close at how to use Quantconnect to customize your own options trading. For example, <span lang="EN-GB">how you can access an option chain, </span><span lang="EN-GB">how to view the details of the contract as a Python data frame, and the most important how to trade the specific option contract.</span>
+
+Next chapter we will examine some important topics of options like the payoff, Put-Call parity, and the synthetic positions. By learning all those concepts, we will start some brief hedging strategies involving options.
+
+</div>
+</div>
+</div>
