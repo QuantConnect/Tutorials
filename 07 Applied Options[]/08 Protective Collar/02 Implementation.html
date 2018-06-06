@@ -1,0 +1,69 @@
+<p>
+	Step 1: Initialize your algorithm that involves setting the start date and the end date, setting the cash and implement the coarse selection of option contracts.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">def Initialize(self):
+	self.SetStartDate(2017, 4, 1)
+	self.SetEndDate(2017, 5, 30)
+	self.SetCash(1000000)
+	equity = self.AddEquity("GOOG", Resolution.Minute)
+	option = self.AddOption("GOOG", Resolution.Minute)
+	self.symbol = option.Symbol
+	# set our strike/expiry filter for this option chain
+	option.SetFilter(-10, +10, timedelta(0), timedelta(30))
+	# use the underlying equity as the benchmark
+	self.SetBenchmark(equity.Symbol)
+</pre>
+</div>
+<p>
+	Step 2: Choose the expiration date for your options traded and break the options into the call and put contracts. The choice of expiration date depends on the holding period of stocks in your portfolio.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">def TradeOptions(self,optionchain):
+    for i in optionchain:
+	if i.Key != self.symbol: continue
+	chain = i.Value
+	# choose the furthest expiration date within 30 days from now on
+	expiry = sorted(chain, key = lambda x: x.Expiry)[-1]
+	# filter the call options contracts
+	call = [x for x in chain if x.Right == 0 and x.Expiry == expiry]
+	# filter the put options contracts
+	put = [x for x in chain if x.Right == 1 and x.Expiry == expiry]
+</pre>
+</div>
+<p>
+	Step 3: Choose the deep in-the-money call and put options in the list and then sell the call options and buy the put options.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">self.otm_call = sorted(call, key = lambda x: x.Strike)[-1]
+self.otm_put = sorted(put, key = lambda x: x.Strike)[0]
+if (self.otm_call is None) or (self.otm_put is None): continue
+self.Sell(self.otm_call.Symbol, 1) # sell the OTM call
+self.Buy(self.otm_put.Symbol, 1) # buy the OTM put
+</pre>
+</div>
+<p>
+	Step 4: In Ondata, if there is no assets in portfolio, we buy the undelying stocks. After that, we trade the options which equivalent to the amount of your stocks holding. (one option contracts equals 100 undelying shares).
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">def OnData(self,slice):
+    optionchain = slice.OptionChains
+    for i in slice.OptionChains:
+    if i.Key != self.symbol: continue
+    chains = i.Value
+    contract_list = [x for x in chains]
+    if (slice.OptionChains.Count == 0) or (len(contract_list) == 0): return
+    # if you don't hold options and stocks, buy the stocks and trade the options
+    if not self.Portfolio.Invested:
+	self.Buy("GOOG",100)	 # buy 100 shares of the underlying stock
+	self.TradeOptions(optionchain)   # sell OTM call and buy OTM put
+</pre>
+</div>

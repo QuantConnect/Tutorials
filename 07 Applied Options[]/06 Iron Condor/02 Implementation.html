@@ -1,0 +1,63 @@
+<p>
+	Step 1: Initialize your algorithm which involves setting the start date and the end date, setting the cash for your algorithm and implement the coarse selection of option contracts.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">def Initialize(self):
+	self.SetStartDate(2017, 2, 1)
+	self.SetEndDate(2017, 3, 31)
+	self.SetCash(150000)
+	equity = self.AddEquity("GOOG", Resolution.Minute)
+	option = self.AddOption("GOOG", Resolution.Minute)
+	self.symbol = option.Symbol
+	option.SetFilter(-20, 20, timedelta(0), timedelta(40))
+	# use the underlying equity GOOG as the benchmark
+	self.SetBenchmark(equity.Symbol)
+</pre>
+</div>
+<p>
+	Step 2: Break the candidate options into two parts: call and put options.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">for i in optionchain:
+	if i.Key != self.symbol: continue
+	chain = i.Value
+	# filter the call and put options on the contracts
+	call = [i for i in chain if i.Right == 0]
+	put = [i for i in chain if i.Right == 1]
+</pre>
+</div>
+<p>
+	Step 3: Sort the call and put options by their strike price respectively.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">call_contracts = sorted(call,key = lambda x: x.Strike)
+put_contracts = sorted(put,key = lambda x: x.Strike)
+</pre>
+</div>
+<p>
+	Step 4: Choose the corresponding options and trade them. In this algorithm, according to criteria,<code>SetFilter(-20, 20, timedelta(0), timedelta(40))</code> for put option list, there are 41 contracts in total: 1 ATM put, 20 OTM puts and 20 ITM puts. we choose the first in the put option list as the OTM put with the lower strike, choose the 15 contract as the OTM put with the higher strike.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">if len(call_contracts) == 0 or len(put_contracts) == 0 : continue
+# Buy 1 OTM Put (Lower Strike)
+self.otm_put_lower = put_contracts[0]
+self.Buy(self.otm_put_lower.Symbol ,1)
+# Sell 1 OTM Put
+self.otm_put = put_contracts[15]
+self.Sell(self.otm_put.Symbol ,1)
+# Sell 1 OTM Call
+self.otm_call = call_contracts[-15]
+self.Sell(self.otm_call.Symbol ,1)
+# Buy 1 OTM Call (Higher Strike)
+self.otm_call_higher = call_contracts[-1]
+self.Buy(self.otm_call_higher.Symbol ,1)
+</pre>
+</div>

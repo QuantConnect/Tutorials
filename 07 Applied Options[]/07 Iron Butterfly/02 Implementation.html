@@ -1,0 +1,64 @@
+<p>
+	Step 1: Initialize your algorithm which includes setting the start date and end date, setting the cash and implement the coarse selection of option contracts.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">def Initialize(self):
+	self.SetStartDate(2017, 2, 1)
+	self.SetEndDate(2017, 3, 31)
+	self.SetCash(300000)
+	equity = self.AddEquity("GOOG", Resolution.Minute)
+	option = self.AddOption("GOOG", Resolution.Minute)
+	self.symbol = option.Symbol
+	option.SetFilter(-10, 10, timedelta(0), timedelta(30))
+	# use the underlying equity GOOG as the benchmark
+	self.SetBenchmark(equity.Symbol)
+</pre>
+</div>
+<p>
+	Step 2: Break the candidate contracts into the call and put options.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">def TradeOptions(self,optionchain):
+    for i in optionchain:
+        if i.Key != self.symbol: continue
+	chain = i.Value
+	# filter the call and put options from the contracts
+	call = [i for i in chain if i.Right == 0]
+	put = [i for i in chain if i.Right == 1]
+</pre>
+</div>
+<p>
+	Step 3: Sort the call and put options according to their strike price respectively. <code>option.SetFilter(-10, 10, timedelta(0), timedelta(30))</code> helps us choose 21 call options and 21 put options which expire within 30 days from now on.Then for call option, the first 10 contracts are in the money, the last 10 contracts are out of the money. The middle one is at the money option. For put options, the first 10 contracts are out of the money, the last 10 contracts are in the money.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">call_contracts = sorted(call,key = lambda x: x.Strike)
+put_contracts = sorted(put,key = lambda x: x.Strike)
+if len(call_contracts) == 0 or len(put_contracts) == 0 : continue
+</pre>
+</div>
+<p>
+	Step 4: Find the specific contracts to trade. At the money options have the minimum absolute value of the difference between the underlying price and the strike price.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python"># Sell 1 ATM Put
+self.atm_put = sorted(put_contracts,key = lambda x: abs(chain.Underlying.Price - x.Strike))[0]
+self.Sell(self.atm_put.Symbol ,1)
+# Sell 1 ATM Call
+self.atm_call = sorted(call_contracts,key = lambda x: abs(chain.Underlying.Price - x.Strike))[0]
+self.Sell(self.atm_call.Symbol ,1)
+# Buy 1 OTM Call
+self.otm_call = call_contracts[-1]
+self.Buy(self.otm_call.Symbol ,1)
+# Buy 1 OTM Put
+self.otm_put = put_contracts[0]
+self.Buy(self.otm_put.Symbol ,1)
+</pre>
+</div>

@@ -1,0 +1,61 @@
+<p>
+	Step 1: Initialize your algorithm including setting the start date and the end date, setting the cash and implement a coarse selection of option contract. <code>SetFilter(-9, 9, timedelta(30), timedelta(60))</code> helps us choose the contracts which expire in 30 to 60 days from now on. Since ITM call strike and OTM call strike are symmetrical with ATM call strike. For the strike parameter, the first parameter is the minimum strike rank relative to market price,  the second parameter is the maximum strike rank relative to market price. The rank of ATM contract is 0. Here we need to choose 2 numbers which are symmetrical with 0.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">def Initialize(self):
+	self.SetStartDate(2017, 4, 1)
+	self.SetEndDate(2017, 5, 30)
+	self.SetCash(150000)
+	equity = self.AddEquity("GOOG", Resolution.Minute)
+	option = self.AddOption("GOOG", Resolution.Minute)
+	self.symbol = option.Symbol
+	option.SetFilter(-9, 9, timedelta(30), timedelta(60))
+	# use the underlying equity GOOG as the benchmark
+	self.SetBenchmark(equity.Symbol)
+</pre>
+</div>
+<p>
+	Step 2: Second we need to choose an expiration date for all the contracts in Butterfly Spread strategy. Then filter out all the call options expire on that date.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">for i in optionchain:
+	if i.Key != self.symbol: continue
+	chain = i.Value
+	# sorted the optionchain by expiration date and choose the furthest date
+	expiry = sorted(chain,key = lambda x: x.Expiry, reverse=True)[0].Expiry
+	# filter the call options from the contracts expires on that date
+	call = [i for i in chain if i.Expiry == expiry and i.Right == 0]
+</pre>
+</div>
+<p>
+	Step 3: Sort the call options by their strike price in ascending order. Then the ATM option is the one which has the smallest absolute value of the difference between the strike price and the underlying asset price. The OTM option is the last one in this call options list which has the highest strike price. The corresponding ITM option is the first one in the list which has the lowest strike price.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python"># sorted the contracts according to their strike prices
+call_contracts = sorted(call,key = lambda x: x.Strike)
+if len(call_contracts) == 0: continue
+# choose OTM call
+self.otm_call = call_contracts[-1]
+# choose ITM call
+self.itm_call = call_contracts[0]
+# choose ATM call
+self.atm_call = sorted(call_contracts,key = lambda x: abs(chain.Underlying.Price - x.Strike))[0]
+</pre>
+</div>
+<p>
+	Step 4: Purchase 1 ITM call option and 1 OTM call option, then sell 2 ATM call option.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">self.Sell(self.atm_call.Symbol ,2)
+self.Buy(self.itm_call.Symbol ,1)
+self.Buy(self.otm_call.Symbol ,1)
+</pre>
+</div>
