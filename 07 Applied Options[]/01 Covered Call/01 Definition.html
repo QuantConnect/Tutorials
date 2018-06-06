@@ -1,0 +1,35 @@
+<h2>Definition</h2>
+<p>
+  A Covered Call is an options strategy that involves both underlying stock and an options contract. The trader buys (or already owns) a stock, then sells call options for the same amount of stock. The aim of the Covered Call is to gain profits from option premium by selling calls written on the stock you already owned. At any time for US options or at expiration for European options, if the stock moves below the strike price, you can keep the premium and still maintain the stock position. If the price moves above the strike, the options contract is exercised you will sell the stock at the strike price but still keep the premium. The risk of a Covered Call also comes from the long stock position, which could drop.
+</p>
+<p>
+The payoff  is as follows:
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">
+  import numpy as np
+  import matplotlib.pyplot as plt
+  %pylab inline
+  price = np.arange(110,230,1) # the stock price at expiration date
+  strike = 160 # the strike price
+  premium = 7.5 # the option premium
+  # the payoff of short call position
+  payoff_short_call = [min(premium, -(i - strike-premium)) for i in price]
+  # the payoff of long stock postion
+  payoff_long_stock = [i-strike for i in price]
+  # the payoff of covered call
+  payoff_covered_call = np.sum([payoff_short_call, payoff_long_stock], axis=0)
+  plt.figure(figsize=(20,11))
+  plt.plot(price, payoff_short_call, label = 'short call')
+  plt.plot(price, payoff_long_stock, label = 'long stock')
+  plt.plot(price, payoff_covered_call, label = 'covered call')
+  plt.legend(fontsize = 20)
+  plt.xlabel('Stock Price at Expiry',fontsize = 15)
+  plt.ylabel('payoff',fontsize = 15)
+  plt.title('Covered Call Strategy Payoff at Expiration',fontsize = 20)
+  plt.grid(True)
+</pre>
+</div>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial01-covered-call.png" alt="covered call strategy payoff"/>
