@@ -1,0 +1,32 @@
+<p>
+ Long Strangle is an options trading strategy that involves the simultaneous buying of an out-of-the-money put and an out-of-the-money call of the same underlying stock and expiration date. Similar to Long Straddle, Long Strangle has unlimited profit and limited risk and can be applied if traders think some major news events may cause the stock to make a sharp move either up or down during the life of the options. But it differs from Long Straddle in that the call strike is above the put strike.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">price = np.arange(700,1000,1)
+# Suppose the undelying price at time 0 is 830
+k_call = 870 # The strike price of OTM call
+k_put = 795 # The strike price of OTM put
+premium_call = 8 # premium of call option
+premium_put = 10 # premium of put option
+# payoff for the long call
+payoff_long_call = [max(-premium_call, i-k_call-premium_call) for i in price]
+# payoff for the long put
+payoff_long_put = [max(-premium_put, k_put-i-premium_put) for i in price]
+payoff = np.sum([payoff_long_call, payoff_long_put], axis=0)
+plt.figure(figsize=(20,15))
+plt.plot(price, payoff_long_call, label = 'Long Call')
+plt.plot(price, payoff_long_put, label = 'long put')
+plt.plot(price, payoff, label = 'Long Strangle')
+plt.legend(fontsize = 20)
+plt.xlabel('Stock Price at Expiry',fontsize = 15)
+plt.ylabel('payoff',fontsize = 15)
+plt.title('Long Strangle Payoff',fontsize = 20)
+plt.grid(True)
+</pre>
+</div>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial04-long-strangle.png" alt="long strangle strategy payoff"/>
+<p>
+ From the payoff plot, the most that you can lose in a Long Strangle is the total premium you pay for holding the long position of both a put and a call option. The maximum loss occurs when the stock price falls between the strike price of two options. All options are worthless on expiration. The maximum gain of Long Strangle is unlimited for upside move because a stock's price has no maximum threshold.
+</p>

@@ -1,0 +1,37 @@
+<p>
+	Protective Collar is an option strategy that involves both the underlying stock and two option contracts. The trader buys (or already owns) a stock, then buys an out-the-money put option and sells an out-the-money call option.  It is similar to the covered call strategy with the purchase of an additional put option. It is being used if the trader is writing covered calls but wish to protect himself from an unexpected downside sharp move in the price of the underlying security. As a tradeoff, the profit will become limited compared with the covered call strategy.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python"># Protective Collar
+price = np.arange(700,950,1)
+# assume at time 0, the price of the undelying stock is 830
+k_otm_put = 800 # the strike price of OTM put
+k_otm_call = 860 # the strike price of OTM call
+premium_otm_put = 6 # the premium of OTM put
+premium_otm_call = 2 # the premium of OTM call
+# payoff for the long put position
+payoff_long_put = [max(-premium_otm_put, k_otm_put-i-premium_otm_put) for i in price]
+# payoff for the short call position
+payoff_short_call = [min(premium_otm_call, -(i-k_otm_call-premium_otm_call)) for i in price]
+# payoff for the underlying stock
+payoff_stock = price - 830
+# payoff for the Protective Collar Strategy
+payoff = np.sum([payoff_long_put,payoff_short_call,payoff_stock], axis=0)
+plt.figure(figsize=(20,15))
+plt.plot(price, payoff_long_put, label = 'Long Put',linestyle='--')
+plt.plot(price, payoff_short_call, label = 'Short Call',linestyle='--')
+plt.plot(price, payoff_stock, label = 'Underlying Stock',linestyle='--')
+plt.plot(price, payoff, label = 'Protective Collar',c='black')
+plt.legend(fontsize = 20)
+plt.xlabel('Stock Price at Expiry',fontsize = 15)
+plt.ylabel('payoff',fontsize = 15)
+plt.title('Protective Collar Strategy - Payoff',fontsize = 20)
+plt.grid(True)
+</pre>
+</div>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial08-protective-collar.png" alt="protective collar strategy payoff"/>
+<p>
+	According to the payoff plot, the maximum profit is the strike price of short call minus the purchase price of the underlying asset add the net credit from the premium. It occurs when the stock price is beyond the strike price of the short call option. The maximum loss is the purchase price of the underlying asset minus the strike price of the long put minus the net credit from the premium. It occurs when the stock price is below the strike price of the long put. It is a strategy with limit risk and limit profit.
+</p>

@@ -1,0 +1,72 @@
+<p>
+ Step 1: First, you need to initialize the algorithm including set the start date, end date and the cash required. Then use <code>option.SetFilter(-6, 6, timedelta(30), timedelta(60))</code> to filter the candidate contracts which expire in 30 days to 60 days from now on. The strike price range involves both ITM and OTM options. Then we get the option chains of GOOG.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">def Initialize(self):
+	self.SetStartDate(2016, 5, 1)
+	self.SetEndDate(2016, 10, 1)
+	self.SetCash(200000)
+	equity = self.AddEquity("GOOG", Resolution.Minute)
+	option = self.AddOption("GOOG", Resolution.Minute)
+	self.symbol = option.Symbol
+	# set our strike/expiry filter for this option chain
+	option.SetFilter(-6, 6, timedelta(30), timedelta(60))
+	# use the underlying equity GOOG as the benchmark
+	self.SetBenchmark(equity.Symbol)
+</pre>
+</div>
+<p>
+	Step 2: Choose the contracts with the same expiration date. For demonstration purpose here we sorted the contracts by their expiration dates and choose the options with the furthest expiration date in the option chain.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">def TradeOptions(self,optionchain):
+	for i in optionchain:
+		if i.Key != self.symbol: continue
+		chain = i.Value
+		# sorted the optionchain by expiration date and choose the furthest date
+		expiry = sorted(chain,key = lambda x: x.Expiry, reverse=True)[0].Expiry
+</pre>
+</div>
+<p>
+ Step 3: Filter the call options from the contracts which expire on the furthest expiration date in the option chain.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">call = [i for i in chain if i.Expiry == expiry and i.Right == OptionRight.Call]
+</pre>
+</div>
+<p>
+ Step 4: Sort the call options with the same expiration date according to their strike price. Then buy the call option with the lowest strike price and sell the call with the highest strike price.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">call_contracts = sorted(call,key = lambda x: x.Strike)
+	if len(call_contracts) == 0: continue
+	# call option contract with lower strike
+	self.call_low = call_contracts[0]
+	# call option contract with higher strike
+	self.call_high = call_contracts[-1]
+	self.Buy(self.call_low.Symbol, 1)
+	self.Sell(self.call_high.Symbol ,1)
+</pre>
+</div>
+<p>
+ Note here you need to add the following rules in <code>OnData(self,slice)</code> method because you only need to trade options once and wait until the contracts expire. If you already had securities invested in the portfolio, then you do not need to trade new options.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">if not self.Portfolio.Invested:
+	self.TradeOptions(optionchain)
+</pre>
+</div>
+<h2>Summary</h2>
+<p>
+This strategy can be implemented when you have a moderate outlook on the stock because the payoff reaches its maximum when the price is between the strike price range of two traded options. The strategy protects the downside move of the stock price. But when the price is above the higher strike, the profit is capped.
+</p>

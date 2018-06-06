@@ -1,6 +1,5 @@
-<h3>Step 1: Initialize the Algorithm</h3>
 <p>
-At the beginning of your algorithm, you need to set the start date, the end date and the cash required for the algorithm. For options algorithm, you need to add the equity and the options written on this equity.
+Step 1: Initialize the Algorithm： At the beginning of your algorithm, you need to set the start date, the end date and the cash required for the algorithm. For options algorithm, you need to add the equity and the options written on this equity.
 </p>
 <div class="section-example-container">
 <pre class="csharp">
@@ -20,17 +19,22 @@ At the beginning of your algorithm, you need to set the start date, the end date
 </pre>
 </div>
 <p>
-Second, in the initialization process, you need to add a coarse selection for the options contracts. Here we use <code>option.SetFilter(-3, +3, timedelta(0), timedelta(60))</code> to implement the coarse selection process. If today's market price of underlying stock is $159, the strike prices of IBM options are spaced $5. Then SetFilter will look up the most at the money contract with the strike being K=$160 (Here K might not be $159 since rarely will option be ATM exactly). The filter will look for options with strikes between and including (160-5*3, 160+5*3). The time to expiration of these options is restricted within 60 days from now on.
-</p>
-<h3>Step 2: Choose the Call Options Contract</h3>
-<p>
-  First, purchase the underlying stock for 100 shares or an integral multiple of 100 shares. For options contract, one contract represents 100 shares of stock.
+  In the initialization process, you need to add a coarse selection for the options contracts. Here we use <code>option.SetFilter(-3, +3, timedelta(0), timedelta(60))</code> to implement the coarse selection process. If today's market price of underlying stock is $159, the strike prices of IBM options are spaced $5. Then SetFilter will look up the most at the money contract with the strike being K=$160 (Here K might not be $159 since rarely will option be ATM exactly). The filter will look for options with strikes between and including (160-5*3, 160+5*3). The time to expiration of these options is restricted within 60 days from now on.
 </p>
 <p>
-Second, filter out the call options from candidate contracts.<code>call = [x for x in chain if x.Right == 0]</code> For call options, the right is 0, for put options, the right is 1.
+  Step 2: Choose the Call Options Contract: Purchasing the underlying stock for 100 shares or an integral multiple of 100 shares. For options contract, one contract represents 100 shares of stock.
 </p>
 <p>
-Third, select the most ATM contract with the furthest expiration date from call options contracts. Sell this call contract for each 100 shares of stock you own. Here you can also choose ITM or OTM contract based on your expected level of profit and the level of risk you can take.
+  Step 3: Filter out the call options from candidate contracts.
+</p>
+  <div class="section-example-container">
+  <pre class="csharp">
+  </pre>
+  <pre class="python">call = [x for x in chain if x.Right == OptionRight.Call]
+  </pre>
+  </div>
+<p>
+  Step 4: Select the most ATM contract with the furthest expiration date from call options contracts. Sell this call contract for each 100 shares of stock you own. Here you can also choose ITM or OTM contract based on your expected level of profit and the level of risk you can take.
 </p>
 <div class="section-example-container">
 <pre class="csharp">
@@ -51,23 +55,5 @@ Third, select the most ATM contract with the furthest expiration date from call 
         if self.Portfolio["IBM"].Quantity == 0:
             self.Buy("IBM",100)     # buy 100 the underlying stock
             self.Log("The stock price at time 0 S(0): {}".format(self.Securities["IBM"].Price))
-</pre>
-</div>
-<p>
-Fourth, at the expiration date we print out the price and position information
-</p>
-<div class="section-example-container">
-<pre class="csharp">
-</pre>
-<pre class="python">def OnData(self,slice):
-    if not self.Portfolio[self.call].Invested and self.Time.hour != 0 and self.Time.minute == 1:
-        self.TradeOptions(slice) # sell the call option
-
-    # if the option contract expires, print out the price and position information
-    if slice.Delistings.Count > 0:
-        if [x.Key == self.call for x in slice.Delistings]:
-            self.Log("stock IBM quantity: {0}".format(self.Portfolio["IBM"].Quantity))
-            self.Log("{0} quantity: {1}".format(self.call.Value, self.Portfolio[self.call].Quantity))
-            self.Log("The stock price at Expiry S(T): {}".format(self.Securities["IBM"].Price))
 </pre>
 </div>

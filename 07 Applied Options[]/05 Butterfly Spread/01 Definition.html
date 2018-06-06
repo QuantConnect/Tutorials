@@ -1,0 +1,67 @@
+<p>
+	Butterfly Spread strategy involves four option contracts with the same expiration but three different strike prices. There are four kinds of Butterfly Spread:
+</p>
+<table class="table qc-table">
+<thead>
+<tr>
+<th> Name</th>
+<th> Strategy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> Long butterfly spread with calls</td>
+<td> Buy 1 ITM call, sell 2 ATM call, buy 1 OTM call</td>
+</tr>
+<tr>
+<td> Long butterfly spread with puts</td>
+<td> Buy 1 ITM put, sell 2 ATM put, buy 1 OTM put</td>
+</tr>
+<tr>
+<td> Short butterfly spread with calls</td>
+<td> Sell 1 ITM call, buy 2 ATM call, sell 1 OTM call</td>
+</tr>
+<tr>
+<td> Short butterfly spread with puts</td>
+<td> Buy 1 ITM put, sell 2 ATM put, buy 1 OTM put</td>
+</tr>
+</tbody>
+</table>
+<p>
+ Butterfly Spread strategy consists of three legs with a total of four options. In this tutorial, we take Long Butterfly Spread as an example: long one ITM call, short two ATM calls and long one OTM call. All the calls have the same expiration. On the other hand, the middle strike is halfway between the lower and the higher strikes.
+</p>
+<p>
+	The aim of Butterfly Spread strategy is to gain profits when traders think that the underlying stock will not rise or fall much by expiration.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">price = np.arange(800,1100,1)
+# Suppose the undelying price at time 0 is 935
+k_itm = 915 # the strike price of ITM call
+k_otm = 955 # the strike price of OTM call
+k_atm = 935 # the strike price of ATM call
+premium_itm = 45 # the premium of ITM call
+premium_otm = 15 # the premium of OTM call
+premium_atm = 25 # the premium of ATM call
+# payoff for the long ITM call position
+payoff_itm_long = [max(-premium_itm, i-k_itm-premium_itm) for i in price]
+# payoff for the long OTM call position
+payoff_otm_long = [max(-premium_otm, i-k_otm-premium_otm) for i in price]
+# payoff for the 2 short ATM call position
+payoff_atm_short = [min(2*premium_atm, -2*(i-k_atm-premium_atm)) for i in price]
+# payoff for Butterfly Spread Strategy
+payoff = np.sum([payoff_itm_long,payoff_otm_long,payoff_atm_short], axis=0)
+plt.figure(figsize=(20,15))
+plt.plot(price, payoff_itm_long, label = 'Long ITM Call')
+plt.plot(price, payoff_otm_long, label = 'Long OTM Call')
+plt.plot(price, payoff_atm_short, label = 'Short 2 ATM Call')
+plt.plot(price, payoff, label = 'Long Call Butterfly Spread')
+plt.legend(fontsize = 20)
+plt.xlabel('Stock Price at Expiry',fontsize = 15)
+plt.ylabel('payoff',fontsize = 15)
+plt.title('Long Call Butterfly Spread Payoff',fontsize = 20)
+plt.grid(True)
+</pre>
+</div>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial05-butterfly-spread.png" alt="butterfly spread strategy payoff"/>
