@@ -1,0 +1,76 @@
+<p>
+  Consider Google(NASDAQ: GOOG) is trading at $910 now and you are bullish on this stock and expect it to rise over the next three months. The minimum capital requirement to buy 100 shares of GOOG is $90000 but you only have limited capital for stock investors. You could buy 1 call option contract written on GOOG which expires after three months with a $900 strike price. If GOOG rises to $950 in three months, you can get  ($950 - $900) *100 = $5000 by paying just a small amount of premium instead of a full cost of shares. Even if the share price of GOOG falls below $900, you lose only the premium. This is one of the biggest benefits of trading options and is also called the financial leverage. Without borrowing the capital, you can control a larger number of shares by investing in options other than purchasing the shares themselves.
+</p>
+<p>
+  From the above example, [ref]Bouzoubaa M, Osseiran A. Exotic options and hybrids: A guide to structuring, pricing and trading[M]. John Wiley &amp; Sons, 2010.[/ref] The investor will buy a European call if he has a bullish view on the market and believes the underlying stock price will be above the strike price at the expiry date. He will make money when the underlying price goes up and lose when it goes down. The payoff of a call option at T is
+</P>
+\[Call_{payoff}=max[0,S_T-K]\]
+<p>
+  On the other hand, an investor will buy a European put if he is bearish about the market and believes that the underlying stock price will be below the strike at the expiry date. He will make money when the underlying price goes down and lose when it goes up. The European put payoff at T is
+</p>
+\[Put_{payoff}=max[0,K-S_T]\]
+<p>
+Where \(S_T\) is the price of underlying assets at maturity. K is the strike price.
+</p>
+<p>
+  We use the GOOG option contract to show the call and put option payoff. The current share price of GOOG is $945 at 07/12/2017.
+</p>
+<table class="table qc-table">
+<thead>
+<tr>
+<th>Contract Name</th>
+<th>Type</th>
+<th>Expire Date</th>
+<th>Strike</th>
+<th> Premium</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> GOOG170714C00940000</td>
+<td> Call</td>
+<td> 07/14/2017</td>
+<td> $940</td>
+<td> $7.5</td>
+</tr>
+<tr>
+<td>GOOG170714P00960000</td>
+<td> Put</td>
+<td> 07/14/2017</td>
+<td> $960</td>
+<td> $19.5</td>
+</tr>
+</tbody>
+</table>
+If you long these two options, the payoff at expiration date would be as follows
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">import matplotlib.pyplot as plt
+%pylab inline
+price = np.arange(900,1000,1)
+strike = 940
+premium = 7.5
+payoff = [max(-premium, i - strike-premium) for i in price]
+plt.plot(price, payoff)
+plt.xlabel('Price at T S_T ($)')
+plt.ylabel('payoff')
+plt.title('Call option Payoff at Expiry')
+plt.grid(True)
+price = np.arange(900,1000,1)
+strike = 960
+premium = 19.5
+payoff = [max(-premium, strike - i -premium) for i in price]
+plt.plot(price, payoff)
+plt.xlabel('Price at T S_T ($)')
+plt.ylabel('payoff')
+plt.title('Put option Payoff at Expiry')
+plt.grid(True)
+</pre>
+</div>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial02-call-payoff.png" alt="call options payoff" />     
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial02-put-payoff.png" alt="put options payoff" />
+
+<p>
+  The above payoff diagrams illustrate the cash payoff on an option at the expiration date. For a call option, the net payoff is negative if the price of the underlying asset is less than the strike price(The negative payoff comes from the premium). If the underlying price exceeds the strike price, the gross payoff is the price of the underlying asset minus the strike price and the premium. For a put option, the net payoff is positive if the underlying price is less than the strike price. If the price of the underlying asset exceeds the strike price, the gross payoff is negative because you pay the premium for purchasing the contracts.
+</p>

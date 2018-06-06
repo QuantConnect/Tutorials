@@ -1,0 +1,101 @@
+<p>
+  For European options of the same maturity and the same underlying assets, the implied volatilities vary with the strikes. For a series of put options or call options, if we plot these implied volatilities for a series of options which have the same expiration date and the same underlying with the x-axis being the different strikes, we would get a convex curve. The shape of this curve is like people's smiling, it is being called the volatility. The shape of volatility smile depends on the assets and the market conditions.
+</p>
+<p>
+  Here we give an example how to plot the volatility smile by using the real time options data of SPDR S&amp;P 500 ETF(NYSEARCA: SPY).
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python"># download option data for all expiry months from Yahoo Finance
+# provide a formatted DataFrame with a hierarchical index
+opt = Options('spy', 'yahoo')
+opt.expiry_dates  # list all the available expiration dates
+def IV_plot(opt,option_type,expiry_index):
+    expiry = opt.expiry_dates[expiry_index]
+    if option_type == 'c':
+        data = opt.get_call_data(expiry=expiry)
+    elif option_type == 'p':
+        data = opt.get_put_data(expiry=expiry)
+    r = 0.01 # risk free rate
+    d = 0.01 # continuous devidend yield
+    s = opt.underlying_price # data_call['Underlying_Price']  undelying price
+    expiry = data.index.get_level_values('Expiry')[0] # get the expiry
+    current_date = opt.quote_time # current_date = datetime.datetime.now() # get the current date
+    time_to_expire = float((expiry - current_date).days)/365 # compute time to expiration
+    premium = (data['Ask'] + data['Bid'])/2 # option premium
+    strike = list(data.index.get_level_values('Strike')) # get the strike price
+    IV = []
+    for i in range(len(data)):
+        IV.append(implied_vol(option_type, premium.values[i], s, strike[i], r, time_to_expire, d))
+
+    plt.figure(figsize=(16, 7))
+    a = plt.scatter(strike,IV, c='r', label="IV by solving BSM")
+    b = plt.scatter(strike,data['IV'],c = 'b', label="IV from Yahoo Finance")
+    plt.grid()
+    plt.xlabel('strike')
+    if option_type == 'c':
+        plt.ylabel('Implied Volatility for call option')
+        plt.legend((a,b), ("IV(call) by solving BSM", "IV(call) from Yahoo Finance"))
+    elif option_type == 'p':
+        plt.ylabel('Implied Volatility for put options')
+        plt.legend((a,b), ("IV(put) by solving BSM", "IV(put) from Yahoo Finance"))
+
+    return strike,IV
+k_call, IV_call = IV_plot(opt,'c',23)
+k_put, IV_put = IV_plot(opt,'p',23)
+plt.figure(figsize=(16, 7))
+e = plt.scatter(k_call,IV_call, c ='red', label="IV(call options)")
+f = plt.scatter(k_put,IV_put, c = 'black', label="IV(put options)")
+plt.xlabel('strike')
+plt.ylabel('Implied Volatility')
+plt.legend((e,f), ("IV (call options)", "IV (put options)"))
+</pre>
+</div>
+<p>
+  The current date is 08/14/2017. We plot the implied volatilities for SPY options which expire on 12/21/2018.
+</p>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial06-ivcall.png" alt="implied volatility of call options"/>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial06-ivput.png" alt="implied volatility of put options"/>
+<p>
+  Plotting these implied volatilities across strikes gives us the implied volatility skew. For the shape of volatility smile, it should be a symmetry convex curve. But from the above chart, the implied volatility curve slopes downward to the right. This is referred to the skew, which means that options with low strikes have higher implied volatilities than those with higher strikes. The smile is not symmetry. The skew of a distribution is a measure of its asymmetry. Although the volatility skew is dynamic, in equity markets it is almost always a decreasing function of the strike. Other asset classes such as FX and commodities have differently shaped skews.
+</p>
+<p>
+  If we plot the call and put options implied volatility smile in the same chart for the same expiration date:
+</p>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial06-ivputcall.png" alt="implied volatility of call and put options"/>
+<p>
+  From the above chart, we can see the implied volatility for put options is higher than call options. Usually, put options trade for a higher price than call options, because traders place more risk in the short put positions, which raises the amount of reward they require to sell the position. Higher option prices signify an increase in risk and are represented by higher implied volatility levels derived from the option pricing model. Then we scattered all the implied volatilities of contracts across all the strikes.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">opt = Options('spy', 'yahoo')
+r = 0.01 # risk free rate
+d = 0.01 # continuous devidend yield
+expiry_dates = [i for i in opt.expiry_dates if i > opt.quote_time.date()]
+current_date = opt.quote_time.date()  ## get the current date
+s = opt.underlying_price # undelying price
+num_expiry = len(expiry_dates)
+IV = [] # (num_expiry * 3)-dimension list with each row being [time_to_expire, strike, implied_vol]
+
+for expiry_index in range(num_expiry):
+    data = opt.get_put_data(expiry=expiry_dates[expiry_index])
+    expiry = expiry_dates[expiry_index] # get the expiry
+    time_to_expire = float((expiry - current_date).days)/365 # compute time to expiration
+    premium = (data['Ask'] + data['Bid'])/2.0 # option premium
+    strike = data.index.get_level_values('Strike') # get the strike price
+    num_strike = len(data)
+    for j in range(num_strike):
+        IV.append([time_to_expire, strike[j], implied_vol('c', premium.values[j], s, strike[j], r, time_to_expire, d)])
+x= [IV[i][0] for i in range(len(IV))]
+y= [IV[i][1] for i in range(len(IV))]
+z= [IV[i][2] for i in range(len(IV))]
+fig = plt.figure(figsize=(20,11))
+ax = fig.add_subplot(111, projection='3d')
+ax.view_init(20,10)
+ax.scatter(x,y,z)
+</pre>
+</div>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial06-volsurface.png" alt="implied volatility surface"/>

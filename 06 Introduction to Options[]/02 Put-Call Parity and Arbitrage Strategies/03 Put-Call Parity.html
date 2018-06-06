@@ -1,0 +1,37 @@
+<p>
+  Put-Call parity describes the relationship between the price of a European put and a call options with the identical strike price K, expiry T and their underlying stock's price. Next, we will demonstrate how to derive the put-call parity according to John Hull's book.
+</p>
+<p>We consider two portfolios as follows,</p>
+<p>
+  Portfolio A: buy one European call option (underlying non-dividend-paying stock S, strike K, expiring at T) plus a zero-coupon bond which pays K at T
+</p>
+<p>
+  Portfolio B: sell one European put option (underlying non-dividend-paying stock S, strike K, expiring at T) plus one share of underlying stock S
+</p>
+<table class="table qc-table">
+<tbody>
+<tr>
+<td> Payoff</td>
+<td> \(S_t &gt; K\)</td>
+<td>\(S_t &lt; K\)</td>
+</tr>
+<tr>
+<td width="33%">Portfolio A</td>
+<td>\(S_t - K+K=S_t\)</td>
+<td>\(0+K=K\)</td>
+</tr>
+<tr>
+<td>Portfolio B</td>
+<td>\(0+S_t =S_t\)</td>
+<td>\(K-S_t+S_t=K\)</td>
+</tr>
+</tbody>
+</table>
+<p>
+  From the above table we can see that in all states, Portfolio A has the same payoff at the options' expiration date as Portfolio B. Thus the present value of two portfolios must be the same. Otherwise, an investor can make risk-free profits by purchasing the undervalued portfolio and selling the overvalued portfolio and holding the position to maturity. Then we have the price equality(suppose the present price of stock S is \(S_0\) )
+</p>
+\[Price_{call}+Ke^{-rT}=Price_{put}+S_0\]
+<p>
+  If the dividend is paid during the option holding period, the shareholder of the stock would receive that additional amount, but the option owner would not. For a dividend-paying stock, the put-call parity relationship is(D is the present value of dividends):
+</p>
+\[Price_{call}+D+Ke^{-rT}=Price_{put}+S_0\]

@@ -1,0 +1,16 @@
+<p>
+  The option's premium consists of two parts: the intrinsic value and the time value.
+</p>
+<div class="latex">
+\[Intrinsic Value_{call} = max(Current Underlying Price-Strike Price,0)\]
+\[Intrinsic Value_{put} = max(Strike Price-Current Underlying Price,0)\]
+</div>
+<p>
+  From the equations above, only in the money options have intrinsic value.  After we know the intrinsic value, the time value is the difference between the options premium and the intrinsic value.
+</p>
+<div class="latex">
+\[Time Value= Premium-Intrinsic Value\]
+</div>
+<p>
+For example, an AAPL call option contract which expires after 10 days has strike $143 and premium $10. now the market price of GOOG is $160. The intrinsic value of this contract is 160-143=$17, the time value is 17-10=$7. Although the intrinsic value of OTM and ATM options is zero, they have time values if they still have a certain amount of time until the option expires so for OTM and ATM options, their premiums equal their time values.
+</p>

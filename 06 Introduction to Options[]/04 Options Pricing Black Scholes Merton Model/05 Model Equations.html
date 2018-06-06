@@ -1,0 +1,68 @@
+<p>
+  The derivation of the Black-Scholes model is beyond the scope of this research, we only show the formula here. The basic principle is based on the idea of creating a portfolio of the underlying asset and the riskless asset with the same cash flows and hence the same cost as the option being valued. Then we get the Black–Scholes–Merton differential equation. The solutions to the differential equation are the Black-Scholes-Merton formulas for the price of European call and put options
+</p>
+\[c = S_0N(d_1)-Ke^{-rT}N(d_2)\]
+
+\[p =Ke^{-rT}N(-d_2)- S_0N(-d_1)\]
+
+\[d_1=\frac{ln(S_0/K)+(r+\sigma^2/2)T}{\sigma\sqrt{T}}\]
+
+\[d_2=\frac{ln(S_0/K)+(r-\sigma^2/2)T}{\sigma\sqrt{T}}=d_1-\sigma\sqrt{T}\]
+<p>
+  N(x) is the cumulative probability distribution function for a variable with a standard normal distribution. It can be calculated by the integral of the probability density function of standard normal distribution from 0 to x. In Python, you can use the <code>norm.pdf(x)</code> in spicy.stats library. For the following chart, we plot the probability density curve of the standard normal distribution. For example, N(-1) is the area of the left hand of the red line under the curve.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">import scipy.stats as sp
+mu = 0
+variance = 1
+x = np.linspace(mu-3*variance,mu+3*variance, 100)
+y = [sp.norm.pdf(i) for i in x]
+plt.plot(x,y)
+d = [-1]
+plt.plot(d*100,np.linspace(0,sp.norm.pdf(d), 100))
+</pre>
+</div>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial04-normal-dist.png" alt="normal distribution"/>
+<p>
+  Then in our BSM model class, we will calculate the European call and put option prices by using BSM formula.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">def n(self, d):
+    # cumulative probability distribution function of standard normal distribution
+    return norm.cdf(d)
+
+def dn(self, d):
+    # the first order derivative of n(d)
+    return norm.pdf(d)
+
+def d1(self):
+    d1 = (log(self.s / self.k) + (self.r - self.q + self.sigma ** 2 * 0.5) * self.T) / (self.sigma * sqrt(self.T))
+    return d1
+
+def d2(self):
+    d2 = (log(self.s / self.k) + (self.r - self.q - self.sigma ** 2 * 0.5) * self.T) / (self.sigma * sqrt(self.T))
+    return d2
+
+def bsm_price(self):
+    d1 = self.d1()
+    d2 = d1 - self.sigma * sqrt(self.T)
+    if self.type == 'c':
+        price = exp(-self.r*self.T) * (self.s * exp((self.r - self.q)*self.T) * self.n(d1) - self.k * self.n(d2))
+        return price
+    elif self.type == 'p':
+        price = exp(-self.r*self.T) * (self.k * self.n(-d2) - (self.s * exp((self.r - self.q)*self.T) * self.n(-d1)))
+        return price
+    else:
+        print "option type can only be c or p"
+
+a = BsmModel('c', 42, 35, 0.1, 90.0/365, 0.2)
+a.bsm_price()
+</pre>
+</div>
+<p>
+  For a call option which expires in 90 days and no dividends paid, the underlying price is $42, the strike is $35, the risk-free rate is 0.1, the volatility is 0.2. The price of this option is $6.157.
+</p>
