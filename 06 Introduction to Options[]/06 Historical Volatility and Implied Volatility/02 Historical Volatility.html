@@ -1,0 +1,43 @@
+<h3>1. Definition</h3>
+<p>
+  It is a measurement of how much the price of the asset has changed on average during the certain period of time. In common, volatility is said to be the standard deviation of the return of assets price.
+</p>
+<h3>2. Calculation</h3>
+<p>
+  Next we discuss how to estimate the historical volatility of the option empirically.
+</p>
+\[r_i=ln(\frac{S_i}{S_{i-1}})\quad for\ i=0,1,2,3,...,n\]
+<p>
+  Where (n+1) is the number of observations, \(S_i\) is the stock price at end of it time interval
+</p>
+<p>
+  The  standard deviation of the \(r_i\) is given by
+</p>
+\[std=\sqrt{\frac{1}{n-1}\sum_{i=1}^n(r_i-\overline{r})^2}\]
+<p>
+  where \(\overline{r}\) is the mean of \(r_i\)
+</p>
+<p>
+  If we assume there are n trading days per year. Then the estimate of historical volatility per annum is
+</p>
+\[std\times\sqrt{n}\]
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">
+import pandas as pd
+from numpy import sqrt,mean,log,diff
+import quandl
+quandl.ApiConfig.api_key = 'NxTUTAQswbKs5ybBbwfK'
+goog_table = quandl.get('WIKI/GOOG')
+# use the daily data of Google(NASDAQ: GOOG) from 01/2016 to 08/2016
+close = goog_table['2016-01':'2016-08']['Adj. Close']
+r = diff(log(close))
+r_mean = mean(r)
+diff_square = [(r[i]-r_mean)**2 for i in range(0,len(r))]
+std = sqrt(sum(diff_square)*(1.0/(len(r)-1)))
+vol = std*sqrt(252)</pre>
+</div>
+<p>
+  An asset has a historical volatility based on its past performance as described above, investors can gain insight on the fluctuations of the underlying price during the past period of time. But it does not tell us anything about the volatility in the market now and in the future. So here we introduce the implied volatility.
+</p>

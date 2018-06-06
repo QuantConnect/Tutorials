@@ -1,0 +1,52 @@
+<p>
+  After we get an intuition about affecting factors of the options price, we will introduce the BSM option pricing model. The Black-Scholes model for pricing stock options was developed by Fischer Black, Myron Scholes and Robert Merton in the early 1970’s.
+</p>
+<p>
+  First, we introduce the factors in the model. For all the factors listed below, only volatility is not known.  There are many types of volatilities. Then which volatility should be used is a critical question in option pricing model. We will further discuss this part in the next few chapters.
+</p>
+<table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2">Factors in the model</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> Stock Price</td>
+<td>S</td>
+</tr>
+<tr>
+<td> Strike Price</td>
+<td> K</td>
+</tr>
+<tr>
+<td> Time to Expiration</td>
+<td> T-t</td>
+</tr>
+<tr>
+<td> Interest Rates</td>
+<td> r</td>
+</tr>
+<tr>
+<td> Future Volatility of the underlying Stock</td>
+<td> σ</td>
+</tr>
+</tbody>
+</table>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">class BsmModel:
+    def __init__(self, option_type, price, strike, interest_rate, expiry, volatility, dividend_yield=0):
+        self.s = price # Underlying asset price
+        self.k = strike # Option strike K
+        self.r = interest_rate # Continuous risk fee rate
+        self.q = dividend_yield # Dividend continuous rate
+        self.T = expiry # time to expiry (year)
+        self.sigma = volatility # Underlying volatility
+        self.type = option_type # option type "p" put option "c" call option
+</pre>
+</div>
+<p>
+  There are some details we need to pay attention to about the input of BSM model. Firstly, the model works in continuous time, rather than discrete time. Therefore the risk-free rate r has to be modified to the continuous form. Secondly, the time to expiration should be converted to year. The volatility is the annual volatlity.
+</p>

@@ -1,0 +1,38 @@
+<p>
+  Monte Carlo simulation is a commonly used method for derivatives pricing where the payoff depends on the history price of the underlying asset.
+</p>
+<p>
+  The essence of using Monte Carlo method to price the option is to simulate the possible paths for stock prices then we can get all the possible value of stock price at expiration.
+</p>
+<ul>
+     <li>First, we need to divide the maturity T of options into N small time intervals, the length of each time interval is \(\Delta t\), N is the number of steps</li>
+     <li>Sample the possible random paths for the stock price according to equation (3) and get the stock price \(S_T\)at maturity T.</li>
+     <li>Calculate the payoff of options according to the \(S_T\)</li>
+     <li>Discount the payoff at the risk-free rate to get one estimate of options' price</li>
+     <li>Repeat the step 1 to 4 for a reasonable number of times and get many estimates of options price and then the average of these price estimates is the final options price.</li>
+</ul>
+<p>
+  In option pricing, Monte Carlo simulations use the risk-neutral valuation result. More specifically, sample the paths to obtain the expected payoff in a risk-neutral world (The expected annual return rate and the risk-free annual rate should be the same in order to get the correct estimation of the option) and then discount this payoff at the risk-neutral rate.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">
+def mc_euro_options(option_type,s0,strike,maturity,r,sigma,num_reps):
+    payoff_sum = 0
+    for j in range(num_reps):
+        st = s0
+        st = st*e**((r-0.5*sigma**2)*maturity + sigma*np.sqrt(maturity)*np.random.normal(0, 1))
+        if option_type == 'c':
+            payoff = max(0,st-strike)
+        elif option_type == 'p':
+            payoff = max(0,strike-st)
+        payoff_sum += payoff
+    premium = (payoff_sum/float(num_reps))*e**(-r*maturity)
+ return premium
+mc_euro_options('c',927.96,785,100.0/252,0.01,0.23,500)
+</pre>
+</div>
+<p>
+  Suppose the risk-free rate is 1%. A European call option with strike price being $785 and expires in 100 days, the spot price is $927, the premium by using Monte Carlo method is $149.
+</p>
