@@ -1,12 +1,12 @@
 <p>
   In contrast to historical volatility, the implied volatility looks ahead. It is often interpreted as the market’s expectation for the future volatility of a stock and is implied by the price of the stock’s options. Here implied volatility means it is not observable in the market but can be derived from the price of an option.
 </p>
-<h3>1. Definition</h3>
+<h4>1. Definition</h4>
 <p>
   We use volatility as an input parameter in option pricing model. If we take a look at the BSM pricing, the theoretical price or the fair value of an option is P, where P is a function of historical volatility σ, stock  price S, strike price K, risk-free rate r and the time to expiration T.  That is \(P=f(\sigma,S,K,r,T)\). But the market price of options is not always the same with the theoretical price. Now in contrast, if we are given the market’s prices of calls and puts written on some asset and also the value of S, K, r, T. For each asset we can solve a new volatility that corresponds to the price of each option – the implied volatility. Then the implied volatility is \(\IV=f^{-1}(P,S,K,r,T)\).
 </p>
 
-<h3>2. Calculation</h3>
+<h4>2. Calculation</h4>
 <p>
   Here we use the bisection method to solve the BSM pricing equation and find the root which is the implied volatility. We use Yahoo Finance Python API to get the real time option data.
 </p>
@@ -66,7 +66,7 @@ implied_vol('c', 0.3, 3, 3, 0.032, 30.0/365, 0.01)
 <p>
   From the result above, the implied volatility of European call option (with premium c=0.3, S=3, K=3, r=0.032, T =30 days, d=0.01) is 0.87.
 </p>
-<h3>3. Factors Affecting Implied Volatility</h3>
+<h4>3. Factors Affecting Implied Volatility</h4>
 <p>
   According to the time value description in the first tutorial, [ref]Options Pricing: Intrinsic Value And Time Value, Jean Folger, <a href="http://www.investopedia.com/university/options-pricing/intrinsic-value-time-value.asp?lgl=rira-baseline-vertical">Online Copy</a>[/ref]in general, the more time to expiration, the greater the time value of the option. Investors are willing to pay extra money for zero intrinsic value options which have more time to expiration because more time increases the likelihood of price movement and fluctuations, it is the options will become profitable. Implied volatility tends to be an increasing function of maturity. A short-dated option often has a low implied volatility, whereas a long-dated option tends to have a high implied volatility.
 </p>

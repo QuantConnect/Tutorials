@@ -1,0 +1,7 @@
+<h2>Delta, Gamma and Vega Hedging</h2>
+<p>
+  The delta of the underlying asset is always 1.0, the trader can hedge his positions by buying or selling the number of shares of the underlying asset indicated by the total delta. However, underlying asset positions have Gamma 0 because their Delta is always 1.00 (long) or -1.00 (short) and will not change. In addition, Vega of the underlying asset is also zero because the underlying asset's payoff doesn't vary depending on how its price moves (payoff is not contingent). Therefore, its price is not affected by price volatility.
+</p>
+<p>
+  As a result, in order to adjust Gamma and Vega, it is necessary to take a position in an option or other derivatives. However, if only one other derivative is added, either the Gamma risk or the Vega risk will be canceled out, but not both at the same time. Here we need to use 2 derivatives to make the portfolio delta, gamma, and vega neutral all at once. Note, Vega and Gamma for a portfolio is the sum of the vegas and Gammas of its constituents.
+</p>
