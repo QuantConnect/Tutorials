@@ -1,0 +1,192 @@
+<p>
+  For QuantConnect API, <a href="https://www.quantconnect.com/lean/docs#topic3838.html">Slice</a> class provides a data structure for all of an algorithm's data at a single time step. So you need use property <code>Slice.OptionChains</code> to request options data for this slice.
+
+<a href="https://www.quantconnect.com/lean/docs#topic19269.html">OptionChains</a> is a collection of  OptionChain keyed by the option's underlying symbol. The elements in <code>Slice.OptionChains</code> have properties <code>Key</code>(the underlying symbol object) <code>Value</code>(the option chain).
+
+<a href="https://www.quantconnect.com/lean/docs#topic19245.html">OptionChain</a>  represents an entire chain of option contracts for a single underlying security. In other words, It is a list of option contracts.
+
+<a href="https://www.quantconnect.com/lean/docs#topic19279.html">OptionContract</a> defines a single option contract at a specific expiration and strike price. For any contract x in option chain, you can use the following statements to check different options properties.
+</p>
+
+<table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2">Properties of Option Contract x</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>x.Symbol.Value</code></td>
+<td> Get the string of option contract's symbol</td>
+</tr>
+<tr>
+<td><code>x.AskPrice, x.BidPrice</code></td>
+<td> Get the ask price,  Get the bid price</td>
+</tr>
+<tr>
+<td><code>x.Expiry</code></td>
+<td> Get the expiration date</td>
+</tr>
+<tr>
+<td><code>x.Strike</code></td>
+<td> Get the strike price</td>
+</tr>
+<tr>
+<td><code>x.ImpliedVolatility</code></td>
+<td> Get the implied volatility</td>
+</tr>
+<tr>
+<td><code>x.Greeks</code></td>
+<td>Get the Greeks letter</td>
+</tr>
+<tr>
+<td><code>x.Right</code></td>
+<td>Get the right being purchased
+x.Right ＝ 1  call option[right to buy]
+x.Right ＝ 0  put option[right to sell]</td>
+</tr>
+<tr>
+<td><code>x.UnderlyingLastPrice</code></td>
+<td>Get the last price the underlying security traded at</td>
+</tr>
+<tr>
+<td><code>x.UnderlyingSymbol</code></td>
+<td>Gets the underlying security's symbol</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+  We can print out the details of the contract after filtering with Python data frame to show these properties. Assume today is 01/03/2017.  The stock price at 01/03/2017 09:31:00 is $776.01 per share. Here we use  <code>SetFilter(-1, +1, timedelta(0), timedelta(60)) </code>to filter the contracts.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">def OnData(self,slice):
+    for i in slice.OptionChains:
+        if i.Key != self.symbol: continue
+	optionchain = i.Value
+	self.Log("underlying price:" + str(optionchain.Underlying.Price))
+	df = pd.DataFrame([[x.Right,float(x.Strike),x.Expiry,float(x.BidPrice),float(x.AskPrice)] for x in optionchain],
+			   index=[x.Symbol.Value for x in optionchain],
+			   columns=['type(call 0, put 1)', 'strike', 'expiry', 'ask price', 'bid price'])
+        self.Log(str(df))
+</pre>
+</div>
+<table class="table qc-table">
+<thead>
+<tr>
+<th>Symbol</th>
+<th>type(call 0, put 1)</th>
+<th>Strike</th>
+<th>Expiry</th>
+<th>Ask Price</th>
+<th>Bid Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GOOG 170217C00780000</td>
+<td>0</td>
+<td>780.0</td>
+<td>2017-02-17</td>
+<td>26.4</td>
+<td>27.9</td>
+</tr>
+<tr>
+<td>GOOG 170120P00782500</td>
+<td>1</td>
+<td>782.5</td>
+<td>2017-01-20</td>
+<td>14.7</td>
+<td>16.3</td>
+</tr>
+<tr>
+<td>GOOG 170120C00782500</td>
+<td>0</td>
+<td>782.5</td>
+<td>2017-01-20</td>
+<td>9.4</td>
+<td>10.2</td>
+</tr>
+<tr>
+<td>GOOG 170120P00780000</td>
+<td>1</td>
+<td>780.0</td>
+<td>2017-01-20</td>
+<td>13.4</td>
+<td>15.0</td>
+</tr>
+<tr>
+<td>GOOG 170120C00780000</td>
+<td>0</td>
+<td>780.0</td>
+<td>2017-01-20</td>
+<td>10.6</td>
+<td>11.5</td>
+</tr>
+<tr>
+<td>GOOG 170217P00780000</td>
+<td>1</td>
+<td>780.0</td>
+<td>2017-02-17</td>
+<td>28.9</td>
+<td>30.8</td>
+</tr>
+<tr>
+<td>GOOG 170120P00777500</td>
+<td>1</td>
+<td>777.5</td>
+<td>2017-01-20</td>
+<td>12.2</td>
+<td>13.7</td>
+</tr>
+<tr>
+<td>GOOG 170120C00777500</td>
+<td>0</td>
+<td>777.5</td>
+<td>2017-01-20</td>
+<td>11.8</td>
+<td>12.9</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+  Here we give an example of how to find ATM, ITM OTM contracts for trading. First, we need to extract the OptionChain from OptionChains according to symbols we added in Initialize step. Secondly, we extract ATM, ITM and OTM contracts by using UnderlyingLastPrice and Strike properties. Note here the strikes of ATM options are not exactly the same as the market price of underlying stocks, thus here we first sort the contracts by the absolute values of the difference between the UnderlyingLastPrice and the Strike. Then we choose the contract with the minimum absolute value as the ATM contract.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">for i in slice.OptionChains:
+    if i.Key != self.symbol: continue
+    chain = i.Value
+# differentiate the call and put options
+call = [x for x in optionchain if chain.Right == 0]
+put = [x for x in optionchain if chain.Right == 1]
+# choose ITM contracts
+contracts = [x for x in call if call.UnderlyingLastPrice - x.Strike &gt; 0]
+# or choose ATM contracts
+contracts = sorted(optionchain, key = lambda x: abs(optionchain.Underlying.Price - x.Strike))[0]
+# or choose OTM contracts
+contracts = [x for x in call if call.UnderlyingLastPrice - x.Strike &lt; 0]
+# sort the contracts by their expiration dates
+contracts = sorted(contracts, key = lambda x:x.Expiry, reverse = True)
+</pre>
+</div>
+<p>
+  Finally, we trade the options by using the contract's symbol.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">if len(contracts) == 0: continue
+# trade the contracts with the farthest expiration
+symbol = contracts[0].Symbol
+self.MarketOrder(symbol, 1)
+self.MarketOnCloseOrder(symbol, -1)
+</pre>
+</div>
