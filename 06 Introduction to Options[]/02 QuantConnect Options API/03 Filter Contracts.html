@@ -1,0 +1,44 @@
+<p>
+  After adding the options for specific underlying stock,  you can set the filter criteria with <a href="https://www.quantconnect.com/lean/docs#topic22332.html">SetFilter</a> method to pull contracts using the specified min and max strike and expiration range values you need for a given symbol.
+</p>
+
+<table class="table qc-table">
+<thead>
+<tr>
+<th>Method</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://www.quantconnect.com/lean/docs#topic22332.html">SetFilter</a>(
+min strike,
+max strike,
+minexpiry,
+maxExpiry)</td>
+<td><strong>min Strike, max Strike:</strong> The min and max strike rank relative to market price
+<b><b>min Expiry, max Expiry: </b></b>The range of time to expiration to include, for example, TimeSpan.FromDays(10) would exclude contracts expiring in less than 10 days</td>
+</tr>
+</tbody>
+</table>
+<p>
+  Here parameters <em>min Strike</em> and <em>max Strike</em> are the relative values with respect to the market price. We use Google(NASDAQ: GOOG)<span lang="EN-GB"> as an example to describe the filter criteria. If today is 01/03/2017, the market price of underlying stock is $776, the strike prices of GOOG options are spaced $2.5. Then <code>SetFilter(-1, +2, timedelta(0), timedelta(90))</code> will fist look up at the money contracts with strike being K=$777.5 (Here K might not being $100 since rarely will option be ATM exactly). Then  filter will looks for options with strikes between and including (777.5 + 2.5*2, 777.5 - 2.5*1). The time to expiration of these options are restricted within 90 days from now on. </span>
+</p>
+<p>
+  For the strike, the exchange normally chooses the strike prices at which options can be written so that they are spaced $2.50, $5, or $10 apart. Typically the spacing is $2.50 when the stock price is between $5 and $25, $5 when the stock price is between $25 and $200, and $10 for stock prices above $200. So you should carefully choose the parameters of <em>min strike</em> and <em>max Strike</em> in case there is no contracts satisfy the filter criteria if the range is too small, less than the minimum units of strike prices change.
+</p>
+<p>
+  For the expiry, there are many expiration dates that apply to the different series of options. An option cycle is the pattern of months in which options contracts expire. There are three kinds of common option cycles. The options on the January cycle have contracts available in the first month of each quarter (January, April, July and October). Options assigned to the February cycle use the middle month of each quarter (February, May, August and November). And options in the March cycle have options available during the last month of each quarter (March, June, September and December). In addition, individual stock options typically expire in the current month and the subsequent month.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python"># filter the contracts with strikes between (market price - 10, market price + 10)
+option.SetFilter(-10,10)
+# filter the contracts which expires more than 30 days but no longer than 60 days
+option.SetFilter(TimeSpan.FromDays(30),TimeSpan.FromDays(60))
+# filter the contracts with strikes between(ATM Strike - 10 * strike space value, market price + 10 * strike space value) and with expiration days less than 180 days
+option.SetFilter(-10, +10, timedelta(0), timedelta(180))
+</pre>
+</div>
