@@ -1,0 +1,66 @@
+<p>
+  If we have a few vectors \( \mathbf{v}_1, \mathbf{v}_2, \dots, \mathbf{v}_n \) with the same dimension, then we can put them side-by-side to form a <strong>matrix</strong>. For example, the vectors
+</p>
+\[ v_1 = \begin{pmatrix} 1 \\ 2 \\ 3 \end{pmatrix} \qquad
+   v_2 = \begin{pmatrix} 2 \\ 2 \\ 2 \end{pmatrix} \qquad
+   v_3 = \begin{pmatrix} 3 \\ 1 \\ 1 \end{pmatrix} \]
+
+<p>
+  can be combined to produce a matrix:
+</p>
+\[ m = \begin{pmatrix}
+1 &amp; 2 &amp; 3 \\
+2 &amp; 2 &amp; 2 \\
+3 &amp; 1 &amp; 1
+\end{pmatrix} \]
+
+<p>
+  m is a 3 &times; 3 matrix. We typically describe the dimensions of a matrix as \(m \times n\) where m = number of rows and n = number of columns.
+</p>
+
+<p>
+  A <strong>square</strong> matrix is one with as many rows as columns.
+</p>
+
+<p>
+  Notation: \(x_{ij}\) refers to a specific value in row \(i\) and column \(j\) of a matrix \(X\). For example, \(x_{23}\) is the number in the second row and third column of \(X\).
+</p>
+
+<h3>Python Implementation</h3>
+
+<p>
+  In Python, the NumPy package deals with linear algebra. The array we learned in the NumPy chapter can be deemed as a vector:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">import numpy as np
+a = np.array([1,2,3])
+b = np.array([2,2,2])
+c = np.array([3,1,1])
+matrix = np.column_stack((a,b,c))
+print matrix
+print type(matrix)
+[out]:
+[[1 2 3]
+ [2 2 1]
+ [3 2 1]]
+</pre>
+</div>
+
+<p>
+  It is worth noticing that we used column_stack() here to ensure that the vectors are vertical and placed side-by-side to form a matrix. Without the column_stack() function, the vectors will be made horizontal and stacked on top of one another:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">matrix2 = np.array([a,b,c])
+print matrix2
+[out]:
+[[1 2 3]
+ [2 2 2]
+ [3 1 1]]
+</pre>
+</div>

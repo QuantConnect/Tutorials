@@ -1,0 +1,36 @@
+<h4>Arithmetic Mean</h4>
+<p>
+  Mean is a measure of the central tendency of a data series. It capture the key character of the distribution of the data series. When we talk about mean, by default it refers to <strong>arithmetic mean</strong>. It's defined as the sum of the values divided by the number of observations:
+</p>
+\[\mu = \frac{\sum_{i = 1}^{n}x_i}{n}\]
+<p>
+  Where \((x_1,x_2,x_3.....x_n)\) is our data series.
+</p>
+<p>
+  In python we can use NumPy.mean() to do the calculation:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print np.mean(aapl.log_price)
+[out]: 4.94597446551
+</pre>
+</div>
+<h4>Geometric Mean</h4>
+<p>
+  The geometric mean is an average that is useful for data series of positive numbers that are better interpreted according to their product, such as growth rate. It's calculated by:
+</p>
+\[\bar{x} = \sqrt[n]{x_1x_2x_3...x_n}\]
+<p>
+  Let's calculate the geometric mean of a series of single-period return:
+</p>
+\[1+\bar{r} = \sqrt[n]{\frac{p_t}{p_{t-1}}*\frac{p_{t-1}}{p_{t-2}}*...*\frac{p_2}{p_1}}\]
+\[(1+\bar{r}) = \sqrt[n]{\frac{p_t}{p_0}}\]
+<p>
+  Now the equation becomes the form which we are familiar with:
+</p>
+\[(1+\bar{r})^n = \frac{p_t}{p_0}\]
+<p>
+  This is why we said it make sense when applied to growth rates.
+</p>

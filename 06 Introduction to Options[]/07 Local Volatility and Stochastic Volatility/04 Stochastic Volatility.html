@@ -1,0 +1,163 @@
+<h4>1. Definition</h4>
+
+<p>
+  In stochastic volatility models, the asset price and its volatility are both assumed to be random processes and can change over time. There are many stochastic volatility models. Here we will present the most well-known and popular one: the Heston Model. In Heston model, the stock price is log-normal distributed, the volatility process is a positive increasing function of a mean-reversion process. That is[ref]Gatheral J. The volatility surface: a practitioner's guide[M]. John Wiley &amp; Sons, 2011[/ref]
+</p>
+
+\[dS_t = \mu_tS_tdt+\sqrt{v_t}S_tdW_{1,t}\]
+
+\[dv_t=-\lambda(v_t-\overline{v})\ dt+\eta\sqrt{v_t}\ dW_{2,t}\]
+
+\[dW_{1,t},\ dW_{2,t}=\rho \ dt\]
+
+<p>
+  Where the instantaneous variance of the stock price \(v_t\) itself is a stochastic process.
+</p>
+\(\lambda\) is the speed of reversion of \(v_t\) to its long-term mean \(\overline{v})\). We can think of\(\lambda\) as the rate at which the stock price variance reverts back to its long-term average value.
+
+\(\eta\) is the volatility of the variance process \(v_t\) (often called the volatility of volatility)
+
+\(W_{1,t}\) and \(W_{2,t}\) are two dependent Wiener processes with correlation coefficient \(\rho\).
+<h4>2. Simulation of the Heston Process</h4>
+<p>
+  We already discuss how to simulate the stock price process with Monte Carlo method in the introduction to stochastic process tutorial. In order to simulate the variance process, we need to write it into discrete form. The derivation can be found in paper Rouah F D. Euler and Milstein discretization[ref]Rouah F D. Euler and Milstein discretization[J]. Documento de Trabajo, Sapient Global Markets, Estados Unidos, 2011. <a href="http://www.frouah.com/finance%20notes/Euler%20and%20Milstein%20Discretization.pdf">Online Copy</a>[/ref].
+</p>
+\[v_{t+\Delta t}=\left(\sqrt{v_t}+\frac{1}{2}\eta\sqrt{\Delta t}W_1\right)^2-\lambda(v_t-\overline{v})\Delta t-\frac{\eta^2}{4}\Delta t\]
+<p>
+  Then, we take following steps to simulate Heston process: Given the value of \(v_t\) at time t, we first update to \(v_{t+\Delta t}\) using the formula above (Here note that in options pricing, Monte Carlo method uses risk-neutral result, so here the expected return \(\mu\) should equal the risk free rate r):
+</p>
+<ul>
+     <li>Given the value of \(v_t\) at time t, we first update to \(v_{t+\Delta t}\) using the formula above</li>
+     <li>We obtain \(S_{t+\Delta t}\) using\[S_{t+\Delta t}=S_t\ \text {exp}\left[(r-\frac{1}{2}v_t)\Delta t+\sqrt{v_t\Delta t}W_2\right]\]</li>
+     <li>To generate \(W_1\) and \(W_2\) with correlation \(\rho\), we first generate two independent standard normal variables \(Z_1\) and \(Z_2\), set \(W_1=Z_1\), then \[W_2=\rho Z_1+\sqrt{1-\rho^2}Z_2\]</li>
+</ul>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">
+from numpy import sqrt, exp
+import numpy as np
+
+def mc_heston(option_type,S0,K,T,initial_var,long_term_var,rate_reversion,vol_of_vol,corr,r,num_reps,steps):
+    """
+    option_type:    'p' put option 'c' call option
+    S0:              the spot price of underlying stock
+    K:              the strike price
+    T:              the maturity of options
+    initial_var:    the initial value of variance
+    long_term_var:  the long term average of price variance
+    rate_reversion: the mean reversion rate for the variance
+    vol_of_vol:     the volatility of volatility(the variance of the variance of stock price)
+    corr:           the correlation between the standard normal random variables W1 and W2
+    r:              the risk free rate
+    reps:           the number of repeat for monte carlo simulation
+    steps:          the number of steps in each simulation
+    """
+    delta_t = T/float(steps)
+    payoff = 0
+    for i in range(num_reps):
+        vt = initial_var
+        st = S0
+        for j in range(steps):
+            w1 = np.random.normal(0, 1)
+            w2 = corr*w1+sqrt(1-corr**2)*np.random.normal(0, 1)
+            vt = (sqrt(vt) + 0.5 * vol_of_vol * sqrt(delta_t) * w1)**2  \
+                 - rate_reversion * (vt - long_term_var) * delta_t \
+                 - 0.25 * vol_of_vol**2 * delta_t
+            st = st * exp((r - 0.5*vt)*delta_t + sqrt(vt*delta_t) * w2)
+        if option_type == 'c':
+                payoff += max(st - K, 0)
+        elif option_type == 'p':
+                payoff += max(K - st, 0)
+
+    return (payoff/float(num_reps)) * (exp(-r*T))
+  </pre>
+  </div>
+<h4>3. Calibration of Model Parameters</h4>
+<p>
+  The calibration of a model is the process of seeking the model parameters for which the model result best matches the market option data. This data usually consists of market quoted prices for European plain vanilla call options or of Black-Scholes implied volatilities derived from prices. Calibrating the Heston model is equivalent to solving the non-linear constrained optimization problem: Minimize the error between the market quotes of options and the options price estimated by Heston model. The object function could be the absolute value of the error or the absolute squared error. You can refer to this paper <em>Parameters recovery via calibration in the Heston model</em>[ref]Escobar, Marcos, and Christoph Gschnaidtner. "Parameters recovery via calibration in the Heston model: A comprehensive review." <i>Wilmott</i> 2016.86 (2016): 60-81.[/ref] for details of different error measure.
+</p>
+<p>
+  There are five parameters to be estimated in Heston model:
+</p>
+<ul>
+     <li>\(v_t\) : the initial value of the variance (Bounds of 0 and 1)</li>
+     <li>\(\overline{v}\) : the long term average variance of stock price (Bounds of 0 and 1)</li>
+     <li>\(\lambda\) : the speed of reversion (non-negativity)</li>
+     <li>\(\eta\) : the volatility of the volatility (non-negativity)</li>
+     <li>\(\rho\) : the correlation coefficient between two Wiener process (Bounds of -1 and 1)</li>
+</ul>
+<p>
+  Here we use QuantLib[ref]Modeling Volatility Smile and Heston Model Calibration Using QuantLib Python, Goutham Balaraman, <a href="http://gouthamanbalaraman.com/blog/volatility-smile-heston-model-calibration-quantlib-python.html">online copy</a>[/ref] Python library to calibrate the parameters.
+</p>
+<p>
+  Let's look at how we can calibrate the Heston model to some market quotes. For example, let's say we are interested in trading SPDR S&amp;P 500 ETF (SPY) options with 4-months maturity. Here we choose all the options contracts written on SPY expire in 4 months. We need the strikes and the market prices of those contracts and the underlying price as the input of our objective function to minimize.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">import pandas as pd
+from numpy import sqrt,mean,log,diff
+import QuantLib as ql
+from pandas_datareader.data import Options
+import pandas_datareader.data as web
+import datetime
+opt = Options('spy', 'yahoo')
+expiration_dates = [ql.Date(i.day, i.month, i.year) for i in opt.expiry_dates]
+expiry_index = 14 # choose the contracts expire on 11/17/2017
+data = opt.get_call_data(expiry=opt.expiry_dates[expiry_index])
+strikes = list(data.index.get_level_values('Strike'))
+premium = list(data['Last'])
+day_count = ql.Actual365Fixed()
+calendar = ql.UnitedStates()
+calculation_date = ql.Date(opt._quote_time.day,opt._quote_time.month,opt._quote_time.year) # 08/10/2017
+spot = opt.underlying_price  # spot price is 244.82
+ql.Settings.instance().evaluationDate = calculation_date
+dividend_yield = ql.QuoteHandle(ql.SimpleQuote(0.0))
+risk_free_rate = 0.01
+dividend_rate = 0.0
+flat_ts = ql.YieldTermStructureHandle(
+    ql.FlatForward(calculation_date, risk_free_rate, day_count))
+dividend_ts = ql.YieldTermStructureHandle(
+    ql.FlatForward(calculation_date, dividend_rate, day_count))
+# dummy parameters
+initial_var = 0.2; rate_reversion = 0.5; long_term_var = 0.2; corr = -0.75; vol_of_vol = 0.2;
+# initial_var = 0.2; rate_reversion = 0.15; long_term_var = 0.6; corr = -0.75; vol_of_vol = 0.2;
+process = ql.HestonProcess(flat_ts, dividend_ts,
+                           ql.QuoteHandle(ql.SimpleQuote(spot)),
+                           initial_var, rate_reversion, long_term_var, vol_of_vol, corr)
+model = ql.HestonModel(process)
+engine = ql.AnalyticHestonEngine(model)
+heston_helpers = []
+date = expiration_dates[expiry_index]
+for j, s in enumerate(strikes):
+    t = (date - calculation_date)
+    p = ql.Period(t, ql.Days)
+    sigma = premium[j]
+    helper = ql.HestonModelHelper(p, calendar, spot, s,
+                                  ql.QuoteHandle(ql.SimpleQuote(sigma)),
+                                  flat_ts,
+                                  dividend_ts)
+    helper.setPricingEngine(engine)
+    heston_helpers.append(helper)
+lm = ql.LevenbergMarquardt(1e-8, 1e-8, 1e-8)
+model.calibrate(heston_helpers, lm,
+                 ql.EndCriteria(500, 50, 1.0e-8,1.0e-8, 1.0e-8))
+long_term_var, rate_reversion, vol_of_vol, corr, initial_var = model.params()
+print "long_term_var = %f, rate_reversion = %f, vol_of_vol = %f, corr = %f, initial_var = %f" % (long_term_var, rate_reversion, vol_of_vol, corr, initial_var)
+</pre>
+</div>
+<p>
+  We get the market data at 08/10/2017 and choose the contracts which expire on 11/17/2017. Then we get the following parameters estimation
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">long_term_var = 0.191762, rate_reversion = 0.000001, vol_of_vol = 0.215442, corr = -0.817388, initial_var = 0.198778
+</pre>
+</div>
+<p>
+  When you get the parameter estimation, you can plug the parameter values into the Heston Monte Carlo options pricing model and get the price estimation with stochastic volatility. But as we already discussed for Heston model, the introduction of randomness of volatility increases the complexity of the estimation. No matter which error measure is chosen, the objective function is highly non-linear and far from being convex and we have 5 parameters in the model. All these drawbacks of Heston models will make the estimated parameter values quite sensitive the initial guess of parameters. Therefore options prices generated by the Heston model are also parameter sensitive. From the above, we can get a sense of how computationally expensive it can be to get accurate values of options in a stochastic volatility model.
+</p>

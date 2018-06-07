@@ -1,0 +1,607 @@
+<p>
+  The <strong>DataFrame</strong> is the most commonly used data structure in Pandas. It is essentially a table, just like an Excel spreadsheet.
+</p>
+<p>
+  More precisely, a DataFrame is a collection of Series objects, each of which may contain different data types. A DataFrame can be created from various data types: dictionary, 2-D numpy.ndarray, a Series or another DataFrame.
+</p>
+<h4>Create DataFrames</h4>
+<p>
+  The most common method of creating a DataFrame is passing a dictionary:
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">dict = {'AAPL': [143.5,  144.09, 142.73, 144.18, 143.77],
+        'GOOG': [898.7,  911.71, 906.69, 918.59, 926.99],
+        'IBM':  [155.58, 153.67, 152.36, 152.94, 153.49]}
+dates = pd.date_range('2017-07-03', periods = 5, freq = 'D')
+df = pd.DataFrame(dict, index = dates)
+print df
+              AAPL    GOOG     IBM
+2017-07-03  143.50  898.70  155.58
+2017-07-04  144.09  911.71  153.67
+2017-07-05  142.73  906.69  152.36
+2017-07-06  144.18  918.59  152.94
+2017-07-07  143.77  926.99  153.49
+</pre>
+</div>
+
+<h4>Manipulating DataFrames</h4>
+
+<p>
+  We can fetch values in a DataFrame by columns and index. Each column in a DataFrame is essentially a Pandas Series. We can fetch a column by square brackets: <strong>df['column_name']</strong>
+</p>
+<p>
+  If a column name contains no spaces, then we can also use df.column_name to fetch a column:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">df = aapl_table
+print df.Close.tail(5)
+print df['Adj. Volume'].tail(5)
+Date
+2017-07-24    152.09
+2017-07-25    152.74
+2017-07-26    153.46
+2017-07-27    150.56
+2017-07-28    149.50
+Name: Close, dtype: float64
+Date
+2017-07-24    21122730.0
+2017-07-25    18612649.0
+2017-07-26    15172136.0
+2017-07-27    32175875.0
+2017-07-28    16832947.0
+Name: Adj. Volume, dtype: float64
+</pre>
+</div>
+
+<p>
+  All the methods we applied to a Series index such as iloc[], loc[] and resampling methods, can also be applied to a DataFrame:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">aapl_2016 = df['2016']
+aapl_month = aapl_2016.resample('M').agg(lambda x: x[-1])
+print aapl_month
+</pre>
+</div>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">
+              Open      High     Low   Close      Volume  Ex-Dividend  \
+Date
+2016-01-31   94.79   97.3400   94.35   97.34  64416504.0          0.0
+2016-02-29   96.86   98.2300   96.65   96.69  35216277.0          0.0
+2016-03-31  109.72  109.9000  108.88  108.99  25888449.0          0.0
+2016-04-30   93.99   94.7200   92.51   93.74  68531478.0          0.0
+2016-05-31   99.60  100.4000   98.82   99.86  42307212.0          0.0
+2016-06-30   94.44   95.7700   94.30   95.60  35836356.0          0.0
+2016-07-31  104.19  104.5500  103.68  104.21  27733688.0          0.0
+2016-08-31  105.66  106.5699  105.64  106.10  29662406.0          0.0
+2016-09-30  112.46  113.3700  111.80  113.05  36379106.0          0.0
+2016-10-31  113.65  114.2300  113.20  113.54  26419398.0          0.0
+2016-11-30  111.56  112.2000  110.27  110.52  36162258.0          0.0
+2016-12-31  116.65  117.2000  115.43  115.82  30586265.0          0.0
+
+            Split Ratio   Adj. Open   Adj. High    Adj. Low  Adj. Close  \
+Date
+2016-01-31          1.0   91.952819   94.426495   91.525989   94.426495
+2016-02-29          1.0   94.466655   95.802804   94.261844   94.300856
+2016-03-31          1.0  107.008893  107.184446  106.189649  106.296931
+2016-04-30          1.0   91.667571   92.379533   90.224141   91.423748
+2016-05-31          1.0   97.732787   98.517789   96.967410   97.987913
+2016-06-30          1.0   92.669522   93.974588   92.532147   93.807775
+2016-07-31          1.0  102.236738  102.589989  101.736299  102.256363
+2016-08-31          1.0  104.237384  105.135033  104.217653  104.671460
+2016-09-30          1.0  110.945828  111.843576  110.294715  111.527885
+2016-10-31          1.0  112.119806  112.691997  111.675865  112.011287
+2016-11-30          1.0  110.629129  111.263789  109.349893  109.597807
+2016-12-31          1.0  115.676657  116.222068  114.466837  114.853583
+
+            Adj. Volume
+Date
+2016-01-31   64416504.0
+2016-02-29   35216277.0
+2016-03-31   25888449.0
+2016-04-30   68531478.0
+2016-05-31   42307212.0
+2016-06-30   35836356.0
+2016-07-31   27733688.0
+2016-08-31   29662406.0
+2016-09-30   36379106.0
+2016-10-31   26419398.0
+2016-11-30   36162258.0
+2016-12-31   30586265.0
+</pre>
+</div>
+
+<p>
+  We may select certain columns of a DataFrame using their names:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">aapl_bar = aapl_month[['Open', 'High', 'Low', Close']]
+print aapl_bar
+
+              Open      High     Low   Close
+Date
+2016-01-31   94.79   97.3400   94.35   97.34
+2016-02-29   96.86   98.2300   96.65   96.69
+2016-03-31  109.72  109.9000  108.88  108.99
+2016-04-30   93.99   94.7200   92.51   93.74
+2016-05-31   99.60  100.4000   98.82   99.86
+2016-06-30   94.44   95.7700   94.30   95.60
+2016-07-31  104.19  104.5500  103.68  104.21
+2016-08-31  105.66  106.5699  105.64  106.10
+2016-09-30  112.46  113.3700  111.80  113.05
+2016-10-31  113.65  114.2300  113.20  113.54
+2016-11-30  111.56  112.2000  110.27  110.52
+2016-12-31  116.65  117.2000  115.43  115.82
+</pre>
+</div>
+
+<p>
+  We can even specify both rows and columns using loc[]. The row indices and column names are separated by a comma:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print aapl_month.loc['2016-03':'2016-06', ['Open', 'High', 'Low', 'Close']]
+
+              Open    High     Low   Close
+Date
+2016-03-31  109.72  109.90  108.88  108.99
+2016-04-30   93.99   94.72   92.51   93.74
+2016-05-31   99.60  100.40   98.82   99.86
+2016-06-30   94.44   95.77   94.30   95.60
+</pre>
+</div>
+
+<p>
+  The subset methods in DataFrame is quite useful. By writing logical statements in square brackets, we can make customized subsets:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">above = aapl_bar[aapl_bar.Close &gt; np.mean(aapl_bar.Close)]
+print above
+
+              Open      High     Low   Close
+Date
+2016-03-31  109.72  109.9000  108.88  108.99
+2016-08-31  105.66  106.5699  105.64  106.10
+2016-09-30  112.46  113.3700  111.80  113.05
+2016-10-31  113.65  114.2300  113.20  113.54
+2016-11-30  111.56  112.2000  110.27  110.52
+2016-12-31  116.65  117.2000  115.43  115.82
+</pre>
+</div>
+
+<h4>Data Validation</h4>
+
+<p>
+  As mentioned, all methods that apply to a Series can also be applied to a DataFrame. Here we add a new column to an existing DataFrame:
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">aapl_bar['rate_return'] = aapl_bar.Close.pct_change()
+print aapl_bar
+
+              Open      High     Low   Close  rate_return
+Date
+2016-01-31   94.79   97.3400   94.35   97.34          NaN
+2016-02-29   96.86   98.2300   96.65   96.69    -0.006678
+2016-03-31  109.72  109.9000  108.88  108.99     0.127211
+2016-04-30   93.99   94.7200   92.51   93.74    -0.139921
+2016-05-31   99.60  100.4000   98.82   99.86     0.065287
+2016-06-30   94.44   95.7700   94.30   95.60    -0.042660
+2016-07-31  104.19  104.5500  103.68  104.21     0.090063
+2016-08-31  105.66  106.5699  105.64  106.10     0.018136
+2016-09-30  112.46  113.3700  111.80  113.05     0.065504
+2016-10-31  113.65  114.2300  113.20  113.54     0.004334
+2016-11-30  111.56  112.2000  110.27  110.52    -0.026599
+2016-12-31  116.65  117.2000  115.43  115.82     0.047955
+</pre>
+</div>
+
+<p>
+  Here the calculation introduced a NaN value. If the DataFrame is large, we would not be able to observe it. <strong>isnull()</strong> provides a convenient way to check abnormal values.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">missing = aapl_bar.isnull()
+print missing
+print '---------------------------------------------'
+print missing.describe()
+
+             Open   High    Low  Close rate_return
+Date
+2016-01-31  False  False  False  False        True
+2016-02-29  False  False  False  False       False
+2016-03-31  False  False  False  False       False
+2016-04-30  False  False  False  False       False
+2016-05-31  False  False  False  False       False
+2016-06-30  False  False  False  False       False
+2016-07-31  False  False  False  False       False
+2016-08-31  False  False  False  False       False
+2016-09-30  False  False  False  False       False
+2016-10-31  False  False  False  False       False
+2016-11-30  False  False  False  False       False
+2016-12-31  False  False  False  False       False
+
+---------------------------------------------
+
+         Open   High    Low  Close rate_return
+count      12     12     12     12          12
+unique      1      1      1      1           2
+top     False  False  False  False       False
+freq       12     12     12     12          11
+</pre>
+</div>
+
+<p>
+  The row labelled "unique" indicates the number of unique values in each column. Since the "rate_return" column has 2 unique values, it has at least one missing value.
+</p>
+<p>
+  We can deduce the number of missing values by comparing "count" with "freq". There are 12 counts and 11 False values, so there is one True value which corresponds to the missing value.
+</p>
+<p>
+  We can also find the rows with missing values easily:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print missing[missing.rate_return == True]
+
+             Open   High    Low  Close rate_return
+Date
+2016-01-31  False  False  False  False        True
+</pre>
+</div>
+
+<p>
+  Usually when dealing with missing data, we either delete the whole row or fill it with some value. As we introduced in the Series chapter, the same method <strong>dropna()</strong> and <strong>fillna()</strong> can be applied to a DataFrame.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">drop = aapl_bar.dropna()
+print drop
+print '\n--------------------------------------------------\n'
+fill = aapl_bar.fillna(0)
+print fill
+
+              Open      High     Low   Close  rate_return
+Date
+2016-02-29   96.86   98.2300   96.65   96.69    -0.006678
+2016-03-31  109.72  109.9000  108.88  108.99     0.127211
+2016-04-30   93.99   94.7200   92.51   93.74    -0.139921
+2016-05-31   99.60  100.4000   98.82   99.86     0.065287
+2016-06-30   94.44   95.7700   94.30   95.60    -0.042660
+2016-07-31  104.19  104.5500  103.68  104.21     0.090063
+2016-08-31  105.66  106.5699  105.64  106.10     0.018136
+2016-09-30  112.46  113.3700  111.80  113.05     0.065504
+2016-10-31  113.65  114.2300  113.20  113.54     0.004334
+2016-11-30  111.56  112.2000  110.27  110.52    -0.026599
+2016-12-31  116.65  117.2000  115.43  115.82     0.047955
+
+--------------------------------------------------
+
+              Open      High     Low   Close  rate_return
+Date
+2016-01-31   94.79   97.3400   94.35   97.34     0.000000
+2016-02-29   96.86   98.2300   96.65   96.69    -0.006678
+2016-03-31  109.72  109.9000  108.88  108.99     0.127211
+2016-04-30   93.99   94.7200   92.51   93.74    -0.139921
+2016-05-31   99.60  100.4000   98.82   99.86     0.065287
+2016-06-30   94.44   95.7700   94.30   95.60    -0.042660
+2016-07-31  104.19  104.5500  103.68  104.21     0.090063
+2016-08-31  105.66  106.5699  105.64  106.10     0.018136
+2016-09-30  112.46  113.3700  111.80  113.05     0.065504
+2016-10-31  113.65  114.2300  113.20  113.54     0.004334
+2016-11-30  111.56  112.2000  110.27  110.52    -0.026599
+2016-12-31  116.65  117.2000  115.43  115.82     0.047955
+</pre>
+</div>
+
+<h4>DataFrame Concat</h4>
+<p>
+  We have seen how to extract a Series from a dataFrame. Now we need to consider how to merge a Series or a DataFrame into another one.
+</p>
+<p>
+  In Pandas, the function <strong>concat()</strong> allows us to merge multiple Series into a DataFrame:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">s1 = pd.Series([143.5, 144.09, 142.73, 144.18, 143.77], name = 'AAPL')
+s2 = pd.Series([898.7, 911.71, 906.69, 918.59, 926.99], name = 'GOOG')
+data_frame = pd.concat([s1, s2], axis = 1)
+print data_frame
+
+     AAPL    GOOG
+0  143.50  898.70
+1  144.09  911.71
+2  142.73  906.69
+3  144.18  918.59
+4  143.77  926.99
+</pre>
+</div>
+
+<p>
+  The "axis = 1" parameter will join two DataFrames by columns:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">log_price = np.log(aapl_bar.Close)
+log_price.name = 'log_price'
+print log_price
+print '\n--------------------------------------------\n'
+concat = pd.concat([aapl_bar, log_price], axis = 1)
+print concat
+
+Date
+2016-01-31    4.578210
+2016-02-29    4.571510
+2016-03-31    4.691256
+2016-04-30    4.540525
+2016-05-31    4.603769
+2016-06-30    4.560173
+2016-07-31    4.646408
+2016-08-31    4.664382
+2016-09-30    4.727830
+2016-10-31    4.732155
+2016-11-30    4.705197
+2016-12-31    4.752037
+Freq: M, Name: log_price, dtype: float64
+
+--------------------------------------------
+
+              Open      High     Low   Close  rate_return  log_price
+Date
+2016-01-31   94.79   97.3400   94.35   97.34          NaN   4.578210
+2016-02-29   96.86   98.2300   96.65   96.69    -0.006678   4.571510
+2016-03-31  109.72  109.9000  108.88  108.99     0.127211   4.691256
+2016-04-30   93.99   94.7200   92.51   93.74    -0.139921   4.540525
+2016-05-31   99.60  100.4000   98.82   99.86     0.065287   4.603769
+2016-06-30   94.44   95.7700   94.30   95.60    -0.042660   4.560173
+2016-07-31  104.19  104.5500  103.68  104.21     0.090063   4.646408
+2016-08-31  105.66  106.5699  105.64  106.10     0.018136   4.664382
+2016-09-30  112.46  113.3700  111.80  113.05     0.065504   4.727830
+2016-10-31  113.65  114.2300  113.20  113.54     0.004334   4.732155
+2016-11-30  111.56  112.2000  110.27  110.52    -0.026599   4.705197
+2016-12-31  116.65  117.2000  115.43  115.82     0.047955   4.752037
+</pre>
+</div>
+
+<p>
+  We can also join two DataFrames by rows. Consider these two DataFrames:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">df_volume = aapl_table.loc['2016-10':'2017-04', ['Volume', 'Split Ratio']].resample('M').agg(lambda x: x[-1])
+print df_volume
+print '\n-------------------------------------------\n'
+df_2017 = aapl_table.loc['2016-10':'2017-04', ['Open', 'High', 'Low', 'Close']].resample('M').agg(lambda x: x[-1])
+print df_2017
+
+                Volume  Split Ratio
+Date
+2016-10-31  26419398.0          1.0
+2016-11-30  36162258.0          1.0
+2016-12-31  30586265.0          1.0
+2017-01-31  49200993.0          1.0
+2017-02-28  23482860.0          1.0
+2017-03-31  19661651.0          1.0
+2017-04-30  20247187.0          1.0
+
+-------------------------------------------
+
+              Open     High     Low   Close
+Date
+2016-10-31  113.65  114.230  113.20  113.54
+2016-11-30  111.56  112.200  110.27  110.52
+2016-12-31  116.65  117.200  115.43  115.82
+2017-01-31  121.15  121.390  120.62  121.35
+2017-02-28  137.08  137.435  136.70  136.99
+2017-03-31  143.72  144.270  143.01  143.66
+2017-04-30  144.09  144.300  143.27  143.65
+</pre>
+</div>
+
+<p>
+  Now we merge the DataFrames with our DataFrame 'aapl_bar'
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">concat = pd.concat([aapl_bar, df_volume], axis = 1)
+print concat
+
+              Open      High     Low   Close  rate_return      Volume  \
+Date
+2016-01-31   94.79   97.3400   94.35   97.34          NaN         NaN
+2016-02-29   96.86   98.2300   96.65   96.69    -0.006678         NaN
+2016-03-31  109.72  109.9000  108.88  108.99     0.127211         NaN
+2016-04-30   93.99   94.7200   92.51   93.74    -0.139921         NaN
+2016-05-31   99.60  100.4000   98.82   99.86     0.065287         NaN
+2016-06-30   94.44   95.7700   94.30   95.60    -0.042660         NaN
+2016-07-31  104.19  104.5500  103.68  104.21     0.090063         NaN
+2016-08-31  105.66  106.5699  105.64  106.10     0.018136         NaN
+2016-09-30  112.46  113.3700  111.80  113.05     0.065504         NaN
+2016-10-31  113.65  114.2300  113.20  113.54     0.004334  26419398.0
+2016-11-30  111.56  112.2000  110.27  110.52    -0.026599  36162258.0
+2016-12-31  116.65  117.2000  115.43  115.82     0.047955  30586265.0
+2017-01-31     NaN       NaN     NaN     NaN          NaN  49200993.0
+2017-02-28     NaN       NaN     NaN     NaN          NaN  23482860.0
+2017-03-31     NaN       NaN     NaN     NaN          NaN  19661651.0
+2017-04-30     NaN       NaN     NaN     NaN          NaN  20247187.0
+
+            Split Ratio
+Date
+2016-01-31          NaN
+2016-02-29          NaN
+2016-03-31          NaN
+2016-04-30          NaN
+2016-05-31          NaN
+2016-06-30          NaN
+2016-07-31          NaN
+2016-08-31          NaN
+2016-09-30          NaN
+2016-10-31          1.0
+2016-11-30          1.0
+2016-12-31          1.0
+2017-01-31          1.0
+2017-02-28          1.0
+2017-03-31          1.0
+2017-04-30          1.0
+</pre>
+</div>
+
+<p>
+  By default the DataFrame are joined with all of the data. This default options results in zero information loss. We can also merge them by intersection, this is called 'inner join':
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">concat = pd.concat([aapl_bar, df_volume], axis = 1, join = 'inner')
+print concat
+
+              Open    High     Low   Close  rate_return      Volume  \
+Date
+2016-10-31  113.65  114.23  113.20  113.54     0.004334  26419398.0
+2016-11-30  111.56  112.20  110.27  110.52    -0.026599  36162258.0
+2016-12-31  116.65  117.20  115.43  115.82     0.047955  30586265.0
+
+            Split Ratio
+Date
+2016-10-31          1.0
+2016-11-30          1.0
+2016-12-31          1.0
+
+</pre>
+</div>
+<p>
+  Only the intersection part was left if use 'inner join' method. Now let's try to append a DataFrame to another one:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">append = aapl_bar.append(df_2017)
+print append
+             Close      High     Low    Open  rate_return
+Date
+2016-01-31   97.34   97.3400   94.35   94.79          NaN
+2016-02-29   96.69   98.2300   96.65   96.86    -0.006678
+2016-03-31  108.99  109.9000  108.88  109.72     0.127211
+2016-04-30   93.74   94.7200   92.51   93.99    -0.139921
+2016-05-31   99.86  100.4000   98.82   99.60     0.065287
+2016-06-30   95.60   95.7700   94.30   94.44    -0.042660
+2016-07-31  104.21  104.5500  103.68  104.19     0.090063
+2016-08-31  106.10  106.5699  105.64  105.66     0.018136
+2016-09-30  113.05  113.3700  111.80  112.46     0.065504
+2016-10-31  113.54  114.2300  113.20  113.65     0.004334
+2016-11-30  110.52  112.2000  110.27  111.56    -0.026599
+2016-12-31  115.82  117.2000  115.43  116.65     0.047955
+2016-10-31  113.54  114.2300  113.20  113.65          NaN
+2016-11-30  110.52  112.2000  110.27  111.56          NaN
+2016-12-31  115.82  117.2000  115.43  116.65          NaN
+2017-01-31  121.35  121.3900  120.62  121.15          NaN
+2017-02-28  136.99  137.4350  136.70  137.08          NaN
+2017-03-31  143.66  144.2700  143.01  143.72          NaN
+2017-04-30  143.65  144.3000  143.27  144.09          NaN
+
+</pre>
+</div>
+<p>
+  'Append' is essentially to concat two DataFrames by axis = 0, thus here is an alternative way to append:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">concat = pd.concat([aapl_bar, df_2017], axis = 0)
+print concat
+             Close      High     Low    Open  rate_return
+Date
+2016-01-31   97.34   97.3400   94.35   94.79          NaN
+2016-02-29   96.69   98.2300   96.65   96.86    -0.006678
+2016-03-31  108.99  109.9000  108.88  109.72     0.127211
+2016-04-30   93.74   94.7200   92.51   93.99    -0.139921
+2016-05-31   99.86  100.4000   98.82   99.60     0.065287
+2016-06-30   95.60   95.7700   94.30   94.44    -0.042660
+2016-07-31  104.21  104.5500  103.68  104.19     0.090063
+2016-08-31  106.10  106.5699  105.64  105.66     0.018136
+2016-09-30  113.05  113.3700  111.80  112.46     0.065504
+2016-10-31  113.54  114.2300  113.20  113.65     0.004334
+2016-11-30  110.52  112.2000  110.27  111.56    -0.026599
+2016-12-31  115.82  117.2000  115.43  116.65     0.047955
+2016-10-31  113.54  114.2300  113.20  113.65          NaN
+2016-11-30  110.52  112.2000  110.27  111.56          NaN
+2016-12-31  115.82  117.2000  115.43  116.65          NaN
+2017-01-31  121.35  121.3900  120.62  121.15          NaN
+2017-02-28  136.99  137.4350  136.70  137.08          NaN
+2017-03-31  143.66  144.2700  143.01  143.72          NaN
+2017-04-30  143.65  144.3000  143.27  144.09          NaN
+</pre>
+</div>
+<p>
+  Please note that if the two DataFrame have some columns with the same column names, these columns are considered to be the same and will be merged. It's very important to have the right column names. If we change a column names here:
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">df_2017.columns = ['Change', 'High', 'Low', 'Close']
+concat = pd.concat([aapl_bar, df_2017], axis = 0)
+print concat
+
+            Change   Close      High     Low    Open  rate_return
+Date
+2016-01-31     NaN   97.34   97.3400   94.35   94.79          NaN
+2016-02-29     NaN   96.69   98.2300   96.65   96.86    -0.006678
+2016-03-31     NaN  108.99  109.9000  108.88  109.72     0.127211
+2016-04-30     NaN   93.74   94.7200   92.51   93.99    -0.139921
+2016-05-31     NaN   99.86  100.4000   98.82   99.60     0.065287
+2016-06-30     NaN   95.60   95.7700   94.30   94.44    -0.042660
+2016-07-31     NaN  104.21  104.5500  103.68  104.19     0.090063
+2016-08-31     NaN  106.10  106.5699  105.64  105.66     0.018136
+2016-09-30     NaN  113.05  113.3700  111.80  112.46     0.065504
+2016-10-31     NaN  113.54  114.2300  113.20  113.65     0.004334
+2016-11-30     NaN  110.52  112.2000  110.27  111.56    -0.026599
+2016-12-31     NaN  115.82  117.2000  115.43  116.65     0.047955
+2016-10-31  113.65  113.54  114.2300  113.20     NaN          NaN
+2016-11-30  111.56  110.52  112.2000  110.27     NaN          NaN
+2016-12-31  116.65  115.82  117.2000  115.43     NaN          NaN
+2017-01-31  121.15  121.35  121.3900  120.62     NaN          NaN
+2017-02-28  137.08  136.99  137.4350  136.70     NaN          NaN
+2017-03-31  143.72  143.66  144.2700  143.01     NaN          NaN
+2017-04-30  144.09  143.65  144.3000  143.27     NaN          NaN
+</pre>
+</div>
+<p>
+  Since the column name of 'Open' has been changed, the new DataFrame has an new column named 'Change'.
+</p>

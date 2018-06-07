@@ -1,0 +1,16 @@
+﻿<p>
+  While the Capital Asset Pricing Model is straightforward, applying it may not be. We first need to choose the timeframe for computing returns: should we use daily, weekly or monthly returns? Then we need to consider the number of data points available for linear regression. For example, if we compute beta using monthly returns in the past 1 year, then we only have 12 data points which is too few.
+  Furthermore, the &beta; of an asset can change over time. The following plot is the daily rolling beta of GE stock with a 6-month rolling windows:
+</p>
+
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial13-rolling-beta2.png" alt="Tutorial13-rolling-beta2.png"/>
+
+<p>
+  The &beta; of GE ranged from 0.1 to 0.5 approximately. This is why you need to be careful when using &beta;. It makes no sense to talk about &beta; without a timeframe in mind.
+</p>
+
+<p>
+  The following graph is the rolling p-value of beta. The p-value stays close to zero most of the time. However, during some period it suddenly increased close to 0.1, which corresponds to a 90% confidence interval. This might be caused by some mispricing or market turmoil.
+</p>
+
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial13-Rolling-p-value3.png" alt="Tutorial13-Rolling-p-value3.png"/>

@@ -1,0 +1,229 @@
+<p>
+  <code>series.resample(freq)</code> is a class called "DatetimeIndexResampler" which groups data in a Series object into regular time intervals. The argument "freq" determines the length of each interval.
+</p>
+<p>
+  <code>series.resample.mean()</code> is a complete statement that groups data into intervals, and then compute the mean of each interval. For example, if we want to aggregate the daily data into monthly data by mean:
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">by_month = aapl.resample('M').mean()
+print by_month
+Date
+2017-01-31    118.093136
+2017-02-28    132.456268
+2017-03-31    139.478802
+2017-04-30    141.728436
+2017-05-31    151.386305
+2017-06-30    147.233064
+2017-07-31    147.706190
+2017-08-31    157.444303
+</pre>
+</div>
+
+<p>
+  We can also aggregate the data by week:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">by_week = aapl.resample('W').mean()
+print by_week.head()
+
+Date
+2017-01-31    120.932434
+2017-02-28    136.551200
+2017-03-31    143.532630
+2017-04-30    144.179981
+2017-05-31    156.100000
+2017-06-30    155.450000
+2017-07-31    153.460000
+</pre>
+</div>
+
+<p>
+  We can choose almost any frequency by using the format 'nf', where 'n' is an integer and 'f' is M for month, W for week and D for day.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">three_day = aapl.resample('3D').mean()
+two_week  = aapl.resample('2W').mean()
+two_month = aapl.resample('2M').mean()
+</pre>
+</div>
+
+<p>
+  Besides the mean() method, other methods can also be used with the resampler:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">std = aapl.resample('W').std()    # standard deviation
+max = aapl.resample('W').max()    # maximum value
+min = aapl.resample('W').min()    # minimum value
+</pre>
+</div>
+
+<p>
+  Often we want to calculate monthly returns of a stock, based on prices on the last day of each month. To fetch those prices, we use the series.resample.agg() method:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">last_day = aapl.resample('M').agg(lambda x: x[-1])
+print last_day
+Date
+2017-01-31    119.851150
+2017-02-28    135.880362
+2017-03-31    142.496334
+2017-04-30    142.486415
+2017-05-31    152.142689
+2017-06-30    143.438008
+2017-07-31    148.248489
+2017-08-31    157.210000
+</pre>
+</div>
+
+<p>
+  Or directly calculate the monthly rates of return using the data for the first day and the last day:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">monthly_return = aapl.resample('M').agg(lambda x: x[-1]/x[1] - 1)
+print monthly_return
+
+Date
+2017-01-31    0.045940
+2017-02-28    0.070409
+2017-03-31    0.033823
+2017-04-30   -0.007736
+2017-05-31    0.039829
+2017-06-30   -0.073528
+2017-07-31    0.033035
+2017-08-31    0.004505
+</pre>
+</div>
+
+<p>
+  Series object also provides us some convenient methods to do some quick calculation.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print monthly_return.mean()
+print monthly_return.std()
+print monthly_return.max()
+[out]: 0.0208974076157
+       0.0476398315185
+       0.0704090212384
+</pre>
+</div>
+
+<p>
+  Another two methods frequently used on Series are .diff() and .pct_change(). The former calculates the difference between consecutive elements, and the latter calculates the percentage change.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print last_day.diff()
+print last_day.pct_change()
+
+Date
+2017-01-31          NaN
+2017-02-28    16.029211
+2017-03-31     6.615972
+2017-04-30    -0.009919
+2017-05-31     9.656274
+2017-06-30    -8.704681
+2017-07-31     4.810482
+2017-08-31     8.961511
+Freq: M, Name: Adj. Close, dtype: float64
+Date
+2017-01-31         NaN
+2017-02-28    0.133743
+2017-03-31    0.048690
+2017-04-30   -0.000070
+2017-05-31    0.067770
+2017-06-30   -0.057214
+2017-07-31    0.033537
+2017-08-31    0.060449
+</pre>
+</div>
+
+<p>
+  Notice that we induced a NaN value while calculating percentage changes i.e. returns.
+</p>
+
+<p>
+  When dealing with NaN values, we usually either removing the data point or fill it with a specific value. Here we fill it with 0:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">daily_return = last_day.pct_change()
+print daily_return.fillna(0)
+
+Date
+2017-01-31    0.000000
+2017-02-28    0.133743
+2017-03-31    0.048690
+2017-04-30   -0.000070
+2017-05-31    0.067770
+2017-06-30   -0.057214
+2017-07-31    0.033537
+2017-08-31    0.060449
+</pre>
+</div>
+
+<p>
+  Alternatively, we can fill a NaN with the next fitted value. This is called 'backward fill', or 'bfill' in short:
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">daily_return = last_day.pct_change()
+print daily_return.fillna(method = 'bfill')
+
+Date
+2017-01-31    0.133743
+2017-02-28    0.133743
+2017-03-31    0.048690
+2017-04-30   -0.000070
+2017-05-31    0.067770
+2017-06-30   -0.057214
+2017-07-31    0.033537
+2017-08-31    0.060449
+</pre>
+</div>
+
+<p>
+  As expected, since there is a 'backward fill' method, there must be a 'forward fill' method, or 'ffill' in short. However we can't use it here because the NaN is the first value.
+</p>
+
+<p>
+  We can also simply remove NaN values by <strong>.dropna()</strong>
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">daily_return = last_day.pct_change().dropna()
+print daily_return
+
+Date
+2017-02-28    0.133743
+2017-03-31    0.048690
+2017-04-30   -0.000070
+2017-05-31    0.067770
+2017-06-30   -0.057214
+2017-07-31    0.038050
+</pre>
+</div>

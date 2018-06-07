@@ -1,0 +1,201 @@
+﻿<h4>List</h4>
+
+<p>
+  A list is an <strong>ordered</strong> collection of values. A list is mutable, which means you can change a list's value without changing the list itself. Creating a list is simply putting different comma-separated values between square brackets.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">my_list = ['Quant', 'Connect', 1,2,3]
+print(my_list)
+[out]: ['Quant', 'Connect', 1, 2, 3]
+</pre>
+</div>
+
+<p>
+  The values in a list are called "elements". We can access list elements by indexing. Python index starts from 0. So if you have a list of length <em>n</em>, the index of the first element will be 0, and that of the last element will be <em>n</em> &minus; 1. By the way, the length of a list can be obtained by the built-in function len().
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">my_list = ['Quant', 'Connect', 1,2,3]
+print(len(my_list))
+[out]: 5
+print(my_list[0])
+[out]: Quant
+print(my_list[len(my_list) - 1])
+[out]: 3
+</pre>
+</div>
+
+<p>
+  You can also change the elements in the list by accessing an index and assigning a new value.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">my_list = ['Quant','Connect',1,2,3]
+my_list[2] = 'go'
+print(my_list)
+[out]: ['Quant', 'Connect', 'go', 2, 3]
+</pre>
+</div>
+
+<p>
+  A list can also be sliced with a colon:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">my_list = ['Quant','Connect',1,2,3]
+print(my_list[1:3])
+[out]: ['Connect', 1]
+</pre>
+</div>
+
+<p>
+  The slice starts from the first element indicated, but excludes the last element indicated. Here we select all elements starting from index 1, which refers to the second element:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print(my_list[1:])
+[out]: ['Connect', 1, 2, 3]
+</pre>
+</div>
+
+<p>
+  And all elements up to but excluding index 3:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print(my_list[:3])
+[out]: ['Quant', 'Connect', 1]
+</pre>
+</div>
+
+<p>
+  If you wish to add or remove an element from a list, you can use the append() and remove() methods for lists as follows:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">my_list = ['Hello', 'Quant']
+my_list.append('Hello')
+print(my_list)
+[out]: ['Hello', 'Quant', 'Hello']
+my_list.remove('Hello')
+print(my_list)
+[out]: ['Quant', 'Hello']
+</pre>
+</div>
+
+<p>
+  When there are repeated instances of "Hello", the first one is removed.
+</p>
+
+<h4>Tuple</h4>
+
+<p>
+  A tuple is a data structure type similar to a list. The difference is that a tuple is immutable, which means you can't change the elements in it once it's defined. We create a tuple by putting comma-separated values between parentheses.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">my_tuple = ('Welcome','to','QuantConnect')
+</pre>
+</div>
+
+<p>
+  Just like a list, a tuple can be sliced by using index.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">my_tuple = ('Welcome','to','QuantConnect')
+print(my_tuple[1:])
+[out]: ('to', 'QuantConnect')
+</pre>
+</div>
+
+<h4>Set</h4>
+
+<p>
+  A set is an <strong>unordered</strong> collection with <strong>no duplicate</strong> elements. The built-in function set() can be used to create sets.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">stock_list = ['AAPL','GOOG','IBM','AAPL','IBM','FB','F','GOOG']
+stock_set = set(stock_list)
+print(stock_set)
+[out]: set(['GOOG', 'FB', 'AAPL', 'IBM', 'F'])
+</pre>
+</div>
+<p>
+  Set is an easy way to remove duplicate elements from a list.
+</p>
+
+<h4>Dictionary</h4>
+<p>
+  A dictionary is one of the most important data structures in Python. Unlike sequences which are indexed by integers, dictionaries are indexed by keys which can be either strings or floats.
+</p>
+
+<p>
+  A dictionary is an <strong>unordered</strong> collection of key : value pairs, with the requirement that the keys are unique. We create a dictionary by placing a comma-separated list of key : value pairs within the braces.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">my_dic = {'AAPL': 'Apple', 'FB': 'FaceBook', 'GOOG': 'Alphabet'}
+</pre>
+</div>
+
+<p>
+  After defining a dictionary, we can access any value by indicating its key in brackets.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print(my_dic['GOOG'])
+[out]: Alphabet
+</pre>
+</div>
+
+<p>
+  We can also change the value associated with a specified key:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">my_dic['GOOG'] = 'Alphabet Company'
+print(my_dic['GOOG'])
+[out]: Alphabet Company
+</pre>
+</div>
+
+<p>
+  The built-in method of the dictionary object dict.keys() returns a list of all the keys used in the dictionary.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print(my_dic.keys())
+[out]: ['GOOG', 'AAPL', 'FB']
+</pre>
+</div>

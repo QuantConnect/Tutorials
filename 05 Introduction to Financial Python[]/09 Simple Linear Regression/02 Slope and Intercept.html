@@ -1,0 +1,16 @@
+<p>
+  It's natural that we want to model the relation between these two rates of return. Intuitively we use a straight line to model it, this is called <strong>Linear Regression</strong>. In order to find the best straight line, it's natural to think that the vertical distances between the points of the data set and the fitted line should be minimized. Those vertical distances are called <strong>residual</strong>. Our objective is to make the sum of squared residuals as small as possible. This method is called <strong>ordinary least square</strong>, or <strong>OLS</strong> method. We use x and y to represent the two variable, S&amp;P 500 daily returns and AMZN daily returns. The linear relation is:
+</p>
+
+\[Y = Y = \alpha + \beta*X + \epsilon\]
+<p>
+  Where \(\alpha\) is called <strong>intercept</strong>, \(\beta\) is called <strong>slope</strong>. Generally, if the scatter points can be represented by\(\left\{\right (x_1,y_1),(x_2, y_2),(x_3,y_3)...(x_n,y_n) \left\}\right\), then the intercept and slope are given by:
+</p>
+\[\beta = \frac{\sum_{i=1}^{n}(x-\bar{x})(y-\bar{y})}{\sum_{i=1}^{n}(x-\bar{x})^2}\]
+\[\alpha = \bar{y} - \hat{\beta}\bar{x}\]
+<p>
+  Where \(\bar{x}\) is the mean of X, \(\bar{y}\) is the mean of Y.
+</p>
+<p>
+  In python, we don't need to do the above calculation manually because we have package for it. But it still very important to understand the calculation process of \(\beta\) in order the understand the modern portfolio theory and CAPM, which we will cover in the future.
+</p>

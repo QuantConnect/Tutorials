@@ -1,0 +1,11 @@
+<p>
+  From the summary table we can see 'std err'. This means standard errors of the intercept and slope. The null hypothesis here is \(H_0: \beta = 0\), and the alternative hypothesis is \(H_1: \beta \neq 0\). This hypothesis score is calculated by:
+</p>
+\[t = \frac{\beta - 0}{SE}\]
+<p>
+  Where SE is given by:
+</p>
+\[SE = \sqrt\frac{\frac{1}{n-2}\sum_{i = 1}^{n}\hat{\epsilon}^2}{\sum_{i = i}^{n}(x_i - \bar{x})^2}\]
+<p>
+  The distribution used here is 'Student's t-distribution'. It's different from normal distribution but used in the similar way. The column 't' in this table is the test score, and 'p&gt;|t|' is the p-value. By observing the p-value, we can see that the significance level of spy, or the slope, is very high because the p-value is close to zero. In other words, we have 99.999 confidence to claim that the slope is not 0, and there exists linear relation between X and Y. However, regarding the intercept, the p-value is 0.923, which means we have only 7.7% confidence level that the value of intercept is not 0. We can also see from the plot that the line crosses the origin. The following 2 columns are the lower band and upper band of the parameters at 95% confidence interval. At 95% confidence level, we can claim that the true value of the parameter is within this range.
+</p>

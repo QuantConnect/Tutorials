@@ -1,0 +1,124 @@
+<p>
+  <strong>range()</strong> is a function that creates a list containing an arithmetic sequence. It's often used in for loops. The arguments must be integers. If the "step" argument is omitted, it defaults to 1.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">
+print range(10)
+[out]: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+print range(1, 11)
+[out]: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+print range(1, 11, 2)
+[out]: [1, 3, 5, 7, 9]
+</pre>
+</div>
+<p>
+  <strong>len()</strong> is another function used together with range() to create a for loop. This function returns the length of an object. The argument must be a sequence or a collection.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">
+tickers = ['AAPL', 'GOOGL', 'IBM', 'FB', 'F', 'V', 'G', 'GE']
+print "The number of tickers is {}".format(len(tickers))
+for k in range(len(tickers)):
+    print k + 1, tickers[k]
+[out]:
+The number of tickers is 8
+1 AAPL
+2 GOOGL
+3 IBM
+4 FB
+5 F
+6 V
+7 G
+8 GE
+</pre>
+</div>
+<p>
+  Note: If you want to print only the tickers without those numbers, then simply write "for ticker in tickers: print ticker"
+</p>
+
+<strong>map()</strong> is a function that applies a specific function to every item of a sequence or collection, and returns a list of the results.
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">tickers = ['AAPL','GOOG','IBM','FB','F','V', 'G', 'GE']
+print(list(map(len,tickers)))
+[out]: [4, 5, 3, 2, 1, 1, 1, 2]
+</pre>
+</div>
+<p>
+  The <strong>lambda operator</strong> is a way to create small anonymous functions. These functions are just needed where they have been created. For example:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">map(lambda x: x**2, range(10))
+[out]: [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+</pre>
+</div>
+
+<p>
+  map() can be applied to more than one list. The lists have to have the same length.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">map(lambda x, y: x+y, [1,2,3,4,5], [5,4,3,2,1])
+[out]: [6, 6, 6, 6, 6]
+</pre>
+</div>
+<strong>sorted()</strong> takes a list or set and returns a new sorted list:
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">sorted([5,2,3,4,1])
+[out]: [1, 2, 3, 4, 5]
+</pre>
+</div>
+<p>
+  We can add a "key" parameter to specify a function to be called on each list element prior to making comparisons. For example:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">price_list = [('AAPL', 144.09), ('GOOGL', 911.71), ('MSFT', 69), ('FB', 150), ('WMT', 75.32)]
+sorted(price_list, key = lambda x: x[1])
+[out]:
+[('MSFT', 69), ('WMT', 75.32), ('AAPL', 144.09), ('FB', 150), ('GOOGL', 911.71)]
+</pre>
+</div>
+<p>
+  By default the values are sorted by ascending order. We can change it to descending by adding an optional parameter "reverse'.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">price_list = [('AAPL', 144.09), ('GOOGL', 911.71), ('MSFT', 69), ('FB', 150), ('WMT', 75.32)]
+sorted(price_list, key = lambda x: x[1], reverse = True)
+[out]:
+[('GOOGL', 911.71), ('FB', 150), ('AAPL', 144.09), ('WMT', 75.32), ('MSFT', 69)]
+</pre>
+</div>
+<p>
+  Lists also have a function list.sort(). This function takes the same "key" and "reverse" arguments as sorted(), but it doesn't return a new list.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">price_list = [('AAPL', 144.09), ('GOOGL', 911.71), ('MSFT', 69), ('FB', 150), ('WMT', 75.32)]
+price_list.sort(key = lambda x: x[1])
+print price_list
+[out]:
+[('MSFT', 69), ('WMT', 75.32), ('AAPL', 144.09), ('FB', 150), ('GOOGL', 911.71)]
+</pre>
+</div>

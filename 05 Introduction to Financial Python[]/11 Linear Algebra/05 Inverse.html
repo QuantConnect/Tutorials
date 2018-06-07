@@ -1,0 +1,87 @@
+<p>
+  An <strong>identity</strong> matrix is a square matrix with ones on the main diagonal and zeros elsewhere. Here is an \(n \times n\) identity matrix:
+</p>
+
+\[ I_n = \begin{pmatrix}
+   1 &amp; 0 &amp; 0 &amp; ... &amp; 0 \\
+   0 &amp; 1 &amp; 0 &amp; ... &amp; 0 \\
+   0 &amp; 0 &amp; 1 &amp; ... &amp; 0 \\
+   \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+   0 &amp; 0 &amp; 0 &amp; ... &amp; 1
+\end{pmatrix} \]
+
+<p>
+  Multiplying any matrix by an identity matrix (of the correct shape) is like multiplying a number by 1. Concretely, if \(A\) is an \(m \times n\) matrix, then:
+</p>
+\[ I_mA = AI_n = A \]
+\( A^{-1} \) is the <strong>inverse</strong> matrix of a square matrix \(A\) if:
+\[ AA^{-1} = I = A^{-1}A \]
+
+<p>
+  Some caveats:
+</p>
+<ul>
+    <li>A rectangular matrix will not have an inverse, but it may have a pseudoinverse (not covered in this tutorial).</li>
+    <li>A square matrix may not have an inverse i.e. it may be "singular".</li>
+    <li>If a square matrix has an inverse, then its inverse is unique.</li>
+</ul>
+
+<p>
+  Inverse matrices are computed using the <a href="https://www.mathsisfun.com/algebra/matrix-inverse-row-operations-gauss-jordan.html" target="_blank">Gauss-Jordan method</a>. In NumPy, we use the linalg.inv() function to do it:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print matrix
+print '\n-------------------------\n'
+print np.linalg.inv(matrix)
+[out]:
+[[1 2 3]
+ [2 2 1]
+ [3 2 1]]
+
+-------------------------
+
+[[ 0.   -1.    1.  ]
+ [-0.25  2.   -1.25]
+ [ 0.5  -1.    0.5 ]]
+</pre>
+</div>
+
+<p>
+  Now let's check if the multiplication is \(I\):
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">inverse = np.linalg.inv(matrix)
+print np.dot(matrix, inverse)
+print '\n-------------------------\n'
+print np.dot(inverse,matrix)
+[out]:
+[[  1.00000000e+00  -6.66133815e-16   6.66133815e-16]
+ [  0.00000000e+00   1.00000000e+00   1.11022302e-16]
+ [  0.00000000e+00  -2.22044605e-16   1.00000000e+00]]
+
+-------------------------
+
+[[  1.00000000e+00  -4.44089210e-16  -2.22044605e-16]
+ [  6.66133815e-16   1.00000000e+00   0.00000000e+00]
+ [  0.00000000e+00   0.00000000e+00   1.00000000e+00]]
+</pre>
+</div>
+
+<p>
+  Not surprisingly, we ended up with an identity matrix. We can form a non-invertible matrix by making one of its rows a multiple of another:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">singular = np.array([[1,2,3],[1,2,3],[3,3,3]])
+inv = np.linalg.inv(singular)
+[out]: numpy.linalg.linalg.LinAlgError: Singular matrix
+</pre>
+</div>

@@ -1,0 +1,29 @@
+<h4>Variance</h4>
+<p>
+  <strong>Variance</strong> is a measure of dispersion. In finance, most of the time variance is a synonym for risk. The higher the variance of an asset price is, the higher risk the asset bears. Variance is usually represented by \(\sigma\), and it's calculated by
+</p>
+\[\sigma^2 = \frac{\sum_{i = 1}^{n}(x_i- \mu)^2}{n}\]
+<p>
+  In python we can use NumPy.var to calculate it:
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print np.var(aapl.log_price)
+</pre>
+</div>
+<h4>Standard Deviation</h4>
+<p>
+  The most commonly used measure of dispersion in finance is <strong>standard deviation</strong>. It's usually represented by \(\sigma\). It's obvious to see the relation between standard deviation and variance:
+</p>
+\[\sigma = \sqrt{\sigma^2} = \sqrt{\frac{\sum_{i = 1}^{n}(x_i- \mu)^2}{n}}\]
+<p>
+  NumPy also provides us a method to calculate standard deviation.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print np.std(aapl.log_price)
+[out]: 0.000142032804482
+</pre>
+</div>
