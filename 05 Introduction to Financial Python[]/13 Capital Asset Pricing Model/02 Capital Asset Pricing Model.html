@@ -1,0 +1,36 @@
+<p>
+  As we shall see later, the name "Asset Pricing" is a bit misleading because the CAPM tells us the expected return, rather than the price, of an asset. In the last chapter, we introduced the Capital Market Line (CML) shown in black:
+</p>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial13-capm1.png" alt="Tutorial13-capm1"/>
+<p>
+  All investors should hold a portfolio on the CML, which is constructed by investing some fraction <em>w</em> of our wealth in the market portfolio and the remainder (1 &minus; <em>w</em>) in the riskless asset. So the return on a CML portfolio is
+</p>
+\[ R = w R_{\text{market}} + (1-w) R_0 \]
+
+<p>
+  If we let &beta; = w, then the equation above becomes
+</p>
+\[ R - R_0 = \beta (R_{\text{market}} - R_0) \]
+
+<p>
+  Notice that &beta; is a measure of how sensitive our CML portfolio return is to the market return. Taking expectation on both sides results in the CAPM:
+</p>
+\[ \mathbb{E}(R) - R_0 = \beta (\mathbb{E} (R_{\text{market}}) - R_0) \]
+
+<p>
+  Taking covariance on both sides instead yields
+</p>
+\[ \text{Cov} (R - R_0, R_{\text{market}}) = \beta \text{Cov} (R_{\text{market}} - R_0, R_{\text{market}}) \]
+
+<p>
+  Now apply two basic facts about covariance:
+</p>
+<ul>
+    <li>\( \text{Cov} (X + c, Y) = \text{Cov} (X, Y) \) where \( c \) is constant</li>
+    <li>\( \text{Cov} (X, X) = \text{Var} (X) \)</li>
+</ul>
+
+<p>
+  Hence we obtain
+</p>
+\[ \beta = \frac {\text{Cov} (R, R_{\text{market}})} {\text{Var} (R_{\text{market}})} \]

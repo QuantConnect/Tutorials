@@ -1,0 +1,14 @@
+<strong>Sum of Squared Errors, or SSE</strong>, is used to measure the difference between the fitted value and the actual value. It's given by:
+\[SSE = \sum_{i=1}^{n}(y_i - \hat{y_i})^2 = \sum_{i = 1}^{n}\hat{\epsilon_i}^2\]
+<p>
+  If the linear model perfectly fitted the sample, the SSE would be zero. The reason we use squared error here is that the positive and negative errors would offset each other if we simply summed them up. Another measurement of the dispersion of the sample is called <strong>total sum of squares, or SS.</strong>. it's given by:
+</p>
+\[SS = \sum_{i = i}^{n}(y_i - \bar{y}_i)^2\]
+<p>
+  If you are familiar with variance, we can see that SS divided by the number of sample n is the sample variance. From SSE and SS, we can calculate the <strong>Coefficient of Determination</strong>, or <strong>r-square</strong> for short. R-square means the proportion of variation that 'explained' by the linear relationship between X and Y, it's calculated by:
+</p>
+\[r^2 =1 = \frac{SSE}{SS} =1 - \frac{\sum_{i=1}^{n}(y_i - \hat{y_i})^2}{\sum_{i = i}^{n}(y_i - \bar{y}_i)^2}\]
+<p>
+  Let's assume that the model perfectly fitted the sample, which means all of the sample points lie on the straight line. Then the SSE would become zero, and the r-square would become 1. This means perfect fitness. The higher r-square is, the more parts of variation can be explained by the linear relation, the higher significance level the model is.
+  Some other parameters, such as F-statistic, AIC and BIC, are related to multiple linear regression, with would be cover in the next chapter.
+</p>

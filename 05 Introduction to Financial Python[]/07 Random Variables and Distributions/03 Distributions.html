@@ -1,0 +1,187 @@
+<p>
+  Each random variable follows a <strong>probability distribution</strong>, which is a function that can be thought of as providing the probabilities of occurrence of different possible outcomes in an experiment. In our dice example, the probability distribution of each number is 1/6. We usually use \(P(X)\) to represents probability distribution function, where X is the outcome value. In our example, \(P(1) = P(2) = p(3) = 1/6\). However, we can't use this for a continuous distribution, because the the probability that draw a specific number from a continuous variable is 0, due to the infinity possible outcomes we have. Instead, we use <strong>probability density function</strong>(PDF) function to describe the probability that a value is in a specific range. We we cover this later. For each probability distribution function, we have a <strong>cumulative distribution function</strong>(CDF). It defines as \(P(X&lt;x)\), which models the probability that the random variable X will take a value less than or equal to x. For discrete random variables, we just sum up the values less than or equal to x and then divide it with number of observations.
+</p>
+
+<h4>Uniform Distribution</h4>
+<p>
+  Uniform distribution is the simplest type of probability distribution. A discrete uniform distribution has equal weight assigned to all outcomes. Both rolling a dice and toss a fare coin are classical uniform distributions. Here we use python to simulate rolling a dice 10000 times.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">import random
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+#define a function to simulate rolling a dice
+def dice():
+    number=  [1,2,3,4,5,6]
+    return random.choice(number)
+
+series = np.array([dice() for x in range(10000)])
+print series
+</pre>
+</div>
+
+<p>
+  We create a series of random variable here. We can plot the values on the x-axis and put their number of occurrences on the y-axis to have a direct view of the distribution:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">plt.figure(figsize = (20,10))
+plt.hist(series,bins = 11,align = 'mid')
+plt.xlabel('Dice Number')
+plt.ylabel('Occurences')
+plt.grid()
+plt.show()
+</pre>
+</div>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial07-plot1.png" alt="plot1" />
+<p>
+  Let's say we want to know the frequency that the observations are less than or equal to 3. In other words we want to seek the value of \(P(X&lt;3)\).
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print len([x for x in series if x &lt;= 3])/float(len(series))
+[out]: 0.4956
+print np.mean(series)
+[out]: 3.5103
+</pre>
+</div>
+<p>
+  \(P(X&lt;3)\) is very close to 0.5. This is not surprising because we rolled the dice 1000 times, and the frequency that the observations less than or equal to 3 should be close to the real probability, which is 0.5. For a given uniform distribution, it's straightforward to calculate it's mean: it's the center of the distribution because everyone outcome is equal weight. For our dice example, we can think it as
+</p>
+\[\mu = (1+2+3+4+5+6)/6 = 3.5\]
+<p>
+  Or
+</p>
+\[E(x) = 1*\frac{1}{6} + 2*\frac{1}{6}+...+6*\frac{1}{6} = 3.5\]
+<p>
+  More generally, if we a assume the minimum value in a uniform distribution is a and the maximum value is b, the mean can be given by:
+</p>
+\[\bar{u} = \frac{a+b}{2}\]
+<p>
+  Usually we use \(\bar{u}\) to represents the <strong>population mean</strong>, or the 'real mean'. Here we create a sample with 1000 observations, the mean we calculated above is the <strong>sample mean</strong>. Sample mean usually doesn't equal to the theoretical population mean unless the number of observation approaches to infinity. The variance is given by:
+</p>
+\[\sigma^2 = \frac{(b-a)^2}{12}\]
+<p>
+  Deducing the formula is out of our lecture scope. It's useful to realize for a given standard distribution, we can formularize its mean and variance.
+</p>
+<h4>Binomial Distribution</h4>
+<p>
+  A binomial distribution is a discrete probability distribution of the number of successes in a sequence of n independent experiments. Let's assume that the market has 50% probability goes up and 50% probability goes down, and we observe it in the next 10 days, what's the distribution of the number of days it goes up? This is a binomial distribution example. In general, if we carry out the experiment n times, and each outcome is independent, with the same probability of success p, the probability of getting exactly k successes is given by the function:
+</p>
+
+\[P(X = K) = C_n^k p^k (1-p)^{n-k}\]
+<p>
+  Where
+</p>
+\[C_n^k = \frac{n!}{(n-k)!k!}\]
+<p>
+  Under such circumstance we say X follows the binomial distribution \(X \sim B(n,p)\). Let's simulate a binomial experiment with success rate p = 0.7 and experiment times n = 10
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">def trial():
+    number = [1,2,3,4,5,6,7,8,9,10]
+    a = random.choice(number)
+    if a&lt;= 7:
+        return 1
+    else:
+        return 0
+</pre>
+</div>
+<p>
+  Each time we execute trial(), we did an experiment. If it succeed, it will return 1, otherwise it will return 0. Now we are going to do the experiment 10 times:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">res = [trial() for x in range(10)]
+print sum(res)
+[out]: 7
+</pre>
+</div>
+<p>
+  Now we did the experiment 10 times, and the number of success is sum(res). However, it just means during these 10 experiments we succeed sum(res) times. If we want to see the binomial distribution, we need experiment N times. When n is large enough, our frequency will approach the theoretical probability. Here we simulate each outcome 10000 times:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">def binomial(number):
+    l = []
+    for i in range(10000):
+        res = [trial() for x in range(10)]
+        l.append(sum(res))
+    return len([x for x in l if x == number])/float(len(l))
+print binomial(8)
+[out]: 0.2367
+</pre>
+</div>
+<p>
+  The number printed above is the simulated probability that we succeed 8 times if we experiment 10 times. For each possible outcome, we simulate the probability:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">prob = []
+for i in range(1,11):
+    prob.append(binomial(i))
+prob_s = pd.Series(prob,index = range(1,11))
+print prob_s
+[out]: 1     0.0002
+       2     0.0013
+       3     0.0087
+       4     0.0373
+       5     0.1041
+       6     0.2000
+       7     0.2674
+       8     0.2342
+       9     0.1153
+       10    0.0283
+</pre>
+</div>
+<p>
+  Here we got the simulated result of the binomial distribution. Now we are going to check if the simulated frequencies close enough to the theoretical probabilities. Let's take X = 7 and X = 8 as example:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print (float(factorial(10))/(factorial(7)*factorial(10-7)))*(0.7**7)*(0.3**3)
+[out]: 0.266827932
+print (float(factorial(10))/(factorial(8)*factorial(10-8)))*(0.7**8)*(0.3**2)
+[out]: 0.2334744405
+</pre>
+</div>
+<p>
+  As we can see, the simulated results are pretty close to the real probability. we can plot the results as follows:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">plt.figure(figsize = (20,10))
+plt.bar(range(1,11),prob)
+plt.grid()
+plt.show()
+</pre>
+</div>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial07-plot2.png" alt="plot2" />
+<p>
+  Another good property of binomial distribution is that its mean and variance are simple enough:
+</p>
+\[\bar{u} = np\]
+\[\sigma^2 = np(1-P)\]
+<p>
+  We will not introduce the deduction here, but if you are interested in it, we encourage you to do it yourself, based on the probability functions we provided above.
+</p>

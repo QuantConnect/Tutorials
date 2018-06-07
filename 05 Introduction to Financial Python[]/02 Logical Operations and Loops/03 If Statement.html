@@ -1,0 +1,50 @@
+<p>
+  An if statement executes a segment of code only if its condition is true. A standard if statement consists of 3 segments: if, elif and else.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">if condition1:
+    # if condition1 is true, execute the code here
+    # and ignore the rest of this if statement
+elif condition2:
+    # if condition1 is false, and condition2 is true, execute the code here
+    # and ignore the rest of this if statement
+else:
+    # if none of the above conditions is True, execute the code here
+</pre>
+
+<p>
+  An if statement doesn't necessarily has elif and else part. If it's not specified, the indented block of code will be executed when the condition is true, otherwise the whole if statement will be skipped.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">i = 0
+if i == 0: print 'i == 0 is True'
+[out]: i==0 is True
+</pre>
+</div>
+
+<p>
+  As we mentioned above, we can write some complex statements here:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">p = 1 &gt; 0
+q = 2 &gt; 3
+if p and q:
+    print 'p and q is true'
+elif p and not q:
+    print 'q is false'
+elif q and not p:
+    print 'p is false'
+else:
+    print 'None of p and q is true'
+[out]: q is false
+</pre>
+</div>

@@ -1,0 +1,53 @@
+﻿<p>
+  A portfolio is market-neutral if its <strong>&beta; is zero</strong>. In other words, the portfolio's returns are uncorrelated with market returns. We say that it has no "market risk". Some classical market-neutral strategies are pairs trading, beta-hedged equity portfolio and other derivatives strategies.
+  We have daily returns of Dow 30 stocks from March 2012 to Jan 2015. For each stock, its &beta; on any given day is computed using the past 6 months' returns. As this 6-month window moves forward in time, &beta; will of course change.
+  Once we know how each stock's &beta; has changed over time, we can ask: which stocks' betas are correlated with each other? The table below shows the correlation between each stock's beta.
+</p>
+
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial13-correlation4.png" alt="Tutorial13-correlation4.png"/>
+<p>
+  How can we construct a market-neutral portfolio? Consider two stocks A and B:
+</p>
+\[ R_A = R_0 + \beta_A (R_{\text{market}} - R_0) \]
+\[ R_B = R_0 + \beta_B (R_{\text{market}} - R_0) \]
+
+<p>
+  Let's allocate <em>w</em> on stock A and (1 &minus; <em>w</em>) on stock B, then market neutrality means
+</p>
+\[ w\beta_A + (1-w) \beta_B = 0 \qquad \Rightarrow \qquad
+   w = \frac{\beta_B}{\beta_B - \beta_A} \]
+
+<p>
+  As mentioned earlier, \(\beta_A\) and \(\beta_B\) will change with time, so will \(w\) in a market-neutral portfolio. However we can achieve market neutrality with constant \(w\) so long as \(\beta_A\) and \(\beta_B\) have a linear relationship:
+</p>
+\[ \beta_A = m\beta_B + c \]
+
+<p>
+  Then eliminate \(\beta_A\) to get
+</p>
+\[ w = \frac{\beta_B}{(1-m) \beta_B - c} \]
+
+<p>
+  If <em>c</em> &approx; 0 then <em>w</em> is roughly constant:
+</p>
+\[ w = \frac{1}{1-m} \]
+
+<p>
+  Note: If <em>c</em> is signficant, then we need 3 stocks to get zero net beta. Usually 2 stocks are sufficient to cancel out most of the market risk.
+</p>
+
+<h3>Example</h3>
+
+<p>
+  The 6-month rolling betas of PG and KO stocks have a correlation of 93%. The linear relationship between their betas is
+</p>
+\[ \beta_{KO} = -0.0097 + 0.969 \beta_{PG} \]
+
+<p>
+  Therefore the market neutral weights are
+</p>
+\[ w_{KO} = \frac{1}{1-0.969} = 32.3 \qquad w_{PG} = 1 - w_{KO} = -31.3 \]
+
+<p>
+  We tested this portfolio both in-sample (March 2012 to Jan 2015) and out-of-sample. It achieved a beta of 0.01 and -0.004 respectively. See the backtest below.
+</p>

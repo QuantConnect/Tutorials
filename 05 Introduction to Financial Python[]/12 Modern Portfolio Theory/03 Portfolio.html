@@ -1,0 +1,102 @@
+﻿<p>
+  Suppose we invest some fraction \(w_1, w_2, \dots, w_n\) of our wealth in <em>n</em> risky assets (labelled 1 to <em>n</em>), and the remainder \(w_0\) in a riskless asset such as cash in a bank account.
+</p>
+
+<p>
+  Clearly \(w_0 + w_1 + \dots + w_n = 1\) since our wealth comprises all those assets.
+</p>
+
+<p>
+  Let \(R_0, R_1, \dots, R_n\) be the respective asset returns, then our portfolio return is
+</p>
+
+\[ R_P = w_0 R_0 + w_1 R_1 + \dots + w_n R_n \]
+
+<p>
+  Alternatively, we can eliminate \(w_0\) to get
+</p>
+\[ R_P - R_0 = w_1 (R_1 - R_0) + \dots + w_n (R_n - R_0) \]
+
+<p>
+  Our <strong>expected</strong> portfolio return is
+</p>
+\[ \mathbb{E}(R_P) = w_0 R_0 + w_1 \mathbb{E}(R_1) + \dots + w_n \mathbb{E}(R_n) \]
+
+<p>
+  Note that \( \mathbb{E}(R_0) = R_0 \) since the riskless return is known with certainty, by definition.
+</p>
+<a name="correlation"></a>
+<h4>Correlation</h4>
+
+<p>
+  Before computing portfolio risk, we need to first understand covariance and correlation. They measure the linear relationship between two random variables.
+</p>
+
+<p>
+  The covariance of two random variables X and Y is defined as
+</p>
+\[ \text{Cov}(X, Y) = \mathbb{E} \left[ (X-\mathbb{E}(X)) (Y-\mathbb{E}(Y)) \right] \]
+
+<p>
+  The correlation of X and Y, which is always between &minus;1 and 1, is their covariance after being standardized:
+</p>
+\[ \text{Corr}(X, Y) = \text{Cov} \left( \frac{X-\mathbb{E}(X)}{\sigma_X}, \frac{Y-\mathbb{E}(Y)}{\sigma_Y} \right) = \frac{\text{Cov}(X, Y)}{\sigma_X \sigma_Y} \]
+
+<h4>Risk</h4>
+
+<p>
+  Now we are ready to compute portfolio risk, as measured by the variance of portfolio returns:
+</p>
+\[ \text{Var}(R_P) = \text{Var}(w_0 R_0 + w_1 R_1 + \dots + w_n R_n) \]
+
+<p>
+  Recall that \( \text{Var}(X + c) = \text{Var}(X) \) if <em>c</em> is a known constant, so the term \( w_0 R_0 \) involving the riskless return can be omitted. It will be convenient to use <a href="https://www.mathsisfun.com/algebra/sigma-notation.html" target="_blank">sigma notation</a>:
+</p>
+
+\[ \text{Var}(R_P) = \text{Var} \left( \sum_{k=1}^n w_k R_k \right) \]
+\[ = \mathbb{E} \left[\left( \sum_{k=1}^n w_k R_k - \mathbb{E} \left( \sum_{k=1}^n w_k R_k \right) \right)^2\right] \]
+\[ = \mathbb{E} \left[\left( \sum_{k=1}^n w_k \, \left( R_k - \mathbb{E}(R_k) \right) \right)^2\right] \]
+
+<p>
+  So we have a squared sum of <em>n</em> terms. How do we expand it?
+</p>
+\[ \left( \sum_{k=1}^n u_k \right)^2 = (u_1 + \dots + u_n) \, (u_1 + \dots + u_n) \]
+
+<p>
+  If we expand the brackets on the right hand side, every term has the form \( u_i u_j \) where <em>i</em> and <em>j</em> can be 1, 2, ... , or <em>n</em>.
+</p>
+\[ \left( \sum_{k=1}^n u_k \right)^2 = \sum_{i=1}^n \sum_{j=1}^n u_i u_j \]
+
+<p>
+  Therefore
+</p>
+\[ \text{Var}(R_P) = \mathbb{E} \left[ \sum_{i=1}^n \sum_{j=1}^n w_i \, w_j \, (R_i - \mathbb{E}(R_i)) (R_j - \mathbb{E}(R_j)) \right] \]
+\[ = \sum_{i=1}^n \sum_{j=1}^n w_i \, w_j \, \text{Cov}(R_i, R_j) \]
+
+<p>
+  The last step arises from the definition of <a href="#correlation">covariance</a>. The only thing left is to express portfolio risk in matrix notation:
+</p>
+
+\[ \text{Var}(R_P) = \mathbf{w}^T \Sigma \mathbf{w} \]
+<p>
+  where
+</p>
+\[ \mathbf{w} = \begin{pmatrix} w_1 \\ \vdots \\ w_n \end{pmatrix} \qquad
+\Sigma = \begin{bmatrix}
+\text{Cov}(R_1, R_1) & \text{Cov}(R_1, R_2) & ... & \text{Cov}(R_1, R_n) \\
+\text{Cov}(R_2, R_1) & \text{Cov}(R_2, R_2) & ... & \text{Cov}(R_2, R_n) \\
+\vdots & \vdots & \ddots & \vdots \\
+\text{Cov}(R_n, R_1) & \text{Cov}(R_n, R_2) & ... & \text{Cov}(R_n, R_n)
+\end{bmatrix} \]
+
+<h4>Intuition</h4>
+
+<p>
+  How can we make sense of portfolio risk? Consider a simple case with a riskless asset and only <em>n</em> = 2 risky assets.
+</p>
+
+\[ \text{Var}(R_P) = w_A^2 \text{Var}(R_A) + w_B^2 \text{Var}(R_B) + 2w_A w_B \text{Cov}(R_A, R_B) \]
+
+<p>
+  Portfolio risk can be reduced by choosing two assets that are negatively correlated. This is the benefit of diversification.
+</p>

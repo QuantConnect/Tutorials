@@ -1,0 +1,83 @@
+<p>
+  Before looking at normal distribution, let's first talk about continues distribution. As we mentioned above, we use a <strong>probability density function</strong>(PDF) to model the probability that our value is taken our a specific range. We define it as:
+</p>
+\[P(a&lt;X&lt;b) = \int_{a}^{b}f_x(x)dx\]
+<p>
+  Now we can talk about the normal distribution. The <strong>normal distribution</strong> is most commonly used distribution in natural sciences, of course also in financial research. The PDF of normal distribution is given as follows:
+</p>
+\[f(x) = \frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}\]
+<p>
+  Where \(\mu\) is the mean of the normal distribution, and \(\sigma\) is the standard deviation.
+</p>
+<p>
+  Generally, if a random variable X follows normal distribution, we represent it by \(X\sim N(\mu, \sigma^2)\). Specifically, if a normal distribution has a 0 mean and 1 standard deviation, we called it <strong>standard normal distribution</strong>. Now let's simulate a standard normal distribution using Python packages to see what it looks like:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">plt.figure(figsize = (20,10))
+norm.plot.density()
+plt.show()
+</pre>
+</div>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial07-plot3.png" alt="plot3" />
+<p>
+  Financial data is highly disordered and is considered to has lots of noise. Most of the time we believe those noise follows normal distribution. It's also widely believed that the return on an asset over a short period of time follows normal distribution. Let's check it with the daily logarithm rates of return on SPY:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">import quandl
+quandl.ApiConfig.api_key = 'tAyfv1zpWnyhmDsp91yv'
+spy_table = quandl.get('BCIW/_SPXT')
+spy = spy_table.loc['2009':'2017',['Open','Close']]
+spy['log_return'] = np.log(spy.Close).diff()
+spy = spy.dropna()
+</pre>
+</div>
+<p>
+  We calculated the logarithm daily return of S&amp;P 500 index from 2009 to present. Let's first have a look at the what the time-series return data looks like:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">plt.figure(figsize = (20,10))
+spy.log_return.plot()
+plt.show()
+</pre>
+</div>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial07-plot4.png" alt="plot4" />
+<p>
+  This is a classic daily return chart. Let's now plot the density chart of the returns:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">plt.figure(figsize = (20,10))
+spy.log_return.plot.density()
+plt.show()
+</pre>
+</div>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial07-plot5.png" alt="plot5" />
+<p>
+  If we observe the x-axis and y-axis carefully, we can see the return of asset is not a standard normal distribution. The peak of the standard normal distribution plot is around 0.4, while it's over 0.6 for this chart. This is because the standard deviation \(\sigma\) of the return is obviously not 1. We can demonstrate the normal distribution with different mean and variance by simulation:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">de_2 = pd.Series(np.random.normal(0,2,10000),name = 'μ = 0, σ = 2')
+de_3 = pd.Series(np.random.normal(0,3,10000),name = 'μ = 0, σ = 3')
+de_0 = pd.Series(np.random.normal(0,0.5,10000), name ='μ = 0, σ = 0.5')
+mu_1 = pd.Series(np.random.normal(-2,1,10000),name ='μ = -2, σ = 1')
+df = pd.concat([de_2,de_3,de_0,mu_1],axis = 1)
+plt.figure(figsize=(20,10))
+df.plot.density()
+plt.show()
+</pre>
+</div>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial07-plot6.png" alt="plot6" />

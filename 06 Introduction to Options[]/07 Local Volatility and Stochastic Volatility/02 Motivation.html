@@ -1,0 +1,13 @@
+<p>
+  We already knew that volatility is a measure of the fluctuation degree of the underlying assets price series. As we discussed in the last chapter, historical volatility is the standard deviation of the price series during a certain period. It is a constant and represents the price movement in the past. However, the implied volatility is not based on the historical pricing data of stocks. It is the value of volatility parameter derived from the market quote of options in BSM pricing model. In contrast to historical volatility, implied volatility is forward-looking and varies with different options contracts.
+</p>
+<p>
+  In the Black–Scholes model, the asset’s price is modeled as a log-normal random variable, which means that the asset’s log-returns are normally distributed. One of the most significant assumptions in BSM model is that the volatility is a constant term over time.
+</p>
+\[\sigma=\sigma_{implied}\]
+<p>
+  But in the real world, it could be constant in a small time period but never constant in the long term. There is volatility skew for most options, which means the volatility is not constant across strikes.
+</p>
+<p>
+  [ref]Bouzoubaa M, Osseiran A. Exotic options and hybrids: A guide to structuring, pricing and trading[M]. John Wiley &amp; Sons, 2010.[/ref]One way to capture the volatility skew is to assume that the volatility itself is a random variable, this is the stochastic volatility model we will discuss next. On the other hand, the introduction of additional sources of randomness will increase the complexity of the model. Another way to capture the volatility skew but without introducing the additional source of randomness is the local volatility.
+<p>

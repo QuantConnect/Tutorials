@@ -1,0 +1,13 @@
+﻿<p>
+  Instead of using \( R^2 \) to assess whether our regression model is a good fit to the data, we can perform a hypothesis test: the F test.
+  The null and alternative hypotheses of an F test are:
+</p>
+
+\[ H_0: \beta_1 = \beta_2 = \dots = \beta_p = 0  \]
+\[ H_1: \text{At least one coefficient is not 0} \]
+
+<p>
+  We won't explain F test procedure in detail here. You just need to understand the null and alternative hypotheses. In the summary table of an F test, the 'F-statistic' is the F score, while 'prob (F-statistic)' is the p-value. Performing this test on the Fama-French model, we get a p-value of `2.21e-24` so we are almost certain that at least one of the coefficient is not 0.
+  If the p-value is larger than 0.05, you should consider rebuilding your model with other independent variables.
+  In simple linear regression, an F test is equivalent to a t test on the slope, so their p-values will be the same.
+</p>

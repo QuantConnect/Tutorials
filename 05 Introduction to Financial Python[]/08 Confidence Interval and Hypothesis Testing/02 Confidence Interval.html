@@ -1,0 +1,110 @@
+<h4>Sample Error</h4>
+<p>
+  Let's use the daily return on S&amp;P 500 index from Aug 2010 to present is our population. If we take the recent 10 daily returns to calculate the mean, will it be the same as the population mean? How about increasing the sample size to 1000?
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import quandl
+quandl.ApiConfig.api_key = 'tAyfv1zpWnyhmDsp91yv'
+#get data from quandl
+spy_table = quandl.get('BCIW/_SPXT')
+spy_total = spy_table[['Open','Close']]
+#calculate log returns
+spy_log_return = np.log(spy_total.Close).diff().dropna()
+print 'Population mean:', np.mean(spy_log_return)
+[out]: Population mean: 0.000443353825615
+print 'Population standard deviation:',np.std(spy_log_return)
+[out]: Population standard deviation: 0.00784267293815
+</pre>
+</div>
+
+<p>
+  Now let's check the recent 10 days sample and recent 1000 days sample:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">
+print '10 days sample returns:', np.mean(spy_log_return.tail(10))
+[out]: 10 days sample returns: 0.000845189915474
+print '10 days sample standard deviation:', np.std(spy_log_return.tail(10))
+[out]: 10 days sample standard deviation: 0.00313558001122
+print '1000 days sample returns:', np.mean(spy_log_return.tail(1000))
+[out]: 1000 days sample returns: 0.000462827047221
+print '1000 days sample standard deviation:', np.std(spy_log_return.tail(1000))
+[out]: 1000 days sample standard deviation: 0.00766589174299
+</pre>
+</div>
+<p>
+  As we expected, the two samples has different means and variances.
+</p>
+
+<h4>Confidence Interval</h4>
+<p>
+  In order to estimate the range of population mean, we define <strong>standard error of the mean</strong> as follows:
+</p>
+\[SE = \frac{\sigma}{\sqrt{n}}\]
+<p>
+  Where \(\sigma \) is the sample standard deviation and \(n\) is the sample size.
+</p>
+<p>
+  Generally, if we want to estimate an interval of the population so that 95% of the time the interval will contain the population mean, the interval is calculated as:
+</p>
+\[(\mu - 1.96*SE, \mu + 1.96*SE)\]
+<p>
+  Where \(\mu\) is the sample mean and SE is the standard error.
+</p>
+<p>
+  This interval is called <strong>confidence interval</strong>. We usually use 1.96 to calculate a 95% confidence interval because we assume that the sample mean follows normal distribution. We will cover this in detail later. Let's try to calculate the confidence interval using the samples above:
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">
+#apply the formula above to calculate confidence interval
+bottom_1 = np.mean(spy_log_return.tail(10))-1.96*np.std(spy_log_return.tail(10))/(np.sqrt(len((spy_log_return.tail(10)))))
+upper_1 = np.mean(spy_log_return.tail(10))+1.96*np.std(spy_log_return.tail(10))/(np.sqrt(len((spy_log_return.tail(10)))))
+bottom_2 = np.mean(spy_log_return.tail(1000))-1.96*np.std(spy_log_return.tail(1000))/(np.sqrt(len((spy_log_return.tail(1000)))))
+upper_2 = np.mean(spy_log_return.tail(1000))+1.96*np.std(spy_log_return.tail(1000))/(np.sqrt(len((spy_log_return.tail(1000)))))
+#print the outcomes
+print '10 days 95% confidence inverval:', (bottom_1,upper_1)
+[out]: 10 days 95% confidence inverval: (-0.0010982627102681939, 0.002788642541217079)
+print '1000 days 95% confidence inverval:', (bottom_2,upper_2)
+[out]: 1000 days 95% confidence inverval: (-1.230984558013321e-05, 0.00093796394002165957)
+</pre>
+</div>
+
+<p>
+  As we can see, the 95% confidence interval became much narrower if we increase the sample size from 10 to 1000. Imagine that if N goes positive infinite, then we have \(\lim_{n\rightarrow \infty}\frac{\sigma}{\sqrt{n}} = 0\). The confidence interval would become a certain value, which is the sample mean!
+</p>
+
+<h4>Confidence Interval of Normal Distribution</h4>
+<p>
+  Normal Distribution is so commonly used that we should be able to remember some critical values of it. Specifically, we usually use 90%, 95% and 99% as the confidence level of a confidence interval. The critical values for these three confidence levels are 1.64, 1.96, and 2.32 respectively. in other words:
+</p>
+\[\%90 upperabnd = \mu + 1.64*SE\]
+\[\%90 lowerband = \mu + 1.64*SE\]
+<p>
+  The same for other confidence intervals. It's also important to remember the famous 'Three sigma rule' or '68-95-99.7' rule associated with normal distribution. This is used to remember the confidence level of the intervals with a width of two, four and six standard deviation. Mathematically:
+</p>
+\[P(\mu - \sigma \leq X \leq \mu+\sigma)\approx 0.6827\]
+\[P(\mu - 2\sigma \leq X \leq \mu+2\sigma)\approx 0.9545\]
+\[P(\mu - 3\sigma \leq X \leq \mu+3\sigma)\approx 0.9973\]
+<p>
+  This can also be remembered by using the chart:
+</p>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial08-empirical-rule.png" alt="empirical rule" />
+<h4>Central Limit Theory</h4>
+<p>
+  As we mentioned, if we use the sample to estimate the confidence interval of the population, the 95% confidence interval is:
+</p>
+\[(\mu - 1.96*SE, \mu + 1.96*SE)\]
+<p>
+  Now you may have some sense to the number 1.96. It's the 95% critical value of a normal distribution. Does this means we assume the mean of sample follows a normal distribution? The answer is yes. This assumption is supported by <strong>central limit theorem</strong>. This theorem tells us that given a sufficiently large sample size from a population with a finite level of variance, the mean of all samples from the same population will be approximately equal to the mean of the population, and the means of the samples will be approximately normal distributed. This is the foundation of population mean confidence interval estimation.
+</p>

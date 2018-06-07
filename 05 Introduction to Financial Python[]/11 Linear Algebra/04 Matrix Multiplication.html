@@ -1,0 +1,60 @@
+<p>
+  How are two matrices multiplied? Suppose \(X = AB\). Each entry \(x_{ij}\) of matrix \(X\) is the <a href="#scalar">scalar product</a> of row \(i\) from matrix \(A\) with column \(j\) from matrix \(B\). This is best illustrated with an example:
+</p>
+
+\[ AB = \begin{pmatrix}
+a_{11} &amp; a_{12} \\
+a_{21} &amp; a_{22} \\
+a_{31} &amp; a_{32}
+\end{pmatrix}
+\begin{pmatrix}
+b_{11} &amp; b_{12} \\
+b_{21} &amp; b_{22}
+\end{pmatrix} = \begin{pmatrix}
+x_{11} &amp; x_{12} \\
+x_{21} &amp; x_{22} \\
+x_{31} &amp; x_{32}
+\end{pmatrix} \]
+
+\[ x_{\color{red}11} = a_{{\color{red}1} 1} b_{1{\color{red} 1}} + a_{{\color{red}1} 2} b_{2 {\color{red}1}} \]
+\[ x_{\color{red}12} = a_{{\color{red}1} 1} b_{1 {\color{red}2}} + a_{{\color{red}1} 2} b_{2 {\color{red}2}} \]
+\[ x_{\color{red}21} = a_{{\color{red}2} 1} b_{1 {\color{red}1}} + a_{{\color{red}2} 2} b_{2 {\color{red}1}} \]
+\[ x_{\color{red}22} = a_{{\color{red}2} 1} b_{1 {\color{red}2}} + a_{{\color{red}2} 2} b_{2 {\color{red}2}} \]
+\[ \vdots \]
+
+<p>
+  In NumPy, we can multiply matrices with the dot() function:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">A = np.array([[2,3],[4,2],[2,2]])
+B = np.array([[4,2],[4,6]])
+x = np.dot(A,B)
+print x
+[out]:
+[[20 22]
+ [24 20]
+ [16 16]]
+</pre>
+</div>
+
+<p>
+  Since matrix multiplication is defined in terms of scalar products, the matrix product \(AB\) exists only if \(A\) has as many columns as \(B\) has rows. It's useful to remember this shorthand: (m &times; n) &times; (n &times; p) = (m &times; p) which means that an (m &times; n) matrix multiplied by an (n &times; p) matrix yields an (m &times; p) matrix.
+</p>
+
+<p>
+  Reversing the order of multiplication results in an error since B does not have as many columns as A has rows:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">x = np.dot(B,A)
+</pre>
+</div>
+
+<p>
+  A natrual consequence of this fact is that matrix multiplication is <strong>not commutative</strong>. In other words, \(AB \neq BA\) in general.
+</p>

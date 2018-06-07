@@ -1,0 +1,110 @@
+<p>
+  NumPy is the core library for scientific computing in Python. It provides a high-performance multidimensional array object, and tools for working with these arrays. It also has strong integration with Pandas, which is another powerful tool for manipulating financial data.
+</p>
+<p>
+  Python packages like NumPy and Pandas contain classes and methods which we can use by importing the package:
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">import numpy as np</pre>
+</div>
+
+<h4>Basic NumPy Arrays</h4>
+
+<p>
+  A NumPy array is a grid of values, all of the same type, and is indexed by a tuple of nonnegative integers. Here we make an array by passing a list of Apple stock prices:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">price_list = [143.73, 145.83, 143.68, 144.02, 143.5, 142.62]
+price_array = np.array(price_list)
+print price_array, type(price_array)
+[out]: [ 143.73  145.83  143.68  144.02  143.5   142.62]
+&lt;class 'numpy.ndarray'&gt;</pre>
+</div>
+
+<p>
+  Notice that the type of array is "ndarray" which is a multi-dimensional array. If we pass np.array() a list of lists, it will create a 2-dimensional array.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">Ar = np.array([[1,3], [2,4]])
+print Ar, type(Ar)
+[out]: [[1 3]
+        [2 4]]
+&lt;class 'numpy.ndarray'&gt;</pre>
+</div>
+
+<p>
+  We get the dimensions of an ndarray using the .shape attribute:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print Ar.shape
+[out]: (2, 2)</pre>
+</div>
+
+<p>
+  If we create an 2-dimensional array (i.e. matrix), each row can be accessed by index:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print Ar[0]
+[out]: [1 3]
+print Ar[1]
+[out]: [2 4]</pre>
+</div>
+
+<p>
+  If we want to access the matrix by column instead:
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print 'First column:', Ar[:,0]
+[out]: First column: [1 2]
+print 'Second column:', Ar[:,1]
+[out]: Second column: [3 4]</pre>
+</div>
+
+<h4>Array Functions</h4>
+
+<p>
+  Some functions built in NumPy that allow us to perform calculations on arrays. For example, we can apply the natural logarithm to each element of an array:
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">np.log(price_array)
+[out]: [4.96793654  4.98244156  4.9675886   4.96995218  4.96633504  4.96018375]</pre>
+</div>
+
+<p>
+  Other functions return a single value:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">np.mean(price_array)
+[out]: 143.896666667
+print np.std(price_array)
+[out]: 0.967379047852
+print np.sum(price_array)
+[out]: 863.38
+print np.max(price_array)
+[out]: 145.83
+</pre>
+</div>
+<p>
+  The functions above return the mean, standard deviation, total and maximum value of an array.
+</p>

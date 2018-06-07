@@ -1,0 +1,104 @@
+<p>
+  Here we use data from the yahoo_finance API.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">import quandl
+quandl.ApiConfig.api_key = 'dRQxJ15_2nrLznxr1Nn4'
+</pre>
+</div>
+<p>
+  We will create a Series named "aapl" whose values are Apple's daily closing prices, which are of course indexed by dates:
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">aapl_table = quandl.get('WIKI/AAPL')
+aapl = aapl_table['Adj. Close']['2017']
+print aapl
+</pre>
+</div>
+
+<p>
+  Recall that we can fetch a specific data point using series['yyyy-mm-dd']. We can also fetch the data in a specific month using series['yyyy-mm'].
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print aapl['2017-3']
+Date
+2017-03-01    138.657681
+2017-03-02    137.834404
+2017-03-03    138.647762
+2017-03-06    138.211326
+2017-03-07    138.389868
+2017-03-08    137.874080
+2017-03-09    137.556672
+2017-03-10    138.012946
+2017-03-13    138.072460
+2017-03-14    137.864161
+2017-03-15    139.322254
+2017-03-16    139.550391
+2017-03-17    138.856061
+2017-03-20    140.314154
+2017-03-21    138.707276
+2017-03-22    140.274478
+2017-03-23    139.778528
+2017-03-24    139.500796
+2017-03-27    139.738852
+2017-03-28    142.635200
+2017-03-29    142.952608
+2017-03-30    142.764147
+2017-03-31    142.496334
+</pre>
+</div>
+
+<p>
+  Or in several consecutive months:
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">aapl['2017-2':'2017-4']
+</pre>
+</div>
+
+<p>
+  .head(N) and .tail(N) are methods for quickly accessing the first or last N elements.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print aapl.head()
+print aapl.tail(10)
+</pre>
+</div>
+<p>
+  The output:
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">
+Date
+2017-01-03    114.715378
+2017-01-04    114.586983
+2017-01-05    115.169696
+2017-01-06    116.453639
+2017-01-09    117.520300
+Name: Adj. Close, dtype: float64
+Date
+2017-08-08    159.433108
+2017-08-09    160.409148
+2017-08-10    155.270000
+2017-08-11    157.480000
+2017-08-14    159.850000
+2017-08-15    161.600000
+2017-08-16    160.950000
+2017-08-17    157.870000
+2017-08-18    157.500000
+2017-08-21    157.210000
+Name: Adj. Close, dtype: float64
+</pre>
+</div>

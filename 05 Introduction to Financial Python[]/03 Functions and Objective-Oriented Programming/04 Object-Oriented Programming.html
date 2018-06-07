@@ -1,0 +1,145 @@
+<p>
+  Python is an object-oriented programming language. It's important to understand the concept of "objects" because almost every kind of data from QuantConnect API is an object.
+</p>
+
+<h4>Class</h4>
+<p>
+  A class is a type of data, just like a string, float, or list. When we create an object of that data type, we call it an <strong>instance</strong> of a class.
+</p>
+
+<p>
+  In Python, everything is an object - everything is an instance of some class. The data stored inside an object are called <strong>attributes</strong>, and the functions which are associated with the object are called <strong>methods</strong>.
+</p>
+
+<p>
+  For example, as mentioned above, a list is an object of the "list" class, and it has a method list.sort().
+</p>
+
+<p>
+  We can create our own objects by defining a class. We would do this when it's helpful to group certain functions together. For example, we define a class named "Stock" here:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">class Stock:
+    def __init__(self, ticker, open, close, volume):
+        self.ticker = ticker
+        self.open = open
+        self.close = close
+        self.volume = volume
+        self.rate_return = float(close)/open - 1
+
+    def update(self, open, close):
+        self.open = open
+        self.close = close
+        self.rate_return = float(self.close)/self.open - 1
+
+    def print_return(self):
+        print self.rate_return
+</pre>
+</div>
+
+<p>
+  The "Stock" class has attributes "ticker", "open", "close", "volume" and "rate_return". Inside the class body, the first method is called __init__, which is a special method. When we create a new instance of the class, the __init__ method is immediately executed with all the parameters that we pass to the "Stock" object. The purpose of this method is to set up a new "Stock" object using data we have provided.
+</p>
+
+<p>
+  Here we create two Stock objects named "apple" and "google".
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">apple  = Stock('AAPL', 143.69, 144.09, 20109375)
+google = Stock('GOOGL', 898.7, 911.7, 1561616)
+</pre>
+</div>
+<p>
+  Stock objects also have two other methods: update() and print_return(). We can access the attribues of a Stock object and call its methods:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">apple.ticker
+[out]: 'AAPL'
+google.print_return()
+[out]: 0.0144653388227
+google.update(912.8,913.4)
+google.print_return()
+[out]: 0.000657318141981
+</pre>
+</div>
+
+<p>
+  By calling the update() function, we updated the open and close prices of a stock. Please note that when we use the attributes or call the methods <strong>inside a class</strong>, we need to specify them as self.attribute or self.method(), otherwise Python will deem them as global variables and thus raise an error.
+</p>
+
+<p>
+  We can add an attribute to an object anywhere:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">
+apple.ceo = 'Tim Cook'
+apple.ceo
+[out]: 'Tim Cook'
+</pre>
+</div>
+<p>
+  We can check what names (i.e. attributes and methods) are defined on an object using the dir() function:
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">dir(apple)
+[out]:
+['__doc__',
+ '__init__',
+ '__module__',
+ 'ceo',
+ 'close',
+ 'open',
+ 'print_return',
+ 'rate_return',
+ 'ticker',
+ 'update',
+ 'volume']
+</pre>
+</div>
+
+<h4>Inheritance</h4>
+
+<p>
+  Inheritance is a way of arranging classes in a hierarchy from the most general to the most specific. A "child" class is a more specific type of a "parent" class because a child class will inherit all the attribues and methods of its parent. For example, we define a class named "Child" which inherits "Stock":
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">class Child(Stock):
+    def __init__(self, name):
+        self.name = name
+</pre>
+</div>
+<p>
+  Then we create an object:
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">aa = Child('AA')
+print aa.name
+[out]: 'AA'
+aa.update(100, 102)
+print aa.open
+[out]: 100
+print aa.close
+[out]: 102
+print aa.print_return()
+[out]: 0.02</pre>
+</div>
+As seen above, the new class Child has inherited the methods from Stock.

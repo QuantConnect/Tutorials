@@ -1,0 +1,34 @@
+<h4>1. Definition</h4>
+<p>
+  The constant volatility assumption in BSM model is not reasonable in most of the options pricing. The volatility skew tells us that the stock’s log-returns are actually not normally distributed. There exist some other kinds of distributions of stock price so that if we use this distribution to price the options, it would give the accurate options' price as we see in the market. The local volatility is implied in this non-normal distribution. Let's look at the definition of local volatility.
+</p>
+<p>
+  [ref]Bouzoubaa M, Osseiran A. Exotic options and hybrids: A guide to structuring, pricing and trading[M]. John Wiley &amp; Sons, 2010.[/ref]The the local volatility of the underlying assets is a deterministic function of assets price and the time t.
+</p>
+\[\sigma=\sigma(S_t,t)\]
+
+Therefore with local volatility model, the stochastic process followed by the stock price is
+
+\[\text d S_t=\mu S_t\ \text d t+\sigma(S_t,t)\text d W_t\]
+
+If \(\sigma(S_t,t)=\sigmaS_t\), then this is the case of BSM model with constant volatility\(\sigma\). Here we are not assuming the volatility is constant but a function of the asset price so the stock’s log-returns are not normally distributed anymore. There is only one source of randomness from the stock price: \(W_t\).
+<h4>2. Model Calibration</h4>
+<p>
+  How to obtain the function \(\sigma(S_t,t)\)? Finding the function \(\sigma(S_t,t)\) is known as the calibration of local volatility model. This is answered by the following Dupire's formula.
+</p>
+\[\sigma_{Local}(K,T)=\sqrt{\frac{\frac{\partial C}{\partial T}}{\frac{1}{2}K^2\frac{\partial^2 C}{\partial K^2}}}\]
+
+<p>
+  If we assume that we know all the observed market price of European call options C(T, K) for every strike K and every maturity T.  Local volatility model calculates volatilities for a set of options with different combinations of strike prices and expiration dates. For a given date, time(t) and the underlying stock price(St), a local volatility is derived from the equation that options price calculated with the local volatility equals to the market options price.
+</p>
+<p>
+  Usually, we can only get a limited number of contracts with a few strikes and maturities, we can follow steps below to get the local volatility estimation:
+<ul>
+     <li>First, use the available quoted price to calculate the implied volatilities.</li>
+     <li>Appy interpolation method to produce a smooth implied volatility surface.</li>
+     <li>Plug implied volatilities into BSM model to get all the market prices of European calls.</li>
+     <li>Calculate the local volatility according to Dupire formula. To avoid taking derivatives, we could use finite differences to approximate the derivative.</li>
+</ul>
+\[\frac{\partial C}{\partial T}\approx\frac{C(K,T+\Delta T)-C(K,T-\Delta T)}{2\Delta t}\]
+
+\[\frac{\partial^2 C}{\partial K^2}\approx\frac{C(K-\Delta K,T)-2C(K,T)+C(K+\Delta K,T)}{(\Delta K)^2}\]

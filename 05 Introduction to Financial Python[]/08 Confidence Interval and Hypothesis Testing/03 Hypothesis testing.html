@@ -1,0 +1,100 @@
+<p>
+  Now we can talk about <strong>hypothesis testing</strong>. Hypothesis test is essentially test your inference based on a sample. Let's use our dataset, the daily return of S&amp;P 500 us our population. Assume that we don't know the mean of this population. I guess that the mean of this population is 0. Is my guess correct? I need to test this hypothesis with my sample. Let's start from observing our sample:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">mean_1000 = np.mean(spy_log_return.tail(1000))
+std_1000 = np.std(spy_log_return.tail(1000))
+mean_10 = np.mean(spy_log_return.tail(10))
+std_10 = np.std(spy_log_return.tail(10))
+s = pd.Series([mean_10,std_10,mean_1000,std_1000],index = ['mean_10', 'std_10','mean_1000','std_1000'])
+print s
+
+[out]: mean_10      0.000845
+       std_10       0.003136
+       mean_1000    0.000463
+       std_1000     0.007666
+</pre>
+</div>
+<p>
+  We know how to calculate the confidence interval now. If I were right, i.e. the population mean is 0, then the 90% confidence interval of the sample with 1000 observations should be:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">bottom = 0 - 1.64*std_1000/np.sqrt(1000)
+upper = 0 + 1.64*std_1000/np.sqrt(1000)
+print (bottom, upper)
+[out]: (-0.00039756352254768874, 0.00039756352254768874)
+</pre>
+</div>
+<p>
+  Our mean of the sample is out of the 90% confidence interval. This means on a 90% confidence level, we can claim that the mean of our population is not 0. In other word, we <strong>rejected</strong> the hypothesis that the daily return on S&amp;P500 from aug 2010 is zero. Can we claim that with 95% confidence level?
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">bottom = 0 - 1.96*std_1000/np.sqrt(1000)
+upper = 0 + 1.96*std_1000/np.sqrt(1000)
+print (bottom, upper)
+[out]: (-0.00047513689280089639, 0.00047513689280089639)
+</pre>
+</div>
+<p>
+  This time the sample mean is within the confidence interval. Thus we can't reject my hypothesis. In other words, we can't claim with 95% confidence level that the mean return is positive. Even though we can claim it with 90% confidence level. We have actually already finished a hypothesis testing above! In general, we have <strong>null hypothesis</strong> \(H_0\) and <strong>alternative hypothesis</strong>. They are usually in the following forms:
+</p>
+\[H_0:\bar{\mu} = 0\]
+\[H_0:\bar{\mu} \neq 0\]
+<p>
+  If the tested value is outside the confidence interval, we reject the null hypothesis, or accept the alternative hypothesis; If the tested value is within the confidence interval, we can't reject the null hypothesis. Although the hypothesis testing method we used above is straightforward, it's not so convenient to implement. Instead, we reverse the process to calculate the critical value, or <strong>Z-score</strong>. Z-score is defined as:
+</p>
+\[Z = \frac{X - \mu}{\frac{\sigma}{\sqrt{n}}}\]
+<p>
+  Let's calculate the Z score from our sample:
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print np.sqrt(1000)*(mean_1000 - 0)/std_1000
+[out]: 1.90922032428
+</pre>
+</div>
+<p>
+  We know that the critical value for the 90% confidence level is 1.64 and that for the 95% confidence level is 95%. The higher the Z score is, the further the tested value is from the hypothesized value(which is 0 in this example). Thus with 90% confidence level, we are far away enough from zero and we reject the null hypothesis. However with 95% confidence level, we are not far away enough from zero, so we can't reject the null hypothesis. One reason of doing in this way is that we can know how wide our confidence interval is. In our example, the z-score is 1.8488. We can know the width is the confidence interval referring to a normal distribution table. Of course we can do this in Python:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">import scipy.stats as st
+print (1 - st.norm.cdf(1.9488))
+[out]: 0.025659656888
+</pre>
+</div>
+<p>
+  It's worth noting that st.norm.cdf will return the probability that a value take from the distribution is less than our tested value. In other words, 1 - st.norm.cdf(1.9488) will return the probability that the value is greater than our tested value, which is 0.025659 in this example. This calculated number is called <strong>p-value</strong>. If our confidence level our confidence interval is 95%, then we have 2.5% on the left side and 2.5% on the right side. This is called <strong>two-tail test</strong>. If our null hypothesis is \(\mu = 0\), we are conducting two-tail test because the tested sample mean can be either positive enough or negative enough to reject the null hypothesis. We can see it from the chart:
+</p>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial08-confidence-interval.jpg" alt="confidence interval" />
+<p>
+  If we use 95% confidence interval, we need a p-value less than 0.025 to reject the null hypothesis. However, now our p-value is 0.025659, which is greater than 0.025, thus we can't reject the null hypothesis. It's obviously less than 0.05, so we can still reject the null hypothesis with 90% confidence level. Now let's test the hypothesis that population mean = 0 again with a large sample, which has 1200 observations:
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">mean_1200 = np.mean(spy_log_return.tail(1200))
+std_1200 = np.std(spy_log_return.tail(1200))
+z_score = np.sqrt(1200)*(mean_1200 - 0)/std_1200
+print 'z-score = ',z_score
+[out]: z-score =  2.19793023185
+p_value = (1 - st.norm.cdf(z_score))
+print 'p_value = ',p_value
+[out]: p_value =  0.0139770390655
+</pre>
+</div>
+<p>
+  Using the a larger sample, now we can reject the null hypothesis with a higher confidence interval! our p-value is 0.0105, and it's a two-tail test, so our confidence level of the interval is 1-(0.0105*2) = 0.979. We can say at most with 97.9% confidence interval, we can claim that the population mean is not zero. We already know that the population mean is not 0. As our sample size increasing, the accurate rate of our hypothesis goes up.
+</p>

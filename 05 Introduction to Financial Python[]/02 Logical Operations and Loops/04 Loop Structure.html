@@ -1,0 +1,113 @@
+<p>
+  Loops are an essential part of programming. The "for" and "while" loops run a block of code repeatedly.
+</p>
+
+<h4>While Loop</h4>
+
+<p>
+  A "while" loop will run repeatedly until a certain condition has been met.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">i = 0
+while i &lt; 5:
+    print i
+    i += 1
+[out]:
+0
+1
+2
+3
+4
+</pre>
+</div>
+
+<p>
+  When making a while loop, we need to ensure that something changes from iteration to iteration so that the while loop will terminate, otherwise, it will run forever. Here we used i += 1 (short for i = i + 1) to make i larger after each iteration. This is the most commonly used method to control a while loop.
+</p>
+
+<h4>For Loop</h4>
+
+<p>
+  A "for" loop will iterate over a sequence of value and terminate when the sequence has ended.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">for x in [1,2,3,4,5]: print x
+[out]:
+1
+2
+3
+4
+5
+</pre>
+</div>
+
+<p>
+  We can also add if statements in a for loop. Here is a real example from our pairs trading algorithm:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">stocks = ['AAPL','GOOG','IBM','FB','F','V', 'G', 'GE']
+selected = ['AAPL','IBM']
+new_list = []
+for stock in stocks:
+    if stock not in selected:
+        new_list.append(stock)
+print new_list
+[out]: ['GOOG', 'FB', 'F', 'V', 'G', 'GE']
+</pre>
+</div>
+
+<p>
+  Here we iterated all the elements in the list 'stocks'. Later in this chapter, we will introduce a smarter way to do this, which is just a one-line code.
+</p>
+
+<h4>Break and continue</h4>
+
+<p>
+  These are two commonly used commands in a for loop. If "break" is triggered while a loop is executing, the loop will terminate immediately:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">stocks = ['AAPL','GOOG','IBM','FB','F','V', 'G', 'GE']
+for stock in stocks:
+    print stock
+    if stock == 'FB': break
+[out]:
+AAPL
+GOOG
+IBM
+FB
+</pre>
+</div>
+
+<p>
+  The "continue" command tells the loop to end this iteration and skip to the next iteration:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">stocks = ['AAPL','GOOG','IBM','FB','F','V', 'G', 'GE']
+for stock in stocks:
+    if stock == 'FB': continue
+    print stock
+[out]:
+AAPL
+GOOG
+IBM
+F
+V
+G
+GE
+</pre>
+</div>

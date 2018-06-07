@@ -1,0 +1,65 @@
+﻿<p>
+  We now try to find a portfolio \( \mathbf{w} = (w_1, ..., w_n) \) that minimizes risk and maximizes return.
+</p>
+
+<p>
+  The chart below has risk (standard deviation of returns) on the horizontal axis and expected return on the vertical axis. The 10 black points represent individual stocks, while each green / blue point is a portfolio of stocks:
+</p>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial12-portfolio1.png" alt="CAPM portfolio1"/>
+
+<p>
+  Notice that all points (i.e. stocks and portfolios) are enclosed by a hyperbola, known as the <strong>efficient frontier</strong>.
+  All portfolios on the efficient frontier have the maximum expected return for a given level of risk, if we only consider portfolios of risky stocks. Can we achieve higher returns by including a riskless asset? Yes.
+</p>
+
+<h4>Capital Market Line</h4>
+
+<p>
+  The black line on the chart is the Capital Market Line (CML). It is <strong>tangent</strong> to the efficient frontier and cuts the vertical axis at the riskfree return. The point of tangency represents the so-called <strong>market portfolio</strong>.
+  Every point on the CML represents a portfolio comprising the market portfolio and riskless asset in some proportion. Why?
+  Suppose some fraction <em>w</em> of a CML portfolio is the market portfolio, and the remainder (1 &minus; <em>w</em>) is the riskless asset. Then its expected return is
+</p>
+
+\[ \mathbb{E} (R_P) = w \mathbb{E} (R_{\text{market}}) + (1-w) R_0 \]
+
+<p>
+  Since there is only <em>n</em> = 1 risky asset, the variance of the CML portfolio return is
+</p>
+
+\[ \text{Var} (R_P) = w^2 \text{Var} (R_{\text{market}}}) \]
+
+<p>
+  Taking square roots, we deduce that a CML portfolio's risk is proportional to the market portfolio's weight:
+</p>
+
+\[ \sigma_P = w \sigma_{\text{market}} \]
+
+<p>
+  This equation can be used to eliminate <em>w</em> in the calculation of expected return:
+</p>
+
+\[ \mathbb{E} (R_P) = R_0 + \frac{\mathbb{E} (R_{\text{market}}) - R_0}{\sigma_{\text{market}}} \sigma_P \]
+
+<p>
+  This proves that when \( \mathbb{E} (R_P) \) is plotted against \( \sigma_P \), we will obtain a straight line: the CML.
+</p>
+
+<h4>Portfolio Selection</h4>
+
+<p>
+  Why is the CML significant? For any given level of risk, CML portfolios have a higher return than those on the efficient frontier, so investors should select any of them according to their risk tolerance.
+  Risk-averse investors may give the riskless asset a larger weight in their portfolio. Risk-seeking investors may borrow money (i.e. sell the riskless asset) to invest >100% of their wealth in the market portfolio.
+  Regardless of their risk tolerances, all investors should hold the same stocks in the same proportion in the market portfolio. In other words, they should not pick stocks according to their risk tolerance.
+</p>
+
+<h4>Diversification</h4>
+
+<p>
+  What happens to the efficient frontier and hence the CML if we have only 3 stocks (IBM, GE, and PFE) instead of 10?
+</p>
+
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial12-portfolio2.png" alt="CAPM portfolio2"/>
+
+<p>
+  Since we have fewer stocks to choose from, it's not too surprising that our maximum expected return is lower for any level of risk. This demonstrates why diversification is often said to be a "free lunch" in investing.
+</p>

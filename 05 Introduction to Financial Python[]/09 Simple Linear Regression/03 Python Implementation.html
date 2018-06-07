@@ -1,0 +1,54 @@
+<p>
+  In python, we have a very power package for mathematical models, which is named 'statsmodels'.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">import statsmodels.formula.api as sm
+model = sm.ols(formula = 'amzn~spy',data = df).fit()
+print model.summary()
+</pre>
+</div>
+
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial09-plot2.png" alt="plot2" />
+<p>
+  We built a simple linear regression model above by using the ols() function in statsmodels. The 'model' instance has lots of properties. The most commonly used one is parameters, or slope and intercept. We can access to them by:
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print 'pamameters: ',model.params
+[out]: pamameters:  Intercept    0.000012
+                   spy          0.492112
+print 'residual: ', model.resid.tail()
+[out]: residual:  Date
+2016-12-22   -0.003360
+2016-12-23   -0.008219
+2016-12-28    0.000477
+2016-12-29   -0.006303
+2016-12-30   -0.021211
+print 'fitted values: ',model.predict()
+[out]: fitted values:  [-0.00070299 -0.00218348  0.00068734  0.00046907 -0.00277819  0.00103882]
+</pre>
+</div>
+
+<p>
+  Now let's have a look at our fitted line:
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">plt.figure(figsize = (15,10))
+plt.scatter(df.spy,df.amzn)
+plt.xlabel('spx_return')
+plt.ylabel('amzn_return')
+plt.plot(df.spy,model.predict(),color = 'red')
+plt.show()
+</pre>
+</div>
+
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial09-head.png" alt="head" />
+<p>
+  The red line is the fitted linear regression straight line. As we can see there are lot of statistical results in the summary table. Now let's talk about some important statistical parameters.
+</p>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial09-regression-table.png" alt="regression table" />

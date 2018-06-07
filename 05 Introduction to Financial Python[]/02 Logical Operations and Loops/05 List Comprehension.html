@@ -1,0 +1,61 @@
+<p>
+  List comprehension is a Pythonic way to create lists. Common applications are to make new lists where each element is the result of some operations applied to each member of another sequence. For example, if we want to create a list of squares using for loop:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">squares = []
+for i in [1,2,3,4,5]:
+    squares.append(i**2)
+print squares
+[out]: [1, 4, 9, 16, 25]
+</pre>
+
+<p>
+  Using list comprehension:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">foo = [1,2,3,4,5]
+squares = [x**2 for x in foo]
+print squares
+[out]: [1, 4, 9, 16, 25]
+</pre>
+
+<p>
+  Recall the example above where we used a for loop to select stocks. Here we use list comprehension:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">stocks = ['AAPL','GOOG','IBM','FB','F','V', 'G', 'GE']
+selected = ['AAPL','IBM']
+new_list = [x for x in stocks if x not in selected]
+print new_list
+[out]: ['GOOG', 'FB', 'F', 'V', 'G', 'GE']
+</pre>
+</div>
+
+<p>
+  A list comprehension consists of square brackets containing an expression followed by a "for" clause, and possibly "for" or "if" clauses. For example:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">print [(x, y) for x in [1,2,3] for y in [3,1,4] if x != y]
+print [str(x) + ' vs ' + str(y) for x in ['AAPL','GOOG','IBM','FB']
+                                for y in ['F','V','G','GE'] if x != y]
+[out]:
+[(1, 3), (1, 4), (2, 3), (2, 1), (2, 4), (3, 1), (3, 4)]
+['AAPL vs F', 'AAPL vs V', 'AAPL vs G', 'AAPL vs GE', 'GOOG vs F', 'GOOG vs V', 'GOOG vs G', 'GOOG vs GE', 'IBM vs F', 'IBM vs V', 'IBM vs G', 'IBM vs GE', 'FB vs F', 'FB vs V', 'FB vs G', 'FB vs GE']
+</pre>
+</div>
+
+<p>
+  List comprehension is an elegant way to organize one or more for loops when creating a list.
+</p>

@@ -1,0 +1,10 @@
+﻿<p>
+  Multi-factor strategies are <strong>stock picking</strong> strategies. Here we try to implement a 2013 paper published by AQR Capital Management.[ref]<strong>AQR (2013)</strong>. A New Core Equity Paradigm: Using Value, Momentum, and Quality to Outperform Markets. Retrieved from <a href="https://www.aqr.com/~/media/files/papers/aqr-a-new-core-equity-paradigm.pdf" target="_blank">www.aqr.com/~/media/files/papers/aqr-a-new-core-equity-paradigm.pdf</a>[/ref]
+  The paper recommends picking stocks by their value, quality (profitability) and momentum.
+  The empirically successful measure of value is book-to-price ratio (B/P), but other measures can be used simultaneously to form a more robust and reliable view of a stock's value. The paper uses 5 measures: book-to-price, earnings-to-price ratio (EPS), forecasted EPS, cash flow-to-enterprise value and sales-to-enterprise value.
+  The paper suggested a few quality measures: total profit over assets, gross margin and free cash flow over assets. There are also various measures of momentum. 1-year momentum, fundamental momentum and returns around earnings announcement are good choices.
+</P>
+<p>
+  In our backtested strategy, we used operating profit margin to measure quality, P/B value to measure value, and 1-month momentum. The portfolio was rebalanced every 2 months and our backtest period runs from Jan 2012 to Jan 2015. You can build your own version by changing the factor, the weight of each factor, and the rebalance period based on the backtested strategy.
+</p>
+<script src='https://www.quantconnect.com/terminal/backtest.js?sid=d0f89f7876841581a8eee32cf007cd75'></script>
