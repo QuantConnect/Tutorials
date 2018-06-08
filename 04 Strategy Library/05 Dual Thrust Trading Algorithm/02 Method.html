@@ -2,6 +2,7 @@
 <p>
   Firstly we need to initialize the data and resolution required, as well as the cash and start-end dates for your algorithm. All algorithms must be initialized.
 </p>
+
 <div class="section-example-container">
 <pre class="csharp">
 </pre>
@@ -28,7 +29,7 @@
 </p>
 
 <h3>Step 2:  Implementation of algorithm</h3>
-<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial05-dual-thrust-price-range.png" alt="Tutorial05-dual-thrust-price-range” />
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial05-dual-thrust-price-range.png" alt="Tutorial05-dual-thrust-price-range" />
 
 <p>
   In order to calculate the range, each trading day we need the close, high and low price data over the most recent N days. In addition, the open price of the current day is required in order to generate the signals. QuantConnect provides History(Symbol, TimeSpan, Resolution) method to get the history data like open, close, high and low for all configured securities over the requested N-days time span. Then the range is calculated by \[range = max(HH-LC, HC-LL)\]. In this implementation we choose N=4. It is less than one week and the range would reflect the recent price change.
@@ -49,7 +50,7 @@
   The long signal is calculated by \[cap = open + K_1 \times Range\]. The short signal is calculated by \[floor = open – K_2 \times  Range\] where K1 and K2 are the parameters. When K1 is greater than K2, it is much easier to trigger the long signal and vice versa. For demonstration, here we choose K1 = K2 = 0.5. In live trading, we can still use historical data to optimize those parameters or adjust the parameters according to the market trend. K1 should be small than k2 if you are bullish on the market and k1 should be much bigger if you are bearish on the market.
 </p>
 
-<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial05-dual-thrust-trading.png" alt="Tutorial05-dual-thrust-trading” />
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial05-dual-thrust-trading.png" alt="Tutorial05-dual-thrust-trading" />
 
 <p>
   This system is a reversal system, so if the investor holds a short position when the price breaks the cap line, the short margin should be liquidated first before opening a long position. If the investor holds a long position when the price breaks the floor line, the long margin should be liquidated first before opening a new short position.
@@ -69,5 +70,6 @@
                 self.Liquidate(self.syl)
                 self.SetHoldings(self.syl, -1)
             else:
-                self.SetHoldings(self.syl, -1)</pre>
+                self.SetHoldings(self.syl, -1)
+</pre>
 </div>
