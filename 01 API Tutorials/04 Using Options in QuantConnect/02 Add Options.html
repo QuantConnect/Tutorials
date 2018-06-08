@@ -1,0 +1,36 @@
+<p>
+  Before trading options, you need to add options for a given underlying equity and set the resolution in step <code>Initialize</code> with AddOption method. The commonly used parameters will be explained in the method table. Please refer to the link below for details of each method.
+</p>
+<table class="table qc-table">
+<thead>
+<tr>
+<th>Method</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://www.quantconnect.com/lean/docs#topic117.html">AddOption</a>(underlying,
+resolution,
+fillDataForward)</td>
+<td><strong>underlying(string):</strong> The underlying equity symbol
+<strong>resolution:</strong> Tick, Second, Minute, Hour, or Daily. Default is minute
+<strong>fillDataForward(bool):</strong> If true, returns the last available data even if none in that time slice. The default value is true.</td>
+</tr>
+</tbody>
+</table>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">def Initialize(self):
+    self.SetStartDate(2017, 01, 01)  #Set Start Date
+    self.SetEndDate(2017, 06, 30)  #Set End Date
+    self.SetCash(50000)  #Set Strategy Cash
+    equity = self.AddEquity("GOOG", Resolution.Daily) # Add the underlying stock: Google
+    option = self.AddOption("GOOG", Resolution.Daily) # Add the option corresponding to underlying stock
+    self.symbol = option.Symbol
+</pre>
+</div>
+<p>
+  The return value of AddOption method is an <a href="https://www.quantconnect.com/lean/docs#topic19245.html">option security object</a> , please refer to the link for detailed properties and methods of option class.
+</p>

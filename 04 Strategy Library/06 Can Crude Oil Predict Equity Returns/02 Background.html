@@ -1,0 +1,15 @@
+<p>
+  We assume the predicted return of the stock is proportional to the return of oil. This can be represented by the regression equation:
+</p>
+
+\[r^{stock}_t=a_0+a_1r^{oil}_{t-1}+e_t\]
+
+<p>
+  with
+</p>
+
+\[e_t=r^{stock}_t-E_{t-1}[r^{stock}_t]\].
+
+<p>
+  The independent variable is the return of the oil and the dependent variable is the return of the stock. We use the monthly returns over a regression period of 2 years, giving us 22 observations to regress.?Every month regression analysis is conducted, and we use the estimated coefficient from the regression to compute the expected stock return with the given return of oil.
+</p>

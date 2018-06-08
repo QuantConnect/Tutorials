@@ -1,0 +1,106 @@
+<p>
+  In this implementation, the FineSelectionFunction would be the core part because we have to rank the stocks in this process. We also need a ScheduledEvent handler to rebalance the portfolio every month. We would introduce the process step by step.
+</p>
+
+<h3>CoarseSelectionFunction</h3>
+<p>
+  This function is a filter for the whole asset universe(around 8000 stocks). We select the top 250 with highest dollar volume to ensure liquidity. We also filter out the stocks without fundamental information or with a too low price(less than $5).
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">
+def CoarseSelectionFunction(self, coarse):
+    # if the rebalance flag is not 1, return null list to save time.
+    if self.reb != 1:
+        return return self.long + self.short
+
+    # make universe selection once a month
+    # drop stocks which have no fundamental data or have too low prices
+    selected = [x for x in coarse if (x.HasFundamentalData)
+                and (float(x.Price) > 5)]
+
+    sortedByDollarVolume = sorted(selected, key=lambda x: x.DollarVolume, reverse=True)
+    top = sortedByDollarVolume[:self.num_coarse]
+    return [i.Symbol for i in top]
+</pre>
+</div>
+
+<h3>FineSelectionFunction</h3>
+<p>
+  Here is the core function. The process is that we make three sorted list to store the stocks, and then use a dictionary to store the score information. For the dictionary, the keys are Symbols and the values are their scores. Finally we sort the dictionary to get the final rank. we store the top 20 stocks to long in the list self.long and the bottom 20 stocks to short in the list self.short.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">
+  def FineSelectionFunction(self, fine):
+      # return the same symbol list if it's not time to rebalance
+      if self.reb != 1:
+          return self.long+self.short
+      self.reb = 0
+
+  # drop stocks which don't have the information we need.
+  # you can try replacing those factor with your own factors here
+
+      filtered_fine = [x for x in fine if x.OperationRatios.OperationMargin.Value
+                                      and x.ValuationRatios.PriceChange1M
+                                      and x.ValuationRatios.BookValuePerShare]
+
+      self.Log('remained to select %d'%(len(filtered_fine)))
+
+      # rank stocks by three factor.
+      sortedByfactor1 = sorted(filtered_fine, key=lambda x: x.OperationRatios.OperationMargin.Value, reverse=True)
+      sortedByfactor2 = sorted(filtered_fine, key=lambda x: x.ValuationRatios.PriceChange1M, reverse=True)
+      sortedByfactor3 = sorted(filtered_fine, key=lambda x: x.ValuationRatios.BookValuePerShare, reverse=True)
+
+      stock_dict = {}
+
+      # assign a score to each stock, you can also change the rule of scoring here.
+      for i,ele in enumerate(sortedByfactor1):
+          rank1 = i
+          rank2 = sortedByfactor2.index(ele)
+          rank3 = sortedByfactor3.index(ele)
+          score = sum([rank1*0.2,rank2*0.4,rank3*0.4])
+          stock_dict[ele] = score
+
+      # sort the stocks by their scores
+      self.sorted_stock = sorted(stock_dict.items(), key=lambda d:d[1],reverse=False)
+      sorted_symbol = [x[0] for x in self.sorted_stock]
+
+      # sotre the top stocks into the long_list and the bottom ones into the short_list
+      self.long = [x.Symbol for x in sorted_symbol[:self.num_fine]]
+      self.short = [x.Symbol for x in sorted_symbol[-self.num_fine:]]
+
+      return self.long+self.short</pre>
+</div>
+<h3>Rebalance</h3>
+<p>
+  Our portfolio is rebalanced monthly, so first of all we should write a ScheduledEvent handler in the Initialize function:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">
+def Initialize(self):
+# Use SPY as a benchmark for market open
+    self.Schedule.On(self.DateRules.MonthStart(self.spy), self.TimeRules.AfterMarketOpen(self.spy,5), Action(self.rebalance))
+Our rebalanced method is straightforward: We first liquidate the stocks that are no longer in the long/short list, and then assign equal weight to the stocks we are going to long or short.
+def rebalance(self):
+# if this month the stock are not going to be long/short, liquidate it.
+    long_short_list = self.long + self.short
+    for i in self.Portfolio.Values:
+        if (i.Invested) and (i.Symbol not in long_short_list):
+            self.Liquidate(i.Symbol)
+
+    # Assign each stock equally. Always hold 10% cash to avoid margin call
+    for i in self.long:
+        self.SetHoldings(i,0.9/self.num_fine)
+
+    for i in self.short:
+        self.SetHoldings(i,-0.9/self.num_fine)
+</pre>
+</div>

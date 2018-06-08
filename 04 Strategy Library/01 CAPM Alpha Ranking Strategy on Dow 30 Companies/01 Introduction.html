@@ -1,0 +1,14 @@
+<p>
+	This tutorial performs a simple linear regression to build the Capital Asset Pricing Model(CAPM) [ref]<a href="http://www.nobelprize.org/nobel_prizes/economic-sciences/laureates/1990/sharpe-lecture.pdf">Sharpe, William, 1990 http://www.nobelprize.org/nobel_prizes/economic-sciences/laureates/1990/sharpe-lecture.pdf</a>[/ref], a classical model developed by William F. Sharpe and Harry Markowitz. This model yields alpha and beta for each asset and is traded by going long on the stocks ranked with the highest alpha. This tutorial will demonstrate the following:
+</p>
+
+<ul>
+	<li>How to use historical data</li>
+	<li>Set an event handler</li>
+	<li>Conduct linear regression</li>
+	<li>Build your own functions in the QuantConnect Algorithm Lab</li>
+</ul>
+
+<p>
+	The implementation of the strategy demonstrates that stocks beat the market last month are likely to beat the market again in the subsequent month. This algorithm performs well when the market is smooth. However when the market volatility increases the model fails to capture alpha and it performs poorly. What we learn from this is that market fluctuations decrease the significance level of the linear regression coefficients, especially when we are using daily returns to fit the model.
+</p>

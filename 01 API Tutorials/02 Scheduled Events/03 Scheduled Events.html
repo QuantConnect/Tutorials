@@ -1,16 +1,21 @@
-Scheduled events allow you to trigger code blocks for execution at specific times according to rules you set. This feature helps coordinate your algorithm activities and perform analysis at regular intervals; while letting the trading engine take care of market holidays.
-
-The scheduling is set with two rules: the <code>DateRules</code> and <code>TimeRules</code> classes. The schedule manager takes one of each and executes an action code block.
-In C# this looks like:
-<pre class="prettyprint linenums">Schedule.On(DateRules.On(2013, 10, 7), TimeRules.At(13, 0), () =&gt;
+<p>
+  Scheduled events allow you to trigger code blocks for execution at specific times according to rules you set. This feature helps coordinate your algorithm activities and perform analysis at regular intervals; while letting the trading engine take care of market holidays.
+</p>
+<p>
+  The scheduling is set with two rules: the <code>DateRules</code> and <code>TimeRules</code> classes. The schedule manager takes one of each and executes an action code block.
+</p>
+<div class="section-example-container">
+<pre class="csharp">Schedule.On(DateRules.On(2013, 10, 7), TimeRules.At(13, 0), () =&gt;
 {
          Debug("Specific Time: Fired at : " + Time);
 });</pre>
-Or in Python:
-<pre class="prettyprint linenums">self.Schedule.On(self.DateRules.On(2013, 10, 7), self.TimeRules.At(13, 0), Action(self.SpecificTime))
+<pre class="python">self.Schedule.On(self.DateRules.On(2013, 10, 7), self.TimeRules.At(13, 0), Action(self.SpecificTime))
 def SpecificTime(self):
     self.Log("SpecificTime: Fired at : {0}".format(self.Time))</pre>
-The date rules can be specified as below:
+</div>
+<p>
+  The date rules can be specified as below:
+</p>
 <table class="table table-striped qc-table">
 <thead>
 <tr>
@@ -40,7 +45,11 @@ The date rules can be specified as below:
 </tr>
 </tbody>
 </table>
-The time rules trigger specify when on the day the event should be triggered. They can be specified as below:
+
+<p>
+  The time rules trigger specify when on the day the event should be triggered. They can be specified as below:
+</p>
+
 <table class="table table-striped qc-table">
 <thead>
 <tr>
@@ -66,5 +75,7 @@ The time rules trigger specify when on the day the event should be triggered. Th
 </tr>
 </tbody>
 </table>
-For a demonstration see the tutorial video below:
+<p>
+  For a demonstration see the tutorial video below:
+</p>
 https://youtu.be/SUu4MKlm93I

@@ -1,0 +1,48 @@
+<p>
+  For the cointegration pairs trading method, we choose the same ETF pair "GLD" &amp; "DGL".  There is no need to choose a copula function so there is only a 12 month rolling formation period. The trading period is 5 years from January 2011 to  May 2017.
+</p>
+
+<h3>Step 1: Generate the Spread Series</h3>
+<p>
+  At the start of each month, we generate the log price series of two ETFs with the daily close. Then the spread series is estimated using regression analysis based on log price series data. For equities X and Y, we run linear regression over the log price series and get the coefficient β.
+</p>
+
+\[spread_t=\log(price_t^y)-\beta \log(price_t^x)\]
+
+<h3>Step 2: Compute the Threshold</h3>
+
+<p>
+  Using the standard deviation of spread during the rolling formation period, a threshold of two standard deviations is set up for the trading strategy as indicated in the paper.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">price_x = pd.Series([float(i.Close) for i in self.symbols[0].hist_window],
+                     index = [i.Time for i in self.symbols[0].hist_window])
+
+price_y = pd.Series([float(i.Close) for i in self.symbols[1].hist_window],
+                     index = [i.Time for i in self.symbols[1].hist_window])
+if len(price_x) < 250: return
+spread = self.regr(np.log(price_x), np.log(price_y))
+mean = np.mean(spread)
+std = np.std(spread)
+ratio = floor(self.Portfolio[self.symbols[1]].Price / self.Portfolio[self.symbols[0]].Price)
+if spread[-1] > mean + self.threshold * std:
+    if not self.Portfolio[self.symbols[0]].Quantity > 0 and not self.Portfolio[self.symbols[0]].Quantity < 0:
+        self.Sell(self.symbols[1], 100)
+        self.Buy(self.symbols[0],  ratio * 100)
+
+elif spread[-1] < mean - self.threshold * std:
+    if not self.Portfolio[self.symbols[0]].Quantity < 0 and not self.Portfolio[self.symbols[0]].Quantity > 0:
+        self.Sell(self.symbols[0], 100)
+        self.Buy(self.symbols[1], ratio * 100)
+else:
+    self.Liquidate()
+</pre>
+</div>
+
+<h3>Step 3: Set up the Trading Signals</h3>
+<p>
+  On each trading day, we enter a trade whenever the spread moves more than two standard deviations away from its mean. In other words, we construct short positions in X and long positions in Y on the day that spread&gt;mean+2*std. We construct short positions in Y and long positions in X on the day that spread&lt;mean-2*std. The trade is exited if the spread reverts to its equilibrium (defined as less than half a standard deviation from zero spread). The value of mean and standard deviation are calculated from the rolling formation period and will be updated once a month.
+</p>

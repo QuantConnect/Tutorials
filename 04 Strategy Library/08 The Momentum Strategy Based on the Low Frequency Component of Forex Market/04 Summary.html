@@ -1,0 +1,67 @@
+<table class="table qc-table">
+<thead>
+<tr>
+<th style="text-align: center;" colspan="8">Strategy Performance for different currencies in Forex</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Currency</td>
+<td>USDCAD</td>
+<td>EURUSD</td>
+<td> USDCHF</td>
+<td> EURGBP</td>
+<td>CADUSD</td>
+<td>USDNOK</td>
+<td>USDZAR</td>
+</tr>
+<tr>
+<td>Sharp Ratio</td>
+<td>0.361</td>
+<td>0.375</td>
+<td> 0.131</td>
+<td> 0.337</td>
+<td> 0.052</td>
+<td> 0.054</td>
+<td> 0.195</td>
+</tr>
+<tr>
+<td> Total Trades</td>
+<td> 14</td>
+<td> 11</td>
+<td> 12</td>
+<td> 11</td>
+<td> 6</td>
+<td> 16</td>
+<td> 9</td>
+</tr>
+<tr>
+<td> Annual Return</td>
+<td> 3.128%</td>
+<td> 3.272%</td>
+<td> 1.162%</td>
+<td> 2.689%</td>
+<td> 0.043%</td>
+<td> 0.093%</td>
+<td> 2.201%</td>
+</tr>
+<tr>
+<td> Max Drawdown</td>
+<td> 10.3%</td>
+<td> 8.3%</td>
+<td> 24.8%</td>
+<td> 17.6%</td>
+<td> 22.5%</td>
+<td> 30.3%</td>
+<td> 23%</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+  The table reports the strategy performance statistics during six and a half years backtesting period. From the table we can see, most of them have the higher maximum drawdown. The number of total trades is small because we applied MA rules on the smoothed trend component.  As the author indicated in the paper, we still find that the performance of this strategy is very sensitive to the choice of lag parameters in MA rules and in a non-monotonic way.
+</p>
+
+<p>
+  The strategy does not generate more stable profits in Forex market generally. That might because that the HP filter technique was designed to be viewed as a trend curve through the entire set of data. When we applied it in trading strategy, the entry of new data into the filter model can cause the trend line to change the trend through past data, makes it harder to identify the trend accurately.
+</p>

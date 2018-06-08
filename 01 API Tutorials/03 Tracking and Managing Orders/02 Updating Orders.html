@@ -1,0 +1,40 @@
+<p>
+  Once you have an order ticket you can use it to get order fields. In <b>C#</b> it looks like:
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">var currentStopPrice = _ticket.Get(OrderField.StopPrice);
+</pre>
+<pre class="python"># Retrive the 'StopPrice' for an order from the ticket
+currentStopPrice = _ticket.Get(OrderField.StopPrice)
+</pre>
+<p>
+  Or update the order fields (LimitPrice, StopPrice, Tag or Quantity):
+</p>
+<div class="section-example-container">
+<pre class="csharp">_ticket.Update(new UpdateOrderFields
+{
+    LimitPrice = newLongLimit,
+    Tag = "Update #" + (longOrder.UpdateRequests.Count + 1)
+});
+</pre>
+<pre class="python"># update the order fields (LimitPrice, StopPrice, Tag or Quantity)
+updateOrderFields = UpdateOrderFields()
+updateOrderFields.LimitPrice = newLongLimit
+_ticket.Update(updateOrderFields)
+</pre>
+</div>
+
+<p>
+  You can also cancel your order if required:
+</p>
+<div class="section-example-container">
+<pre class="csharp">_ticket.Cancel();</pre>
+<pre class="python">ticket.Cancel()</pre>
+</div>
+
+
+<p>
+  In the video below we demonstrate putting it all together to create a moving take-profit order which gradually decreases its profit target as time passes.
+https://www.youtube.com/watch?v=HykXfstdNW0
+</p>

@@ -1,0 +1,22 @@
+<p>
+  We used 10-minute resolution data to backtest the strategy from Jan 2013 to Dec 2016. To demonstrate the in sample training results, we randomly selected a training period that from 2016-09-07 to 2013-11-30.
+</p>
+
+<h3>Training Result</h3>
+<p>
+  The following table demonstrates the top 10 selected pairs in the training period mentioned above. We can see that the pairs with the highest correlation coefficient doesn't not necessarily has the best ADF test value. We made the rank by ADF test value because it's more robust.
+</p>
+
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial07-pairs-trading-1.png" alt="Tutorial07-pairs-trading-1” />
+
+<p>
+  The upper part of the following chart plots the stock prices of pair ING vs TCB. The lower part plots by how many times standard deviation the residual deviate from its mean. There are 5 trading opportunities if we set the opening threshold to be 2.32.
+</p>
+
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial07-pairs-trading-2.png" alt="Tutorial07-pairs-trading-2” />
+
+<p>
+  The following chart is the density plot of the residual error. From the shape we can see the error is approximately normal distributed.
+</p>
+
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial07-pairs-trading-3.png" alt="Tutorial07-pairs-trading-3” />
