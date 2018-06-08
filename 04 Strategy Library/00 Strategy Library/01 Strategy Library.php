@@ -58,7 +58,7 @@ $strategyMap = [
         'description' => 'A short term reversal algorithm which gives the opposite signal by analyzing recent period price action'
     ],
     [
-        'name' => 'Fundamental Factor Long/Short Strategy',
+        'name' => 'Fundamental Factor Long Short Strategy',
         'link' => 'strategy-library/fundamental-factor-long-short-strategy',
         'description' => 'A basic monthly rebalance long short algorithm based on fundamental factors'
     ],

@@ -1,4 +1,3 @@
-<h2>Overview</h2>
 <p>
   Tracking and managing orders is an important part of an algorithmic trading strategy. Intelligent order management encourages discipline and a deep understanding of your algorithm. Through the QuantConnect API you can get order fields, update their values and cancel pending orders. This can be useful for lowering trading costs and improving order fills.
   When you place a trade you receive an <code>OrderTicket</code> for you to access the order. This allows you to safely (asynchronously) update and cancel the order while in live trading. In live trading you cannot assume order updates are processed successfully as the brokerage may have already filled the trade.

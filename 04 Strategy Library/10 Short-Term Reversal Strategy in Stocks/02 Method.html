@@ -43,7 +43,7 @@
         return list
 </pre>
 </div>
-<h3>Step 2:?Warm Up</h3>
+<h3>Step 2:Warm Up</h3>
 <p>
   Before we are able to make our investment decisions, we must have at least 4 weeks' data to calculate the performance, i.e. the monthly return, of each stock. Hence, we need a warm up period as long as 3 weeks to accumulate price series, so that once the fourth week's data come we can calculate?the return of the whole month.
 </p>
@@ -72,7 +72,7 @@ for i in symbols:
 <pre class="python">for stock in self._stocks:
         self._values[stock].append(self.Securities[stock].Price)</pre>
 </div>
-<h3>Step 3:?Weekly Rebalancing</h3>
+<h3>Step 3:Weekly Rebalancing</h3>
 <p>
   After the warm-up period, we calculate monthly returns every week and based on the returns, we make our investment decisions.
 </p>

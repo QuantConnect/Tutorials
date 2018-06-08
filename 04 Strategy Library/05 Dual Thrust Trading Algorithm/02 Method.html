@@ -1,11 +1,3 @@
-<h2>Abstract</h2>
-<p>
-  The <a href="http://www.finance-directory.org/investing/site/6395">Dual Thrust trading algorithm</a>  [ref]<strong>Gang Wei(May 2012)</strong>. Dual Thrust Intraday Strategy, <a href="http://www.xcf.cn/zjfxs/yjzs/jrgc/201210/P020121004348795101761.pdfl"> Online Copy</a>[/ref] is a famous strategy developed by Michael Chalek. It has been commonly used in futures, forex and equity markets. The idea of Dual Thrust is similar to a typical breakout system, however dual thrust uses the historical price to construct update the look back period - theoretically making it more stable in any given period.
-</p>
-<p>
-  In this tutorial we give a brief introduction to the strategy and show how to implement this algorithm on QuantConnect. After pulling in the historical price of the chosen stock, the range is calculated based on the close, high and low over the most recent N-days.  A position is opened when the market moves a certain range from the opening price. We tested the strategy on individual stocks under two market states: a trending market and range bound market.  The results suggest this momentum trading system works better in trending market but will trigger some fake buy and sell signals in much more volatile market. Under the range bound market, we can adjust the parameters to get better return. As a comparison of individual stocks, we also implemented the strategy on SPY. The result suggested that the strategy beat the market.
-</p>
-<h2>Method</h2>
 <h3>Step 1 : Initialization of algorithm</h3>
 <p>
   Firstly we need to initialize the data and resolution required, as well as the cash and start-end dates for your algorithm. All algorithms must be initialized.
@@ -79,14 +71,3 @@
             else:
                 self.SetHoldings(self.syl, -1)</pre>
 </div>
-<h2>Conclusion</h2>
-<p>
-  We tested this strategy on the S&amp;P 500 ETF SPY from 2004 to 2017. During the backtesting period, SPY resulted in a Sharpe Ratio of 0.906 and the drawdown is 25%.  As expected the strategy works well in a trending market. The strategy seemed to detect most of the market turning points and beat the market from 2009 to 2017.
-  This is just a basic implementation and the parameters K1 and K2 are fixed. The strategy can be further extended to Futures and Forex markets. When K1 is smaller than k2, buy signals are prone to trigger and vice versa. To improve the model we can apply technical indicators to judge the trend of price and adjust the value of two parameters dynamically and apply risk control in the position sizing.
-</p>
-
-<h2>Algorithm</h2>
-<p>
-  Backtest result for ETF: SPY from 2004 to 2017
-</p>
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=ffe3fbed009f9502f145e96b81638575'></script>

@@ -14,7 +14,7 @@
   Consider two stocks A and B, a correlation coefficient between the stocks was a statistic that provide a measure of how the two stocks A and B were associated. The correlation coefficient \(\rho\) of stock A and stock B was obtained by
 </p>
 
-\[\rho = \frac{\sum_{i}^{N}(A_i - \bar{A})(B_i - \bar{B}))}{[\sum_{i}^{N}(A - \bar{A})^2\sum_{i}^{N}(B_i - \bar{B})^2]^\frac{1}{2}}}\]
+\[\rho = \frac{\sum_{i}^{N}(A_i - \bar{A})(B_i - \bar{B}))}{[\sum_{i}^{N}(A - \bar{A})^2\sum_{i}^{N}(B_i - \bar{B})^2]^\frac{1}{2}}\]
 
 <p>
   Where \(\bar{A}\) and \(\bar{B}\) are the mean prices of stock A and stock B respectively, N denoted a trading data range. \(\rho\) is in the range of [-1,1]. The more positive \(\rho\) is, the more positive the association of stock A and stock B is.
@@ -64,7 +64,7 @@
   Testing for the presence of the unit root in the regression residual using the ADF test was given by
 </p>
 
-\[\Delta Z_t = \alpha + \beta t + \gamma Z_{t-1} + \sum_{i = 1}^{p -1}\delta_i \DeltaZ_{t-i} + \mu_t\]
+\[\Delta Z_t = \alpha + \beta t + \gamma Z_{t-1} + \sum_{i = 1}^{p -1}\delta_i \Delta Z_{t-i} + \mu_t\]
 
 <p>
   where \(\alpha\) is a constant, \(\beta\) is the coefficient on a time trend, p is the lag of order of the autoregressive process, \(\mu_t\) is an error term and serially uncorrelated.
@@ -96,6 +96,7 @@
 <p>
   In order to select potential stocks for pairs trading, the two-stage correlation and cointegration approach was used. The first step is to identify potential stock pairs from the same sector, where the stock pairs are selected with correlation coefficient of at least 0.9 using the correlation approach. The second step is to check the the cointegration of the pairs passed the correlation test. If the test value of cointegration is equal or less than -3.34, which is the critical value at a 95% confidence lever, the null hypothesis \(H_0 : \gamma = 0\) is rejected, thus the residual \(\epsilon\) is stationary, and the pair passed the cointegration test. The third step is to rank all of the stock pairs that passed the two-stage test according to their cointegration test values. The smaller the cointegration test value is, the higher rank the stock pair is assigned to. Financial selection of the stock pairs from the top rank is used for pairs trading.
 </p>
+<p>
   The final step of the strategy is to define trading rules. To open a pairs trading, the regression residual \(\epsilon_t\) must cross over and down the positive \(\sigma\) standard deviation above the mean or cross down and over the negative \(\sigma\) standard deviation below the mean. If the residual is positive, we short stock B and long stock A; if the residual is negative, we short Stock A and long Stock B. When the regression residual (\epsilon_t\) returned to a certain level, the pairs trading is closed. Further more, in order to prevent the loss of too much on a single pairs trading, a stop-loss is used to close the pairs when the residual hit \(4\epsilon\) positive or negative standard deviation.
 </p>
 
