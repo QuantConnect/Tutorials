@@ -1,0 +1,19 @@
+<p>
+  The following regression output is obtained by backtesting the time period from Jun 2013 to Jun 2016. We can see the results are fairly close to those from the source paper with a R-squared value of 3.1% compared to the paper's 3.89%. Our momentum coefficient, ρ, is 0.0344 compared to the paper's 0.042. We obtained 0.9955 mean reversion coefficient (1 - 0.0045), and the paper got 0.9859.
+</p>
+
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial02-mean-reversion-1.png" alt="Tutorial02-mean-reversion-1” />
+
+<p>
+  From these results we can say the limited sample size does not impair the feasibility of this model. The t-stats of the coefficients are -4.074 and 1.417 for the reversal factor and momentum factor respectively. The p-value of the reversal factor is very small which means this factor has a very high significance level.
+</p>
+
+<h3>Backtest Sensitivity Results</h3>
+<p>
+  We performed some rough period sensitivity analysis in different time periods and summarized the results as the following table:
+</p>
+
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial02-mean-reversion-1.png" alt="Tutorial02-mean-reversion-2” />
+<p>
+  The compound annual returns are quite stable, however, the paper claimed that the average return is 27.5% vs our 11% achieved. This difference can be accounted for by the data time span and currency pairs.
+</p>

@@ -1,0 +1,59 @@
+<p>
+  The strategy is centered on <strong>uncovered interest parity (UIP)</strong> theory. UIP states that the change in the exchange rate should incorporate any interest rate differentials between the two currencies. By looking for patterns in the deviation from UIP we can potential generate abnormal returns.
+</p>
+
+<h4>Interest Parity Conditions</h4>
+<p>
+  UIP states that an investor who borrows money in their home country and lends it in another country with a higher interest rate should expect a zero return due to the changes in exchange rate. In other words:
+</p>
+
+\[1+r_t = (1+r^{i}_t)(\frac{F^{i}_t}{S^{i}_t})\]
+<p>
+  Where \(r_t\) is the domestic interest rate, \(r^{i}\) is the foreign interest rate, \(S^{i}\) is the spot exchange rate and \(F^{i}\) is the forward rate. We can also replace F forward rate with expected spot rate:
+</p>
+
+\[1+r_t = (1+r^{i}_t)(\frac{E(S^{i}_{t+1})}{S^{i}_t})\]
+
+<p>
+  Taking logs of the above two equations, we obtain:
+</p>
+
+\[r_t - r^{i}_t = \ln F^{i}_t - \ln S^{i}_t\]
+
+\[r_t - r^{i}_t =\ln S^{i}_{t+1} - \ln S^{i}_t\]
+
+<p>
+  The deviation from UIP is denoted by y and defined as follows:
+</p>
+
+\[y^{i}_{t+1} =\ln S^{i}_{t+1} -\ln F^{i}_t\]
+
+<h4>Model and Parameter Estimation</h4>
+<p>
+  Fama and French and Summers [ref]<strong>Fama, E., 1984. </strong>Forward and spot exchange rates. Journal of Monetary Economics <a href="http://eml.berkeley.edu/~craine/EconH195/Fall_13/webpage/Fama_Forward%20Discount.pdf">Online Copy</a> 14, 319–338.[/ref] constructed a simple model for stock price that is the sum of a random walk and a stationary component - they represent the natural log of the stock price with <strong>x</strong>. The stationary component represents the temporary swings in stock price (characterized by coefficient \(\delta \)), the parameter \(\mu \) captures the random walk drift component and a coefficient accounts for the momentum effect \(\rho \). Balvers and Wu construct the log of stock prices as:
+</p>
+
+\[x^{i}_t = (1 - \delta ^{i})\mu ^{i} + \delta ^{i}x^{i}_{t-1} + \sum_{j=1}^{J}\rho ^{i}(x^{i}_{t-1} - x^{i}_{t-j-1}) + \epsilon ^{u}_t\]
+
+<p>
+  Using the equation above Serban adapts it to find the abnormal return in the forex market. The \(\delta \) represents the speed of mean reversion and can differ by country, while the \(\rho \) represents the momentum strength and can vary by country and by lag. The parameter \(\mu \) also varies by country. Accounting for these changes:
+</p>
+
+\[y^{i}_t = -(1 - \delta ^{i})(x^{i}_{t-1} - \mu ^{i}) + \sum_{j=1}^{J}\rho ^{i}(x^{i}_{t-1} - x^{i}_{t-j-1}) + \epsilon ^{u}_t\]
+
+<h4>Trading Strategy</h4>
+<p>
+  The trading strategy from the paper allows \(\mu \) to change by country, while let \(\rho \) and \(\delta \) stay fixed. By applying Ordinary Least Squared(OLS) regression, the model estimates the return y for each currency. We construct the portfolio by taking a long position on the currency with the highest expected return and taking a short position on the currency with the lowest expected return. We hold these positions for one month, and repeat the process each month. There are two exceptions to this strategy: if all expected returns are positive, we take a long position only, and vice versa.
+  To limit the number of parameters we need to estimate and find a solution easily we only allow \(\mu \) to change by country. According to the paper if we let ρ stay fixed and J =3, we can obtain the highest return for this strategy. If so the equation can be simplified as:
+</p>
+
+\[y^{i}_t = -(1-\delta )(x^{i}_{t-1} - \mu ^{i}) + \rho (x^{i}_{t-1} - x^{i}_{t-4}) + \epsilon ^{i}_t\]
+
+<p>
+  When applying the above equation, we found that the scale of the mean reversion for each currency are very different, and this difference in scale is large enough to affect the accuracy of our rank. We made an adjustment to standardize the mean-reversion. While calculating \(\mu \) (the mean of the log prices) we also calculated standard deviation σ. In this tutorial we replace \(x-\mu \) with \(\frac{x - \mu}{\sigma } \). This captures the mean reversion factor better than the author's technique.
+</p>
+
+<h4>Data Description</h4>
+<p>
+  The paper used monthly exchange rate data for the Canadian Dollar/USD, German Mark/Euro, UK Pound/USD and Japanese Yen/USD, from 1978 to 2008. Due to data availability, we used Euro/USD instead of German Mark/Euro, and the earliest data available starts from 2004. Each time we launch the strategy we use all of the available historical data prior to the start date to build the OLS model and uses that model for the entire backtest. The paper used 1/3 of their data as the training dataset and the rest of the test set. We directly test our model on backtesting, because QuantConnect makes this easier.
+</p>

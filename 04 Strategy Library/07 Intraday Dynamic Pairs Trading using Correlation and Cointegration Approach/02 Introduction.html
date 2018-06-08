@@ -1,0 +1,116 @@
+<p>
+  High Frequency Trading(HFT) is a type of quantitative trading characterized by short holding period and the use of sophisticated computer method to trade securities rapidly. It aims to capture small profit on every short-term trade.(Cartea &amp; Penalva, 2012[ref]<strong>Cartea &amp; Penalva, 2012 </strong>Where is the value in high frequency trading?<strong><a href="http://dx.doi.org/10.1142/S2010139212500140"> Online Copy</a></strong>[/ref]).
+  Statistical arbitrage is a situation where there is a statistical mispricing of one or more assets based on the expected values of these assets. When a profit situation takes place from pricing inefficiencies between securities, traders can identify the statistical arbitrage situation through mathematical models. Statistical arbitrage depends heavily on the ability of market prices to return to a historical or predicted mean. <strong>The Law of One Price(LOP)</strong> lays the foundation for this assumption. LOP states that two stocks with the same payoff in every state of nature must have the same current value (Gatev, Goetzmann, &amp; Rouwenhorst, 2006[ref]<strong>Gatev, Goetzmann, &amp; Rouwenhorst, 2006 </strong>Pairs trading: Performance of a relative-value arbitrage rule. The Review of Financial Studies, 19(3), 797–827. <a href="http://dx.doi.org/10.1093/rfs/hhj020"><strong>Online Copy</strong></a>[/ref]) Thus, two stock prices spread between close substitute assets should have a stable, long-term equilibrium price over time.
+</p>
+
+<h3>Data Description</h3>
+<p>
+  In order to have more pairs with high correlation, we select stocks in a specific industry. Economically, we prefer traditional sectors because the companies in these sector are more likely to be close substitutes. If we selected N stocks, the number of pairs can be calculated by \(\textrm{C}_{n}^{2} = \frac{n*(n-1)}{2}\). In the demonstrated strategy we used 80 stocks, so we have 3160 pairs in total. We used minute data and aggregate them into lower resolution, thus 1 minute is the highest resolution for this strategy.
+</p>
+
+<h3>Correlation Approach</h3>
+<p>
+  Correlations measure the relationship between two stocks that have price trends. They tend to move together, and thus are correlated. Correlation filter is the first step to screen the candidate pairs.
+  Consider two stocks A and B, a correlation coefficient between the stocks was a statistic that provide a measure of how the two stocks A and B were associated. The correlation coefficient \(\rho\) of stock A and stock B was obtained by
+</p>
+
+\[\rho = \frac{\sum_{i}^{N}(A_i - \bar{A})(B_i - \bar{B}))}{[\sum_{i}^{N}(A - \bar{A})^2\sum_{i}^{N}(B_i - \bar{B})^2]^\frac{1}{2}}}\]
+
+<p>
+  Where \(\bar{A}\) and \(\bar{B}\) are the mean prices of stock A and stock B respectively, N denoted a trading data range. \(\rho\) is in the range of [-1,1]. The more positive \(\rho\) is, the more positive the association of stock A and stock B is.
+</p>
+
+<p>
+  However, the pairs trading based on a correlation approach alone would have a disadvantage of instabilities over time. Correlation coefficients do not necessarily imply  mean-reversion between the prices of the two stock pairs. In order to overcome the above issue, a cointegration approach was further used as the second-step of the selection process for the pairs.
+</p>
+
+<h3>Cointegration Approach</h3>
+<p>
+  The Cointegration concept, an innovative mathematical model in economics developed by Nobel laureates Engle and Granger[ref]<strong>Engle and Granger</strong> Co-integration and error correction: Representation, estimation, and testing. Econometrica, 55(2), 251–276. <strong><a href="http://dx.doi.org/10.2307/1913236">Online Copy</a></strong>[/ref]Cointegration states that, in some instances, despite two given non-stationary time series, a specific linear combination of the two time series is actually stationary. In other word, the two time series move together in a lockstep pattern.
+</p>
+
+<p>
+  The definition of cointegration is the following: assume that \(x_t\) and \(y_t\) are two time series that were non-stationary. If there exists a parameter \(\gamma\) such that the following equation:
+</p>
+
+\[z_t = y_t - \gamma x_t\]
+
+<p>
+  It is a stationary process, then \(x_t\) and \(y_t\) would be cointegrated. This process is a powerful tool for investigating common asset trends in multivariate time series.
+</p>
+<p>
+  In our case, Let \(p_t^A\) and \(p_t^B\) be the prices of two stocks A and B respectively. If it is assumed that {\({p_t^A, p_t^B}\)} is individually non-stationary, there exists the parameter \(\gamma\) such that the following equation was a stationary process
+</p>
+
+\[P_t^A - \gamma P_t^B = \mu + \epsilon_t\]
+
+<p>
+  where \(\mu\) is a mean of the cointegration model. \(\epsilon_t\) is a stationary, mean-revering process and was referred to as a <em>cointegration residual</em>. The parameter \(\gamma\) is known as a <em>cointegration coefficient. </em>The equation above represents a model of cointegrated pair for stocks A and B.
+</p>
+
+<p>
+  It's essential to understand how the conitegration residual together with the cointegration coefficient determines our trading direction. If \(\epsilon\) is positive, in a given confidence interval, this is a signal that stock A is relatively overpriced and stock B is relatively underpriced, and we are going to long B and short A; If If \(\epsilon\) is negative, we are going to long A and short B.
+</p>
+
+<h3>Cointegration Verification(optional reading part)</h3>
+<p>
+  In the Engle-Granger method(Engle &amp; Granger, 1987), we first set up a cointegration regression between stock A and stock B as stated in the equation above, and then estimate the regression parameters \(\mu\) and \(\gamma\) using an ordinary least squares(OLS). Subsequently, we tested the regression residual \(epsilon_t\) to determine whether or not it was stationary.
+</p>
+
+<p>
+  The most popular stationary test in the area of cointegration, the Augmented Dickey Fuller (ADF) test, was used on the regression residual \(\epsilon\) to determine whether it had a unit root.
+</p>
+<p>
+  Testing for the presence of the unit root in the regression residual using the ADF test was given by
+</p>
+
+\[\Delta Z_t = \alpha + \beta t + \gamma Z_{t-1} + \sum_{i = 1}^{p -1}\delta_i \DeltaZ_{t-i} + \mu_t\]
+
+<p>
+  where \(\alpha\) is a constant, \(\beta\) is the coefficient on a time trend, p is the lag of order of the autoregressive process, \(\mu_t\) is an error term and serially uncorrelated.
+</p>
+
+<p>
+  The number of lag order p in the equation is usually unknown and therefore had to be estimated. To determine the number of lag p, the information criteria for lag order selection was used. Here we choose Bayesian Information Criterion(BIC)
+</p>
+
+\[BIC = (T-p)\ln\frac{T\hat{\sigma}_p^2}{T-p} + T[1+ln(\sqrt{2\pi})] + p\ln[\frac{\sum_{t=1}^{T}(\Delta Z_t)^2 -T\hat{\sigma}_p^2}{p}]\]
+
+<p>
+  Where T is the sample size.
+</p>
+<p>
+  The unit root test for the regression residual \(\epsilon\) using the ADF test was then carried out under the null hypothesis \(H_0 : \gamma = 0\) versus the alternative hypothesis \(H_1 : \gamma &lt; 0\). A statistical value of the ADF test was obtained by
+</p>
+
+\[ADF  test = \frac{\hat{\gamma }}{SE(\hat{\gamma })}\]
+
+<p>
+  The test result in the equation above is compared with the critical value of the ADF test. If the test result is less than the critical value, then the null hypothesis is rejected. This means the regression residual \(\epsilon\) is stationary. Thus, the two stock prices {\({p_t^A, p_t^B}\)} are cointegrated.
+</p>
+<h3>Pairs Trading Strategy</h3>
+<p>
+  The pairs trading strategy uses trading signals based on the regression residual \(\epsilon\) and were modeled as a mean-reverting process.
+</p>
+
+<p>
+  In order to select potential stocks for pairs trading, the two-stage correlation and cointegration approach was used. The first step is to identify potential stock pairs from the same sector, where the stock pairs are selected with correlation coefficient of at least 0.9 using the correlation approach. The second step is to check the the cointegration of the pairs passed the correlation test. If the test value of cointegration is equal or less than -3.34, which is the critical value at a 95% confidence lever, the null hypothesis \(H_0 : \gamma = 0\) is rejected, thus the residual \(\epsilon\) is stationary, and the pair passed the cointegration test. The third step is to rank all of the stock pairs that passed the two-stage test according to their cointegration test values. The smaller the cointegration test value is, the higher rank the stock pair is assigned to. Financial selection of the stock pairs from the top rank is used for pairs trading.
+</p>
+  The final step of the strategy is to define trading rules. To open a pairs trading, the regression residual \(\epsilon_t\) must cross over and down the positive \(\sigma\) standard deviation above the mean or cross down and over the negative \(\sigma\) standard deviation below the mean. If the residual is positive, we short stock B and long stock A; if the residual is negative, we short Stock A and long Stock B. When the regression residual (\epsilon_t\) returned to a certain level, the pairs trading is closed. Further more, in order to prevent the loss of too much on a single pairs trading, a stop-loss is used to close the pairs when the residual hit \(4\epsilon\) positive or negative standard deviation.
+</p>
+
+<p>
+  In the training period, each of the training data contained a 3-month period, which is a dynamic rolling window size. Immediately after the training period, we begin our one-month trading period, and the dynamic rolling window automatically shift ahead to record the new prices of the stocks in each pair. After the first trading period, we use the updated stock prices to select our pairs for trading again, and begin another trading period.
+</p>
+
+<h3>Parameter Adjustment</h3>
+<p>
+  The performance of the strategy is sensitive to the parameters. There are  mainly four parameter to adjust: Opening Threshold, Closing Threshold, Stop-loss Threshold and data resolution.
+</p>
+<p>
+  Opening threshold represents by how many times the residual \(\epsilon\) exceed the standard deviation, which is calculated by \(\frac{\epsilon - \bar{\epsilon}}{\sigma}\). By default we set it to 2.32 and -2.32, which is the critical value for 99% confidence interval if we assume the residual follows normal distribution.
+  Closing threshold is calculated in the same way as opening threshold, we set it to 0.5 by default to close early to prevent further divergence.
+</p>
+<p>
+  Stop-loss Threshold is set to 4.5. This depends on the level of mispricing we can bear. The higher degree our tolerance to risk is, the higher we can set this parameter. However, if we set this number too low, we may have too many pairs closed before reversion to stop loss.
+</p>

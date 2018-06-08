@@ -1,0 +1,6 @@
+<p>
+  The strategy is considered to be market neutral strategy because it a long/short strategy betting on price convergence. Out backtested beta is -0.112, which is within our expectation.
+  Theoretically, the higher resolution we use, the higher win rate is because on one hand the higher resolution would increase the number of datapoint in our training period, which would make it's harder to past the two-stage test; on the other hand the higher resolution data would let us capture minor profit more accurately. However, there is a trade off between performance and backtesting time. The higher resolution will lead backtesting time to increase drastically.
+  The number of stocks in the initialize step would also affect our performance. Theoretically, the more stock we have, we better pairs we are likely to pick. But too many stocks would also be time consuming.
+  what's worth mentioning is that the optimized parameters are different for each sector. It depends on the features of the price patterns in the specific industry. Plotting the pairs prices and the residual to observe is good option to adjust the thresholds.
+</p>

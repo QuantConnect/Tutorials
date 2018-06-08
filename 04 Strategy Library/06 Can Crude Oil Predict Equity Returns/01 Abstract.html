@@ -1,0 +1,10 @@
+<p>
+  In this tutorial we use regression to predict the return from the stock market and compare it to the short-term U.S. T-bill rate. It is based on the paper?"<em><strong>Striking Oil: Another Puzzle?</strong></em>". [ref]<strong>Gerben, Driesprong (2007)</strong>. Striking Oil: Another Puzzle? page 1, <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract-id=460500"> Online Copy</a>[/ref] by?by Gerben, Ben and Benjamin (2007).
+  If the predicted return is larger than the risk-free rate, the portfolio is fully invested in stock; if the predicted return is lower than the risk-free rate, the portfolio is invested in short-term U.S T-bills. The backtesting period starts in 1980 and is divided into an in-sample period where regression analysis is made and an out?of sample period where the regression result is embedded "statically" into the strategy.
+</p>
+<p>
+  In our implementation of the strategy we adapt the method of the original paper to make it more applicable to the current market. We have set our backtesting period to be from 2010 to 2017 and we refresh our regression analysis each month to form a rolling dynamic projection. This is because?empirical evidence shows?us the correlation between oil and stocks is not as strong as in the 1980's. We use?the price of S&amp;P GSCI? Crude Oil Total Return Index ETNs to represent spot oil price, and import T-bill data from Quandl by defining a custom class.?We use the "Schedule" API to trigger an event every month automatically?and the "History" function to retrieve data for regression analysis.
+</p>
+<p>
+  Our analysis shows this strategy under performs the market in recent years. In the 9 year analysis period the algorithm was mostly long the S&amp;P500 index and only 9 trades were performed as the markets were strongly bullish. The trades could potentially simply be due to the weakening of the relationship between stocks and oil.
+</p>

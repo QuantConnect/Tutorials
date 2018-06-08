@@ -1,10 +1,14 @@
-<h2>Abstract</h2>
-In recent years, factor investing gained significant popularity among global institutional investors. In this tutorial, we first developed a factor selection model to test if factors have the ability to differentiate potential winners and losers in the stock market. Then we use those  preselected factors to implement the factor ranking stock selection algorithm based on <em>Factor Based Stock Selection Model for Turkish Equities, 2015, </em>Ayhan Yüksel[ref]<em>Factor </em>Based Stock Selection Model for Turkish Equities,<em> 2015, </em>Ayhan Yüksel <a href="file:///Users/jingwu/Downloads/(2015-07-07)_Quant_Blocks_Factor_Based_Stock_Selection_Model%20(4).pdf">Online Copy</a>[/ref]
-<h2>Part 1. Factor Selection</h2>
-QuantConnect provides Morningstar fundamentals data for US Equities. Valuation Ratios is daily data. For others like operation ratios and financial statements data are available for multiple periods depending on the property. Please refer to <a href="https://www.quantconnect.com/data#fundamentals/usa/morningstar">Data Library</a> for detailed factors available.
+<p>
+	QuantConnect provides Morningstar fundamentals data for US Equities. Valuation Ratios is daily data. For others like operation ratios and financial statements data are available for multiple periods depending on the property. Please refer to <a href="https://www.quantconnect.com/data#fundamentals/usa/morningstar">Data Library</a> for detailed factors available.
+</p>
+<p>
+	The algorithm is designed to test the significance of one factor each time.
+</p>
 
-The algorithm is designed to test the significance of one factor each time.
-<pre class="prettyprint linenums">def Initialize(self):
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">def Initialize(self):
 	self.SetStartDate(2005,01,01)  #Set Start Date
 	self.SetEndDate(2012,03,01)    #Set End Date
 	self.SetCash(50000)            #Set Strategy Cash
@@ -20,12 +24,20 @@ The algorithm is designed to test the significance of one factor each time.
         # store the monthly returns of different portfolios in a dataframe
 	self.df_return = pd.DataFrame(index = range(self.numOfPortfolio+1))
         # schedule an event to fire at the first trading day of SPY
-	self.Schedule.On(self.DateRules.MonthStart("SPY"), self.TimeRules.AfterMarketOpen("SPY"), Action(self.Rebalancing))</pre>
+	self.Schedule.On(self.DateRules.MonthStart("SPY"), self.TimeRules.AfterMarketOpen("SPY"), Action(self.Rebalancing))
+</pre>
+</div>
 <h3>Step 1: Ranking the stocks by factor values</h3>
-1. First, we sort the stocks by daily dollar volume and take the top stocks with the highest dollar volumes as our candidates. There is a convenient way using our universe selection API. Universes are refreshed every day by default, but can be refreshed as often as required. This is controlled by the variable <code>UniverseSettings.Resolution</code>. You can refer to the <a href="https://www.quantconnect.com/docs#Universes">documentation</a> for more details.  Here we use <a href="https://www.quantconnect.com/docs#Scheduled-Events">Scheduled events API</a> to trigger code to run at the first trading day each month and use three flag variables to control the rebalancing of <code>CoarseSelection</code>, <code>FineSelection</code> and <code>Ondata</code> functions.
-
-Coarse Universe selection is the built-in universe data provided by QuantConnect which allows you to filter the universe of over 16000 symbols to perform rough filtering before your algorithm. Because coarse selection function takes all the equities including ETFs which have no fundamental data into account, we need the property <code>x.HasFundamentalData</code> to exclude them from our candidate stocks pool.
-<pre class="prettyprint linenums"># sort the data by daily dollar volume and take the top entries
+<p>
+	1. First, we sort the stocks by daily dollar volume and take the top stocks with the highest dollar volumes as our candidates. There is a convenient way using our universe selection API. Universes are refreshed every day by default, but can be refreshed as often as required. This is controlled by the variable <code>UniverseSettings.Resolution</code>. You can refer to the <a href="https://www.quantconnect.com/docs#Universes">documentation</a> for more details.  Here we use <a href="https://www.quantconnect.com/docs#Scheduled-Events">Scheduled events API</a> to trigger code to run at the first trading day each month and use three flag variables to control the rebalancing of <code>CoarseSelection</code>, <code>FineSelection</code> and <code>Ondata</code> functions.
+</p>
+<p>
+	Coarse Universe selection is the built-in universe data provided by QuantConnect which allows you to filter the universe of over 16000 symbols to perform rough filtering before your algorithm. Because coarse selection function takes all the equities including ETFs which have no fundamental data into account, we need the property <code>x.HasFundamentalData</code> to exclude them from our candidate stocks pool.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python"># sort the data by daily dollar volume and take the top entries
 def CoarseSelectionFunction(self, coarse):
     if self.flag1:
         CoarseWithFundamental = [x for x in coarse if x.HasFundamentalData]
@@ -35,8 +47,13 @@ def CoarseSelectionFunction(self, coarse):
     else:
         return []
 </pre>
+</div>
+
 2. We extract the factor values of candidate stocks at the beginning of each month and sort the stocks in ascending order of their factor values. Here we use 12-months' total risk-based capital data <code>x.FinancialStatements.TotalRiskBasedCapital.TwelveMonths</code> as an example.  It is t<span class="s1">he sum of Tier 1 and Tier 2 Capital. <code>x.Symbol.Value</code> can give the string symbol of selected stock x. Then we save those sorted symbols as <code>self.symbol</code>.</span>
-<pre class="prettyprint linenums">def FineSelectionFunction(self, fine):
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">def FineSelectionFunction(self, fine):
 	if self.flag1:
 		self.flag1 = 0
 		self.flag2 = 1
@@ -51,9 +68,16 @@ def CoarseSelectionFunction(self, coarse):
 	else:
 		return []
 </pre>
+</div>
 <h3>Step 2: Compute the monthly return of portfolios</h3>
-1. At the end of each month, we extract the one-month history close prices of each stock and compute the monthly returns.
-<pre class="prettyprint linenums">sorted_symbol = self.symbol
+<p>
+	1. At the end of each month, we extract the one-month history close prices of each stock and compute the monthly returns.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">sorted_symbol = self.symbol
 self.AddEquity("SPY") # add benchmark
 for x in sorted_symbol:
 	self.AddEquity(x)
@@ -74,12 +98,17 @@ for j in range(len(sorted_symbol)):
 # the length of monthly_return list should be divisible by the number of portfolios
 monthly_return = monthly_return[:int(math.floor(len(monthly_return) / self.numOfPortfolio) * self.numOfPortfolio)]
 </pre>
-<div class="page" title="Page 15">
-<div class="layoutArea">
-<div class="column">
+</div>
 
-2. We divide the stocks into 5 portfolios and compute the average monthly returns of each portfolio. Then we add the monthly return of benchmark "SPY" at the last line of the data frame <code>df_return</code>.
-<pre class="prettyprint linenums">reshape_return = np.reshape(monthly_return, (self.numOfPortfolio, len(monthly_return)/self.numOfPortfolio))
+
+<p>
+	2. We divide the stocks into 5 portfolios and compute the average monthly returns of each portfolio. Then we add the monthly return of benchmark "SPY" at the last line of the data frame <code>df_return</code>.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">reshape_return = np.reshape(monthly_return, (self.numOfPortfolio, len(monthly_return)/self.numOfPortfolio))
 # calculate the average return of different portfolios
 port_avg_return = np.mean(reshape_return,axis=1).tolist()
 # add return of "SPY" as the benchmark  to the end of the return list
@@ -90,14 +119,22 @@ benchmark_monthly_return = (benchmark_daily_price[-1]/benchmark_daily_price[0]) 
 port_avg_return.append(benchmark_monthly_return)
 self.df_return[str(self.flag3)] = port_avg_return
 </pre>
+</div>
 <h3>Step 3: Generate the metrics to test the factor significance</h3>
-After getting the monthly returns of portfolios and the benchmark, we compute the average annual return and excess return over benchmark of each portfolio across the whole backtesting period. Then We generate three metrics to judge the significance of each factor.
-<ol>
+<p>
+	After getting the monthly returns of portfolios and the benchmark, we compute the average annual return and excess return over benchmark of each portfolio across the whole backtesting period. Then We generate three metrics to judge the significance of each factor.
+</p>
+
+<ul>
  	<li>The first metrics is the correlation between the portfolio' returns and their rank. The absolute value of the correlation coefficient should larger than 0.8.</li>
  	<li>If the return of the rank first portfolio larger than the portfolio at the bottom of the return rankings, we define it the win portfolio and the loss portfolio and vice versa. The win probability is the probability that the win portfolio return outperform the benchmark return. The loss probability is the probability that the loss portfolio return underperform the benchmark.  If the factor is significant, both loss and win probability should greater than 0.4.</li>
  	<li>The excess return of win portfolio should be greater than 0.25, while the excess return of loss portfolio should be lower than 0.05.</li>
-</ol>
-<pre class="prettyprint linenums">def calculate_criteria(self,df_port_return):
+</ul>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">def calculate_criteria(self,df_port_return):
 	total_return = (df_port_return + 1).T.cumprod().iloc[-1,:] - 1
 	annual_return = (total_return+1)**(1./6)-1
 	excess_return = annual_return - np.array(annual_return)[-1]
@@ -125,6 +162,7 @@ After getting the monthly returns of portfolios and the benchmark, we compute th
 
 	return test_result</pre>
 </div>
+
 <table class="table qc-table">
 <thead>
 <tr>
@@ -196,17 +234,6 @@ After getting the monthly returns of portfolios and the benchmark, we compute th
 </table>
 </div>
 </div>
-We choose 4 factors: FCFYield, PriceChange1M, BookValuePerShare and RevenueGrowth.
-<h2>Part 2. Stock Selection</h2>
-<h3>Step 1: Rank the stocks by factor values</h3>
-First, we remove the  stocks without fundamental data or have zero factor value. For each pre-selected factor, we rank the stocks by those factor values. The order is descending if the factor correlation is negative, it is ascending if the factor correlation is positive.
-<h3>Step 2: Calculate equally weighted composite factor scores</h3>
-The second step is using different selected factor variables to calculate an equally weighted composite factor score for each stock.
-<ul>
- 	<li>First, according to the factor order, we place our universe stocks into 5 distinct quintile portfolios, named P1, P2, P3, P4 and P5. The ranking of portfolios sets out the preference of the factor model, i.e. the first portfolio (P1) corresponds to the “most preferred” stocks, while the fifth (P5) corresponds to the “least preferred” stocks.Suppose there are n stocks in total. Then the stocks fall into the first rank portfolio will have score p, the stocks fall into the second rank portfolio will get score p-1 and so on. Then we can get a score for every stock. We did the same calculation for each factor.</li>
- 	<li>Second, we calculate a “Composite Factor Score” by combining the six-factor scores and using an equal weighting scheme. Then we get composite factor score for each stock.</li>
- 	<li> Third, we then rank the stocks in our universe according to their Composite Factor Scores and choose the highest ranked 20 stocks to construct our portfolios at the beginning of each month.</li>
- 	<li>At the end of each month, we repeat the above steps to construct the new portfolio and adjust the holding stocks.</li>
-</ul>
-<h2>Algorithm</h2>
-<script src='https://www.quantconnect.com/terminal/backtest.js?sid=4f8946295bb7358518b35ecbd3d46f01'></script>
+<p>
+	We choose 4 factors: FCFYield, PriceChange1M, BookValuePerShare and RevenueGrowth.
+</p>

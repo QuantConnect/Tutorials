@@ -1,0 +1,110 @@
+<p>
+  The strategy code mainly consists of three parts: Initialization, Warm Up, and Weekly Rebalancing.
+</p>
+
+<h3>Step 1: Initialization</h3>
+<p>
+  In the Initialize function, we set up look-back period, beginning cash balance, the size of the investment universe, the number of traded stocks, etc. We use <em>self._numOfWeeks</em> to count?the number of weeks that have passed since the start date, and <em>self.</em>_LastDay to indicate whether it is a new week. <em>self._ifWarmUp</em> is true when the <em>self._numOfWeeks</em> is 3, which means as long as next week's data come, we can make our investment decisions.??<em>self._stocks</em> is a list containing all the symbols of the 100 stocks that are taken into consideration. <em>self._values</em> is a dictionary with keys the stock symbols and values the lists containing the prices of stock each week since 4 weeks ago.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">def Initialize(self):
+        self.SetStartDate(2002, 1, 3)
+        self.SetEndDate(2016, 12, 1)
+        self.SetCash(1000000)
+
+        self.UniverseSettings.Resolution = Resolution.Daily
+        self.AddUniverse(self.CoarseSelectionFunction)
+        self._numberOfSymbols = 100
+        self._numberOfTradings = 0.1 * self._numberOfSymbols
+
+        self._numOfWeeks = 0
+        self._LastDay = -1
+        self._ifWarmUp = False
+
+        self._stocks = []
+        self._values = {}</pre>
+</div>
+<p>
+  Also, we need to use?<em>CoarseSelectionFunction</em> to select 100 qualified stocks from the total stock universe. Here, we sort the total stock universe by each stock's DollarVolume in decreasing order. Then, we select the first 100 stocks that have the largest DollarVolume among all the stocks in the universe.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">def CoarseSelectionFunction(self, coarse):
+        sortedByDollarVolume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True)
+        top100 = sortedByDollarVolume[:self._numberOfSymbols]
+        list = List[Symbol]()
+        for x in top100:
+                list.Add(x.Symbol)
+        return list
+</pre>
+</div>
+<h3>Step 2:?Warm Up</h3>
+<p>
+  Before we are able to make our investment decisions, we must have at least 4 weeks' data to calculate the performance, i.e. the monthly return, of each stock. Hence, we need a warm up period as long as 3 weeks to accumulate price series, so that once the fourth week's data come we can calculate?the return of the whole month.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">self._stocks = []
+self.uni_symbol = None
+symbols = self.UniverseManager.Keys
+for i in symbols:
+        if str(i.Value) == "QC-UNIVERSE-COARSE-USA":
+                self.uni_symbol = i
+        for i in self.UniverseManager[self.uni_symbol].Members:
+                self._stocks.append(i.Value.Symbol)
+                self._values[i.Value.Symbol] = [self.Securities[i.Value.Symbol].Price]
+
+</pre>
+</div>
+<p>
+  We get all the symbols of qualified stocks from UniverseManager and keep them in <em>self._stocks</em> which is a list. Then we create for each key in the dictionary <em>self._values</em> a list where its first week's price is stored. And every time new data come, we append the new price to the end of the list of each stock.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">for stock in self._stocks:
+        self._values[stock].append(self.Securities[stock].Price)</pre>
+</div>
+<h3>Step 3:?Weekly Rebalancing</h3>
+<p>
+  After the warm-up period, we calculate monthly returns every week and based on the returns, we make our investment decisions.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">returns = {}
+for stock in self._stocks:
+        newPrice = self.Securities[stock].Price
+        oldPrice = self._values[stock].pop(0)
+        self._values[stock].append(newPrice)
+        returns[stock] = newPrice/oldPrice
+</pre>
+</div>
+<p>
+  Every week when new data come, we use them along with the data four weeks ago to calculate the monthly returns. At the same time, we remove the oldest data from our lists. This step is essential to prevent memory size exceeding the limit.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">newArr = [(v,k) for k,v in returns.items()]
+newArr.sort()
+for ret, stock in newArr[self._numberOfTradings:-self._numberOfTradings]:
+        self.SetHoldings(stock, 0)
+for ret, stock in newArr[0:self._numberOfTradings]:
+        self.SetHoldings(stock, 0.5/self._numberOfTradings)
+for ret, stock in newArr[-self._numberOfTradings:]:
+        self.SetHoldings(stock, -0.5/self._numberOfTradings)
+</pre>
+</div>
+<p>
+  Finally, we sort the returns in increasing order. For the stocks whose monthly returns fall into the first 10% (performed badly in last month), we long them; For those fall into the last 10% (performed well in last month), we short them. Others (between 10% and 90%) will be set to 0.
+</p>

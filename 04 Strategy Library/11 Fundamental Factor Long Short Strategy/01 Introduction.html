@@ -1,0 +1,26 @@
+<p>
+  In this tutorial we implemented a long/short equity strategy based on fundamental factors. The idea comes from AQR white book: A New Core Equity Paradigm[ref]A New Core Equity Paradigm<a href="https://www.aqr.com/library/aqr-publications/a-new-core-equity-paradigm"><strong>Online Copy</strong></a>[/ref]. The original version is a long only strategy. We developed it into a long/short version. The paper strategy used some fundamental data as measures of value, quality and momentum, and then ranked all the stocks in the universe according to the factors. The strategy only long the stocks ranking at the top, but our algorithm would at the same time short the stocks ranking at the bottom. This strategy consistently beats the market and has solid economic intuition.
+</p>
+<h3>Factors</h3>
+<p>
+  The paper strategy used three factors together to rank stocks: value, quality and momentum.
+</p>
+<p>
+  Value: The most commonly used measure for value is P/B ratio(price-to-book value). Intuitively, the stocks with high P/B ratio are likely to be overpriced, and those stocks are labeled as growth stock. On the other hand, the stocks with low P/B value are considered to be value stocks. Following this logic, we use book value per share as a measure for value in our algorithm: the stocks with high book value per share rank high.
+</p>
+<p>
+  Quality: Quality is a comprehensive factor. The paper used total profits over asset, gross margins, and free cash flow over assets. For simplicity, we used only operation margin as our quality factor. Here we assume that the companies with high operation margin are profitable, and their stocks are the quality ones.
+</p>
+<p>
+  Momentum: The paper strategy is quarterly rebalanced, so it used recent one-year return, three-month and returns around earning events as measures for momentum. While our algorithm is monthly rebalanced, we simply use recent monthly return as our momentum factor.
+</p>
+
+<h3>Ranking</h3>
+<p>
+  Ranking is the core process for stock selection. We first rank all the stocks according to each factor, then assign weights to each factor to get the final rank.
+  Specifically, in our algorithm we have 250 stocks in total. We rank them according to their book values per share, operation margins and one-month returns by descending order. For each stock, its index in each sorted list is its score on each factor. e.g. If stock A ranks 1st by value, 10th by quality and 30th by momentum, its scores on the value, quality and momentum are 1, 10 and 30 respectively.
+</p>
+
+<p>
+  The last step is to calculate the final score of each stocks. We use the same weight as the paper does: 40% on value, 40% on quality and 20% on momentum. In this way, stock A's final score is 1*0.4 + 10*0.4 + 30*0.2 = 10.4. Finally, we can rank all the stocks by their scores by <strong>ascending</strong> order. It worth attention that the stock with the <strong>lowest</strong> score is the best and it ranks 1st, and the one with the highest score is the worst.
+</p>

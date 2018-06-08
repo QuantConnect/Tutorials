@@ -1,0 +1,79 @@
+<p>
+  This is a complete port from C# to Python of this Quick Start Lesson.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+</pre>
+<pre class="python">
+```Lesson 6 - Tracking and Managing Orders:
+Immediately place 4 orders. Plot end of day price of each order in 'Order Tickets' plot. Debug log filled orders.
+```
+import numpy as np
+from decimal import Decimal
+
+class BasicTemplateAlgorithm(QCAlgorithm):
+
+    def Initialize(self):
+        self._limitTicket = None
+        self._stopMarketTicket = None
+        self._stopLimitTicket = None
+        self.SetCash(25000)
+        self.SetStartDate(2009,1,1)
+        self.SetEndDate(2009,6,1)
+        self.spy = self.AddEquity("SPY", Resolution.Minute).Symbol
+
+    def OnData(self, slice):
+        if self._limitTicket is None:
+
+            self.MarketOrder(self.spy, 100)
+
+            self._limitTicket = self.LimitOrder(
+                self.spy,
+                100,
+                slice["SPY"].Close * Decimal(0.9),
+                "limit order")
+
+            self._stopMarketTicket = self.StopMarketOrder(
+                self.spy,
+                -100,
+                slice["SPY"].Close * Decimal(0.95),
+                "stop market")
+
+            self._stopLimitTicket = self.StopLimitOrder(
+                self.spy,
+                -100,
+                slice["SPY"].Close * Decimal(0.9),
+                slice["SPY"].Close * Decimal(0.8),
+                "stop market")
+
+
+    def OnEndOfDay(self):
+        ```End of each day, plot our asset & order prices```
+        if self._limitTicket is None:
+            return
+
+        self.Plot("Order Tickets", "SPY", self.Portfolio['SPY'].Price)
+
+        if self._stopMarketTicket.Status != OrderStatus.Filled:
+            self.Plot("Order Tickets", "Stop Price",
+                      self._stopMarketTicket.Get(OrderField.StopPrice))
+
+        if self._stopLimitTicket.Status != OrderStatus.Filled:
+            self.Plot("Order Tickets", "Limit Price",
+                      self._stopLimitTicket.Get(OrderField.LimitPrice))
+
+    def OnOrderEvent(self, OrderEvent):
+        ```Event when the order is filled. Debug log the order fill. :OrderEvent:```
+
+        if OrderEvent.FillQuantity == 0:
+            return
+
+        fetched = self.Transactions.GetOrderById(OrderEvent.OrderId)
+
+        self.Debug("{} was filled. Symbol: {}. Quantity: {}. Direction: {}"
+                   .format(str(fetched.Type),
+                           str(OrderEvent.Symbol),
+                           str(OrderEvent.FillQuantity),
+                           str(OrderEvent.Direction)))
+ </pre>
+ </div>

@@ -1,0 +1,16 @@
+<h3>Step 1: Rank the stocks by factor values</h3>
+<p>
+	First, we remove the  stocks without fundamental data or have zero factor value. For each pre-selected factor, we rank the stocks by those factor values. The order is descending if the factor correlation is negative, it is ascending if the factor correlation is positive.
+</p>
+
+<h3>Step 2: Calculate equally weighted composite factor scores</h3>
+<p>
+	The second step is using different selected factor variables to calculate an equally weighted composite factor score for each stock.
+</p>
+
+<ul>
+ 	<li>First, according to the factor order, we place our universe stocks into 5 distinct quintile portfolios, named P1, P2, P3, P4 and P5. The ranking of portfolios sets out the preference of the factor model, i.e. the first portfolio (P1) corresponds to the “most preferred” stocks, while the fifth (P5) corresponds to the “least preferred” stocks.Suppose there are n stocks in total. Then the stocks fall into the first rank portfolio will have score p, the stocks fall into the second rank portfolio will get score p-1 and so on. Then we can get a score for every stock. We did the same calculation for each factor.</li>
+ 	<li>Second, we calculate a “Composite Factor Score” by combining the six-factor scores and using an equal weighting scheme. Then we get composite factor score for each stock.</li>
+ 	<li> Third, we then rank the stocks in our universe according to their Composite Factor Scores and choose the highest ranked 20 stocks to construct our portfolios at the beginning of each month.</li>
+ 	<li>At the end of each month, we repeat the above steps to construct the new portfolio and adjust the holding stocks.</li>
+</ul>
