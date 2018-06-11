@@ -2,7 +2,7 @@
 	We have demonstrated that during a smooth market, the stocks that beat the market last month are likely to beat the market again in the subsequent month. When there is market fluctuation, the significance level of linear regression will reduce and the model performance will decrease. We can understand this by looking at the covariance of the asset(x) and the benchmark (y). As the covariance reduces to zero, the beta will decrease.
 </p>
 
-\[\hat{\beta} = \frac{Cov[x,y]}{\sum (x_i - \b{x})^2}\]
+\[\hat{\beta} = \frac{Cov[x,y]}{\sum (x_i - \beta{x})^2}\]
 
 <p>
 	As an experiment, we tested the algorithm on market data from 2015. This was a much more volatile period for the market with a fluctuation that returned a mean close to zero and dropped neaerly 10% from Aug 18th to Aug 25th of that year. The algorithm performed quite poorly in this year with a return rate of -11.58%. The risks associated with this strategy include a high drawdown, lack of hedging and not stop-loss. Since we are using leverage, the risk is increased and it has a margin call in January as a result. We can improve the performance by applying the following techniques:
