@@ -6,7 +6,7 @@
 \[C(u_1,u_2,...,u_p) = P[U_1\leq u_1,U_2\leq u_2,..., U_1\leq u_1]\]
 
 <p>
-  Copulas function contains all the dependency characteristics of the marginal distributions and will better describe the linear and non-linear relationship between variables, using probability. They allow the marginal distributions to be modeled independently from each other, and no assumption on the joint behavior of the marginals is required.[ref]Rad H, Low R K Y, Faff R. The profitability of pairs trading strategies: distance, cointegration and copula methods[J]. Quantitative Finance, 2016, 16(10): 1541-1558.<a href="http://www.tandfonline.com/doi/full/10.1080/14697688.2016.1164337?needAccess=true">online copy</a>[/ref]
+  Copulas function contains all the dependency characteristics of the marginal distributions and will better describe the linear and non-linear relationship between variables, using probability. They allow the marginal distributions to be modeled independently from each other, and no assumption on the joint behavior of the marginals is required.
 </p>
 
 <h3>2. Bivariate Copulas</h3>
@@ -21,7 +21,7 @@
 <h3>3. Archimedean Copulas</h3>
 <p>
   There are many copula functions that enable us to describe dependence structures between variables, other than the Gaussian assumption. Here we will focus three of these; the <em>Clayton</em>, <em>Gumbel</em> and <em>Frank</em> copula formulas from the Archimedean class.
-  Archimedean copulas[ref]Mahfoud M, Michael M. Bivariate Archimedean copulas: an application to two stock market indices[J]. BMI Paper, 2012.  <a href="https://www.few.vu.nl/nl/Images/werkstuk-mahfoud_tcm243-277460.pdf">Online Copy</a>[/ref] are based on the Laplace transforms φ of univariate distribution functions. They are constructed by a particular generator function \(\phi\) [ref]LANDGRAF N, SCHOLTUS K, DIRIS D R B. High-Frequency copula-based pairs trading on US Goldmine Stocks[J]. 2016.[/ref].
+  Archimedean copulas are based on the Laplace transforms φ of univariate distribution functions. They are constructed by a particular generator function \(\phi\).
 </p>
 
 \[C(u,v)=\phi^{-1}( \phi(u),\phi(v) )\]
@@ -61,7 +61,7 @@
 
 
 <p>
-  Genest and MacKay (1986) [ref]Genest, C. and MacKay, J., 1986, The Joy of Copulas: Bivariate Distributions with Uniform Marginals, The American Statistician, 40, 280-283[/ref] proved that the relation between the copula generator function and Kendall rank correlation tau in the bivariate case can be given by:
+  Genest and MacKay proved that the relation between the copula generator function and Kendall rank correlation tau in the bivariate case can be given by:
 </p>
 
 \[\tau=1+4\int_{0}^{1} \frac{\partial \phi (v)}{\partial \phi^{'}(v)}dv\]

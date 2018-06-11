@@ -1,9 +1,8 @@
 <h4>1. Definition</h4>
 
 <p>
-  In stochastic volatility models, the asset price and its volatility are both assumed to be random processes and can change over time. There are many stochastic volatility models. Here we will present the most well-known and popular one: the Heston Model. In Heston model, the stock price is log-normal distributed, the volatility process is a positive increasing function of a mean-reversion process. That is[ref]Gatheral J. The volatility surface: a practitioner's guide[M]. John Wiley &amp; Sons, 2011[/ref]
+  In stochastic volatility models, the asset price and its volatility are both assumed to be random processes and can change over time. There are many stochastic volatility models. Here we will present the most well-known and popular one: the Heston Model. In Heston model, the stock price is log-normal distributed, the volatility process is a positive increasing function of a mean-reversion process. That is
 </p>
-
 \[dS_t = \mu_tS_tdt+\sqrt{v_t}S_tdW_{1,t}\]
 
 \[dv_t=-\lambda(v_t-\overline{v})\ dt+\eta\sqrt{v_t}\ dW_{2,t}\]
@@ -20,7 +19,7 @@
 \(W_{1,t}\) and \(W_{2,t}\) are two dependent Wiener processes with correlation coefficient \(\rho\).
 <h4>2. Simulation of the Heston Process</h4>
 <p>
-  We already discuss how to simulate the stock price process with Monte Carlo method in the introduction to stochastic process tutorial. In order to simulate the variance process, we need to write it into discrete form. The derivation can be found in paper Rouah F D. Euler and Milstein discretization[ref]Rouah F D. Euler and Milstein discretization[J]. Documento de Trabajo, Sapient Global Markets, Estados Unidos, 2011. <a href="http://www.frouah.com/finance%20notes/Euler%20and%20Milstein%20Discretization.pdf">Online Copy</a>[/ref].
+  We already discuss how to simulate the stock price process with Monte Carlo method in the introduction to stochastic process tutorial. In order to simulate the variance process, we need to write it into discrete form. The derivation can be found in paper Rouah F D. Euler and Milstein discretization.
 </p>
 \[v_{t+\Delta t}=\left(\sqrt{v_t}+\frac{1}{2}\eta\sqrt{\Delta t}W_1\right)^2-\lambda(v_t-\overline{v})\Delta t-\frac{\eta^2}{4}\Delta t\]
 <p>
@@ -75,7 +74,7 @@ def mc_heston(option_type,S0,K,T,initial_var,long_term_var,rate_reversion,vol_of
   </div>
 <h4>3. Calibration of Model Parameters</h4>
 <p>
-  The calibration of a model is the process of seeking the model parameters for which the model result best matches the market option data. This data usually consists of market quoted prices for European plain vanilla call options or of Black-Scholes implied volatilities derived from prices. Calibrating the Heston model is equivalent to solving the non-linear constrained optimization problem: Minimize the error between the market quotes of options and the options price estimated by Heston model. The object function could be the absolute value of the error or the absolute squared error. You can refer to this paper <em>Parameters recovery via calibration in the Heston model</em>[ref]Escobar, Marcos, and Christoph Gschnaidtner. "Parameters recovery via calibration in the Heston model: A comprehensive review." <i>Wilmott</i> 2016.86 (2016): 60-81.[/ref] for details of different error measure.
+  The calibration of a model is the process of seeking the model parameters for which the model result best matches the market option data. This data usually consists of market quoted prices for European plain vanilla call options or of Black-Scholes implied volatilities derived from prices. Calibrating the Heston model is equivalent to solving the non-linear constrained optimization problem: Minimize the error between the market quotes of options and the options price estimated by Heston model. The object function could be the absolute value of the error or the absolute squared error. You can refer to this paper <em>Parameters recovery via calibration in the Heston model</em> for details of different error measure.
 </p>
 <p>
   There are five parameters to be estimated in Heston model:
@@ -88,7 +87,7 @@ def mc_heston(option_type,S0,K,T,initial_var,long_term_var,rate_reversion,vol_of
      <li>\(\rho\) : the correlation coefficient between two Wiener process (Bounds of -1 and 1)</li>
 </ul>
 <p>
-  Here we use QuantLib[ref]Modeling Volatility Smile and Heston Model Calibration Using QuantLib Python, Goutham Balaraman, <a href="http://gouthamanbalaraman.com/blog/volatility-smile-heston-model-calibration-quantlib-python.html">online copy</a>[/ref] Python library to calibrate the parameters.
+  Here we use QuantLib Python library to calibrate the parameters.
 </p>
 <p>
   Let's look at how we can calibrate the Heston model to some market quotes. For example, let's say we are interested in trading SPDR S&amp;P 500 ETF (SPY) options with 4-months maturity. Here we choose all the options contracts written on SPY expire in 4 months. We need the strikes and the market prices of those contracts and the underlying price as the input of our objective function to minimize.
