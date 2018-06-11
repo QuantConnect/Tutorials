@@ -9,8 +9,9 @@
 </p>
 
 \[\min _{x_t}\left[\sum_{t=1}^n(y_t-x_t)^2+\lambda\sum_{t=2}^{n-1}[(x_{t+1}-x_t)-(x_{t}-x_{t-1})^2] \right]\]
-
-[ref]Dao T L. Momentum Strategies with L1 Filter[J]. Browser Download This Paper, 2014. <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2780280">online copy</a>[/ref]The second term is the discrete derivative of the trend xt which characterizes the smoothness of the curve. We can rewrite the above formula in vector form:
+<p>
+  The second term is the discrete derivative of the trend xt which characterizes the smoothness of the curve. We can rewrite the above formula in vector form:
+</p>
 
 \[\min_{\bf x}{\parallel {\bf{y}}-{\bf{x}}\parallel}_2^2+\lambda {\parallel D\bf x\parallel}_2^2\]
 

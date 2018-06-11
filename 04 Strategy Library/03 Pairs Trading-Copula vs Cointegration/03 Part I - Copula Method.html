@@ -8,7 +8,7 @@
 
 <h3>Step 1: Selecting the Paired Stocks</h3>
 <p>
-  The general method of pair selection is based on both fundamental and statistical analysis.[ref]<strong>Jean Folger</strong>. Pairs Trading Example <a href="http://www.investopedia.com/university/guide-pairs-trading/pairs-trade-example.asp"> Online Copy</a>[/ref]
+  The general method of pair selection is based on both fundamental and statistical analysis.
 </p>
 
 <h4><strong>1) Assemble a list of potentially related pairs</strong></h4>
@@ -225,7 +225,7 @@ for i in self.family:
 
 <h3>Step 5: Generating the Trading Signals</h3>
 <p>
-  The copula functions include all the information about the dependence structures of two return series. According to Stander Y, Marais D, Botha I(2013)[ref]Stander Y, Marais D, Botha I. Trading strategies with copulas[J]. Journal of Economic and Financial Sciences, 2013, 6(1): 83-107. <a href="https://journals.co.za/content/jefs/6/1/EJC135921">Online Copy</a> [/ref], the fitted copula is used to derive the confidence bands for the conditional marginal distribution function of \(C(v\mid u)\) and \(C(u\mid v)\), that is the mispricing indexes. When the market observations fall outside the confidence band, it is an indication that pairs trading opportunity is available. Here we choose 95%  as the upper confidence band, 5% as the lower confidence band as indicated in the paper. The confidence level was selected based on a back-test analysis in the paper that shows using 95% seems to lead to appropriate trading opportunities to be identified.
+  The copula functions include all the information about the dependence structures of two return series. According to Stander Y, Marais D, Botha I. in Trading strategies with copulas, the fitted copula is used to derive the confidence bands for the conditional marginal distribution function of \(C(v\mid u)\) and \(C(u\mid v)\), that is the mispricing indexes. When the market observations fall outside the confidence band, it is an indication that pairs trading opportunity is available. Here we choose 95%  as the upper confidence band, 5% as the lower confidence band as indicated in the paper. The confidence level was selected based on a back-test analysis in the paper that shows using 95% seems to lead to appropriate trading opportunities to be identified.
 </p>
 
 <p>
@@ -237,7 +237,7 @@ for i in self.family:
 \[MI_{Y|X}=P(V\leq v\mid U\leq u)=\frac{\partial C(u,v)}{\partial u}\]
 
 <p>
-  For further mathematical proof, please refer to Xie W, Wu Y(2013)[ref]Xie W, Wu Y. Copula-based pairs trading strategy[C]//Asian Finance Association (AsFA) 2013 Conference. doi. 2013, 10.[/ref] The conditional probability formulas of bivariate copulas can be derived by taking partial derivatives of copula functions shown in Table 1. The results are as follows:
+  For further mathematical proof, please refer to Xie W, Wu Y. Copula-based pairs trading strategy. The conditional probability formulas of bivariate copulas can be derived by taking partial derivatives of copula functions shown in Table 1. The results are as follows:
 </p>
 <p>
 Gumbel Copula
