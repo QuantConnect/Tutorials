@@ -83,7 +83,7 @@ $strategyMap = [
     <?php foreach ($strategyMap as $strategy) { ?>
         <tr>
             <td>
-                <a class="docs-internal-link" href="/tutorials2/<?= $strategy['link'] ?>"><?= $strategy['name'] ?></a>
+                <a class="docs-internal-link" href="/tutorials/<?= $strategy['link'] ?>"><?= $strategy['name'] ?></a>
                 <p><?= $strategy['description'] ?></p>
             </td>
         </tr>
