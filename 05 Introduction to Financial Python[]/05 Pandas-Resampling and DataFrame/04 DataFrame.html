@@ -9,8 +9,7 @@
   The most common method of creating a DataFrame is passing a dictionary:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">dict = {'AAPL': [143.5,  144.09, 142.73, 144.18, 143.77],
         'GOOG': [898.7,  911.71, 906.69, 918.59, 926.99],
         'IBM':  [155.58, 153.67, 152.36, 152.94, 153.49]}
@@ -36,8 +35,7 @@ print df
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">df = aapl_table
 print df.Close.tail(5)
 print df['Adj. Volume'].tail(5)
@@ -63,8 +61,7 @@ Name: Adj. Volume, dtype: float64
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">aapl_2016 = df['2016']
 aapl_month = aapl_2016.resample('M').agg(lambda x: x[-1])
 print aapl_month
@@ -72,8 +69,7 @@ print aapl_month
 </div>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">
               Open      High     Low   Close      Volume  Ex-Dividend  \
 Date
@@ -127,8 +123,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">aapl_bar = aapl_month[['Open', 'High', 'Low', Close']]
 print aapl_bar
 
@@ -154,8 +149,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print aapl_month.loc['2016-03':'2016-06', ['Open', 'High', 'Low', 'Close']]
 
               Open    High     Low   Close
@@ -172,8 +166,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">above = aapl_bar[aapl_bar.Close &gt; np.mean(aapl_bar.Close)]
 print above
 
@@ -194,8 +187,7 @@ Date
   As mentioned, all methods that apply to a Series can also be applied to a DataFrame. Here we add a new column to an existing DataFrame:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">aapl_bar['rate_return'] = aapl_bar.Close.pct_change()
 print aapl_bar
 
@@ -221,8 +213,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">missing = aapl_bar.isnull()
 print missing
 print '---------------------------------------------'
@@ -264,8 +255,7 @@ freq       12     12     12     12          11
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print missing[missing.rate_return == True]
 
              Open   High    Low  Close rate_return
@@ -279,8 +269,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">drop = aapl_bar.dropna()
 print drop
 print '\n--------------------------------------------------\n'
@@ -329,8 +318,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">s1 = pd.Series([143.5, 144.09, 142.73, 144.18, 143.77], name = 'AAPL')
 s2 = pd.Series([898.7, 911.71, 906.69, 918.59, 926.99], name = 'GOOG')
 data_frame = pd.concat([s1, s2], axis = 1)
@@ -350,8 +338,7 @@ print data_frame
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">log_price = np.log(aapl_bar.Close)
 log_price.name = 'log_price'
 print log_price
@@ -398,8 +385,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">df_volume = aapl_table.loc['2016-10':'2017-04', ['Volume', 'Split Ratio']].resample('M').agg(lambda x: x[-1])
 print df_volume
 print '\n-------------------------------------------\n'
@@ -435,8 +421,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">concat = pd.concat([aapl_bar, df_volume], axis = 1)
 print concat
 
@@ -485,8 +470,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">concat = pd.concat([aapl_bar, df_volume], axis = 1, join = 'inner')
 print concat
 
@@ -509,8 +493,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">append = aapl_bar.append(df_2017)
 print append
              Close      High     Low    Open  rate_return
@@ -542,8 +525,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">concat = pd.concat([aapl_bar, df_2017], axis = 0)
 print concat
              Close      High     Low    Open  rate_return
@@ -573,8 +555,7 @@ Date
   Please note that if the two DataFrame have some columns with the same column names, these columns are considered to be the same and will be merged. It's very important to have the right column names. If we change a column names here:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">df_2017.columns = ['Change', 'High', 'Low', 'Close']
 concat = pd.concat([aapl_bar, df_2017], axis = 0)
 print concat

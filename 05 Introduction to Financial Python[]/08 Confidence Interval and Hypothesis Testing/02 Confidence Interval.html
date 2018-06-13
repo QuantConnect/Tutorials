@@ -4,8 +4,7 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -28,8 +27,7 @@ print 'Population standard deviation:',np.std(spy_log_return)
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">
 print '10 days sample returns:', np.mean(spy_log_return.tail(10))
 [out]: 10 days sample returns: 0.000845189915474
@@ -64,8 +62,7 @@ print '1000 days sample standard deviation:', np.std(spy_log_return.tail(1000))
   This interval is called <strong>confidence interval</strong>. We usually use 1.96 to calculate a 95% confidence interval because we assume that the sample mean follows normal distribution. We will cover this in detail later. Let's try to calculate the confidence interval using the samples above:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">
 #apply the formula above to calculate confidence interval
 bottom_1 = np.mean(spy_log_return.tail(10))-1.96*np.std(spy_log_return.tail(10))/(np.sqrt(len((spy_log_return.tail(10)))))

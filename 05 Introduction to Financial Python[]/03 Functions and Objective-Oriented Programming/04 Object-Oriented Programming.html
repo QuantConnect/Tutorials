@@ -20,8 +20,7 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">class Stock:
     def __init__(self, ticker, open, close, volume):
         self.ticker = ticker
@@ -49,8 +48,7 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">apple  = Stock('AAPL', 143.69, 144.09, 20109375)
 google = Stock('GOOGL', 898.7, 911.7, 1561616)
 </pre>
@@ -60,8 +58,7 @@ google = Stock('GOOGL', 898.7, 911.7, 1561616)
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">apple.ticker
 [out]: 'AAPL'
 google.print_return()
@@ -81,8 +78,7 @@ google.print_return()
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">
 apple.ceo = 'Tim Cook'
 apple.ceo
@@ -93,8 +89,7 @@ apple.ceo
   We can check what names (i.e. attributes and methods) are defined on an object using the dir() function:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">dir(apple)
 [out]:
 ['__doc__',
@@ -118,8 +113,7 @@ apple.ceo
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">class Child(Stock):
     def __init__(self, name):
         self.name = name
@@ -129,8 +123,7 @@ apple.ceo
   Then we create an object:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">aa = Child('AA')
 print aa.name
 [out]: 'AA'

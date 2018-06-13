@@ -61,8 +61,7 @@ x.Right ＝ 0  put option[right to sell]</td>
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def OnData(self,slice):
     for i in slice.OptionChains:
         if i.Key != self.symbol: continue
@@ -158,8 +157,7 @@ x.Right ＝ 0  put option[right to sell]</td>
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">for i in slice.OptionChains:
     if i.Key != self.symbol: continue
     chain = i.Value
@@ -181,8 +179,7 @@ contracts = sorted(contracts, key = lambda x:x.Expiry, reverse = True)
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">if len(contracts) == 0: continue
 # trade the contracts with the farthest expiration
 symbol = contracts[0].Symbol

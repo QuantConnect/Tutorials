@@ -6,8 +6,7 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def Initialize(self):
 	self.SetStartDate(2005,01,01)  #Set Start Date
 	self.SetEndDate(2012,03,01)    #Set End Date
@@ -35,8 +34,7 @@
 	Coarse Universe selection is the built-in universe data provided by QuantConnect which allows you to filter the universe of over 16000 symbols to perform rough filtering before your algorithm. Because coarse selection function takes all the equities including ETFs which have no fundamental data into account, we need the property <code>x.HasFundamentalData</code> to exclude them from our candidate stocks pool.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python"># sort the data by daily dollar volume and take the top entries
 def CoarseSelectionFunction(self, coarse):
     if self.flag1:
@@ -51,8 +49,7 @@ def CoarseSelectionFunction(self, coarse):
 
 2. We extract the factor values of candidate stocks at the beginning of each month and sort the stocks in ascending order of their factor values. Here we use 12-months' total risk-based capital data <code>x.FinancialStatements.TotalRiskBasedCapital.TwelveMonths</code> as an example.  It is t<span class="s1">he sum of Tier 1 and Tier 2 Capital. <code>x.Symbol.Value</code> can give the string symbol of selected stock x. Then we save those sorted symbols as <code>self.symbol</code>.</span>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def FineSelectionFunction(self, fine):
 	if self.flag1:
 		self.flag1 = 0
@@ -75,8 +72,7 @@ def CoarseSelectionFunction(self, coarse):
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">sorted_symbol = self.symbol
 self.AddEquity("SPY") # add benchmark
 for x in sorted_symbol:
@@ -106,8 +102,7 @@ monthly_return = monthly_return[:int(math.floor(len(monthly_return) / self.numOf
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">reshape_return = np.reshape(monthly_return, (self.numOfPortfolio, len(monthly_return)/self.numOfPortfolio))
 # calculate the average return of different portfolios
 port_avg_return = np.mean(reshape_return,axis=1).tolist()
@@ -132,8 +127,7 @@ self.df_return[str(self.flag3)] = port_avg_return
 </ul>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def calculate_criteria(self,df_port_return):
 	total_return = (df_port_return + 1).T.cumprod().iloc[-1,:] - 1
 	annual_return = (total_return+1)**(1./6)-1

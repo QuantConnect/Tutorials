@@ -7,8 +7,7 @@
 \[Theta(call)=-SN^{'}(d_1)\sigma e^{-q(T-t)}/(2\sqrt{T-t})+qSN(d_1)e^{(-q(T-t))}-rKe^{-r(T-t)}N(d_2)\]
 \[Theta(put)=-SN^{'}(d_1)\sigma e^{-q(T-t)}/(2\sqrt{T-t})-qSN(-d_1)e^{(-q(T-t))}+rKe^{-r(T-t)}N(-d_2)\]
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def theta(self):
     d1 = self.d1()
     d2 = d1 - self.sigma * sqrt(self.T)
@@ -27,8 +26,7 @@
 </div>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">z = theta
 # facecolors aren't normalizing as might be expected
 # we need to normalize it to avoid all dark color for value under 0

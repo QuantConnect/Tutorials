@@ -5,8 +5,7 @@
 \[delta(call)=\frac{\partial c}{\partial S}=e^{-q(T-t)}N(d1)\]
 \[delta(put)=\frac{\partial p}{\partial S}=e^{-q(T-t)}(N(d1)-1)\]
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">''' Greek letters for European options on an asset that provides a yield at rate q '''
 def delta(self):
     d1 = self.d1()
@@ -32,8 +31,7 @@ def delta(self):
   In order to demonstrate how those Greeks values change with the time to expiration and the underlying price, we choose 60*23 call options contracts with the stock price ranging from 10 to 70, time to expiration ranging from 0 to 1 year. The strikes of all the contracts are 40,  the interest rates are 0.1, the volatilities are all 0.5. We construct the contracts data as a 23*60 matrix.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">s = np.array([range(10,70,1) for i in range(23)])
 I = np.ones((shape(s)))
 time = arange(1,12.5,0.5)/12

@@ -12,8 +12,7 @@
   N(x) is the cumulative probability distribution function for a variable with a standard normal distribution. It can be calculated by the integral of the probability density function of standard normal distribution from 0 to x. In Python, you can use the <code>norm.pdf(x)</code> in spicy.stats library. For the following chart, we plot the probability density curve of the standard normal distribution. For example, N(-1) is the area of the left hand of the red line under the curve.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">import scipy.stats as sp
 mu = 0
 variance = 1
@@ -29,8 +28,7 @@ plt.plot(d*100,np.linspace(0,sp.norm.pdf(d), 100))
   Then in our BSM model class, we will calculate the European call and put option prices by using BSM formula.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def n(self, d):
     # cumulative probability distribution function of standard normal distribution
     return norm.cdf(d)

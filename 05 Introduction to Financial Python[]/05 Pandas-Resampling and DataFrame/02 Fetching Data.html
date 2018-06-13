@@ -2,8 +2,7 @@
   Here we use data from the yahoo_finance API.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">import quandl
 quandl.ApiConfig.api_key = 'dRQxJ15_2nrLznxr1Nn4'
 </pre>
@@ -12,8 +11,7 @@ quandl.ApiConfig.api_key = 'dRQxJ15_2nrLznxr1Nn4'
   We will create a Series named "aapl" whose values are Apple's daily closing prices, which are of course indexed by dates:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">aapl_table = quandl.get('WIKI/AAPL')
 aapl = aapl_table['Adj. Close']['2017']
 print aapl
@@ -24,8 +22,7 @@ print aapl
   Recall that we can fetch a specific data point using series['yyyy-mm-dd']. We can also fetch the data in a specific month using series['yyyy-mm'].
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print aapl['2017-3']
 Date
 2017-03-01    138.657681
@@ -58,8 +55,7 @@ Date
   Or in several consecutive months:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">aapl['2017-2':'2017-4']
 </pre>
 </div>
@@ -68,8 +64,7 @@ Date
   .head(N) and .tail(N) are methods for quickly accessing the first or last N elements.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print aapl.head()
 print aapl.tail(10)
 </pre>
@@ -78,8 +73,7 @@ print aapl.tail(10)
   The output:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">
 Date
 2017-01-03    114.715378

@@ -11,8 +11,7 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">plt.figure()
 #ols.fit().model is a method to access to the residual.
 fama_model.resid.plot.density()
@@ -26,8 +25,7 @@ plt.show()
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print 'Residual mean:', np.mean(fama_model.resid)
 [out]: Residual mean: -2.31112163493e-16
 print 'Residual variance:', np.var(fama_model.resid)
@@ -42,8 +40,7 @@ print 'Residual variance:', np.var(fama_model.resid)
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">plt.figure(figsize = (20,10))
 plt.scatter(df.spy,simple.resid)
 plt.axhline(0.05)
@@ -59,8 +56,7 @@ plt.show()
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">from statsmodels.stats import diagnostic as dia
 het = dia.het_breuschpagan(fama_model.resid,fama_df[['MKT','SMB','HML','RMW','CMA']][1:])
 print 'p-value: ', het[-1]

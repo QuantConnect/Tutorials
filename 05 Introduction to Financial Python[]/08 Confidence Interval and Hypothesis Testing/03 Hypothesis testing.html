@@ -3,8 +3,7 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">mean_1000 = np.mean(spy_log_return.tail(1000))
 std_1000 = np.std(spy_log_return.tail(1000))
 mean_10 = np.mean(spy_log_return.tail(10))
@@ -23,8 +22,7 @@ print s
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">bottom = 0 - 1.64*std_1000/np.sqrt(1000)
 upper = 0 + 1.64*std_1000/np.sqrt(1000)
 print (bottom, upper)
@@ -36,8 +34,7 @@ print (bottom, upper)
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">bottom = 0 - 1.96*std_1000/np.sqrt(1000)
 upper = 0 + 1.96*std_1000/np.sqrt(1000)
 print (bottom, upper)
@@ -57,8 +54,7 @@ print (bottom, upper)
   Let's calculate the Z score from our sample:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print np.sqrt(1000)*(mean_1000 - 0)/std_1000
 [out]: 1.90922032428
 </pre>
@@ -68,8 +64,7 @@ print (bottom, upper)
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">import scipy.stats as st
 print (1 - st.norm.cdf(1.9488))
 [out]: 0.025659656888
@@ -83,8 +78,7 @@ print (1 - st.norm.cdf(1.9488))
   If we use 95% confidence interval, we need a p-value less than 0.025 to reject the null hypothesis. However, now our p-value is 0.025659, which is greater than 0.025, thus we can't reject the null hypothesis. It's obviously less than 0.05, so we can still reject the null hypothesis with 90% confidence level. Now let's test the hypothesis that population mean = 0 again with a large sample, which has 1200 observations:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">mean_1200 = np.mean(spy_log_return.tail(1200))
 std_1200 = np.std(spy_log_return.tail(1200))
 z_score = np.sqrt(1200)*(mean_1200 - 0)/std_1200

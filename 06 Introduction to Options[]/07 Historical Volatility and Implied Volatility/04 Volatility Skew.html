@@ -5,8 +5,7 @@
   Here we give an example how to plot the volatility smile by using the real time options data of SPDR S&amp;P 500 ETF(NYSEARCA: SPY).
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python"># download option data for all expiry months from Yahoo Finance
 # provide a formatted DataFrame with a hierarchical index
 opt = Options('spy', 'yahoo')
@@ -69,8 +68,7 @@ plt.legend((e,f), ("IV (call options)", "IV (put options)"))
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">opt = Options('spy', 'yahoo')
 r = 0.01 # risk free rate
 d = 0.01 # continuous devidend yield

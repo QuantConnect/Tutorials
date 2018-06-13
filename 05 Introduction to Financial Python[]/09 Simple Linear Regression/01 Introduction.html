@@ -5,8 +5,7 @@
   If we are holding a stock, we must be curious about the relationship between our stock return and the market return. Let's say we hold Amazon stock on the first day of this year. In order to see the relation directly, we plot the daily return of our stock on the y-axis and plot the S&amp;P 500 index daily return on the x-axis.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">import numpy as np
 import pandas as pd
 import quandl
@@ -64,8 +63,7 @@ print df.tail()
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">import matplotlib.pyplot as plt
 plt.figure(figsize = (15,10))
 plt.scatter(df.spy,df.amzn)

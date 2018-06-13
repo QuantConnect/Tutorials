@@ -31,8 +31,7 @@
      <li>To generate \(W_1\) and \(W_2\) with correlation \(\rho\), we first generate two independent standard normal variables \(Z_1\) and \(Z_2\), set \(W_1=Z_1\), then \[W_2=\rho Z_1+\sqrt{1-\rho^2}Z_2\]</li>
 </ul>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">
 from numpy import sqrt, exp
 import numpy as np
@@ -94,8 +93,7 @@ def mc_heston(option_type,S0,K,T,initial_var,long_term_var,rate_reversion,vol_of
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">import pandas as pd
 from numpy import sqrt,mean,log,diff
 import QuantLib as ql
@@ -152,8 +150,7 @@ print "long_term_var = %f, rate_reversion = %f, vol_of_vol = %f, corr = %f, init
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">long_term_var = 0.191762, rate_reversion = 0.000001, vol_of_vol = 0.215442, corr = -0.817388, initial_var = 0.198778
 </pre>
 </div>

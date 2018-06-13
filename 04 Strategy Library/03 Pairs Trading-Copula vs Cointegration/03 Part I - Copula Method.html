@@ -58,8 +58,7 @@
 \[R_x = ln(\frac{P_{x,t}}{P_{x,t-1}}),   R_y = ln(\frac{P_{y,t}}{P_{y,t-1}})\]   t = 1,2,...,n where n is the number of price data
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def _pair_selection(self):
 
     tick_syl =  [["QQQ","XME","TNA","FAS","XLF","EWC","QLD"],
@@ -125,8 +124,7 @@
 </table>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def _parameter(self, family, tau):
     if  family == 'clayton':
         return 2*tau/(1-tau)
@@ -183,8 +181,7 @@
 </table>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def _lpdf_copula(self, family, theta, u, v):
     ''' estimate the log probability density function of three kinds of Archimedean copulas '''
     if  family == 'clayton':
@@ -206,8 +203,7 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">self.family = ['clayton', 'frank', 'gumbel']
 tau = kendalltau(x, y)[0]  # estimate Kendall'rank correlation
 AIC ={}  # generate a dict with key being the copula family, value = [theta, AIC]
@@ -274,8 +270,7 @@ Gumbel Copula
 </ul>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def _set_signal(self):
     history = self.History(self.ticker, self.lookbackdays,Resolution.Daily)
     # generate the log return series of paired stocks
@@ -298,8 +293,7 @@ Gumbel Copula
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def OnData(self,data):
     for i in self.syl:
         self.price_list[i].append(self.Portfolio[i].Price)

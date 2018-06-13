@@ -3,8 +3,7 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">
 print range(10)
 [out]: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -19,8 +18,7 @@ print range(1, 11, 2)
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">
 tickers = ['AAPL', 'GOOGL', 'IBM', 'FB', 'F', 'V', 'G', 'GE']
 print "The number of tickers is {}".format(len(tickers))
@@ -44,8 +42,7 @@ The number of tickers is 8
 
 <strong>map()</strong> is a function that applies a specific function to every item of a sequence or collection, and returns a list of the results.
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">tickers = ['AAPL','GOOG','IBM','FB','F','V', 'G', 'GE']
 print(list(map(len,tickers)))
 [out]: [4, 5, 3, 2, 1, 1, 1, 2]
@@ -56,8 +53,7 @@ print(list(map(len,tickers)))
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">map(lambda x: x**2, range(10))
 [out]: [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
 </pre>
@@ -68,16 +64,14 @@ print(list(map(len,tickers)))
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">map(lambda x, y: x+y, [1,2,3,4,5], [5,4,3,2,1])
 [out]: [6, 6, 6, 6, 6]
 </pre>
 </div>
 <strong>sorted()</strong> takes a list or set and returns a new sorted list:
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">sorted([5,2,3,4,1])
 [out]: [1, 2, 3, 4, 5]
 </pre>
@@ -87,8 +81,7 @@ print(list(map(len,tickers)))
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">price_list = [('AAPL', 144.09), ('GOOGL', 911.71), ('MSFT', 69), ('FB', 150), ('WMT', 75.32)]
 sorted(price_list, key = lambda x: x[1])
 [out]:
@@ -100,8 +93,7 @@ sorted(price_list, key = lambda x: x[1])
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">price_list = [('AAPL', 144.09), ('GOOGL', 911.71), ('MSFT', 69), ('FB', 150), ('WMT', 75.32)]
 sorted(price_list, key = lambda x: x[1], reverse = True)
 [out]:
@@ -113,8 +105,7 @@ sorted(price_list, key = lambda x: x[1], reverse = True)
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">price_list = [('AAPL', 144.09), ('GOOGL', 911.71), ('MSFT', 69), ('FB', 150), ('WMT', 75.32)]
 price_list.sort(key = lambda x: x[1])
 print price_list

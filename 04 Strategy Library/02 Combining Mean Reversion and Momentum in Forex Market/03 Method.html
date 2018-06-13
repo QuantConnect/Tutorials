@@ -7,8 +7,7 @@
   The first function takes two arguments: symbol and number of daily data points requested. This function requests historical <a href="https://www.quantconnect.com/docs#Consolidating-Data-TradeBars-vs-QuoteBars">QuoteBars</a> and builds it into a pandas DataFrame. For more information about pandas DataFrame, please refer to the help documentation <a href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html">DataFrame</a>. The calculate_return function takes a DataFrame as an argument to calculate the mean and standard deviation of the log prices, and create new columns for the DataFrame (return, reversal factor and momentum) - it prepares the DataFrame for multiple linear regression.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def get_history(self,symbol, num):
     data = {}
     dates = []
@@ -50,8 +49,7 @@ def calculate_return(self,df):
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def concat(self):
     # we requested as many daily tradebars as we can
     his = self.get_history(self.quoted[0].Value,20*365)
@@ -83,8 +81,7 @@ def OLS(self,df):
   The predict function uses the history for the last 3 months, merges it into a DataFrame and then calculates the updated factors. Using these updated factors (together with the model we built) we calculate the expected return.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def predict(self,symbol):
     # get current month in string
     month = str(self.Time).split(' ')[0][5:7]
@@ -128,8 +125,7 @@ def calculate_input(self, df, mean, sd):
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def Initialize(self):
     self.SetStartDate(2013,6,1)
     self.SetEndDate(2016,6,1)
@@ -156,8 +152,7 @@ def calculate_input(self, df, mean, sd):
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def action(self):
     rank = []
     long_short = []
