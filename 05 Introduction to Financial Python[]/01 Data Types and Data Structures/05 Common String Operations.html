@@ -1,23 +1,16 @@
-﻿<p>
-  A string is an immutable sequence of characters. It can be sliced by index just like a tuple:
+<p>
+A string is an immutable sequence of characters. It can be sliced by index just like a tuple:
 </p>
-
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
 <pre class="python">my_str = 'Welcome to QuantConnect'
 print(my_str[8:])
 [out]: to QuantConnect
 </pre>
 </div>
-
 <p>
   There are many methods associated with strings. We can use string.count() to count the occurrences of a character in a string, use string.find() to return the index of a specific character, and use string.replace() to replace characters.
 </p>
-
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
 <pre class="python">
 print("Counting the number of e's in this sentence".count('e'))
 [out]: 6
@@ -27,14 +20,10 @@ print('all the a in this sentence now becomes e'.replace('a','e'))
 [out]: ell the e in this sentence now becomes e
 </pre>
 </div>
-
 <p>
   The most commonly used method for strings is string.split(). This method will split the string by the indicated character and return a list:
 </p>
-
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
 <pre class="python">Time = '2016-04-01 09:43:00'
 splited_list = Time.split(' ')
 date = splited_list[0]
@@ -46,34 +35,25 @@ print(hour)
 [out]: 09
 </pre>
 </div>
-
 <p>
   We can replace parts of a string by our variable. This is called string formatting.
 </p>
-
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
 <pre class="python">my_time = 'Hour: {}, Minute: {}'.format(9, 43)
 print(my_time)
 [out]: Hour: 9, Minute: 43
 </pre>
 </div>
-
 <p>
   Another way to format a string is to use the % symbol.
 </p>
-
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
 <pre class="python">print 'pi is %f' % 3.14
 [out]: pi is 3.140000
 print('%s to %s' % ('Welcome', 'QuantConnect'))
 [out]: Welcome to QuantConnect
 </pre>
 </div>
-
 <p>
   %s is a placeholder that takes in a string. Similarly %f takes a float and %d takes an integer.
 </p>
