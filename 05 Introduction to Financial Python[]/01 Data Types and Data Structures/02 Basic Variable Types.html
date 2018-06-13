@@ -1,27 +1,20 @@
-﻿<p>
-  The basic types of variables in Python are: strings, integers, floating point numbers and booleans.
+<p>
+The basic types of variables in Python are: strings, integers, floating point numbers and booleans.
 </p>
 <p>
   Strings in python are identified as a contiguous set of characters represented in either single quotes (' ') or double quotes (" ").
 </p>
-
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
 <pre class="python">my_string1 = 'Welcome to'
 my_string2 = "QuantConnect"
 print(my_string1 + ' ' + my_string2)
 [out]: Welcome to QuantConnect
 </pre>
 </div>
-
 <p>
   An integer is a round number with no values after the decimal point.
 </p>
-
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
 <pre class="python">my_int = 10
 print(my_int)
 [out]: 10
@@ -29,14 +22,10 @@ print(type(my_int))
 [out]: type 'int'
 </pre>
 </div>
-
 <p>
   The built-in function int() can convert a string into an integer.
 </p>
-
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
 <pre class="python">my_string = "100"
 print(type(my_string))
 [out]: type 'str'
@@ -45,14 +34,10 @@ print(type(my_int))
 [out]: type 'int'
 </pre>
 </div>
-
 <p>
   A floating point number, or a float, is a real number in mathematics. In Python we need to include a value after a decimal point to define it as a float.
 </p>
-
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
 <pre class="python">my_float = 1.0
 print(type(my_float))
 [out]: type 'float'
@@ -61,28 +46,20 @@ print(type(my_int))
 [out]: type 'int'
 </pre>
 </div>
-
 <p>
   As you can see above, if we don't include a decimal value, the variable would be defined as an integer. The built-in function float() can convert a string or an integer into a float.
 </p>
-
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
 <pre class="python">my_string = "100"
 my_float = float(my_string)
 print(type(my_float))
 [out]: type 'float'
 </pre>
 </div>
-
 <p>
   A boolean, or bool, is a binary variable. Its value can only be True or False. It is useful when we do some logic operations, which would be covered in our next chapter.
 </p>
-
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
 <pre class="python">my_bool = False
 print(my_bool)
 [out]: False
