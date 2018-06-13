@@ -5,8 +5,7 @@
   To start the look back period is set to 20 days to determine its buy and sell levels. We change the number of look back days in proportion to changes in market volatility. Through this method the number of look back days changes on a daily basis. At the end of each day, the current market volatility is calculated by the standard deviation of the past 30 day's closing prices.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">close = self.History(self.syl, 31, Resolution.Daily)['close']
    todayvol = np.std(close[1:self.numdays+1])
    yesterdayvol = np.std(close[0:self.numdays])
@@ -35,8 +34,7 @@
   QuantConnect provides more than 100 technical indicators for you to use in your algorithm. These are provided as class objects in Python. A full list of the indicators and their properties can be found in the reference table of <a href="https://www.quantconnect.com/docs#Indicators">the documentation page</a>.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">self.bolband = self.BB(self.syl,self.numdays,decimal.Decimal(2),MovingAverageType.Exponential,Resolution.Daily)
      self.upband = self.bolband.UpperBand
      self.lowband = self.bolband.LowerBand
@@ -48,8 +46,7 @@
   The exit signal for an existing holding is determined by calculating a simple moving average of closing prices for the past look back days. That is to say, we liquidate a long position if the current price is lower than the moving average of the close price over the look back period, and vice versa for selling a short position.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">self.buypoint = max(self.high)
 self.sellpoint = min(self.low)
 historyclose = self.History(self.syl, self.numdays, Resolution.Daily)['close']

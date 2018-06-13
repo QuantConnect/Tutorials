@@ -2,8 +2,7 @@
   In python, we have a very power package for mathematical models, which is named 'statsmodels'.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">import statsmodels.formula.api as sm
 model = sm.ols(formula = 'amzn~spy',data = df).fit()
 print model.summary()
@@ -15,8 +14,7 @@ print model.summary()
   We built a simple linear regression model above by using the ols() function in statsmodels. The 'model' instance has lots of properties. The most commonly used one is parameters, or slope and intercept. We can access to them by:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print 'pamameters: ',model.params
 [out]: pamameters:  Intercept    0.000012
                    spy          0.492112
@@ -36,8 +34,7 @@ print 'fitted values: ',model.predict()
   Now let's have a look at our fitted line:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">plt.figure(figsize = (15,10))
 plt.scatter(df.spy,df.amzn)
 plt.xlabel('spx_return')

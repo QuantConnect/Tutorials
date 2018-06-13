@@ -3,8 +3,7 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">import numpy as np
 import pandas as pd
 import quandl
@@ -25,8 +24,7 @@ aapl_table = quandl.get('WIKI/AAPL')</pre>
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">
 spy  = spy_table .loc['2016',['Close']]
 amzn = amzn_table.loc['2016',['Close']]
@@ -41,8 +39,7 @@ aapl = aapl_table.loc['2016',['Close']]
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">
 spy_log  = np.log(spy.Close) .diff().dropna()
 amzn_log = np.log(amzn.Close).diff().dropna()
@@ -111,8 +108,7 @@ df.tail()
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">simple = sm.ols(formula = 'amzn ~ spy', data = df).fit()
 print simple.summary()
 </pre>
@@ -153,8 +149,7 @@ print simple.summary()
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">model = sm.ols(formula = 'amzn ~ spy + ebay + wal', data = df).fit()
 print model.summary()
 </pre>
@@ -230,8 +225,7 @@ print model.summary()
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">
 import urllib2
 from datetime import datetime
@@ -252,8 +246,7 @@ fama_table = fama_table.iloc[:,1:]
   With the data, we can construct a Fama-French factor model:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">
 fama = fama_table['2016']
 fama = fama.rename(columns = {'Mkt-RF':'MKT'})
@@ -268,8 +261,7 @@ print fama_model.summary()
   The Fama-French 5-factor model has a higher \( R^2 \) of 0.387. We can compare the predictions from simple linear regression and Fama-French multiple regression by plotting them together on one chart:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">
 result = pd.DataFrame({'simple regression': simple.predict(),
                        'fama_french': fama_model.predict(),

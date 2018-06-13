@@ -5,8 +5,7 @@
   Here we use data from the yahoo_finance API.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">import quandl
 quandl.ApiConfig.api_key = 'dRQxJ15_2nrLznxr1Nn4'
 </pre>
@@ -15,8 +14,7 @@ quandl.ApiConfig.api_key = 'dRQxJ15_2nrLznxr1Nn4'
   We will create a Series named "aapl" whose values are Apple's daily closing prices, which are of course indexed by dates:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">aapl_table = quandl.get('WIKI/AAPL')
 aapl = aapl_table['Adj. Close']['2017']
 print aapl
@@ -27,8 +25,7 @@ print aapl
   Recall that we can fetch a specific data point using series['yyyy-mm-dd']. We can also fetch the data in a specific month using series['yyyy-mm'].
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print aapl['2017-3']
 Date
 2017-03-01    138.657681
@@ -61,8 +58,7 @@ Date
   Or in several consecutive months:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">aapl['2017-2':'2017-4']
 </pre>
 </div>
@@ -71,8 +67,7 @@ Date
   .head(N) and .tail(N) are methods for quickly accessing the first or last N elements.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print aapl.head()
 print aapl.tail(10)
 </pre>
@@ -81,8 +76,7 @@ print aapl.tail(10)
   The output:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">
 Date
 2017-01-03    114.715378
@@ -114,8 +108,7 @@ Name: Adj. Close, dtype: float64
   <code>series.resample.mean()</code> is a complete statement that groups data into intervals, and then compute the mean of each interval. For example, if we want to aggregate the daily data into monthly data by mean:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">by_month = aapl.resample('M').mean()
 print by_month
 Date
@@ -135,8 +128,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">by_week = aapl.resample('W').mean()
 print by_week.head()
 
@@ -155,8 +147,7 @@ Date
   We can choose almost any frequency by using the format 'nf', where 'n' is an integer and 'f' is M for month, W for week and D for day.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">three_day = aapl.resample('3D').mean()
 two_week  = aapl.resample('2W').mean()
 two_month = aapl.resample('2M').mean()
@@ -168,8 +159,7 @@ two_month = aapl.resample('2M').mean()
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">std = aapl.resample('W').std()    # standard deviation
 max = aapl.resample('W').max()    # maximum value
 min = aapl.resample('W').min()    # minimum value
@@ -181,8 +171,7 @@ min = aapl.resample('W').min()    # minimum value
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">last_day = aapl.resample('M').agg(lambda x: x[-1])
 print last_day
 Date
@@ -202,8 +191,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">monthly_return = aapl.resample('M').agg(lambda x: x[-1]/x[1] - 1)
 print monthly_return
 
@@ -224,8 +212,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print monthly_return.mean()
 print monthly_return.std()
 print monthly_return.max()
@@ -239,8 +226,7 @@ print monthly_return.max()
   Another two methods frequently used on Series are .diff() and .pct_change(). The former calculates the difference between consecutive elements, and the latter calculates the percentage change.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print last_day.diff()
 print last_day.pct_change()
 
@@ -275,8 +261,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">daily_return = last_day.pct_change()
 print daily_return.fillna(0)
 
@@ -296,8 +281,7 @@ Date
   Alternatively, we can fill a NaN with the next fitted value. This is called 'backward fill', or 'bfill' in short:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">daily_return = last_day.pct_change()
 print daily_return.fillna(method = 'bfill')
 
@@ -322,8 +306,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">daily_return = last_day.pct_change().dropna()
 print daily_return
 
@@ -350,8 +333,7 @@ Date
   The most common method of creating a DataFrame is passing a dictionary:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">dict = {'AAPL': [143.5,  144.09, 142.73, 144.18, 143.77],
         'GOOG': [898.7,  911.71, 906.69, 918.59, 926.99],
         'IBM':  [155.58, 153.67, 152.36, 152.94, 153.49]}
@@ -377,8 +359,7 @@ print df
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">df = aapl_table
 print df.Close.tail(5)
 print df['Adj. Volume'].tail(5)
@@ -404,8 +385,7 @@ Name: Adj. Volume, dtype: float64
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">aapl_2016 = df['2016']
 aapl_month = aapl_2016.resample('M').agg(lambda x: x[-1])
 print aapl_month
@@ -413,8 +393,7 @@ print aapl_month
 </div>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">
               Open      High     Low   Close      Volume  Ex-Dividend  \
 Date
@@ -468,8 +447,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">aapl_bar = aapl_month[['Open', 'High', 'Low', Close']]
 print aapl_bar
 
@@ -495,8 +473,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print aapl_month.loc['2016-03':'2016-06', ['Open', 'High', 'Low', 'Close']]
 
               Open    High     Low   Close
@@ -513,8 +490,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">above = aapl_bar[aapl_bar.Close &gt; np.mean(aapl_bar.Close)]
 print above
 
@@ -535,8 +511,7 @@ Date
   As mentioned, all methods that apply to a Series can also be applied to a DataFrame. Here we add a new column to an existing DataFrame:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">aapl_bar['rate_return'] = aapl_bar.Close.pct_change()
 print aapl_bar
 
@@ -562,8 +537,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">missing = aapl_bar.isnull()
 print missing
 print '---------------------------------------------'
@@ -605,8 +579,7 @@ freq       12     12     12     12          11
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print missing[missing.rate_return == True]
 
              Open   High    Low  Close rate_return
@@ -620,8 +593,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">drop = aapl_bar.dropna()
 print drop
 print '\n--------------------------------------------------\n'
@@ -670,8 +642,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">s1 = pd.Series([143.5, 144.09, 142.73, 144.18, 143.77], name = 'AAPL')
 s2 = pd.Series([898.7, 911.71, 906.69, 918.59, 926.99], name = 'GOOG')
 data_frame = pd.concat([s1, s2], axis = 1)
@@ -691,8 +662,7 @@ print data_frame
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">log_price = np.log(aapl_bar.Close)
 log_price.name = 'log_price'
 print log_price
@@ -739,8 +709,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">df_volume = aapl_table.loc['2016-10':'2017-04', ['Volume', 'Split Ratio']].resample('M').agg(lambda x: x[-1])
 print df_volume
 print '\n-------------------------------------------\n'
@@ -776,8 +745,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">concat = pd.concat([aapl_bar, df_volume], axis = 1)
 print concat
 
@@ -826,8 +794,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">concat = pd.concat([aapl_bar, df_volume], axis = 1, join = 'inner')
 print concat
 
@@ -850,8 +817,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">append = aapl_bar.append(df_2017)
 print append
              Close      High     Low    Open  rate_return
@@ -883,8 +849,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">concat = pd.concat([aapl_bar, df_2017], axis = 0)
 print concat
              Close      High     Low    Open  rate_return
@@ -914,8 +879,7 @@ Date
   Please note that if the two DataFrame have some columns with the same column names, these columns are considered to be the same and will be merged. It's very important to have the right column names. If we change a column names here:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">df_2017.columns = ['Change', 'High', 'Low', 'Close']
 concat = pd.concat([aapl_bar, df_2017], axis = 0)
 print concat

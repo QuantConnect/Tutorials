@@ -8,8 +8,7 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">class TBill(PythonData):
     def GetSource(self, config, date, isLiveMode):
         return SubscriptionDataSource("https://www.quandl.com/api/v3/datasets/USTREASURY/BILLRATES.csv?api_key=XXXXXXXXX&amp;order=asc", SubscriptionTransportMedium.RemoteFile)
@@ -43,8 +42,7 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">self.AddData(TBill, "tbill")
 self.tbill = self.Securities["tbill"].Symbol
 </pre>
@@ -55,8 +53,7 @@ self.tbill = self.Securities["tbill"].Symbol
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">self.regPeriod = 24
 self.daysInMonth = 21
 </pre>
@@ -67,8 +64,7 @@ self.daysInMonth = 21
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">self.Schedule.On(self.DateRules.MonthStart(self.spy), self.TimeRules.AfterMarketOpen(self.spy),Action(self.MonthlyReg))
 </pre>
 </div>
@@ -78,8 +74,7 @@ self.daysInMonth = 21
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">hist = self.History([self.oil, self.spy], self.regPeriod*self.daysInMonth, Resolution.Daily)
 oilSeries = hist.loc[str(self.oil)]['close'][self.daysInMonth-1:self.regPeriod*self.daysInMonth:self.daysInMonth]
 spySeries = hist.loc[str(self.spy)]['close'][self.daysInMonth-1:self.regPeriod*self.daysInMonth:self.daysInMonth]
@@ -91,8 +86,7 @@ rf = float(self.Securities[self.tbill].Price)/12.0
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">x = np.array(oilSeries)
 x = (np.diff(x)/x[:-1])
 y = np.array(spySeries)
@@ -107,8 +101,7 @@ yPred = alpha + x[-1]*beta
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">if yPred &gt; rf:
 	self.SetHoldings(self.spy, 1)
 else:

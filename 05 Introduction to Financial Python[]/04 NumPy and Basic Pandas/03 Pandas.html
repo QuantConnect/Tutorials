@@ -3,8 +3,7 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">import pandas as pd</pre>
 </div>
 
@@ -19,8 +18,7 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">price = [143.73, 145.83, 143.68, 144.02, 143.5, 142.62]
 s = pd.Series(price)
 print s
@@ -38,8 +36,7 @@ print s
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">s = pd.Series(price, index = ['a', 'b', 'c', 'd', 'e', 'f'])
 print s
 
@@ -55,8 +52,7 @@ f    142.62</pre>
   Or we can change the indices of an existing Series:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">s.index = [6,5,4,3,2,1]
 print s
 
@@ -72,8 +68,7 @@ print s
   Series is like a list since it can be sliced by index:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print s[1:]
 print s[:-2]
 
@@ -95,8 +90,7 @@ dtype: float64</pre>
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print s[4]
 s[4] = 0
 print s
@@ -116,8 +110,7 @@ dtype: float64</pre>
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">s = pd.Series(price, name = 'Apple Prices')
 print s
 print s.name
@@ -137,8 +130,7 @@ Apple Prices</pre>
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print s.describe()
 
 count      6.000000
@@ -158,8 +150,7 @@ max      145.830000</pre>
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">time_index = pd.date_range('2017-01-01', periods = len(s), freq = 'D')
 print time_index
 s.index = time_index
@@ -186,8 +177,7 @@ Freq: D, Name: Apple Prices, dtype: float64</pre>
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">s.index = [6,5,4,3,2,1]
 print s
 print s[1]
@@ -207,8 +197,7 @@ Name: Apple Prices, dtype: float64
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print s.iloc[1]
 [out]: 145.83
 </pre>
@@ -219,8 +208,7 @@ Name: Apple Prices, dtype: float64
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">s.index = time_index
 print s['2017-01-03']
 [out]: 143.68</pre>
@@ -231,8 +219,7 @@ print s['2017-01-03']
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print s['2017-01-02':'2017-01-05']
 
 2017-01-02    145.83
@@ -247,8 +234,7 @@ Freq: D, Name: Apple Prices, dtype: float64</pre>
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print s[s &lt; np.mean(s)]
 print s[(s &gt; np.mean(s)) &amp; (s &lt; np.mean(s) + 1.64*np.std(s))]
 

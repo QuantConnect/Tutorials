@@ -2,8 +2,7 @@
 	Step 1: Initialize your algorithm including setting the start and end date, setting the cash and filtering the options contracts. Note here in SetFilter, the strike price should range from negative to positive because we need to choose out-of-the-money put and call options from candidate contracts. The strike price of OTM call should be greater than ATM options and the strike price of OTM put should be lower than ATM options.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def Initialize(self):
 	self.SetStartDate(2017, 4, 1)
 	self.SetEndDate(2017, 5, 30)
@@ -21,8 +20,7 @@
 	Step 2: Sort the option chain by expiration date and choose an expiration date you want to trade. For demonstration purpose, here we choose options with the furthest expiration date in candidate contracts. Then filter out the call options which expire on that date.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">for i in optionchain:
 	if i.Key != self.symbol: continue
 	chain = i.Value
@@ -36,8 +34,7 @@
 	Step 3: Sort the call options by their expiration date and choose the deep OTM contract which has the largest strike price.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">call_contracts = sorted(call,key = lambda x: x.Strike)
 if len(call_contracts) == 0: continue
 # choose the deep OTM call option
@@ -48,8 +45,7 @@ self.call = call_contracts[-1]
 	Step 4: Select the put options which have the same expiration date with the call option and sort the put options by strike price. Then choose the deep out-of-the-money put which has the minimum strike price among all the available put options.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">put_contracts = sorted([i for i in chain if i.Expiry == expiry and i.Right == 1], key = lambda x: x.Strike)
 # choose the deep OTM put option
 self.put = put_contracts[0]
@@ -59,8 +55,7 @@ self.put = put_contracts[0]
 	Step 5: Buy the call and the put options at the same time and wait until expiration.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">self.Buy(self.call.Symbol ,1)
 self.Buy(self.put.Symbol ,1)
 </pre>

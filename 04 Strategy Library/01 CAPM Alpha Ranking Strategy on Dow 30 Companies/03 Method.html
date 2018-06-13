@@ -17,8 +17,7 @@
 	In the initialize method we define a Scheduled Event to trigger a monthly re-balancing of the portfolio. For more details about how to use Scheduled Events, you can read the <a href="https://www.quantconnect.com/docs#Scheduled-Events">Documentation</a> or see the example <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ScheduledEventsAlgorithm.py">ScheduledEventsAlgorithm</a>.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def Initialize(self):
     self.Schedule.On(self.DateRules.MonthStart(self.benchmark), self.TimeRules.AfterMarketOpen(self.benchmark), Action(self.rebalance))
 	</pre>
@@ -30,8 +29,7 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def regression(self,x,y):
     x = np.array(x)
     x = np.diff(x)/x[:-1]
@@ -49,8 +47,7 @@
 	Each month we get the historical prices of the DOW30 components using the <a href="https://www.quantconnect.com/lean/docs#topic182.html">History</a> API. The data is returned from the API as complex <em>Slice</em> objects. To make this useful in the algorithm we extract the asset prices, and benchmark prices to a list.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def get_regression_data(self,symbol,history):
     symbol_price = []
     benchmark_price = []
@@ -70,8 +67,7 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def rebalance(self):
     # get historical stock symbols and prices, then put them in tuples
     history = self.History(self.regression_dates, Resolution.Daily)

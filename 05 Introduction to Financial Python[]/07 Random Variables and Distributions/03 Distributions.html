@@ -8,8 +8,7 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">import random
 import matplotlib.pyplot as plt
 import numpy as np
@@ -29,8 +28,7 @@ print series
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">plt.figure(figsize = (20,10))
 plt.hist(series,bins = 11,align = 'mid')
 plt.xlabel('Dice Number')
@@ -44,8 +42,7 @@ plt.show()
   Let's say we want to know the frequency that the observations are less than or equal to 3. In other words we want to seek the value of \(P(X&lt;3)\).
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print len([x for x in series if x &lt;= 3])/float(len(series))
 [out]: 0.4956
 print np.mean(series)
@@ -86,8 +83,7 @@ print np.mean(series)
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def trial():
     number = [1,2,3,4,5,6,7,8,9,10]
     a = random.choice(number)
@@ -102,8 +98,7 @@ print np.mean(series)
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">res = [trial() for x in range(10)]
 print sum(res)
 [out]: 7
@@ -114,8 +109,7 @@ print sum(res)
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def binomial(number):
     l = []
     for i in range(10000):
@@ -131,8 +125,7 @@ print binomial(8)
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">prob = []
 for i in range(1,11):
     prob.append(binomial(i))
@@ -155,8 +148,7 @@ print prob_s
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print (float(factorial(10))/(factorial(7)*factorial(10-7)))*(0.7**7)*(0.3**3)
 [out]: 0.266827932
 print (float(factorial(10))/(factorial(8)*factorial(10-8)))*(0.7**8)*(0.3**2)
@@ -168,8 +160,7 @@ print (float(factorial(10))/(factorial(8)*factorial(10-8)))*(0.7**8)*(0.3**2)
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">plt.figure(figsize = (20,10))
 plt.bar(range(1,11),prob)
 plt.grid()

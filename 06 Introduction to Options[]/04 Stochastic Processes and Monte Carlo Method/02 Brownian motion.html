@@ -23,8 +23,7 @@
   Next, we simulate the Wiener process and plot the paths attempting to gain an intuitive understanding of a stochastic process. Each path is an independent Wiener process.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">
 import numpy as np
 import matplotlib.pyplot as plt
@@ -118,8 +117,7 @@ for i in range(5):
   We apply this technique to modeling stock prices in order to look at the potential evolution of stock prices over time and then demonstrate how to price the European options. Here we use Google as an example. Suppose today is 07/31/2017, the share price of GOOG is $930.5. We use the historical close price from 01/2015 to 07/2017 to compute the historical annual return and volatility as the mu and sigma parameters. (Note, we do not need to concern with the detailed determinants of 􏰯\(\mu\) because the value of options written on a stock is, in general, independent of􏰯 \(\mu\). In contrast, the stock price volatility \(\sigma\) is of crucial importance to the determination of the value of options). Consider GOOG that pays no-dividends, has an expected return 39.64% per annum with continuous compounding and a volatility of 23.44% per annum. Observe today’s price $903.5 per share and with ∆t = 0.001 yr. Then we apply Monte Carlo to simulate 500 price paths in the next three months.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">
 import quandl
 quandl.ApiConfig.api_key = 'NxTUTAQswbKs5ybBbwfK'
@@ -165,8 +163,7 @@ plt.xlabel('steps',fontsize=15)
   There is one thing you need to note that in option pricing, Monte Carlo simulations use the risk-neutral valuation result. More specifically, sample the paths to obtain the expected payoff in a risk-neutral world (The expected annual return rate and the risk-free annual rate should be the same in order to get the correct estimation of the option) and then discount this payoff at the risk-neutral rate.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">
 def mc_euro_options(option_type,s0,strike,maturity,r,sigma,num_reps):
     payoff_sum = 0

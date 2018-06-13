@@ -2,8 +2,7 @@
  Step 1: Initialize your algorithm and filter the contract. Here we choose the time to expiration between 30 to 60 days from now on.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def Initialize(self):
 	self.SetStartDate(2017, 4, 01)
 	self.SetEndDate(2017, 6, 30)
@@ -21,8 +20,7 @@
  Step 2: Sorted the option chain by expiration and choose the furthest date to filter the call contract. Then sorted those call contracts by their strike price and choose the call contracts with the highest strike price to trade.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">for i in optionchain:
 	if i.Key != self.symbol: continue
 	chain = i.Value
@@ -40,8 +38,7 @@
  Step 3: According to the call option contract, choose the put option with the same strike price and the same expiration date. Then buy the call option and the put option at the same time and wait until expiration.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python"> for i in chain:
 	if i.Expiry == expiry and i.Right == 1 and i.Strike ==call_contracts[0].Strike:
 	    self.put = i

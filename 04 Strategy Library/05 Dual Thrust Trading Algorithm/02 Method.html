@@ -4,8 +4,7 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def Initialize(self):
   self.SetStartDate(2004, 1, 1)
   self.SetEndDate(2017, 8, 30)
@@ -19,8 +18,7 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">self.Schedule.On(self.DateRules.EveryDay(self.syl),self.TimeRules.AfterMarketOpen(self.syl,0),Action(self.SetSignal))
 </pre>
 </div>
@@ -36,8 +34,7 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">history = self.History([self.syl.Value], 4, Resolution.Daily)
   self.high = history.loc[self.syl.Value]['high']
   self.low = history.loc[self.syl.Value]['low']
@@ -57,8 +54,7 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python"> holdings = self.Portfolio[self.syl].Quantity
         if self.Portfolio[self.syl].Price &gt;= self.selltrig:
             if holdings &gt;= 0:

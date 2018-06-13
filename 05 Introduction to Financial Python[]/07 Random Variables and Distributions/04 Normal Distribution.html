@@ -14,8 +14,7 @@
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">plt.figure(figsize = (20,10))
 norm.plot.density()
 plt.show()
@@ -27,8 +26,7 @@ plt.show()
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">import quandl
 quandl.ApiConfig.api_key = 'tAyfv1zpWnyhmDsp91yv'
 spy_table = quandl.get('BCIW/_SPXT')
@@ -42,8 +40,7 @@ spy = spy.dropna()
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">plt.figure(figsize = (20,10))
 spy.log_return.plot()
 plt.show()
@@ -55,8 +52,7 @@ plt.show()
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">plt.figure(figsize = (20,10))
 spy.log_return.plot.density()
 plt.show()
@@ -68,8 +64,7 @@ plt.show()
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">de_2 = pd.Series(np.random.normal(0,2,10000),name = 'μ = 0, σ = 2')
 de_3 = pd.Series(np.random.normal(0,3,10000),name = 'μ = 0, σ = 3')
 de_0 = pd.Series(np.random.normal(0,0.5,10000), name ='μ = 0, σ = 0.5')

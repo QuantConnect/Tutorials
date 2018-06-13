@@ -2,8 +2,7 @@
 	Step 1: Initialize your algorithm which involves setting the start date and the end date, setting the cash for your algorithm and implement the coarse selection of option contracts.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">def Initialize(self):
 	self.SetStartDate(2017, 2, 1)
 	self.SetEndDate(2017, 3, 31)
@@ -20,8 +19,7 @@
 	Step 2: Break the candidate options into two parts: call and put options.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">for i in optionchain:
 	if i.Key != self.symbol: continue
 	chain = i.Value
@@ -34,8 +32,7 @@
 	Step 3: Sort the call and put options by their strike price respectively.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">call_contracts = sorted(call,key = lambda x: x.Strike)
 put_contracts = sorted(put,key = lambda x: x.Strike)
 </pre>
@@ -44,8 +41,7 @@ put_contracts = sorted(put,key = lambda x: x.Strike)
 	Step 4: Choose the corresponding options and trade them. In this algorithm, according to criteria,<code>SetFilter(-20, 20, timedelta(0), timedelta(40))</code> for put option list, there are 41 contracts in total: 1 ATM put, 20 OTM puts and 20 ITM puts. we choose the first in the put option list as the OTM put with the lower strike, choose the 15 contract as the OTM put with the higher strike.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">if len(call_contracts) == 0 or len(put_contracts) == 0 : continue
 # Buy 1 OTM Put (Lower Strike)
 self.otm_put_lower = put_contracts[0]

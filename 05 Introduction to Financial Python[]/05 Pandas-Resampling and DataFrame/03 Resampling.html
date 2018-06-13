@@ -5,8 +5,7 @@
   <code>series.resample.mean()</code> is a complete statement that groups data into intervals, and then compute the mean of each interval. For example, if we want to aggregate the daily data into monthly data by mean:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">by_month = aapl.resample('M').mean()
 print by_month
 Date
@@ -26,8 +25,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">by_week = aapl.resample('W').mean()
 print by_week.head()
 
@@ -46,8 +44,7 @@ Date
   We can choose almost any frequency by using the format 'nf', where 'n' is an integer and 'f' is M for month, W for week and D for day.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">three_day = aapl.resample('3D').mean()
 two_week  = aapl.resample('2W').mean()
 two_month = aapl.resample('2M').mean()
@@ -59,8 +56,7 @@ two_month = aapl.resample('2M').mean()
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">std = aapl.resample('W').std()    # standard deviation
 max = aapl.resample('W').max()    # maximum value
 min = aapl.resample('W').min()    # minimum value
@@ -72,8 +68,7 @@ min = aapl.resample('W').min()    # minimum value
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">last_day = aapl.resample('M').agg(lambda x: x[-1])
 print last_day
 Date
@@ -93,8 +88,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">monthly_return = aapl.resample('M').agg(lambda x: x[-1]/x[1] - 1)
 print monthly_return
 
@@ -115,8 +109,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print monthly_return.mean()
 print monthly_return.std()
 print monthly_return.max()
@@ -130,8 +123,7 @@ print monthly_return.max()
   Another two methods frequently used on Series are .diff() and .pct_change(). The former calculates the difference between consecutive elements, and the latter calculates the percentage change.
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">print last_day.diff()
 print last_day.pct_change()
 
@@ -166,8 +158,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">daily_return = last_day.pct_change()
 print daily_return.fillna(0)
 
@@ -187,8 +178,7 @@ Date
   Alternatively, we can fill a NaN with the next fitted value. This is called 'backward fill', or 'bfill' in short:
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">daily_return = last_day.pct_change()
 print daily_return.fillna(method = 'bfill')
 
@@ -213,8 +203,7 @@ Date
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-</pre>
+
 <pre class="python">daily_return = last_day.pct_change().dropna()
 print daily_return
 
