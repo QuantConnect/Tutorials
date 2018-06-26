@@ -47,7 +47,14 @@ def CoarseSelectionFunction(self, coarse):
 </pre>
 </div>
 
-2. We extract the factor values of candidate stocks at the beginning of each month and sort the stocks in ascending order of their factor values. Here we use 12-months' total risk-based capital data <code>x.FinancialStatements.TotalRiskBasedCapital.TwelveMonths</code> as an example.  It is t<span class="s1">he sum of Tier 1 and Tier 2 Capital. <code>x.Symbol.Value</code> can give the string symbol of selected stock x. Then we save those sorted symbols as <code>self.symbol</code>.</span>
+<p>
+	2. We extract the factor values of candidate stocks at the beginning of each month and sort the stocks in ascending 
+	order of their factor values. Here we use 12-months' total risk-based capital data 
+	<code>x.FinancialStatements.TotalRiskBasedCapital.TwelveMonths</code> as an example.
+	It is t<span class="s1">he sum of Tier 1 and Tier 2 Capital. <code>x.Symbol.Value</code> 
+	can give the string symbol of selected stock x. Then we save those sorted symbols as <code>self.symbol</code>.
+</p>
+
 <div class="section-example-container">
 
 <pre class="python">def FineSelectionFunction(self, fine):
@@ -66,6 +73,7 @@ def CoarseSelectionFunction(self, coarse):
 		return []
 </pre>
 </div>
+
 <h3>Step 2: Compute the monthly return of portfolios</h3>
 <p>
 	1. At the end of each month, we extract the one-month history close prices of each stock and compute the monthly returns.
@@ -226,8 +234,7 @@ self.df_return[str(self.flag3)] = port_avg_return
 </tr>
 </tbody>
 </table>
-</div>
-</div>
+
 <p>
 	We choose 4 factors: FCFYield, PriceChange1M, BookValuePerShare and RevenueGrowth.
 </p>
