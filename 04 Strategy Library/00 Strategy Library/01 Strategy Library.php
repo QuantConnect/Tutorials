@@ -10,57 +10,99 @@ $strategyMap = [
     [
         'name' => 'CAPM Alpha Ranking Strategy on Dow 30 Companies',
         'link' => 'strategy-library/capm-alpha-ranking-strategy-on-dow-30-companies',
-        'description' => 'Applying CAPM model to rank Dow Jones 30 companies'
+        'description' => 'Applies CAPM model to rank Dow Jones 30 companies.'
     ],
     [
         'name' => 'Combining Mean Reversion and Momentum in Forex Market',
         'link' => 'strategy-library/combining-mean-reversion-and-momentum-in-forex-market',
-        'description' => 'Combining momentum and mean reversion techniques in the forex markets'
+        'description' => 'Combines momentum and mean reversion techniques in the forex markets.'
     ],
     [
         'name' => 'Pairs Trading-Copula vs Cointegration',
         'link' => 'strategy-library/pairs-trading-copula-vs-cointegration',
-        'description' => 'Applying Copula and Cointergration method to pairs trading'
+        'description' => 'Applies Copula and Cointergration method to pairs trading.'
     ],
     [
         'name' => 'The Dynamic Breakout II Strategy',
         'link' => 'strategy-library/the-dynamic-breakout-ii-strategy',
-        'description' => 'A demonstration of dynamic breakout II strategy'
+        'description' => 'A demonstration of dynamic breakout II strategy.'
     ],
     [
         'name' => 'Dual Thrust Trading Algorithm',
         'link' => 'strategy-library/dual-thrust-trading-algorithm',
-        'description' => 'A demontration of Dual Thrust Intraday strategy'
+        'description' => 'A demontration of Dual Thrust Intraday strategy.'
     ],
     [
         'name' => 'Can Crude Oil Predict Equity Returns',
         'link' => 'strategy-library/can-crude-oil-predict-equity-returns',
-        'description' => 'Applying regression method to predict the return from the stock market and compare it to the short-term U.S. T-bill rate'
+        'description' => 'Applies regression method to predict the return from the stock market and compare it to the short-term U.S. T-bill rate.'
     ],
     [
         'name' => 'Intraday Dynamic Pairs Trading using Correlation and Cointegration Approach',
         'link' => 'strategy-library/intraday-dynamic-pairs-trading-using-correlation-and-cointegration-approach',
-        'description' => 'A high frequency pairs trading algorithm based on cointegration'
+        'description' => 'A high frequency pairs trading algorithm based on cointegration.'
     ],
     [
         'name' => 'The Momentum Strategy Based on the Low Frequency Compoment of Forex Market',
         'link' => 'strategy-library/the-momentum-strategy-based-on-the-low-frequency-Component-of-forex-market',
-        'description' => 'Applying high frequency filter to the momentum strategy'
+        'description' => 'Applies high frequency filter to the momentum strategy.'
     ],
     [
         'name' => 'Stock Selection Strategy Based on Fundamental Factors',
         'link' => 'strategy-library/stock-selection-strategy-based-on-fundamental-factors',
-        'description' => 'MorningStar Fundamental factors universe selection algorithm'
+        'description' => 'MorningStar Fundamental factors universe selection algorithm.'
     ],
     [
         'name' => 'Short-Term Reversal Strategy in Stocks',
         'link' => 'strategy-library/short-term-reversal-strategy-in-stocks',
-        'description' => 'A short term reversal algorithm which gives the opposite signal by analyzing recent period price action'
+        'description' => 'A short term reversal algorithm which gives the opposite signal by analyzing recent period price action.'
     ],
     [
         'name' => 'Fundamental Factor Long Short Strategy',
         'link' => 'strategy-library/fundamental-factor-long-short-strategy',
-        'description' => 'A basic monthly rebalance long short algorithm based on fundamental factors'
+        'description' => 'A basic monthly rebalance long short algorithm based on fundamental factors.'
+    ],
+    [
+        'name' => 'Asset Class Trend Following',
+        'link' => 'strategy-library/asset-class-trend-following',
+        'quantpedia' => '1',
+        'description' => 'Selects ETFs over ten-month moving average and assigns an equally weighted allocation.'
+    ],
+    [
+        'name' => 'Asset Class Momentum',
+        'link' => 'strategy-library/asset-class-momentum',
+        'quantpedia' => '2',
+        'description' => 'Selects ETFs in different asset classes with the highest momentum and assigns an equally weighted allocation.'
+    ],
+    [
+        'name' => 'Sector Momentum',
+        'link' => 'strategy-library/sector-momentum',
+        'quantpedia' => '3',
+        'description' => 'Selects ETFs in different sectors with the highest momentum and assigns an equally weighted allocation.'
+    ],
+    [
+        'name' => 'Overnight Anomaly',
+        'link' => 'strategy-library/overnight-anomaly',
+        'quantpedia' => '4',
+        'description' => 'Buy SPY ETF at its closing price and sell it at the opening each day.'
+    ],
+    [
+        'name' => 'Volatility Effect in Stocks',
+        'link' => 'strategy-library/volatility-effect-in-stocks',
+        'quantpedia' => '7',
+        'description' => 'Constructs equally weighted portfolios by selecting stocks with the lowest volatility in the past one year.'
+    ],
+    [
+        'name' => 'Forex Momentum',
+        'link' => 'strategy-library/forex-momentum',
+        'quantpedia' => '8',
+        'description' => 'Goes long currencies with strongest 12 month momentum against USD and goes short currencies with the lowest 12 month momentum against USD.'
+    ],
+    [
+        'name' => 'Short Term Reversal',
+        'link' => 'strategy-library/short-term-reversal',
+        'quantpedia' => '13',
+        'description' => 'Goes long stocks with the lowest return in the previous month and goes short stocks with the greatest return from the previous month.'
     ],
 ];
 
