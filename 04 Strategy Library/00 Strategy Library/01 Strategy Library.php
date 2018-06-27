@@ -10,7 +10,7 @@ $strategyMap = [
     [
         'name' => 'CAPM Alpha Ranking Strategy on Dow 30 Companies',
         'link' => 'strategy-library/capm-alpha-ranking-strategy-on-dow-30-companies',
-        'description' => 'Applys CAPM model to rank Dow Jones 30 companies.'
+        'description' => 'Applies CAPM model to rank Dow Jones 30 companies.'
     ],
     [
         'name' => 'Combining Mean Reversion and Momentum in Forex Market',
@@ -20,7 +20,7 @@ $strategyMap = [
     [
         'name' => 'Pairs Trading-Copula vs Cointegration',
         'link' => 'strategy-library/pairs-trading-copula-vs-cointegration',
-        'description' => 'Applys Copula and Cointergration method to pairs trading.'
+        'description' => 'Applies Copula and Cointergration method to pairs trading.'
     ],
     [
         'name' => 'The Dynamic Breakout II Strategy',
@@ -35,7 +35,7 @@ $strategyMap = [
     [
         'name' => 'Can Crude Oil Predict Equity Returns',
         'link' => 'strategy-library/can-crude-oil-predict-equity-returns',
-        'description' => 'Applys regression method to predict the return from the stock market and compare it to the short-term U.S. T-bill rate.'
+        'description' => 'Applies regression method to predict the return from the stock market and compare it to the short-term U.S. T-bill rate.'
     ],
     [
         'name' => 'Intraday Dynamic Pairs Trading using Correlation and Cointegration Approach',
@@ -45,7 +45,7 @@ $strategyMap = [
     [
         'name' => 'The Momentum Strategy Based on the Low Frequency Compoment of Forex Market',
         'link' => 'strategy-library/the-momentum-strategy-based-on-the-low-frequency-Component-of-forex-market',
-        'description' => 'Applys high frequency filter to the momentum strategy.'
+        'description' => 'Applies high frequency filter to the momentum strategy.'
     ],
     [
         'name' => 'Stock Selection Strategy Based on Fundamental Factors',
