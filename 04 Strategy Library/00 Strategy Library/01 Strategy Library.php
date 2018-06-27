@@ -90,7 +90,7 @@ $strategyMap = [
         'name' => 'Volatility Effect in Stocks',
         'link' => 'strategy-library/volatility-effect-in-stocks',
         'quantpedia' => '7',
-        'description' => 'Constructs equally weighted portfolios by selecting stocks with the lowest volatility on the past one year.'
+        'description' => 'Constructs equally weighted portfolios by selecting stocks with the lowest volatility in the past one year.'
     ],
     [
         'name' => 'Forex Momentum',
