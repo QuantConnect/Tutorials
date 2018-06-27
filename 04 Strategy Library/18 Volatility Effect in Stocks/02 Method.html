@@ -1,0 +1,17 @@
+<h4>Universe Selection</h4>
+<p>
+  To construct the investment universe which consists of US large cap stocks, first in coarse universe selection,
+  we exclude stocks without fundamental data and the price is below 5. A universe of 100 stocks is selected based on the dollar volume. In fine universe selection, we pick 50 stocks from the coarse universe with the highest market cap.
+</p>
+<h4>Calculate the Volatility</h4>
+<p>
+  We create <code>SymbolData</code> class and use <code>RollingWindow</code> to store the price data for symbols returned by fine universe.
+  The lookback period is 252 trading days. First, we request history data to initialize the RollingWindow for the added symbols and update it's value with the closing price every day in OnData().
+</p>
+<p>
+  The standard deviation is the typical statistic used to measure volatility. It is defined as the square root of the average variance of the data from its mean. We use the closing price series in RollingWindow to calculate the volatility.
+</p>
+<h4>Trading stocks</h4>
+<p>
+  The trading logic is we go long 5 stocks with the lowest volatility and liquidate stocks in the portfolio which does not in the lowest volatility list. The portfolio is rebalanced at the first trading day each month.
+</p>

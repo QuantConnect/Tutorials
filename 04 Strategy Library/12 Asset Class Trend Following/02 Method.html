@@ -1,0 +1,5 @@
+<p>
+  This algorithm applies to trend following ideas to 5 ETFs in different asset classes like stocks, bonds, and commodities. The simple moving average is used to detect the trend. When the closing price is over its ten-month simple moving average,
+  we give equal allocation to those ETFs, otherwise stay in cash. 
+  SMA(symbol, period, resolution) is used to generate the moving average value In LEAN implementation. A warm-up period of ten months is set to prime the data and initialize the indicator so the SMA is ready to use when the algorithm starts.
+</p>
