@@ -1,0 +1,14 @@
+<h4> Pairs Formation </h4>
+<p>
+  The first step of this algorithm is to select stock pairs from a universe of stocks. We use the history request to get the history closing price for the last one year. This is called the formation period.
+  The matching partner for each stock is found by looking for the security that minimizes the sum of squared deviations between two normalized price series. Assume there are two stocks A and B with the price series X and Y. For price normalization, the starting price during formation period is set to $1.
+  The formula of distance measure is
+  \[\sum_{i=1}^n{(\frac{x_i}{x_1}-\frac{y_i}{y_1}})^2\]
+  Top 4 pairs with the smallest historical distance measure are then traded. The trading pairs are selected
+  every half year. We use the schedule event method to fire the rebalance function.
+</p>
+<h4> Trading Pairs </h4>
+<p>
+  As prices in a pair of stocks were closely cointegrated in past, there is high probability that those two securities share common sources of fundamental return correlations. A temporary shock could move one stock out of the common price band which presents statistical arbitrage opportunity. Given the trading pairs, the trading period is the next six months. We calculate the price spread series of the last one year. When pair prices have diverged by two standard deviations,
+  which means the spread is 2 times standard deviation away from its long-term mean, the algorithm will go short the stock which price is diverging up and go long the stock which price is diverging down. The position is closed when prices revert back.
+</p>
