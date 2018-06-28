@@ -99,6 +99,12 @@ $strategyMap = [
         'description' => 'Goes long currencies with strongest 12 month momentum against USD and goes short currencies with the lowest 12 month momentum against USD.'
     ],
     [
+        'name' => 'Pairs Trading with Stocks',
+        'link' => 'strategy-library/pairs-trading-with-stocks',
+        'quantpedia' => '12',
+        'description' => 'Looks for the security that minimizes the sum of squared deviations and long-short position is opened when pair prices have diverged by multiple of standard deviations.'
+    ],
+    [
         'name' => 'Short Term Reversal',
         'link' => 'strategy-library/short-term-reversal',
         'quantpedia' => '13',
