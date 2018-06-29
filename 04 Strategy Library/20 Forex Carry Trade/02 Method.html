@@ -1,0 +1,22 @@
+<h4> Importing Custom Data </h4>
+<p>
+  The central bank interest rate data is from Quandl. For the trading universe, we choose 9 currencies
+  whose central bank interest rate data is available in Quandl. The method to import the custom data is
+  <code>AddData(type, symbol, resoltuion, timeZone, fillDataForward)</code>. As the custom file has it's unique
+  colume name, we need to create a class to specify the colume name of interest rate.
+</p>
+<div class="section-example-container">
+<pre class="python">
+from QuantConnect.Python import PythonQuandl
+class QuandlRate(PythonQuandl):
+    def __init__(self):
+        self.ValueColumnName = 'Value'
+</pre>
+</div>
+<p>
+  We save the interest rate symbol and the correspondent forex asset symbol into a dictionary.
+</p>
+<h4> Monthly Rebalance Trading </h4>
+<p>
+  Next step we sort the forex symbol by the value of interest rate. The algorithm goes long the currency with the highest interest rates and goes short the currency with the lowest interest rate. The strategy is rebalanced monthly. The schedule event method is used to fire the rebalance event at the first trading day each month.
+</p>
