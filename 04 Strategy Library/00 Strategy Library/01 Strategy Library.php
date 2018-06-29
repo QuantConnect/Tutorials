@@ -87,6 +87,12 @@ $strategyMap = [
         'description' => 'Buy SPY ETF at its closing price and sell it at the opening each day.'
     ],
     [
+        'name' => 'Forex Carry Trade',
+        'link' => 'strategy-library/forex-carry-trade',
+        'quantpedia' => '5',
+        'description' => 'Goes long the currency with the highest central bank interest rate and goes short the currency with the lowest interest rate.'
+    ],
+    [
         'name' => 'Volatility Effect in Stocks',
         'link' => 'strategy-library/volatility-effect-in-stocks',
         'quantpedia' => '7',
