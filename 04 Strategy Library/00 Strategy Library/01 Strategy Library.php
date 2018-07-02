@@ -65,61 +65,81 @@ $strategyMap = [
     [
         'name' => 'Asset Class Trend Following',
         'link' => 'strategy-library/asset-class-trend-following',
-        'quantpedia' => '1',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/1'
+        ],
         'description' => 'Selects ETFs over ten-month moving average and assigns an equally weighted allocation.'
     ],
     [
         'name' => 'Asset Class Momentum',
         'link' => 'strategy-library/asset-class-momentum',
-        'quantpedia' => '2',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/2'
+        ],
         'description' => 'Selects ETFs in different asset classes with the highest momentum and assigns an equally weighted allocation.'
     ],
     [
         'name' => 'Sector Momentum',
         'link' => 'strategy-library/sector-momentum',
-        'quantpedia' => '3',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/3'
+        ],
         'description' => 'Selects ETFs in different sectors with the highest momentum and assigns an equally weighted allocation.'
     ],
     [
         'name' => 'Overnight Anomaly',
         'link' => 'strategy-library/overnight-anomaly',
-        'quantpedia' => '4',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/4'
+        ],
         'description' => 'Buy SPY ETF at its closing price and sell it at the opening each day.'
     ],
     [
         'name' => 'Forex Carry Trade',
         'link' => 'strategy-library/forex-carry-trade',
-        'quantpedia' => '5',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/5'
+        ],
         'description' => 'Goes long the currency with the highest central bank interest rate and goes short the currency with the lowest interest rate.'
     ],
     [
         'name' => 'Volatility Effect in Stocks',
         'link' => 'strategy-library/volatility-effect-in-stocks',
-        'quantpedia' => '7',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/7'
+        ],
         'description' => 'Constructs equally weighted portfolios by selecting stocks with the lowest volatility in the past one year.'
     ],
     [
         'name' => 'Forex Momentum',
         'link' => 'strategy-library/forex-momentum',
-        'quantpedia' => '8',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/8'
+        ],
         'description' => 'Goes long currencies with strongest 12 month momentum against USD and goes short currencies with the lowest 12 month momentum against USD.'
     ],
     [
         'name' => 'Pairs Trading with Stocks',
         'link' => 'strategy-library/pairs-trading-with-stocks',
-        'quantpedia' => '12',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/12'
+        ],
         'description' => 'Looks for the security that minimizes the sum of squared deviations and long-short position is opened when pair prices have diverged by multiple of standard deviations.'
     ],
     [
         'name' => 'Short Term Reversal',
         'link' => 'strategy-library/short-term-reversal',
-        'quantpedia' => '13',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/13'
+        ],
         'description' => 'Goes long stocks with the lowest return in the previous month and goes short stocks with the greatest return from the previous month.'
     ],
     [
         'name' => 'Momentum Effect in Stocks',
         'link' => 'strategy-library/momentum-effect-in-stocks',
-        'quantpedia' => '14',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/14'
+        ],
         'description' => 'Goes long stocks with the best 12-month momentum in the large-cap universe'
     ],
 ];
@@ -140,11 +160,24 @@ $strategyMap = [
     </tr>
     </thead>
     <tbody>
-    <?php foreach ($strategyMap as $strategy) { ?>
+    <?php foreach ($strategyMap as $strategy) {
+        $sources = '';
+        if (array_key_exists('sources', $strategy)) {
+            $sources .= '<p class="sources">';
+            $sources .= (count($strategy['sources']) > 1 ? 'Sources:' : 'Source:');
+            foreach ($strategy['sources'] as $key => $source) {
+                $sources .= " <a href=\"{$source}\" rel=\"nofollow\" >{$key}</a>,";
+            }
+
+            $sources = trim($sources, ',');
+            $sources .= '</p>';
+        }
+        ?>
         <tr>
             <td>
                 <a class="docs-internal-link" href="/tutorials/<?= $strategy['link'] ?>"><?= $strategy['name'] ?></a>
                 <p><?= $strategy['description'] ?></p>
+                <?= $sources ?>
             </td>
         </tr>
     <?php } ?>
