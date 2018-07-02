@@ -1,0 +1,37 @@
+<h4> Universe Selection </h4>
+<p>
+  We use the universe selection API to create the momentum portfolio. The coarse universe selection eliminates stocks with the price lower than 5 and ETFs which does not have fundamental data. The fine universe selection chooses 50 biggest companies by market capitalization.
+</p>
+<h4> Momentum Calculation</h4>
+<p>
+  Momentum is the absolute difference in stocks.
+  \[Momentum = Close_{today}-Close_{N-days-ago}\]
+  LEAN has the Momentum indicator. We create a class to save the momentum value and warm up the indictor for each symbol.
+  <div class="section-example-container">
+  <pre class="python">
+class SymbolData:
+    def __init__(self, symbol, lookback):
+        self.symbol = symbol
+        self.MOM = Momentum(lookback)
+
+    def WarmUpIndicator(self, history):
+        # warm up the Momentum indicator with the history request
+        for tuple in history.itertuples():
+            item = IndicatorDataPoint(self.symbol, tuple.Index, float(tuple.close))
+            self.MOM.Update(item)
+  </pre>
+  </div>
+<p>
+  Dictionary <code>self.symbolDataDict</code> is used to save the momentum class instance <code>SymbolData</code> for each symbol.
+  In <code>OnSecuritiesChanged</code> event method, we add the newly selected symbol to the dictionary and initialize the momentum indicator with the history request. For symbols removed from the universe, we remove it from the dictionary. Each day in <code>OnData</code>,
+  Momentum indicator for all symbols in the dictionary will be updated with the latest closing price.
+</p>
+<p>
+  We choose the period of the momentum to be 12 months. Stocks with the best 12-month momentum (12-month performance) are then added to our portfolio and are weighted equally.
+</p>
+
+<h4> Monthly Rebalance</h4>
+<p>
+  The portfolio is rebalanced once a month. The coarse and fine universe selection is set to default to run at midnight once a day. To make the universe selection run at the first trading day each month, we use the bool variable
+  <code>self.monthly_rebalance</code> to manage the universe selection. At the start of each month, the universe selection will filter new stocks. In other days, it will return the same symbols. In contrast to returning an empty list, returning the same symbols as before is a better way for monthly rebalance universe selection. Since if there are no open positions for certain symbol, returning empty list will stop the data subscription of that symbol. You might not be able to update the indicator value in OnData().
+</p>
