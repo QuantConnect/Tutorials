@@ -116,6 +116,12 @@ $strategyMap = [
         'quantpedia' => '13',
         'description' => 'Goes long stocks with the lowest return in the previous month and goes short stocks with the greatest return from the previous month.'
     ],
+    [
+        'name' => 'Momentum Effect in Stocks',
+        'link' => 'strategy-library/momentum-effect-in-stocks',
+        'quantpedia' => '14',
+        'description' => 'Goes long stocks with the best 12-month momentum in the large-cap universe'
+    ],
 ];
 
 ?>
