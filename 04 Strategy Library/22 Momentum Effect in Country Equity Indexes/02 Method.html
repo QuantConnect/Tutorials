@@ -1,11 +1,8 @@
 <p>
-  The algorithm 35 counrty indices ETFs as the trading universe. As the universe doesn't change over time. We use the momentum indicator helper method
-  <code>self.MOM(symbol, period, resolution)</code>. This helper method creates a new momentum indicator and computes the absolute n-period change in
-  the security. In contracst to the indicator constructor <code>Momentum(period)</code>, the helper method indocator will be automatically updated on
-  the given resolution.
+The algorithm picks 35 country indexes ETFs as the trading universe. As the symbols in the universe don't change over time, we use the momentum indicator helper method
+  <code>self.MOM(symbol, period, resolution)</code>. This helper method creates a new momentum indicator and computes the absolute n-period change in the security. In contrast to the indicator constructor <code>Momentum(period)</code>, the helper method indicator will be automatically updated on the given resolution.
 </p>
 <p>
-  In <code>Initialize()</code>, we set the warm up period to the momentum period and create the dictionary <code>self.data</code> to save the indicator of
-  each symbol. Each month, the top five indices ETFs with the best 6-month momentum will be selected to open long position. ETFs which is no longer in
-  this top list will be liquidated. This shceduled event API is used to schedule the portfolio rebalance at the start of each month. 
+  In <code>Initialize()</code>, we set the warm-up period to the momentum period and create the dictionary <code>self.data</code> to save the indicator of
+  each symbol. On each month, the top five indexes ETFs with the best 6-month momentum will be selected to open long position. ETFs which are no longer in this top list will be liquidated. The scheduled event API is used to schedule the portfolio to rebalance at the start of each month.
 </p>
