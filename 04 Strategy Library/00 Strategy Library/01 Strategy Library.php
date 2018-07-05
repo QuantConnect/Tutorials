@@ -140,7 +140,15 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/14'
         ],
-        'description' => 'Goes long stocks with the best 12-month momentum in the large-cap universe'
+        'description' => 'Goes long stocks with the best 12-month momentum in the large-cap universe.'
+    ],
+    [
+        'name' => 'Momentum Effect in Country Equity Indexes',
+        'link' => 'strategy-library/momentum-effect-in-country-equity-indexes',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/15'
+        ],
+        'description' => 'Goes long stocks with the best 12-month momentum in the country equity indexes ETFs.'
     ],
 ];
 
