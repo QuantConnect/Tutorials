@@ -32,23 +32,23 @@
 </p>
 <div class="section-example-container">
 
-<pre class="python">price = np.arange(700,950,1)
+<pre class="python">price = np.arange(700,920,1)
 k_call_higher = 850 # the strike price of OTM call(Higher k)
-k_call_lower = 840 # the strike price of OTM call(Lower k)
-k_put_higher = 760 # the strike price of OTM put(Higher k)
+k_call_lower = 820 # the strike price of OTM call(Lower k)
+k_put_higher = 780 # the strike price of OTM put(Higher k)
 k_put_lower = 750 # the strike price of OTM put(Lower k)
-premium_call_higher = 1 # the premium of OTM call(Higher k)
+premium_call_higher = 2 # the premium of OTM call(Higher k)
 premium_call_lower = 10 # the premium of OTM call(Lower k)
-premium_put_higher = 11 # the premium of oTM put(Higher k)
-premium_put_lower = 1 # the premium of OTM put(Lower k)
+premium_put_higher = 10 # the premium of oTM put(Higher k)
+premium_put_lower = 2   # the premium of OTM put(Lower k)
 # payoff for the long put position
-payoff_long_put = [max(premium_put_lower, k_put_lower-i-premium_put_lower) for i in price]
+payoff_long_put = [max(-premium_put_lower, k_put_lower-i-premium_put_lower) for i in price]
 # payoff for the short put position
-payoff_short_put = [min(premium_put_higher, -(k_put_higher-i+premium_put_higher)) for i in price]
+payoff_short_put = [min(premium_put_higher, -(k_put_higher-i-premium_put_higher)) for i in price]
 # payoff for the short call position
-payoff_short_call = [min(premium_call_lower, -(i-k_call_lower+premium_call_lower)) for i in price]
+payoff_short_call = [min(premium_call_lower, -(i-k_call_lower-premium_call_lower)) for i in price]
 # payoff for the long call position
-payoff_long_call = [max(premium_call_higher, i-k_call_higher-premium_call_higher) for i in price]
+payoff_long_call = [max(-premium_call_higher, i-k_call_higher-premium_call_higher) for i in price]
 # payoff for Long Iron Condor Strategy
 payoff = np.sum([payoff_long_put,payoff_short_put,payoff_short_call,payoff_long_call], axis=0)
 plt.figure(figsize=(20,15))
@@ -66,5 +66,5 @@ plt.grid(True)
 </div>
 <img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial06-iron-condor.png" alt="iron condor strategy payoff"/>
 <p>
-	Here the strike price is A(750), B(760), C(850) and D(860). From the payoff plot, the maximum profit all come from the options premium because the deeper OTM options are cheaper than the less deep ones. It is reached when the stock price is between higher put strike and lower call strike. They are two short positions. In this condition, all the options expire worthless.  The maximum loss of Iron Condor is reached when the stock price is lower than the lowest strike A, then the two call options become worthless, the two puts are in the money. For the other condition, the stock price is higher than the highest strike D.Consequently, The two call options are in the money but the two puts expire worthless.
+	Here the strike price is A(750), B(780), C(820) and D(850). From the payoff plot, the maximum profit all come from the options premium because the deeper OTM options are cheaper than the less deep ones. It is reached when the stock price is between higher put strike and lower call strike. They are two short positions. In this condition, all the options expire worthless.  The maximum loss of Iron Condor is reached when the stock price is lower than the lowest strike A, then the two call options become worthless, the two puts are in the money. For the other condition, the stock price is higher than the highest strike D.Consequently, The two call options are in the money but the two puts expire worthless.
 </p>
