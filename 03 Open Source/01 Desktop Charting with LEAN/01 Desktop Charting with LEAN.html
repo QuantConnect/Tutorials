@@ -1,5 +1,5 @@
 <p>
-  With a few configuration changes you can get desktop charting in LEAN with a HTML5 interface very similar to the one you see in QuantConnect.com. This gives you better visual feedback on your strategy and allows you to improve faster. This tutorial guides you through configuring a desktop charting environment with LEAN.
+With a few configuration changes you can get desktop charting in LEAN with a HTML5 interface very similar to the one you see in QuantConnect.com. This gives you better visual feedback on your strategy and allows you to improve faster. This tutorial guides you through configuring a desktop charting environment with LEAN.
 </p>
 <p>
   Local charting (and all local backtesting) requires you to have your own source of data. We provide a way to download FX and CFD data through our <a href="https://www.quantconnect.com/blog/use-api-file-provider/">API</a>. To get started make sure you have your data in your data folder. By default this is the /Data/ directory relative to your LEAN installation.
@@ -7,7 +7,6 @@
 <p>
   Two configuration changes are required for desktop charting to work:
 </p>
-
 <ul>
  	<li>Change the "environment" field to use "backtesting-desktop". This instructs LEAN to use the configuration settings block at the bottom of the config file.
 <pre class="prettyprint">  "environment": "backtesting-desktop",</pre>
@@ -18,7 +17,6 @@
   "api-access-token": "...........",</pre>
 </li>
 </ul>
-
 <p>
   With those changes in place you can simply run the project and your backtesting chart will appear in a few seconds. For live trading; use the"live-desktop" configuration environment.
   If you get the run-time exception<em> "The port configured in config.json is either being used or blocked by a firewall"- </em>This normally means you've left the user interface open (you should close it between each run). It can also be because another program is sharing that port. You can fix this by changing the port LEAN transmits the data with the <code>"desktop-http-port"</code> setting.
@@ -26,5 +24,4 @@
 <p>
   In the tutorial video below we demonstrate this feature on LEAN:
 </p>
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/m6llfznP4d4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<iframe width="100%" height="425" src="https://www.youtube.com/embed/m6llfznP4d4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
