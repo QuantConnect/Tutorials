@@ -1,27 +1,10 @@
 <p>
-  Ensuring a high data quality is one of the hardest parts of setting reliable backtesting. There are many challenges to ensuring your data is in the right format, free of errors or omissions and historically accurate. We've tried to address this for you by opening the LEAN Data Library and letting you download our data. LEAN data is organized into millions of tiny files which can be difficult to put into place manually; but using the API File Provider we provide a way for you to automatically install this into your LEAN project.
-</p>
-
-<p>
-  Currently we provide forex and cfd data for each of the major vendors we support in tick, second, minute, hour and daily resolution. To request data; go to your <a href="/data">data library</a> and specify what you'd like to download.
-</p>
-
-<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial02-data-library-screen-shot.png" alt="Data library collection for FXCM EURUSD data" />
-
-<p>
-  Each data file has a unique URL to download the data for the day which will get a LEAN formatted CSV zip. By using the API File Downloader we check if you have the file in your data-folder; and if not we attempt to download it from the API. This assumes you have already added the data to your repository through the web interface.
-</p>
-
-<p>
-  This requires 2 key changes to the config.json file in the QuantConnect.Lean.Launcher Project:
-</p>
-
-<ul>
- 	<li>Insert your <code>job-user-id</code> and <code>api-access-token</code> into the relevant config fields. You can find these on your <a href="/account">Account</a> page.</li>
- 	<li>Update the <code>data-provider</code> configuration to refer to the APIDataProvider class. This is called <code>QuantConnect.Lean.Engine.DataFeeds.ApiDataProvider</code>.</li>
+Ensuring a high data quality is one of the hardest parts of setting reliable backtesting. There are many challenges to ensuring your data is in the right format, free of errors or omissions and historically accurate. We've tried to address this for you by opening the LEAN Data Library and letting you download our data. LEAN data is organized into millions of tiny files which can be difficult to put into place manually, but using the API File Provider we provide a way for you to automatically install this into your LEAN project.</p>
+<p>Currently we provide forex and cfd data for each of the major vendors we support in tick, second, minute, hour and daily resolution. To request data; go to your <a href="/data">data library</a> and specify what you'd like to download.</p>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial02-data-library-screen-shot.png" alt="Data library collection for FXCM EURUSD data">
+<p>Each data file has a unique URL to download the data for the day which will get a LEAN formatted CSV zip. By using the API File Downloader we check if you have the file in your data-folder; and if not we attempt to download it from the API. This assumes you have already added the data to your repository through the web interface.</p>
+<p>This requires 2 key changes to the config.json file in the QuantConnect.Lean.Launcher Project:</p>
+<ul>	<li>Insert your <code>job-user-id</code> and <code>api-access-token</code> into the relevant config fields. You can find these on your <a href="/account">Account</a> page.</li>	<li>Update the <code>data-provider</code> configuration to refer to the APIDataProvider class. This is called <code>QuantConnect.Lean.Engine.DataFeeds.ApiDataProvider</code>.</li>
 </ul>
-<p>
-  Check out the video below where we guide you step by step through how to use the API Data Provider.
-</p>
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/uyHp_jyeSpA" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<p>Check out the video below where we guide you step by step through how to use the API Data Provider.</p>
+<iframe width="100%" height="425" src="https://www.youtube.com/embed/uyHp_jyeSpA" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen=""></iframe>
