@@ -1,0 +1,8 @@
+<p>
+  The investment universe consists of 19 ETFs which invest in individual country equity indexes.
+  The strategy is going to long on the bottom four countries with the worst 36-month return and short on the top 4 countries with the best 36-month return. The helper indicator method <code>self.ROC(symbol, period, resolution)<code>
+  is used to calculate 36-month return where the resolution is daily and the period is 36*21.
+</p>
+<p>
+  The portfolio is reweighted every three years. We schedule the event to fire every month. <code>self.months<code> is the variable to save the number of months, and the algorithm jumps the rebalance execution if the amount of passed months does not equate to 36.
+</p>

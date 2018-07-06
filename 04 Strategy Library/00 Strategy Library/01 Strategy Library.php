@@ -150,6 +150,14 @@ $strategyMap = [
         ],
         'description' => 'Goes long stocks with the best 12-month momentum in the country equity indexes ETFs.'
     ],
+    [
+        'name' => 'Mean Reversion Effect in Country Equity Indexes',
+        'link' => 'strategy-library/mean-reversion-effect-in-country-equity-indexes',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/16'
+        ],
+        'description' => 'Goes long country equity indexes ETFs with the worst 36-month return and short ETFs with the best 36-month return.'
+    ],
 ];
 
 ?>
