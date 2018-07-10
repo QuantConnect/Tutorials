@@ -1,1 +1,35 @@
-<p>guide contents.</p>
+<table class="table qc-table">
+   <thead>
+      <tr><th colspan="2">Implementation Steps</th></tr>
+   </thead>
+   <tbody>
+       <tr>
+           <td>1.</td><td width="95%"><a href="#">Laying a Foundation, (IBrokerageFactory)</a> <br/>Stub out the implementation and initialize a brokerage instance.</td>           
+       </tr>
+       <tr>
+           <td>2.</td><td width="95%"><a href="#">Creating The Brokerage (IBrokerage)</a> <br/>Installing key brokerage application logic, where possible using a brokerage SDK.</td>           
+       </tr>
+       <tr>
+           <td>3.</td><td width="95%"><a href="#">Translating Symbol Conventions (ISymbolMapper)</a> <br/>Translate brokerage specific tickers to LEAN format for a uniform algorithm design experience.</td>           
+       </tr>
+       <tr>
+           <td>4.</td><td width="95%"><a href="#">Describe Broker Limitations (IBrokerageModel)</a> <br/>Describe brokerage support of orders and set transaction models.</td>
+       </tr>
+       <tr>
+           <td>5.</td><td width="95%"><a href="#">Enable Live Data Streaming (IDataQueueHandler)</a> <br/>Live streaming data service from brokerage supplied source.</td>           
+       </tr>
+       <tr>
+           <td>6.</td><td width="95%"><a href="#">Enable Serving Historical Data (IHistoryProvider)</a> <br/>Tap into the brokerage historical data API to serve history for live algorithms.</td>           
+       </tr>
+       <tr>
+           <td>7.</td><td width="95%"><a href="#">Download Data (IDataDownloader)</a> <br/> Save data from the brokerage to disk in LEAN format.</td>           
+       </tr>
+       <tr>
+           <td>8.</td><td width="95%"><a href="#">Describe Brokerage Fee Structures (IFeeModel)</a> <br/>Enable accurate backtesting with specific fee structures of the brokerage.</td>           
+       </tr>
+       <tr>
+           <td>9.</td><td width="95%"><a href="#">Update Algorithm API for Easy Setup of Brokerage Models (ISecurityTransactionModel)</a> <br/>Combine the various models together to form a brokerage set.</td>           
+       </tr>
+   </tbody>
+   
+</table>
