@@ -158,6 +158,14 @@ $strategyMap = [
         ],
         'description' => 'Goes long country equity indexes ETFs with the worst 36-month return and short ETFs with the best 36-month return.'
     ],
+    [
+        'name' => 'Liquidity Effect in Stocks',
+        'link' => 'strategy-library/liquidity-effect-in-stocks',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/18'
+        ],
+        'description' => 'Goes long stocks with the lowest turnover and short on stocks with the highest turnover from the lowest market-cap quartile.'
+    ],
 ];
 
 ?>

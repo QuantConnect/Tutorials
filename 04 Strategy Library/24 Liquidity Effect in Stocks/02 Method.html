@@ -1,0 +1,15 @@
+<p>
+  In coarse universe selection, we filter stocks whose price is higher than $5. ADRs, ETFs and closed-end funds are all excluded with the property of coarse fundamental object <code>HasFundamentalData</code>.
+</p>
+<p>
+  In fine universe selection, in the first step, we exclude stocks with the market cap less than ten million.
+  To evaluate the liquidity of stocks, we choose the annual turnover which is the number of shares traded divided by the stock’s outstanding shares.
+  The main advantage of turnover against volume is its market capitalization-neutrality, as either small-cap or large-cap stocks can have low or high turnover rates.
+  Although turnover is capitalization neutral, the liquidity effect is the strongest among small-cap stocks. Therefore, stocks are then divided into quartiles based on their market capitalization. Stocks from the lowest market-cap quartile are again divided into 5% and 95% quantiles based on their turnover. To calculate the turnover,
+  we request the historical daily volume for the last one year and compute the mean volume. The turnover is the average annual volume divided by <code>BasicAverageShares</code> in <code>EarningReports</code>.
+  Stocks in the 5% quantile and in the top 95% percentile are saved in <code>self.long</code> and <code>self.short</code> lists respectively.
+</p>
+<p>
+  In OnData(), the algorithm goes long on stocks in the lowest turnover list and short on stocks in the highest turnover list. Stocks not in those two lists are liquidated.
+  The portfolio is rebalanced once a year and stocks are weighted equally.
+</p>
