@@ -13,7 +13,7 @@
   The algorithm selects contracts with one month until maturity so we choose a small range for expiration.
 </p>
 <p>
-  In <code>OnData()<code>, we divide the option chain into put and call options. Then we create two lists
+  In <code>OnData()</code>, we divide the option chain into put and call options. Then we create two lists
   <code>expiries</code> and <code>strikes</code> to save all available expiration dates and stike prices to facilitate
   sorting and filtering.
 </p>
