@@ -1,0 +1,46 @@
+<p>
+The Visual Studio plugin can currently save files to a project, compile the project, and backtest it in the cloud. Through the accompanying "tool window" it can also rename, open or add a note to a backtest, and create a new project.
+</p>
+
+<h4>Saving Files to QuantConnect</h4>
+<p>
+Save files from your local project to a QuantConnect project. You can save many files at a time.
+</p>
+<ol>
+ <li>Select the desired files with your mouse from the Solution Explorer tool window.</li>
+ <li>Right-click selection → ‘Save to QuantConnect’.</li>
+ <li>Select target project name:
+   <figcaption class="backdrop"><img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/selectProjectBox.png"/></figcaption>
+</li>
+<li>
+  Result:
+   <ul>
+    <li>If the operation succeeds you will be informed through the VS Status Bar.</li>
+    <li>If any error occurs you will be informed through VS Status Bar and with a popup box.</li>
+   </ul>
+   <figcaption class="backdrop"><img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/uploadFailedBox.png"/></figcaption>
+</li>
+</ol>
+
+<h4>Send for Backtesting</h4>
+<p>
+This feature allows you to upload one or more files to a target project, compile it and backtest it in the QuantConnect cloud.
+</p>
+<ol>
+ <li>Select the desired files you'd like to backtest.</li>
+ <li>Right-click → ‘Send for Backtesting’</li>
+ <li>Select the target project with the project list view.</li>
+ <li>Result:
+ <ul>
+    <li>If the operation succeeds you will be informed through the VS Status Bar and the target QC project will be opened using the default browser pointing at your new backtest.</li>
+    <li>If any error occurs you will be informed through VS Status Bar and with a popup box.</li>
+   </ul>
+   <figcaption class="backdrop">
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/uploadFailedBox.png"/></figcaption>
+If the error is due to a compilation error, the pop-up box will contain the first compilation error.
+<br/><br/>
+<figcaption class="backdrop">
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/backtestFailedBox.png"/></figcaption>
+If the error is due to a run-time issue during the backtesting process, the popup box will contain error details and the corresponding stack trace.
+
+</li>
