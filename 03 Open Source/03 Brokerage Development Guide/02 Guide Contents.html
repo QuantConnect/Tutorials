@@ -4,7 +4,7 @@
    </thead>
    <tbody>
        <tr>
-           <td>1.</td><td width="95%"><a href="#">Laying a Foundation, (IBrokerageFactory)</a> <br/>Stub out the implementation and initialize a brokerage instance.</td>           
+           <td>1.</td><td width="95%"><a href="#">Laying a Foundation (IBrokerageFactory)</a> <br/>Stub out the implementation and initialize a brokerage instance.</td>           
        </tr>
        <tr>
            <td>2.</td><td width="95%"><a href="#">Creating The Brokerage (IBrokerage)</a> <br/>Installing key brokerage application logic, where possible using a brokerage SDK.</td>           
@@ -33,5 +33,3 @@
    </tbody>
    
 </table>
-
-<p>The root of the brokerage system is the algorithm job packets. These hold configuration information about how to run LEAN. The program logic is a little convoluted; it moves from <i>config.json > create job packet > create brokerage factory matching name > set job packet brokerage data > factory creates brokerage instance</i>. Because of this we'll start creating a brokerage at the root -- the configuration and brokerage factory...</p>
