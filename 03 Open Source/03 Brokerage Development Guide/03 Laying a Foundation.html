@@ -16,3 +16,11 @@ By default the <code>IBrokerageFactory.BrokerageData</code> implementation shoul
 <p>
 Brokerage Models tell LEAN what order types a brokerage supports, whether we're allowed to update an order, and what transaction models to use for fills. It is important to do but something we can come back to later. For now, we should just create a stub implementation which we'll extend and improve later. This file <code>MyBrokerageBrokerageModel.cs</code> lives in the <code>/Common/Brokerages</code> folder. For now, you can make it an empty implementation inheriting from the <code>DefaultBrokerageModel</code>. See this example of a partially implemented model <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Brokerages/GDAXBrokerageModel.cs">here</a>.  Set your empty placeholder model to the BrokerageModel <a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/GDAX/GDAXBrokerageFactory.cs#L58">property</a>.
 </p>
+
+<h4>Create Brokerage Instance in Factory</h4>
+<p>
+The Brokerage Factory uses a job packet to create an initialized brokerage instance. This happens in the <code>CreateBrokerage()</code> method. You should assume the <code>job</code> has the best source of data <i>not</i> the class BrokerageData property. The <code>BrokerageData</code> property on the factory are the starting default values sourced from config which can be overridden by a runtime job.
+</p>
+<p>
+Given our <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Interfaces/IBrokerage.cs">IBrokerage</a> implementation hasn't been started yet let's make a placeholder file for our brokerage with the methods stubbed out: <code>MyBrokerage.cs</code> in the <code>MyBrokerage</code> folder, in the <code>Brokerages</code> solution. All the methods should throw a <code>new NotImplementedException()</code> for now except for the constructor which should save any required authentication data to private variables. The <code>CreateBrokerage()</code> method should create a brokerage object but not <i>connect</i> to the brokerage. The connection is done later in the LEAN start up process. 
+</p>
