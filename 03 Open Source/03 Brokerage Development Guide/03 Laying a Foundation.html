@@ -1,0 +1,18 @@
+<p>
+The <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Interfaces/IBrokerageFactory.cs">IBrokerageFactory</a> creates brokerage instances with a <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Packets/LiveNodePacket.cs#L37">Job Packet</a> which configures LEAN. It contains the name of the selected brokerage to create, which is used to create the right BrokerageFactory type. The configuration <code>live-mode-brokerage</code> key is used to set the brokerage name.
+</p>
+
+<h4>Create Authentication Configuration</h4>
+<p>
+In the <a href="https://github.com/QuantConnect/Lean/blob/master/Launcher/config.json">configuration file</a> add a few key-values with your brokerage configuration information. This will be used for most local debugging and testing as the default. E.g. <code>oanda-access-token</code> and <code>oanda-account-id</code>. These will be copied to the job packet which contains a matching field <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Packets/LiveNodePacket.cs#L43">BrokerageData</a>. This is a dictionary of &lt;string,string&gt; pairs.
+</p>
+
+<h4>Create Brokerage Data</h4>
+<p>
+By default the <code>IBrokerageFactory.BrokerageData</code> implementation should load all required configuration from the config file using the <code>Config</code> class. E.g. <code>Config.Get("oanda-access-token")</code>. This can be a simple <a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/GDAX/GDAXBrokerageFactory.cs#L47">pass through</a> to the config for most brokerages.
+</p>
+
+<h4>Create Brokerage Model</h4>
+<p>
+Brokerage Models tell LEAN what order types a brokerage supports, whether we're allowed to update an order, and what transaction models to use for fills. It is important to do but something we can come back to later. For now, we should just create a stub implementation which we'll extend and improve later. This file <code>MyBrokerageBrokerageModel.cs</code> lives in the <code>/Common/Brokerages</code> folder. For now, you can make it an empty implementation inheriting from the <code>DefaultBrokerageModel</code>. See this example of a partially implemented model <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Brokerages/GDAXBrokerageModel.cs">here</a>.  Set your empty placeholder model to the BrokerageModel <a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/GDAX/GDAXBrokerageFactory.cs#L58">property</a>.
+</p>
