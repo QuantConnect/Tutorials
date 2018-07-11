@@ -1,0 +1,48 @@
+<p>
+  This short volatility algorithm first prescreens the option contracts by the expiry and the strike.
+  To include the weekly contract, we use the universe function
+</p>
+<div class="section-example-container">
+<pre class="python">def Initialize(self):
+    option.SetFilter(self.UniverseFunc)
+  def UniverseFunc(self, universe):
+      return universe.IncludeWeeklys().Strikes(-20, 20).Expiration(timedelta(25), timedelta(35))
+</pre>
+</div>
+<p>
+  The algorithm selects contracts with one month until maturity so we choose a small range for expiration.
+</p>
+<p>
+  In <code>OnData()<code>, we divide the option chain into put and call options. Then we create two lists
+  <code>expiries</code> and <code>strikes</code> to save all available expiration dates and stike prices to facilitate
+  sorting and filtering.
+</p>
+<p>
+  The algorithm needs three option contracts with one month to the maturity: one ATM call, one ATM put to contruct the ATM straddle,
+  one 15% OTM put. As it's difficult to find the contract with the specified days to maturity and strikes,
+  we use <code>min()</code> to find the most closest contract.
+</p>
+<div class="section-example-container">
+<pre class="python">expiries = [i.Expiry for i in puts]
+# determine expiration date nearly 30 days
+expiry = min(expiries, key=lambda x: abs((x.date()-self.Time.date()).days-30))
+strikes = [i.Strike for i in puts]
+# determine at-the-money strike
+strike = min(strikes, key=lambda x: abs(x-underlying_price))
+# determine 15% out-of-the-money strike
+otm_strike = min(strikes, key = lambda x:abs(x-Decimal(0.85)*underlying_price))
+</pre>
+</div>
+<p>
+  From the above expiration date and strike price, we pick three option contracts
+</p>
+<div class="section-example-container">
+<pre class="python">self.atm_call = [i for i in calls if i.Expiry == expiry and i.Strike == strike]
+self.atm_put = [i for i in puts if i.Expiry == expiry and i.Strike == strike]
+self.otm_put = [i for i in puts if i.Expiry == expiry and i.Strike == otm_strike]
+</pre>
+</div>
+<p>
+  In trading, we sell the ATM straddle by selling one ATM call and one ATM put. Then we buy an OTM put option as insurance against a market crash.
+  Then we wait until the expiration and sell the underlying positions after option exercise and assignment. The portfolio is rebalanced once a month.
+</p>
