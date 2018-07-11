@@ -33,3 +33,5 @@
    </tbody>
    
 </table>
+
+<p>The root of the brokerage system is the algorithm job packets. These hold configuration information about how to run LEAN. The program logic is a little convoluted; it moves from <i>config.json > create job packet > create brokerage factory matching name > set job packet brokerage data > factory creates brokerage instance</i>. Because of this we'll start creating a brokerage at the root -- the configuration and brokerage factory...</p>
