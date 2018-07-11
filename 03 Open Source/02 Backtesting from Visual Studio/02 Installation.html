@@ -1,6 +1,6 @@
 
 <p>
-To install the plugin simply build the binary supplied above; or you can rebuild it from scratch from the LEAN project. To build it from scratch please follow the instructions below.
+To install the plugin simply build the binary supplied above, or you can rebuild it from scratch from the LEAN project. To build it from scratch please follow the instructions below.
 </p>
 
 <h4>Build</h4>
@@ -12,22 +12,22 @@ To install the plugin simply build the binary supplied above; or you can rebuild
 
 <h4>Installation</h4>
 <p>
-If you have intstalled a previous version of the plugin you first need to remove this by your Tools Menu. You can find this in the ‘Tools’ Menu → ‘Extensions and Updates...’ → ‘Installed’. Then search for ‘QuantConnect.VisualStudioPlugin’ and uninstall. <em>Once uninstalled; restart Visual Studio.</em>
+If you have intstalled a previous version of the plugin you first need to remove this first. You do this from the ‘Tools’ Menu → ‘Extensions and Updates...’ → ‘Installed’. Then search for ‘QuantConnect.VisualStudioPlugin’ and click uninstall. <em>Once uninstalled; remember to restart Visual Studio.</em>
 </p>
 <p>
-After building navigate to ‘..\Lean\VisualStudioPlugin\bin\Release’. Execute ‘QuantConnect.VisualStudioPlugin.vsix’.
+After building navigate to ‘..\Lean\VisualStudioPlugin\bin\Release’. If you built sucessfully you should be able to execute ‘QuantConnect.VisualStudioPlugin.vsix’.
 </p>
 
 <h4>Setting Up Your Plugin</h4>
 <ol>
     <li>Login to QuantConnect and navigate to your <a href="/account">My Account</a> page.</li>
     <li>In the API panel, you will find your a ‘unique access token’ and your ‘user id’ which are required to connect to the API. Copy these to your clipboard.</li>
-    <li>From the Visual Studio IDE go to ‘Tools’ menu → ‘QuantConnect’ → ‘Login’. Enter your Api credentials and login.</li>
+    <li>From the Visual Studio IDE go to ‘Tools’ menu → ‘QuantConnect’ → ‘Login’. Enter your API credentials and click Login.</li>
 </ol>
 <figcaption class="backdrop">
 <img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/loginBox.png"/>
 </figcaption>
 
 <p>
-Manually logging in is only required the first time. After the first login the plugin will automatically login, using previously saved credentials.
+Manually logging in is only required the first time. After the first login, the plugin will automatically log in using previously saved credentials.
 </p>
