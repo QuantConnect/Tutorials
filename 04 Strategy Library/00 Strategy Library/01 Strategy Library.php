@@ -166,6 +166,14 @@ $strategyMap = [
         ],
         'description' => 'Goes long stocks with the lowest turnover and short on stocks with the highest turnover from the lowest market-cap quartile.'
     ],
+    [
+        'name' => 'Volatility Risk Premium Effect',
+        'link' => 'strategy-library/volatility-risk-premium-effect',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/20'
+        ],
+        'description' => 'Sells at-the-money straddle with one month until maturity and buys an offsetting 15% out-of-the-money puts each month.'
+    ],
 ];
 
 ?>
