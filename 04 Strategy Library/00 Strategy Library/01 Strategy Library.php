@@ -182,6 +182,14 @@ $strategyMap = [
         ],
         'description' => 'Goes long commodity futures with the highest momentum and short on futures with the lowest momentum.'
     ],
+    [
+        'name' => 'Small Capitalization Stocks Premium Anomaly',
+        'link' => 'strategy-library/small-capitalization-stocks-premium-anomaly',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/25'
+        ],
+        'description' => 'Goes long stocks with the lowest market capitalization and rebalances the portfolio once a year.'
+    ],
 ];
 
 ?>
