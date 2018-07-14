@@ -1,0 +1,13 @@
+<p>
+The <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Interfaces/IBrokerage.cs">IBrokerage</a> holds the bulk of the core logic responsible for running the brokerage implementation. It has many important roles vital for the stability of a running algorithm. These include:
+</p>
+<ol>
+<li>Maintain Connection - Connect and maintain connection while algorithm running.</li>
+<li>Setup State - Initialize the algorithm portfolio, open orders and cashbook.</li>
+<li>Order Operations - Create, update and cancel orders.</li>
+<li>Order Events - Receive order fills and apply them to portfolio.</li>
+<li>Account Events - Track non-order events (cash deposits/removals).</li>
+<li>Brokerage Events - Interpret brokerage messages and act when required.</li>
+<li>Serve History Requests - Provide historical data on request.</li> 
+</ol>
+<p>Many smaller models described later <em>use</em> the Brokerage implementation internally so its best to start implementation of the <code>IBrokerage</code> now. Brokerage classes can get quite large so you should use a <code>partial</code> class modifier to break up the files in appropriate categories.</p>
