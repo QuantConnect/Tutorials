@@ -27,6 +27,11 @@ Often brokerages will have their own ticker styles, order class names, event nam
 </p>
 
 <p>
+The brokerage will eventually implement 3 interfaces:
+<pre>class MyBrokerage : IBrokerage, IDataDownloader, IHistoryProvider { ... }</pre>
+</p>
+
+<p>
 <b>Implementation Style</b>. This guide will focus mostly on implementing the brokerage step by step in LEAN; as its a more natural workflow for most people. You can also follow a more <em>test-driven-development</em> process by following the test harness. To do this create a new test class which extends from the base class in <code>/Tests/Brokerages/BrokerageTests.cs</code>. This test-framework tests all the methods for an IBrokerage implementation.
 </p>
 
@@ -50,3 +55,88 @@ LEAN <i class="fa fa-heart" style="color: red"></i> Open-Source. If you copy and
   <i class="fa fa-bolt"></i><span class="tip-title">Action:</span>
   <p>Build the project again to make sure the library is compiling successfully. Its good to make sure your library is integrated successfully before continuing. </p>
 </div> 
+
+<h4>2.4 IBrokerage Class Implementation</h4>
+<ul>
+   <li>
+     Base Class
+     <p>Using a base class is optional but allows you to reuse event methods we have provided. The <code>Brokerage</code> object implements these event handlers and marks the remaining items as <code>abstract</code>.</p>
+<p>LEAN provides an optional base class <code>BaseWebsocketsBrokerage</code> which seeks to connect and maintain a socket connection and pass messages to an event handler. As each socket connection is different consider carefully before using this class; it might be easier and more maintainable to simply maintain your own socket connection.</p>
+
+<div class="tip">
+  <i class="fa fa-lightbulb-o"></i><span class="tip-title">Tip:</span>
+  <p>Brush up on the <code>partial</code> class keyword. This will help you break-up your class later.</p>
+</div>
+   </li>
+
+   <li>
+    Class Constructor
+     <p>Once the scaffolding brokerage methods are in place (overrides of the abstract base classes); you can focus on the class constructor. Here if you are using a brokerage SDK you can create a new instance of their library, and store it to a class variable for later use. You should make your constructor take all the arguments it needs. This is passed to you from code you implemented in the previous section, the <code>IBrokerageFactory</code>.</p>
+<table class="table qc-table summary">
+<thead><tr><th class="summary" colspan="2"><i class="fa fa-thumb-tack"></i> Class Constructor Examples</th></tr></thead>
+<tbody>
+<tr><td width="30%"><a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/InteractiveBrokers/InteractiveBrokersBrokerage.cs#L191">Interactive Brokers</a></td><td>Launching external process to create brokerage.</td></tr>
+<tr><td><a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/Fxcm/FxcmBrokerage.cs#L92">FXCM</a></td><td>Simple example; saving  class variables and setting defaults.</td></tr>
+<tr><td><a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/Oanda/OandaBrokerage.cs#L55">OANDA</a></td><td>Creating SDK instance and assigning internal event handlers.</td></tr>
+<tr><td><a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/BaseWebsocketsBrokerage.cs#L91">GDAX</a></td><td>Offload constructor work to BrokerageFactory and use <code>BaseWebsocketBrokerage</code> base class.</td></tr>
+</tbody>
+</table>
+   </li>
+
+   <li>
+    Name
+     <p>The <code>Name</code> property is a human readable brokerage name for debugging and logging. For US Equity regulated brokerages convention states this name generally ends in the word "Brokerage". </p>
+   </li>
+
+   <li>
+    Connect()
+     <p>The <code>Connect</code> method triggers logic for establishing a link to your brokerage. Normally we do not do this in the constructor as it would make algorithms and brokerages die in the BrokerageFactory process. For most brokerages this will be simply calling the connect method on your SDK library. </p>
+
+<table class="table qc-table summary">
+<thead><tr><th class="summary" colspan="2"><i class="fa fa-thumb-tack"></i> Connection Method Examples</th></tr></thead>
+<tbody>
+<tr><td width="30%"><a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/InteractiveBrokers/InteractiveBrokersBrokerage.cs#L506">Interactive Brokers</a></td><td>Connecting to external process with brokerage SDK.</td></tr>
+<tr><td><a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/Fxcm/FxcmBrokerage.cs#L122">FXCM</a></td><td>Using SDK to create event handlers and connection thread.</td></tr>
+<tr><td><a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/Oanda/OandaBrokerage.cs#L85">OANDA</a></td><td>Simple example, calling SDK.</td></tr>
+<tr><td><a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/BaseWebsocketsBrokerage.cs#L116">GDAX</a></td><td>Establish websocket connection and monitoring in a thread.</td></tr>
+</tbody>
+</table>
+
+<h4>Exceptions</h4>
+<p>
+In the event of a soft failure like internet connection lost, or server 502 errors you should create a new <code>BrokerageMessageEvent</code>. By doing this you allow the <em>algorithm</em> to handle the brokerage messages. For example: Interactive Brokers resets socket connections at different times globally, so users in other parts of the world can get disconnected at strange times of the day. Knowing this, they may elect to have their algorithm ignore specific disconnection attempts.
+</p>
+<p>
+In the event of a hard-failure such as the password being incorrect or an unsupported API method you should throw a real exception with details of the error. You can see examples of using both of these techniques in the <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Brokerages/Fxcm/FxcmBrokerage.cs#L210">FXCM Connect</a> method. 
+</p>
+   </li>
+
+   <li>
+    IsConnected
+     <p>A boolean property to indicate the state of the brokerage connection. Depending on your connection style this may be automatically handled for you and simply require passing back the value from your SDK. Alternatively you may need to maintain your own connection state flag in your brokerage.</p>
+   </li>
+
+   <li>
+    PlaceOrder()
+<p>
+Send a new LEAN order to the brokerage and report back the success or failure. The <code>PlaceOrder</code> method accepts a generic <code>Order</code> object which is the base class for all order types. The first step of <em>placing</em> an order is often to convert it from LEAN format into the Brokerage SDK required format. Brokerage implementations should aim to support as many LEAN order types as possible. There may be other order types in the brokerage but implementing them is considered out of scope of a rev-0 brokerage implementation.
+</p>
+<p>
+Once the order type is converted you should send it to your brokerage submit API. Often you will receive an immediate reply indicating the order was successfully placed.
+</p>
+<p>
+Part of the order conversion might be converting the brokerage <em>ticker</em> (e.g. LEAN name "EURUSD", OANDA name is "EUR/USD"). This is done with a <code>BrokerageSymbolMapper</code> class. We'll get to that in <a href="#Brokerage-Development-Guide-Step-3-Translating-Symbol-Conventions">Step 3</a>, for now you can pass a request for the brokerage ticker to the stub implementation. 
+</p>
+
+<div class="tip">
+  <i class="fa fa-lightbulb-o"></i><span class="tip-title">Tip:</span>
+  <p>Create an internal method: <code>BrokerOrder ConvertOrder(Order order)</code> for conversion to brokerage orders. You will use this over and over again. Converting order types is an error prone process and its recommended to carefully review each order after you've completed a port. Remember to check each required brokerage order property, brokers like InteractiveBrokers have hundreds of properties.</p>
+</div>
+
+<div class="tip">
+  <i class="fa fa-lightbulb-o"></i><span class="tip-title">Tip:</span>
+  <p>Use the <code>IsConnected</code> boolean to check if you're connected before placing the order. If not throw an exception to halt the algorithm.</p>
+</div>
+
+   </li>
+</ul>
