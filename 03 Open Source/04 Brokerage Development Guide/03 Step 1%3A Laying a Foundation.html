@@ -1,3 +1,15 @@
+<table class="table qc-table table-striped table-responsive summary">
+   <thead>
+     <tr><th colspan="2" class="summary"><i class="fa fa-thumb-tack"></i> IBrokerageFactory</th></tr>
+   </thead>
+   <tbody>
+      <tr><td width="30%">Primary Role</td><td>Create and initialize a brokerage instance.</td></tr>
+      <tr><td>Interface</td><td><a href="https://github.com/QuantConnect/Lean/blob/master/Common/Interfaces/IBrokerageFactory.cs">IBrokerageFactory.cs</a></td></tr>
+      <tr><td>Example</td><td><a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/GDAX/GDAXBrokerageFactory.cs">GDAXBrokerageFactory.cs</a></td></tr>
+      <tr><td>Target Location</td><td><a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/GDAX/">In Brokerages Folder in Brokerages Solution</a></td></tr>
+   </tbody>
+</table>
+
 <p>
 The <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Interfaces/IBrokerageFactory.cs">IBrokerageFactory</a> creates brokerage instances with a <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Packets/LiveNodePacket.cs#L37">Job Packet</a> which configures LEAN. It contains the name of the selected brokerage to create, which is used to create the right BrokerageFactory type. The configuration <code>live-mode-brokerage</code> key is used to set the brokerage name.
 </p>
@@ -35,18 +47,6 @@ In the config file LEAN has helper <em>environments</em> which group configurati
   <i class="fa fa-lightbulb-o"></i><span class="tip-title">Tip:</span>
   <p>In the <code>IBrokerageFactory</code> examples, you'll see code like this: <code>Composer.Instance.AddPart&lt;IDataQueueHandler&gt;(dataQueueHandler)</code>, which is adding parts to the "Composer". The Composer is a system in LEAN for loading types dynamically. In this case, it is adding an instance of the DataQueueHandler for the brokerage to the composer. You can think of the composer as a library, and adding parts is like adding books to its collection. But we'll come back to this later...</p>
 </div>
-
-<table class="table qc-table table-striped table-responsive summary">
-   <thead>
-     <tr><th colspan="2" class="summary"><i class="fa fa-thumb-tack"></i> IBrokerageFactory</th></tr>
-   </thead>
-   <tbody>
-      <tr><td width="30%">Primary Role</td><td>Create and initialize a brokerage instance.</td></tr>
-      <tr><td>Interface</td><td><a href="https://github.com/QuantConnect/Lean/blob/master/Common/Interfaces/IBrokerageFactory.cs">IBrokerage.cs</a></td></tr>
-      <tr><td>Example</td><td><a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/GDAX/GDAXBrokerageFactory.cs">GDAXBrokerageFactory.cs</a></td></tr>
-      <tr><td>Target Location</td><td><a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/GDAX/">In Brokerages Folder in Brokerages Solution</a></td></tr>
-   </tbody>
-</table>
 
 <table class="table qc-table table-striped table-responsive">
    <thead>
