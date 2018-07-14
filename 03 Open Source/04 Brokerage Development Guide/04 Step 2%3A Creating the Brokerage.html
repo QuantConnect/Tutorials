@@ -1,5 +1,5 @@
 <p>
-The <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Interfaces/IBrokerage.cs">IBrokerage</a> holds the bulk of the core logic responsible for running the brokerage implementation. It has many important roles vital for the stability of a running algorithm. These include:
+The <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Interfaces/IBrokerage.cs">IBrokerage</a> holds the bulk of the core logic responsible for running the brokerage implementation. Many smaller models described later <em>use</em> the Brokerage implementation internally so its best to start implementation of the <code>IBrokerage</code> now. Brokerage classes can get quite large so you should use a <code>partial</code> class modifier to break up the files in appropriate categories. It has many important roles vital for the stability of a running algorithm. These include:
 </p>
 <ol>
 <li>Maintain Connection - Connect and maintain connection while algorithm running.</li>
@@ -9,5 +9,36 @@ The <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Interfaces/
 <li>Account Events - Track non-order events (cash deposits/removals).</li>
 <li>Brokerage Events - Interpret brokerage messages and act when required.</li>
 <li>Serve History Requests - Provide historical data on request.</li> 
-</ol>
-<p>Many smaller models described later <em>use</em> the Brokerage implementation internally so its best to start implementation of the <code>IBrokerage</code> now. Brokerage classes can get quite large so you should use a <code>partial</code> class modifier to break up the files in appropriate categories.</p>
+</ol> 
+<p>
+Often brokerages will have their own ticker styles, order class names, event names. Many of the methods in the brokerage implementation may simply be converting from the brokerage object format into LEAN format. You should plan accordingly to write neat code. 
+</p>
+
+<h4>2.1 Brokerage Requirements</h4>
+<p>QuantConnect is best used with <em>streaming or socket based</em> brokerage connections. Streaming brokerage implementations allow for the easiest translation of broker events into LEAN events. Without streaming order-events you will need to <em>poll</em> for to check for fills. In our experience this is fraught with additional risks and challenges.</p>
+
+<h4>2.2 Installing a Library</h4>
+<p>
+Most brokerages will provide a wrapper for their API. You should use this where possible as long as it has a permissive license. Although it is technically possible to embed an external github repository we've elected to not do this to make LEAN easier to install (submodules can be tricky for beginners). You should copy the library into its own subfolder of the brokerage implementation: <code>/Brokerages/MyBrokerage/BrokerLib/*</code>. 
+</p>
+
+<div class="tip">
+  <i class="fa fa-lightbulb-o"></i><span class="tip-title">Tip:</span>
+  <p>Libraries will need to be <em>.NET Framework 4.6.2</em> compatible as LEAN is fully cross-platform via Mono. </p>
+</div>
+
+<p>
+LEAN <i class="fa fa-heart" style="color: red"></i> Open-Source. If you copy and paste code from an external source leave the comments and headers intact, and if they do not have a comment header be sure to <em>add</em> one to <em>each file</em> referencing the source. Let's keep the attributions in place.
+</p>
+
+<table class="table qc-table table-striped table-responsive summary">
+   <thead>
+     <tr><th colspan="2" class="summary"><i class="fa fa-thumb-tack"></i> IBrokerage</th></tr>
+   </thead>
+   <tbody>
+      <tr><td width="30%">Primary Role</td><td>Brokerage connection, orders and fill events.</td></tr>
+      <tr><td>Interface</td><td><a href="https://github.com/QuantConnect/Lean/blob/master/Common/Interfaces/IBrokerage.cs">IBrokerage.cs</a></td></tr>
+      <tr><td>Example</td><td><a href="https://github.com/QuantConnect/Lean/tree/master/Brokerages/GDAX">GDAXBrokerage.cs</a></td></tr>
+      <tr><td>Target Location</td><td><a href="https://github.com/QuantConnect/Lean/tree/master/Brokerages">QuantConnect.Brokerages.sln</a></td></tr>
+   </tbody>
+</table>
