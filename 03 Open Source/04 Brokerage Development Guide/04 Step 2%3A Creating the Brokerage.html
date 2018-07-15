@@ -84,12 +84,12 @@ LEAN <i class="fa fa-heart" style="color: red"></i> Open-Source. If you copy and
    </li>
 
    <li>
-    <span class="implementation">Name</span>
+    <span class="implementation">string Name</span>
      <p>The <code>Name</code> property is a human readable brokerage name for debugging and logging. For US Equity regulated brokerages convention states this name generally ends in the word "Brokerage". </p>
    </li>
 
    <li>
-    <span class="implementation">Connect()</span>
+    <span class="implementation">void Connect()</span>
      <p>The <code>Connect</code> method triggers logic for establishing a link to your brokerage. Normally we do not do this in the constructor as it would make algorithms and brokerages die in the BrokerageFactory process. For most brokerages this will be simply calling the connect method on your SDK library. </p>
 
 <table class="table qc-table summary">
@@ -112,17 +112,17 @@ In the event of a hard-failure such as the password being incorrect or an unsupp
    </li>
 
    <li>
-    <span class="implementation">Disconnect()</span>
+    <span class="implementation">void Disconnect()</span>
 <p></p>
 </li>
 
    <li>
-    <span class="implementation">IsConnected</span>
+    <span class="implementation">bool IsConnected</span>
      <p>A boolean property to indicate the state of the brokerage connection. Depending on your connection style this may be automatically handled for you and simply require passing back the value from your SDK. Alternatively you may need to maintain your own connection state flag in your brokerage.</p>
    </li>
 
    <li>
-    <span class="implementation">PlaceOrder()</span>
+    <span class="implementation">bool PlaceOrder(Order order)</span>
 <p>
 Send a new LEAN order to the brokerage and report back the success or failure. The <code>PlaceOrder</code> method accepts a generic <code>Order</code> object which is the base class for all order types. The first step of <em>placing</em> an order is often to convert it from LEAN format into the Brokerage SDK required format. Brokerage implementations should aim to support as many LEAN order types as possible. There may be other order types in the brokerage but implementing them is considered out of scope of a rev-0 brokerage implementation.
 </p>
@@ -131,6 +131,9 @@ Once the order type is converted you should send it to your brokerage submit API
 </p>
 <p>
 Part of the order conversion might be converting the brokerage <em>ticker</em> (e.g. LEAN name "EURUSD", OANDA name is "EUR/USD"). This is done with a <code>BrokerageSymbolMapper</code> class. We'll get to that in <a href="#Brokerage-Development-Guide-Step-3-Translating-Symbol-Conventions">Step 3</a>, for now you can pass a request for the brokerage ticker to the stub implementation. 
+</p>
+<p>
+The <code>PlaceOrder()</code> method returns true when the order is <em>accepted</em> to the brokerage. If it is invalid, immediately rejected or there is an internet outage you can return false.
 </p>
 
 <div class="tip">
@@ -146,32 +149,32 @@ Part of the order conversion might be converting the brokerage <em>ticker</em> (
    </li>
 
    <li>
-    <span class="implementation">UpdateOrder()</span>
+    <span class="implementation">bool UpdateOrder(Order order)</span>
 <p></p>
 </li>
 
    <li>
-    <span class="implementation">CancelOrder()</span>
+    <span class="implementation">bool CancelOrder(Order order)</span>
 <p></p>
 </li>
 
    <li>
-    <span class="implementation">UpdateOrder()</span>
+    <span class="implementation">bool UpdateOrder(Order order)</span>
 <p></p>
 </li>
 
    <li>
-    <span class="implementation">GetOpenOrders()</span>
+    <span class="implementation">List&lt;Order&gt; GetOpenOrders()</span>
 <p></p>
 </li>
 
    <li>
-    <span class="implementation">GetAccountHoldings()</span>
+    <span class="implementation">List&lt;Holding&gt; GetAccountHoldings()</span>
 <p></p>
 </li>
 
    <li>
-    <span class="implementation">GetCashBalance()</span>
+    <span class="implementation">List&lt;Cash&gt; GetCashBalance()</span>
 <p></p>
 </li>
 
@@ -181,9 +184,13 @@ Part of the order conversion might be converting the brokerage <em>ticker</em> (
 </li>
 
    <li>
-    <span class="implementation">GetHistory(HistoryRequest request)</span>
+    <span class="implementation">IEnumerable&lt;BaseData&gt; GetHistory(HistoryRequest request)</span>
 <p></p>
 </li>
 
+   <li>
+    <span class="implementation">bool AccountInstantlyUpdated</span>
+<p></p>
+</li>
 
 </ul>
