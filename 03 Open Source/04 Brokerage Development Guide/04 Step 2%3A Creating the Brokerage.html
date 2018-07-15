@@ -59,7 +59,7 @@ LEAN <i class="fa fa-heart" style="color: red"></i> Open-Source. If you copy and
 <h4>2.4 IBrokerage Class Implementation</h4>
 <ul>
    <li>
-     Base Class
+     <span class="implementation">Base Class</span>
      <p>Using a base class is optional but allows you to reuse event methods we have provided. The <code>Brokerage</code> object implements these event handlers and marks the remaining items as <code>abstract</code>.</p>
 <p>LEAN provides an optional base class <code>BaseWebsocketsBrokerage</code> which seeks to connect and maintain a socket connection and pass messages to an event handler. As each socket connection is different consider carefully before using this class; it might be easier and more maintainable to simply maintain your own socket connection.</p>
 
@@ -70,7 +70,7 @@ LEAN <i class="fa fa-heart" style="color: red"></i> Open-Source. If you copy and
    </li>
 
    <li>
-    Class Constructor
+    <span class="implementation">Class Constructor</span>
      <p>Once the scaffolding brokerage methods are in place (overrides of the abstract base classes); you can focus on the class constructor. Here if you are using a brokerage SDK you can create a new instance of their library, and store it to a class variable for later use. You should make your constructor take all the arguments it needs. This is passed to you from code you implemented in the previous section, the <code>IBrokerageFactory</code>.</p>
 <table class="table qc-table summary">
 <thead><tr><th class="summary" colspan="2"><i class="fa fa-thumb-tack"></i> Class Constructor Examples</th></tr></thead>
@@ -84,12 +84,12 @@ LEAN <i class="fa fa-heart" style="color: red"></i> Open-Source. If you copy and
    </li>
 
    <li>
-    Name
+    <span class="implementation">Name</span>
      <p>The <code>Name</code> property is a human readable brokerage name for debugging and logging. For US Equity regulated brokerages convention states this name generally ends in the word "Brokerage". </p>
    </li>
 
    <li>
-    Connect()
+    <span class="implementation">Connect()</span>
      <p>The <code>Connect</code> method triggers logic for establishing a link to your brokerage. Normally we do not do this in the constructor as it would make algorithms and brokerages die in the BrokerageFactory process. For most brokerages this will be simply calling the connect method on your SDK library. </p>
 
 <table class="table qc-table summary">
@@ -112,12 +112,17 @@ In the event of a hard-failure such as the password being incorrect or an unsupp
    </li>
 
    <li>
-    IsConnected
+    <span class="implementation">Disconnect()</span>
+<p></p>
+</li>
+
+   <li>
+    <span class="implementation">IsConnected</span>
      <p>A boolean property to indicate the state of the brokerage connection. Depending on your connection style this may be automatically handled for you and simply require passing back the value from your SDK. Alternatively you may need to maintain your own connection state flag in your brokerage.</p>
    </li>
 
    <li>
-    PlaceOrder()
+    <span class="implementation">PlaceOrder()</span>
 <p>
 Send a new LEAN order to the brokerage and report back the success or failure. The <code>PlaceOrder</code> method accepts a generic <code>Order</code> object which is the base class for all order types. The first step of <em>placing</em> an order is often to convert it from LEAN format into the Brokerage SDK required format. Brokerage implementations should aim to support as many LEAN order types as possible. There may be other order types in the brokerage but implementing them is considered out of scope of a rev-0 brokerage implementation.
 </p>
@@ -139,4 +144,46 @@ Part of the order conversion might be converting the brokerage <em>ticker</em> (
 </div>
 
    </li>
+
+   <li>
+    <span class="implementation">UpdateOrder()</span>
+<p></p>
+</li>
+
+   <li>
+    <span class="implementation">CancelOrder()</span>
+<p></p>
+</li>
+
+   <li>
+    <span class="implementation">UpdateOrder()</span>
+<p></p>
+</li>
+
+   <li>
+    <span class="implementation">GetOpenOrders()</span>
+<p></p>
+</li>
+
+   <li>
+    <span class="implementation">GetAccountHoldings()</span>
+<p></p>
+</li>
+
+   <li>
+    <span class="implementation">GetCashBalance()</span>
+<p></p>
+</li>
+
+   <li>
+    <span class="implementation">bool AccountInstantlyUpdated</span>
+<p></p>
+</li>
+
+   <li>
+    <span class="implementation">GetHistory(HistoryRequest request)</span>
+<p></p>
+</li>
+
+
 </ul>
