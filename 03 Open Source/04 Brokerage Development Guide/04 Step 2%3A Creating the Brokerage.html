@@ -113,7 +113,7 @@ In the event of a hard-failure such as the password being incorrect or an unsupp
 
    <li>
     <span class="implementation">void Disconnect()</span>
-<p></p>
+<p>Disconnect is called at the end of the algorithm before shutting down LEAN.</p>
 </li>
 
    <li>
@@ -145,12 +145,20 @@ The <code>PlaceOrder()</code> method returns true when the order is <em>accepted
   <i class="fa fa-lightbulb-o"></i><span class="tip-title">Tip:</span>
   <p>Use the <code>IsConnected</code> boolean to check if you're connected before placing the order. If not throw an exception to halt the algorithm.</p>
 </div>
-
    </li>
 
    <li>
     <span class="implementation">bool UpdateOrder(Order order)</span>
-<p></p>
+<p>Transmit an update request to the API and return true if it was successfully processed. There are no simple examples here! Updating an order is one of the most tricky part of the brokerage implementations. You can easily run into synchronization issues.</p>
+<table class="table qc-table summary">
+<thead><tr><th class="summary" colspan="2"><i class="fa fa-thumb-tack"></i> Update Order Examples</th></tr></thead>
+<tbody>
+<tr><td width="30%"><a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/InteractiveBrokers/InteractiveBrokersBrokerage.cs#L300">Interactive Brokers</a></td><td>External application, updating multiple asset classes.</td></tr>
+<tr><td><a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/Fxcm/FxcmBrokerage.cs#L522">FXCM</a></td><td>Relatively simple example via async brokerage callback.</td></tr>
+<tr><td>OANDA <a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/Oanda/OandaRestApiV1.cs#L215">v1</a>, <a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/Oanda/OandaRestApiV20.cs#L218">v2</a></td><td>Complex example with 2 async APIs, multiple parameters.</td></tr>
+<tr><td><a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/GDAX/GDAXBrokerage.cs#L134">GDAX</a></td><td>Updating isn't supported; throw an exception.</td></tr>
+</tbody>
+</table>
 </li>
 
    <li>
