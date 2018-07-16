@@ -1,0 +1,42 @@
+<p>
+  As the strategy needs the continuous futures contract, we import the custom data from Quandl.
+  We create a universe of tradable commodity futures from all available commodity futures traded on CME and ICE.
+  They are all liquid and active continuous contracts #1. The data from Quandl are non-adjusted price based on spot-month continuous contract calculations.
+  The data resolution is daily.
+</p>
+<p>
+  The first step is importing the data.
+</p>
+<div class="section-example-container">
+<pre class="python">from QuantConnect.Python import PythonQuandl
+for symbol in self.symbols:
+    self.AddData(QuandlFutures, symbol, Resolution.Daily)
+
+class QuandlFutures(PythonQuandl):
+    def __init__(self):
+        self.ValueColumnName = "settle"
+</pre>
+</div>
+<p>
+  Here we use the indicator <code>RateOfChange(period)<code> to simulate the momentum return. Here the period is 12 months.
+  As we are using the custom data, the indicator initialization should use the history request to update the value manually.
+  All indicators are saved in the dictionary <code>self.roc</code>.
+</p>
+<div class="section-example-container">
+<pre class="python">self.roc = {}
+for symbol in self.symbols:
+    self.AddData(QuandlFutures, symbol, Resolution.Daily)
+    self.roc[symbol] = RateOfChange(period)
+    hist = self.History([symbol], 400, Resolution.Daily).loc[symbol]
+    for i in hist.itertuples():
+        self.roc[symbol].Update(i.Index, i.settle)
+</pre>
+</div>
+<p>
+  In <code>OnData(self, data)</code>, indicators for all futures contracts are updated every day with the settlement price.
+</p>
+<p>
+  We rank the contracts by the last 12-month return and divide them into quintiles.
+  In the trading part, the algorithm goes long on the quintile with the highest momentum return and goes short on the quintile with the lowest momentum return.
+  The portfolio is rebalanced each month.
+</p>

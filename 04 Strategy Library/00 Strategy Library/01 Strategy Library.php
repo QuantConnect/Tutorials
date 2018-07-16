@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by IntelliJ IDEA.
- * User: 
+ * User:
  * Date: 5/24/2018
  * Time: 4:42 PM
  */
@@ -173,6 +173,22 @@ $strategyMap = [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/20'
         ],
         'description' => 'Sells at-the-money straddle with one month until maturity and buys an offsetting 15% out-of-the-money puts each month.'
+    ],
+    [
+        'name' => 'Momentum Effect in Commodities Futures',
+        'link' => 'strategy-library/momentum-effect-in-commodities-futures',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/21'
+        ],
+        'description' => 'Goes long commodity futures with the highest momentum and short on futures with the lowest momentum.'
+    ],
+    [
+        'name' => 'Small Capitalization Stocks Premium Anomaly',
+        'link' => 'strategy-library/small-capitalization-stocks-premium-anomaly',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/25'
+        ],
+        'description' => 'Goes long stocks with the lowest market capitalization and rebalances the portfolio once a year.'
     ],
 ];
 
