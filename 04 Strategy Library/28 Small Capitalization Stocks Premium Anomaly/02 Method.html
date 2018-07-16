@@ -1,11 +1,11 @@
 <p>
-  The first step is corase universe selection. We create an investment universe with stocks that have fundmental data and has price greater than $5.
+  The first step is coarse universe selection. We create an investment universe with stocks that have fundmental data and with a price greater than $5.
 </p>
 <div class="section-example-container">
 <pre class="python">self.filtered_coarse = [x.Symbol for x in coarse if (x.HasFundamentalData) and (float(x.AdjustedPrice) > 5)]
 </pre>
 </div>
-<p>In fine universe selection, we sort the stocks in universe by the market capitalization and choose 10 stocks with the lowest market cap.
+<p>In fine universe selection, we sort the stocks in the universe by the market capitalization and choose 10 stocks with the lowest market cap.
 </p>
 <div class="section-example-container">
 <pre class="python">def FineSelectionFunction(self, fine):
