@@ -190,6 +190,14 @@ $strategyMap = [
         ],
         'description' => 'Goes long stocks with the lowest market capitalization and rebalances the portfolio once a year.'
     ],
+    [
+        'name' => 'Term Structure Effect in Commodities',
+        'link' => 'strategy-library/term-structure-effect-in-commodities',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/22'
+        ],
+        'description' => 'Buys each month the 20% of commodities with the highest roll-returns and shorts the 20% of commodities with the lowest roll-returns and holds the long-short positions for one month.'
+    ],
 ];
 
 ?>
