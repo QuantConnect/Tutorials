@@ -1,10 +1,11 @@
 <p>
   To construct the universe, first we eliminate stocks which don't have fundmental data. In <code>FineSelectionFunction</code>,
-  we calculate the market cap with PE ratio, earning per shares and shares outstanding and assign the property <code>MarketCap</code>
+  we 
+  culate the market cap with PE ratio, earning per shares and shares outstanding and assign the property <code>MarketCap</code>
   to each fine fundamental object. The universe is narrowed to top 20% companies with the highest market cap. 
 </P>
 <p>
-  According to the algorithm, the portfolio is weighted based on market cap. We calculte the weight in <code>FineSelectionFunction</code> and save
+  According to the algorithm, the portfolio is weighted based on market cap. We calculate the weight in <code>FineSelectionFunction</code> and save
   them in <code>self.weights</code>.
 </P>
 <div class="section-example-container">
