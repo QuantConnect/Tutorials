@@ -1,0 +1,32 @@
+<p>
+  The first step is coarse and fine universe selection. Using coarse selection, we create an investment universe with stocks that have fundamental data and a price greater than $5. 
+</p>
+<div class="section-example-container">
+<pre class="python">self.filtered_coarse = [x.Symbol for x in coarse if (x.HasFundamentalData) and (float(x.AdjustedPrice) > 5)]
+</pre>
+</div>
+<p>
+  During fine universe selection we take the stocks and calculate their net payout yield. We then sort the stocks by their yield and the top decile are chosen for our portfolio.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def FineSelectionFunction(self, fine):
+    if self.yearly_rebalance:
+       fine = [x for x in fine if (float(x.FinancialStatements.CashFlowStatement.CashDividendsPaid.Value) <= 0) 
+                                    and (float(x.FinancialStatements.CashFlowStatement.RepurchaseOfCapitalStock.Value) <= 0)
+                                    and (float(x.FinancialStatements.CashFlowStatement.CommonStockIssuance.Value) >= 0)
+                                    and (float(x.FinancialStatements.BalanceSheet.TotalCapitalization.Value) > 0)]
+                                  
+        for i in fine:
+            i.npye = (-1*float(i.FinancialStatements.CashFlowStatement.CashDividendsPaid.Value) + -1*float(i.FinancialStatements.CashFlowStatement.RepurchaseOfCapitalStock.Value) - float(i.FinancialStatements.CashFlowStatement.CommonStockIssuance.Value))/float(i.FinancialStatements.BalanceSheet.TotalCapitalization.Value)
+        sorted_filter = sorted(fine, key=lambda x: x.npye)
+        portfolio_size = int(len(fine)/10)
+        self.filtered_fine = [i.Symbol for i in sorted_filter[-portfolio_size:]]
+        return self.filtered_fine
+    else:
+        return []
+</pre>
+</div>
+<p>
+   In <code>OnData()</code>, we buy the top decile of stocks with the best yield. The portfolio is rebalanced every year at the start of July.
+</p>
