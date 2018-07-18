@@ -1,0 +1,27 @@
+<p>
+  To construct the universe, first we eliminate stocks which don't have fundmental data. In <code>FineSelectionFunction</code>,
+  we calculate the market cap with PE ratio, earning per shares and shares outstanding and assign the property <code>MarketCap</code>
+  to each fine fundamental object. The universe is narrowed to top 20% companies with the highest market cap. 
+</P>
+<p>
+  According to the algorithm, the portfolio is weighted based on market cap. We calculte the weight in <code>FineSelectionFunction</code> and save
+  them in <code>self.weights</code>.
+</P>
+<div class="section-example-container">
+<pre class="python">
+fine = [x for x in fine if (x.ValuationRatios.PBRatio > 0)]
+for i in fine:
+    i.MarketCap = float(i.EarningReports.BasicAverageShares.ThreeMonths * (i.EarningReports.BasicEPS.TwelveMonths*i.ValuationRatios.PERatio))
+top_market_cap = sorted(fine, key = lambda x:x.MarketCap, reverse=True)[:int(len(fine)*0.2)]
+top_bm = sorted(top_market_cap, key = lambda x: 1 / x.ValuationRatios.PBRatio, reverse=True)[:int(len(top_market_cap)*0.2)]
+self.sorted_by_bm = [i.Symbol for i in top_bm]
+total_market_cap = np.sum([i.MarketCap for i in top_bm])
+self.weights = {}
+for i in top_bm:
+    self.weights[str(i.Symbol)] = i.MarketCap/total_market_cap
+return self.sorted_by_bm
+</pre>
+</div>
+<p>
+In the next step, we sort the stocks with the inverse of P/B ratio by descending order. Quintile portfolios are then formed based on the Book-to-Market ratio and the highest quintile is held for one year.
+</p>

@@ -198,6 +198,14 @@ $strategyMap = [
         ],
         'description' => 'Buys each month the 20% of commodities with the highest roll-returns and shorts the 20% of commodities with the lowest roll-returns and holds the long-short positions for one month.'
     ],
+    [
+        'name' => 'Book-to-Market Value Anomaly',
+        'link' => 'strategy-library/book-to-market-value-anomaly',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/26'
+        ],
+        'description' => 'Quintile portfolios are formed based on the Book-to-Market ratio and the highest quintile is held for one year.'
+    ],
 ];
 
 ?>
