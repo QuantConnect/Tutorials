@@ -1,0 +1,29 @@
+<p>
+  First, we create the scheduled events. These will trigger the algorithm to buy the SPY at the end of the month and sell the SPY in the beginning of the next month.  
+</p>
+<div class="section-example-container">
+<pre class="python">
+self.Schedule.On(self.DateRules.MonthStart("SPY"), self.TimeRules.AfterMarketOpen("SPY", 1), self.rebalance)
+self.Schedule.On(self.DateRules.MonthEnd("SPY"), self.TimeRules.AfterMarketOpen("SPY", 1), self.purchase)
+</pre>
+</div>
+<p>
+  We will purchase the SPY immediately, and we will wait 3 trading days, as suggested, before liquidating our portfolio. Assigning <code>self.sell_flag</code> in the scheduled event function will help us execute the liquidate order in <code>OnData()</code>. The equity index is bought and sold every month.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def purchase(self):
+        self.SetHoldings("SPY", 1)
+    
+def rebalance(self):
+    self.sell_flag = True
+    
+def OnData(self, data):
+    if self.sell_flag:
+        self.days += 1
+        if self.days == 3:
+            self.Liquidate()
+            self.sell_flag = False
+            self.days = 0
+</pre>
+</div>
