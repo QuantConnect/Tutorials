@@ -1,3 +1,38 @@
 <p>
+The LEAN Report Creator is a python script located in the <a href="https://github.com/QuantConnect/Lean/tree/master/PythonToolbox">PythonToolbox</a>. It is a command line tool which takes the json backtest result object as its input. You can run it like this:
+</p>
+<div class="section-example-container">
+<pre class="all">
+python CreateLeanReport.py--backtest=./sample.json --output=./report.html --user=data.json
+</pre>
+</div>
+<p>
+The program has three key options you should configure to your requirements:
+</p>
+<style> table.text-left > tbody > tr > td { text-align: left; } </style>
+<table class="table table-striped qc-table text-left">
+<thead>
+<tr>
+<th>Command Switch</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--backtest</code></td>
+<td>Location of the source backtest json file.</td>
+</tr>
+<tr>
+<td><code>--output</code></td>
+<td>Resulting output HTML file location.</td>
+</tr>
+<tr>
+<td><code>--user</code></td>
+<td>Json data object for the user data of the report (see <a href="https://github.com/QuantConnect/Lean/blob/master/PythonToolbox/user_data.json" target="_BLANK">example</a>).</td>
+</tr>
+</tbody>
+</table>
 
+<p>
+The program injects the images as base64 encoded objects into the HTML file to make it more portable and simpler to share with your partners. 
 </p>
