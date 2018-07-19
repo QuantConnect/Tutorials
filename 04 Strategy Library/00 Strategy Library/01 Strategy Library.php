@@ -190,6 +190,14 @@ $strategyMap = [
         ],
         'description' => 'Goes long stocks with the lowest market capitalization and rebalances the portfolio once a year.'
     ],
+    [
+        'name' => 'Turn of the Month in Equity Indexes',
+        'link' => 'strategy-library/turn-of-the-month-in-equity-indexes',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/41'
+        ],
+        'description' => 'Buys SPY the day before the end of the month and liquidates position on 3rd trading day of new month.'
+    ],
 ];
 
 ?>
