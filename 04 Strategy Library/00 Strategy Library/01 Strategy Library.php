@@ -199,6 +199,14 @@ $strategyMap = [
         'description' => 'Buys each month the 20% of commodities with the highest roll-returns and shorts the 20% of commodities with the lowest roll-returns and holds the long-short positions for one month.'
     ],
     [
+        'name' => 'Momentum Effect Combined with Term Structure in Commodities',
+        'link' => 'strategy-library/momentum-effect-combined-with-term-structure-in-commodities',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/23'
+        ],
+        'description' => 'Portfolios are formed based on roll returns and the algorithm goes long and short contracts with the highest and lowest one-month performance.'
+    ],
+    [
         'name' => 'Book-to-Market Value Anomaly',
         'link' => 'strategy-library/book-to-market-value-anomaly',
         'sources' => [

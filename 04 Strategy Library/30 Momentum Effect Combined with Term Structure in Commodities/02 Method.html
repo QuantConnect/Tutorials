@@ -1,0 +1,62 @@
+<h4>Roll Return</h4>
+<p>
+  The universe is created with 22 commodity futures. For multiple commodities, we save the future chain of each commodity in dictionary <code>self.chains<code>.
+  First, we compute the roll-returns at the start of each month and sort the roll-return list. 1/3 breakpoints are used to split the cross section of futures contracts into 3 portfolios, labeled <code>Low</code>, <code>Med</code> and <code>High</code>. For the formula of the roll-return, please see <a href="https://www.quantconnect.com/tutorials/strategy-library/term-structure-effect-in-commodities">Term Structure Effect in Commodities</a>.
+  Contracts fall into <code>Med</code> level are eliminated from the universe. Next we'll calculate the mean return of contracts in <code>High</code> and <code>Low</code>.
+</p>
+<div class="section-example-container">
+<pre class="python">
+roll_return = {}
+for symbol, chain in self.chains.items():
+    contracts = sorted(chain, key = lambda x: x.Expiry)
+    expiry_nearest = contracts[0].Expiry
+    price_nearest = float(contracts[0].LastPrice) if contracts[0].LastPrice>0 else 0.5*float(contracts[0].AskPrice+contracts[0].BidPrice)
+    for x in contracts[1:]:
+        roll_return[x] = (price_nearest-float(x.LastPrice))*365 / (x.Expiry-expiry_nearest).days
+sorted_by_roll_return = sorted(roll_return, key = lambda x: roll_return[x], reverse =True)
+tertile = floor(1/3*len(sorted_by_roll_return))
+high = sorted_by_roll_return[:tertile]
+low = sorted_by_roll_return[-tertile:]
+</pre>
+</div>
+<h4>Mean Return</h4>
+<p>
+  The second filter is the historical mean return.  We sort the contracts in the High portfolio into two sub-portfolios (High-Winner and High-Loser) based on the mean return of the commodities over the past one month.
+High-Winner is thus made of the commodities that have both the highest roll-returns at the time of portfolio construction and the best past performance.
+Similarly, we sort the commodities in the Low portfolio into two sub-portfolios (Low-Winner and Low-Loser) based on their mean return over the past one months. Low-Loser contains, therefore, commodities that have both the lowest roll-returns at the time of portfolio construction and the worst past performance.
+</P>
+<div class="section-example-container">
+<pre class="python">
+mean_return_high = {}
+for i in high:
+    hist = self.History(i.Symbol, timedelta(days = 21), Resolution.Minute)
+    if hist.empty:
+        continue
+    hist_close = hist['close'][i.Expiry][i.Symbol.Value]
+    mean_return_high[i] = np.mean(hist_close.pct_change())
+high_winners = sorted(mean_return_high, key = lambda x: mean_return_high[x], reverse=True)[:int(len(high)*0.5)]
+
+mean_return_low = {}
+for i in low:
+    hist = self.History(i.Symbol, timedelta(days = 21), Resolution.Minute)
+    if hist.empty:
+        continue
+    hist_close = hist['close'][i.Expiry][i.Symbol.Value]
+    mean_return_low[i] = np.mean(hist_close.pct_change())
+low_losers = sorted(mean_return_low, key = lambda x: mean_return_low[x], reverse=True)[-int(len(low)*0.5):]
+</pre>
+</div>
+<p>
+The combined strategy buys the High-Winner portfolio, shorts the Low-Loser portfolio and holds this position for one month. At the start of the nect month, the strategy liquidates  the invested contracts and rebalance the portfolio.
+</p>
+<div class="section-example-container">
+<pre class="python">
+short_weight = 0.5/len(low_losers)
+for short in low_losers:
+    self.SetHoldings(short.Symbol, -short_weight)
+
+long_weight = 0.5/len(high_winners)
+for long in high_winners:
+    self.SetHoldings(long.Symbol, long_weight)
+</pre>
+</div>
