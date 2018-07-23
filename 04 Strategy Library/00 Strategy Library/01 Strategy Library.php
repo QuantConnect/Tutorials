@@ -222,6 +222,14 @@ $strategyMap = [
         ],
         'description' => 'Goes long gold when the Fed model shows that the market is undervalued (the earnings yield is higher than the bond yield and their ratio is at least 2).'
     ],
+    [
+        'name' => 'Turn of the Month in Equity Indexes',
+        'link' => 'strategy-library/turn-of-the-month-in-equity-indexes',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/41'
+        ],
+        'description' => 'Buys SPY the day before the end of the month and liquidates position on 3rd trading day of new month.'
+    ]
 ];
 
 ?>
