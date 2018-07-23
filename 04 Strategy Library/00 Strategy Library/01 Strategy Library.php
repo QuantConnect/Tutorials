@@ -214,6 +214,14 @@ $strategyMap = [
         ],
         'description' => 'Quintile portfolios are formed based on the Book-to-Market ratio and the highest quintile is held for one year.'
     ],
+    [
+        'name' => 'Gold Market Timing',
+        'link' => 'strategy-library/gold-market-timing',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/43'
+        ],
+        'description' => 'Goes long gold when the Fed model shows that the market is undervalued (the earnings yield is higher than the bond yield and their ratio is at least 2).'
+    ],
 ];
 
 ?>
