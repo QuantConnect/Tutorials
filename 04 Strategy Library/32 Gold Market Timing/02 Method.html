@@ -1,9 +1,9 @@
 <h4>Fed Model</h4>
 <p>
-  Historically, the S&P 500 earning yield has a strong correlation with the 10-year Treasury note. There is the theory that if the forward earnings yield of the S&P 500 is higher than the 10-year government bond yield, stocks are undervalued and vice versa.
+  Historically, the S&amp;P 500 earning yield has a strong correlation with the 10-year Treasury note. There is the theory that if the forward earnings yield of the S&amp;P 500 is higher than the 10-year government bond yield, stocks are undervalued and vice versa.
 </P>
 <p>
-  We import the custom fundamental data of government 10-year bond yield and S&P 500 earnings yield from Quandl.
+  We import the custom fundamental data of government 10-year bond yield and S&amp;P 500 earnings yield from Quandl.
 </P>
 <div class="section-example-container">
 <pre class="python">
@@ -22,9 +22,7 @@ self.AddData(QuandlValue, self.gold, Resolution.Daily, DateTimeZone.Utc, True)
 
 <h4>Gold Investment</h4>
 <p>
-  With gold having a strong negative correlation to equity valuations, then gold prices will rise along with earnings yield, bond yield, and inflation.
-  Taking the above relationship a step further, this algorithm goes long gold when the Fed model shows the market undervalued otherwise liquidate the portfolio.
-  The undervalued market is defined as the earning yield is higher than the bond yield and their ratio is at least 2. Rebalancing is done on a monthly basis.
+  With gold having a strong negative correlation to equity valuations, then gold prices will rise along with earnings yield, bond yield, and inflation. Taking the above relationship a step further, this algorithm goes long gold when the Fed model shows the market undervalued otherwise liquidate the portfolio. The undervalued market is defined as the earning yield is higher than the bond yield and their ratio is at least 2. Rebalancing is done on a monthly basis.
 </P>
 <div class="section-example-container">
 <pre class="python">
@@ -39,7 +37,7 @@ def Rebalance(self):
 </div>
 <h4>Custom Charting</h4>
 <p>
-  To demonstrate the relationship between government 10-year bond yield and S&P 500 earnings yield, we plot the two series in equity chart.
+  To demonstrate the relationship between government 10-year bond yield and S&amp;P 500 earnings yield, we plot the two series in equity chart.
 </P>
 <div class="section-example-container">
 <pre class="python">
