@@ -191,13 +191,45 @@ $strategyMap = [
         'description' => 'Goes long stocks with the lowest market capitalization and rebalances the portfolio once a year.'
     ],
     [
+        'name' => 'Term Structure Effect in Commodities',
+        'link' => 'strategy-library/term-structure-effect-in-commodities',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/22'
+        ],
+        'description' => 'Buys each month the 20% of commodities with the highest roll-returns and shorts the 20% of commodities with the lowest roll-returns and holds the long-short positions for one month.'
+    ],
+    [
+        'name' => 'Momentum Effect Combined with Term Structure in Commodities',
+        'link' => 'strategy-library/momentum-effect-combined-with-term-structure-in-commodities',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/23'
+        ],
+        'description' => 'Portfolios are formed based on roll returns and the algorithm goes long and short contracts with the highest and lowest one-month performance.'
+    ],
+    [
+        'name' => 'Book-to-Market Value Anomaly',
+        'link' => 'strategy-library/book-to-market-value-anomaly',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/26'
+        ],
+        'description' => 'Quintile portfolios are formed based on the Book-to-Market ratio and the highest quintile is held for one year.'
+    ],
+    [
+        'name' => 'Gold Market Timing',
+        'link' => 'strategy-library/gold-market-timing',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/43'
+        ],
+        'description' => 'Goes long gold when the Fed model shows that the market is undervalued (the earnings yield is higher than the bond yield and their ratio is at least 2).'
+    ],
+    [
         'name' => 'Turn of the Month in Equity Indexes',
         'link' => 'strategy-library/turn-of-the-month-in-equity-indexes',
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/41'
         ],
         'description' => 'Buys SPY the day before the end of the month and liquidates position on 3rd trading day of new month.'
-    ],
+    ]
 ];
 
 ?>

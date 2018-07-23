@@ -1,0 +1,61 @@
+<h4>Concepts of Futures</h4>
+<p>
+  Before starting the algorithm, we first introduce a few concepts related to commodity futures. Backwardation is defined as conditions when the futures price is below the current spot price and contango as conditions when the futures price is above the current spot price. The futures term structure curve is a representation of the backwardation/contango rate for the different maturities of futures contracts. This price gap between different maturity contracts is quantified as the roll return.
+  The contango/backwardation rates are calculated by taking the price difference between the spot market price and the futures contract price. This difference can be expressed
+  as a percentage over the time to expiration and then annualised to calculate an annual roll return.
+</p>
+\[R_t = \left[ln(P_{t,n})-ln(P_{t,d})\right]\times\frac{365}{N_{t,d}-N_{t,n}}\]
+<p>
+  Where \(P_{t,n}\) is the price of the nearest-to-maturity contract at time t. \(P_{t,d}\) is the price of the distant contract at time t. \(N_{t,n}\) is the number of days between time t and the maturity of the nearby contract and \(N_{t,d}\) is the number of days between time t and the maturity of the distant contract.
+</p>
+<h4>Calculation of Roll Return</h4>
+<p>
+  To calculate the roll return, first we sort the future chain by expiry and select the first two contracts as the nearest-to-maturity contract and the the distant contract.
+</p>
+<div class="section-example-container">
+<pre class="python">for symbol, chain in self.chains.items():
+    contracts = sorted(chain, key = lambda x: x.Expiry)
+    # R = (log(Pn) - log(Pd)) * 365 / (Td - Tn)
+    # R - Roll returns
+    # Pn - Nearest contract price
+    # Pd - Distant contract price
+    # Tn - Nearest contract expire date
+    # Pd - Distant contract expire date
+    near_contract = contracts[0]
+    distant_contract = contracts[-1]
+    price_near = near_contract.LastPrice if near_contract.LastPrice>0 else 0.5*float(near_contract.AskPrice+near_contract.BidPrice)
+    price_distant = distant_contract.LastPrice if distant_contract.LastPrice>0 else 0.5*float(distant_contract.AskPrice+distant_contract.BidPrice)
+    if distant_contract.Expiry == near_contract.Expiry:
+        self.Debug("ERROR: Near and distant contracts have the same expiry!" + str(near_contract))
+        return
+    expire_range = 365 / (distant_contract.Expiry - near_contract.Expiry).days
+    roll_returns[symbol] = (np.log(float(price_near)) - np.log(float(price_distant)))*expire_range
+</pre>
+</div>
+<h4>Backwardation and Contango</h4>
+<p>
+  In the next step, we will split the futures based on backwardation and contango. If the roll return is greater than 0, the term structure of commodity futures prices
+  is downward-sloping and so that the market is in backwardation. Conversely, a negative roll return signals an upward-sloping price curve and a contangoed market.
+</p>
+<div class="section-example-container">
+<pre class="python">positive_roll_returns = { symbol: returns for symbol, returns in roll_returns.items() if returns > 0 }
+negative_roll_returns = { symbol: returns for symbol, returns in roll_returns.items() if returns < 0 }
+backwardation = sorted(positive_roll_returns , key = lambda x: positive_roll_returns[x], reverse = True)[:quintile]
+contango = sorted(negative_roll_returns , key = lambda x: negative_roll_returns[x])[:quintile]
+</pre>
+</div>
+<h4>Algorithm Trade</h4>
+<p>
+  The algorithm buys 20% of commodities with the highest roll-returns and shorts the 20% of commodities with the lowest roll-returns and holds the long-short positions for one month.
+</p>
+<div class="section-example-container">
+<pre class="python">
+for short_symbol in contango:
+    sort = sorted(self.chains[short_symbol], key = lambda x: x.Expiry)
+    self.SetHoldings(sort[1].Symbol, -0.5/count)
+
+for long_symbol in backwardation:
+    sort = sorted(self.chains[long_symbol], key = lambda x: x.Expiry)
+    self.SetHoldings(sort[1].Symbol, 0.5/count)
+  </pre>
+  </div>
