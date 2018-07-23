@@ -1,0 +1,56 @@
+<h4>Fed Model</h4>
+<p>
+  Historically, the S&P 500 earning yield has a strong correlation with the 10-year Treasury note. There is the theory that if the forward earnings yield of the S&P 500 is higher than the 10-year government bond yield, stocks are undervalued and vice versa.
+</P>
+<p>
+  We import the custom fundamental data of government 10-year bond yield and S&P 500 earnings yield from Quandl.
+</P>
+<div class="section-example-container">
+<pre class="python">
+# United States Government 10-Year Bond Yield
+self.bond_yield = "YC/USA10Y"
+# S&P 500 Earnings Yield. Earnings Yield = trailing 12 month earnings divided by index price
+self.earnings_yield = "MULTPL/SP500_EARNINGS_YIELD_MONTH"
+# Gold Prices (Daily) - Currency USD (All values are national currency units per troy ounce)
+self.gold = "WGC/GOLD_DAILY_USD"
+# Add custom quandl data
+self.AddData(QuandlRate, self.bond_yield, Resolution.Daily, DateTimeZone.Utc, True)
+self.AddData(QuandlValue, self.earnings_yield, Resolution.Daily, DateTimeZone.Utc, True)
+self.AddData(QuandlValue, self.gold, Resolution.Daily, DateTimeZone.Utc, True)
+</pre>
+</div>
+
+<h4>Gold Investment</h4>
+<p>
+  With gold having a strong negative correlation to equity valuations, then gold prices will rise along with earnings yield, bond yield, and inflation.
+  Taking the above relationship a step further, this algorithm goes long gold when the Fed model shows the market undervalued otherwise liquidate the portfolio.
+  The undervalued market is defined as the earning yield is higher than the bond yield and their ratio is at least 2. Rebalancing is done on a monthly basis.
+</P>
+<div class="section-example-container">
+<pre class="python">
+def Rebalance(self):
+    if self.Securities[self.earnings_yield].Price == 0 or self.Securities[self.bond_yield].Price == 0: return
+    # Buy gold if E/P is higher than the bond yield and their ratio is at least 2
+    if self.Securities[self.earnings_yield].Price > self.Securities[self.bond_yield].Price * Decimal(2):
+        self.SetHoldings(self.gold, 0.9)
+    else:
+        self.Liquidate()
+</pre>
+</div>
+<h4>Custom Charting</h4>
+<p>
+  To demonstrate the relationship between government 10-year bond yield and S&P 500 earnings yield, we plot the two series in equity chart.
+</P>
+<div class="section-example-container">
+<pre class="python">
+def Initialize(self):
+    yieldPlot = Chart("Yield Plot")
+    yieldPlot.AddSeries(Series("BondYield", SeriesType.Line, 0))
+    yieldPlot.AddSeries(Series("EarningsYield", SeriesType.Line, 0))
+    self.AddChart(yieldPlot)
+def OnData(self, data):
+    if data.ContainsKey(self.bond_yield) and data.ContainsKey(self.earnings_yield):
+        self.Plot("Yield Plot", "BondYield", data[self.bond_yield].Price)
+        self.Plot("Yield Plot", "EarningsYield", data[self.earnings_yield].Price)
+</pre>
+</div>
