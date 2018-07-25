@@ -230,6 +230,14 @@ $strategyMap = [
         ],
         'description' => 'Buys SPY the day before the end of the month and liquidates position on 3rd trading day of new month.'
     ]
+    [
+        'name' => 'Paired Switching',
+        'link' => 'strategy-library/paired-switching',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/44'
+        ],
+        'description' => 'Goes long asset with better performance over the last period and rebalances portfolio every quarter.'
+    ]
 ];
 
 ?>
