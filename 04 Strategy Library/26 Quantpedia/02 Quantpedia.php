@@ -9,7 +9,8 @@
 ?>
 <div class="row">
     <div class="search col-xs-12">
-    <h2>Quantpedia Strategy Implementations</h2>
+    <img src="https://cdn.quantconnect.com/tutorials/i/quantpedia.png" width="33%" style="margin-top: 40px"/>
+    <h2>Strategy Implementations</h2>
     </div>
 </div>
 <div class="row">
