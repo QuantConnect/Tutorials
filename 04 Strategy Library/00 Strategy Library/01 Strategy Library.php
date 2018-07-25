@@ -190,6 +190,14 @@ $strategyMap = [
         ],
         'description' => 'Goes long stocks with the lowest market capitalization and rebalances the portfolio once a year.'
     ],
+    [
+        'name' => 'Paired Switching',
+        'link' => 'strategy-library/paired-switching',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/44'
+        ],
+        'description' => 'Goes long asset with better performance over the last period and rebalances portfolio every quarter.'
+    ],
 ];
 
 ?>
