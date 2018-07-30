@@ -1,0 +1,26 @@
+<p>
+  After two negatively correlated assets are determined, we will analyze them on a quarterly basis. The analysis will consist of retrieving historical prices for the two assets and calculating their performances over the prior quarter. We will buy the asset that yields a higher return during the period. The position is held for one quarter, and then the analysis is repeated.
+</p>
+<div class="section-example-container">
+<pre class="python">
+ def Rebalance(self):
+    self.months +=1
+    if(self.months%3==0):
+        history_call = self.History(self.Securities.Keys,timedelta(days=90))
+        if not history_call.empty:
+            first_bars = history_call.loc[self.first.Symbol.Value]
+            last_p1 = first_bars["close"].iloc[0]
+            second_bars = history_call.loc[self.second.Symbol.Value]
+            last_p2 = second_bars["close"].iloc[0]
+            first_performance = (float(self.Securities[self.first.Symbol].Price) - float(last_p1))/(float(self.Securities[self.first.Symbol].Price))
+            second_performance = (float(self.Securities[self.second.Symbol].Price) - float(last_p2))/(float(self.Securities[self.second.Symbol].Price))
+            if(first_performance > second_performance):
+                if(self.Securities[self.second.Symbol].Invested==True):
+                    self.Liquidate(self.second.Symbol)
+                self.SetHoldings(self.first.Symbol,1)
+            else:
+                if(self.Securities[self.first.Symbol].Invested==True):
+                    self.Liquidate(self.first.Symbol)
+                self.SetHoldings(self.second.Symbol,1)
+</pre>
+</div>
