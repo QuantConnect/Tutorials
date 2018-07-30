@@ -237,7 +237,7 @@ $strategyMap = [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/41'
         ],
         'description' => 'Buys SPY the day before the end of the month and liquidates position on 3rd trading day of new month.'
-    ]
+    ],
     [
         'name' => 'Momentum - Short Term Reversal Strategy',
         'link' => 'strategy-library/momentum-short-term-reversal-strategy',
