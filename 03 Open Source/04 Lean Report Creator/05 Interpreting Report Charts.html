@@ -1,0 +1,63 @@
+<h4>Cumulative Return</h4>
+<img src="https://cdn.quantconnect.com/tutorials/i/cumulative-return.png" class="img-responsive">
+<p>
+This chart shows the cumulative returns for your strategy in orange and the benchmark in gray. 
+</p>
+
+<h4>Daily Return</h4>
+<img src="https://cdn.quantconnect.com/tutorials/i/daily-returns.png" class="img-responsive">
+<p>
+This chart shows the daily returns for your strategy. When the return is positive, a orange bar will show above the horizontal line; when the return is negative, a gray bar will show below the horizontal line.
+</p>
+
+<h4>Top 5 Drawdown Periods</h4>
+<img src="https://cdn.quantconnect.com/tutorials/i/drawdowns.png" class="img-responsive">
+<p>
+This chart shows the drawdown of each day. A certain day's drawdown is defined as the percentage of loss compared to the maximum value prior to this day. The drawdowns are calculated based on daily data. The top 5 drawdown periods are marked in the chart with different colors.
+</p>
+
+<h4>Monthly Returns</h4>
+<img src="https://cdn.quantconnect.com/tutorials/i/monthly-returns.png" class="img-responsive">
+<p>
+This chart shows the return of each month. We convert original price series into monthly series, and calculate the returns of each month. The green color indicates positive return, the red color indicates negative return, and the greater the loss is, the darker the color is; the yellow color means the gain or loss is rather small; the white color means the month is not included in the backtest period. The values in the cells are in percentage.
+</p>
+
+
+<h4>Annual Returns</h4>
+<img src="https://cdn.quantconnect.com/tutorials/i/annual-returns.png" class="img-responsive">
+<p>This chart shows the return of each year. We calculate the total return within each year, shown by the blue bars. The red dotted line represents the average of the annual returns. If the backtest covers less than 12 months of a certain year, then the value in the chart is the actual return which is not annualized.
+</p>
+
+<h4>Crisis Events</h4>
+<img src="https://cdn.quantconnect.com/tutorials/i/crisis-lehman-brothers.png" class="img-responsive">
+<p>This group of charts shows the behaviors of both your strategy and the benchmark during a certain historical period. We set the value of your strategy the same as the benchmark at the beginning of each crisis event, and the lines represent the cumulative returns of your strategy and benchmark from the beginning of this crisis event. The report only draws the crisis event charts whose time periods are covered by your strategy.
+</p>
+
+<h4>Rolling Portfolio Beta to Equity</h4>
+<img src="https://cdn.quantconnect.com/tutorials/i/rolling-portfolio-beta-to-equity.png" class="img-responsive">
+<p>
+This chart shows the rolling portfolio beta to the benchmark. This chart is drawn based on daily data. Every day, we calculate the beta of your portfolio to the benchmark over the past 6 months (gray line) or 12 months (blue line).</p> 
+<p>
+A beta close to 1 means the strategy has a risk exposure similar to the benchmark. A beta higher than 1 means the strategy has more risk than the benchmark, a beta close to 0 means the strategy is "market neutral", which isn't much affected by market situation. Beta can also be negative - in this situation the the strategy has opposite risk exposure to the benchmark. We won't draw this chart when your backtest period is less than 12 months.
+</p>
+
+<h4>Rolling Sharpe Ratio</h4>
+<img src="https://cdn.quantconnect.com/tutorials/i/rolling-sharpe-ratio%286-month%29.png" class="img-responsive">
+<p>This chart shows the rolling sharpe ratio of your strategy. The rolling sharpe ratio is calculated on daily data, and annualized. Every day, we calculate the sharpe ratio of your portfolio over the past 6 months, and connect the sharpe ratios into a line. The red dotted line represents the mean value of the total sharpe ratios. We won't draw this chart when your backtest period is less than 6 months.
+</p>
+
+<h4>Net Holdings</h4>
+<img src="https://cdn.quantconnect.com/tutorials/i/net-holdings.png" class="img-responsive">
+<p>This chart shows the net holdings of your portfolio. The net holding is the aggregated weight of risky assets in your portfolio. It could be either positive (when your total position is long), negative (when your total position is short) or 0 (when you only hold cash). The net holding changes only if new order is fired. The chart is drawn based on minute data, which means we aggregate all the positions of a minute together.
+</p>
+
+<h4>Leverage</h4>
+<img src="https://cdn.quantconnect.com/tutorials/i/leverage.png" class="img-responsive">
+<p>This chart shows the leverage of your portfolio. The value of the leverage is always non-negative. When you only hold cash, the leverage is 0; a leverage smaller than 1 means you either long assets with money less than your portfolio value or short assets with total value less than your portfolio value; a leverage larger than 1 means you either borrow money to buy assets or short assets whose value is larger than your portfolio value. The leverage changes only if new order is fired.
+</p>
+
+<h4>Asset Allocations</h4>
+<img src="https://cdn.quantconnect.com/tutorials/i/asset-allocation-equity.png" class="img-responsive">
+<p>
+The asset allocation charts show a time-weighted average of each class of asset to your portfolio. When a certain asset has very small percentage and is too small to be shown in the pie chart, it will be incorporated into an "Others" category. The value of the percentage could be either positive or negative. 
+</p>
