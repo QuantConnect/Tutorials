@@ -8,10 +8,10 @@
   Markov process is a special case of the stochastic process. It means that only the current value of a random variable is relevant for future prediction. In general, we usually assume that the stock price follows a Markov stochastic process, which means only the current stock price is relevant for predicting the future price, it is not correlated with the past price.
 </p>
 <p>
-  Brownian motion is a particular type of Markov stochastic process or we can think of it as a family of random variables {\(W_t\mid t\geq0} \)} indexed by time t. The one-dimensional Brownian motion is called Wiener Process. (Brownian motion is n-dimensional Wiener processes which mean each dimension is just a standard Wiener process). It has the following properties:
+  Brownian motion is a particular type of Markov stochastic process or we can think of it as a family of random variables \(W_t\mid t\geq0\) indexed by time t. The one-dimensional Brownian motion is called the Wiener Process. (Brownian motion is n-dimensional Wiener processes which mean each dimension is just a standard Wiener process). It has the following properties:
 </p>
 <ul>
-     <li>\({W_0=0\)</li>
+     <li>\(W_0=0\)</li>
      <li>For \(t\geq0\) and \(\Delta t\geq0\), the increment \(W_{t+\Delta t}-W_t\) is normally distributed with mean 0 and standard deviation \(\sqrt{\Delta t}\) .</li>
      <li>For any partitions \(0\leq t_1&lt;t_2&lt;\cdot\cdot\cdot &lt;t_n\), the increments \(W_{t_1}- W_{t_0},W_{t_2}-W_{t_1},\cdot\cdot\cdot, W_{t_n}-W_{t_{n-1}}\) are independent random variables.</li>
      <li>With probability 1, the function W(t) is continuous at t.</li>
@@ -185,7 +185,7 @@ mc_euro_options('c',927.96,785,100.0/252,0.01,0.23,500)
 </p>
 <h2>Summary</h2>
 <p>
-  In this chapter, we modeled stock price with the stochastic process. The stochastic process usually assumed for a stock price is geometric Brownian motion.The Black–Scholes–Merton model, which we cover in the next chapter, is based on the geometric Brownian motion assumption. Under this process, the logarithm of stock return in a small period of time is normally distributed and the returns in two nonoverlapping periods are independent.
+  In this chapter, we modeled stock price with the stochastic process. The stochastic process usually assumed for a stock price is geometric Brownian motion. The Black–Scholes–Merton model, which we cover in the next chapter, is based on the geometric Brownian motion assumption. Under this process, the logarithm of stock return in a small period of time is normally distributed and the returns in two nonoverlapping periods are independent.
 </p>
 <p>
   In the second part of the tutorial,  we applied Monte Carlo method to simulate the stock price in order to gain an intuitive understanding of the stochastic process followed by stock price. Then we discussed how to use Monte Carlo method to price the options based on the underlying prices paths.
