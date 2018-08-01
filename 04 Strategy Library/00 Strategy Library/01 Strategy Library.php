@@ -245,7 +245,15 @@ $strategyMap = [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/51'
         ],
         'description' => 'Goes long stocks with the decreasing return from the winner group and short stocks with the increasing return from the loser group.'
-    ]
+    ],
+    [
+        'name' => 'Sentiment and Style Rotation Effect in Stocks',
+        'link' => 'strategy-library/sentiment-and-style-rotation-effect-in-stocks',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/53'
+        ],
+        'description' => 'Creates long-short positions of growth and value stocks based on the investment sentiment.'
+    ],
 ];
 
 ?>

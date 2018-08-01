@@ -1,0 +1,129 @@
+<h4>The measure of investment sentiment</h4>
+<p>
+  To measure investors' sentiment, we use gauges: the CBOE equity put-call ratio and the market volatility (VIX) index.
+  The VIX index is constructed using the implied volatilities on S&P 500 index options and shows the market's expectation of 30-day volatility.
+  The CBOE equity put-call ratio is calculated by dividing the trading volume of CBOE equity put options by the trading volume of CBOE equity call options.
+  A rising put-call ratio means equity traders are buying more puts than calls and indicates a bearish sentiment in the market while a falling put-call ratio
+  is considered as the bullish market sentiment.
+</p>
+<p>
+  We import the daily VIX data from Quandl. CBOE provides the volume put-call ratio data from 11-01-2006 to present so we import the custom data from <a href="http://www.cboe.com/data/historical-options-data/volume-put-call-ratios">CBOE</a>.
+</p>
+<div class="section-example-container">
+<pre class="python">
+class SentimentAndStyleRotationAlgorithm(QCAlgorithm):
+  def Initialize(self):
+      self.SetStartDate(2010, 1, 1)
+      self.SetEndDate(2018, 7, 1)
+      self.SetCash(100000)
+      self.AddData(QuandlVix, "CBOE/VIX", Resolution.Daily)
+      self.AddData(CBOE, "PutCallRatio", Resolution.Daily)
+
+class QuandlVix(PythonQuandl):
+    '''Quandl VIX data class'''
+    def __init__(self):
+        self.ValueColumnName = "VIX Close"
+
+class CBOE(PythonData):
+    '''Cboe Equity Volume Put/Call Ratios (11-01-2006 to present) Custom Data Class'''
+    def GetSource(self, config, date, isLiveMode):
+        return SubscriptionDataSource("http://www.cboe.com/publish/scheduledtask/mktdata/datahouse/equitypc.csv", SubscriptionTransportMedium.RemoteFile)
+
+    def Reader(self, config, line, date, isLiveMode):
+        if not (line.strip() and line[0].isdigit()): return None
+        index = CBOE()
+        index.Symbol = config.Symbol
+
+        try:
+            # Example File Format:
+            # DATE       CALL      PUT       TOTAL      P/C Ratio
+            # 11/1/06    976510    623929    1600439    0.64
+            data = line.split(',')
+            index.Time = datetime.strptime(data[0], "%m/%d/%Y").strftime("%Y-%m-%d")
+            index.Value = Decimal(data[4])
+
+        except ValueError:
+                return None
+
+        return index
+</pre>
+</div>
+<h4>The Measure of the Growth and Value Stocks</h4>
+<p>
+  All stocks on NYSE and NASDAQ are used as the investment universe. In <code>CoarseSelectionFunction</code>, we eliminate ETFs which don't have fundamental data.
+  In <code>FineSelectionFunction</code>, stocks are sorted into deciles based on a size measure - market capitalization.   We use only the first three size deciles
+  for the algorithm to avoid potential problems with small illiquid stocks.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def FineSelectionFunction(self, fine):
+    if self.month_start:
+        self.selection = True
+
+        fine = [i for i in fine if i.EarningReports.BasicAverageShares.ThreeMonths>0
+                                and i.EarningReports.BasicEPS.TwelveMonths>0
+                                and i.ValuationRatios.PERatio>0
+                                and i.ValuationRatios.PBRatio>0]
+        # Calculate the market cap and add the "MakretCap" property to fine universe object
+        for i in fine:
+            i.MarketCap = float(i.EarningReports.BasicAverageShares.ThreeMonths * (i.EarningReports.BasicEPS.TwelveMonths*i.ValuationRatios.PERatio))
+        # sort fine object by MarketCap
+        sotrted_market_cap = sorted(fine, key = lambda x:x.MarketCap, reverse=True)
+        decile_top1 = sotrted_market_cap[:floor(len(sotrted_market_cap)/10)]
+        decile_top2 = sotrted_market_cap[floor(len(sotrted_market_cap)/10):floor(len(sotrted_market_cap)*2/10)]
+        decile_top3 = sotrted_market_cap[floor(len(sotrted_market_cap)*2/10):floor(len(sotrted_market_cap)*3/10)]
+</pre>
+</div>
+<p>
+  In the next step, we subdivide each size decile into five portfolios based on the P/B ratio. For each of the first three size deciles, the value portfolio consists of all firms included in the quintile with the lowest P/B ratio, and the growth portfolio consists stocks with the highest P/B ratio.
+</p>
+<div class="section-example-container">
+<pre class="python">
+sorted_PB1 = sorted(decile_top1, key = lambda x: x.ValuationRatios.PBRatio)
+sorted_PB2 = sorted(decile_top2, key = lambda x: x.ValuationRatios.PBRatio)
+sorted_PB3 = sorted(decile_top3, key = lambda x: x.ValuationRatios.PBRatio)
+# The value portfolio consists of all firms included in the quintile with the lowest P/B ratio
+PB_bottom1 = sorted_PB1[:floor(len(decile_top1)/5)]
+PB_bottom2 = sorted_PB2[:floor(len(decile_top2)/5)]
+PB_bottom3 = sorted_PB3[:floor(len(decile_top3)/5)]
+self.value_portfolio = [i.Symbol for i in PB_bottom1 + PB_bottom2 + PB_bottom3]
+# The growth portfolio consists of all firms included in the quintile with the highest P/B ratio
+PB_top1 = sorted_PB1[-floor(len(decile_top1)/5):]
+PB_top2 = sorted_PB2[-floor(len(decile_top2)/5):]
+PB_top3 = sorted_PB3[-floor(len(decile_top3)/5):]
+self.growth_portfolio = [i.Symbol for i in PB_top1 + PB_top2 + PB_top3]
+</pre>
+</div>
+
+<h4>The Relation Between Investor Sentiment and Equity Style</h4>
+<p>
+  According to the research paper from Lee and Song<a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=410185">When Do Value Stocks Outperform Growth Stocks?: Investor Sentiment and Equity Style Rotation Strategies</a>,
+  value stocks tend to outperform growth stocks when the CBOE equity put-call ratio is relatively low, and the VIX is relatively high. The value portfolio significantly underperforms the growth portfolio when the put-call ratio and VIX are both high.
+  To convert the daily put-call ratio and VIX data into monthly value, we take an average over the recent one month and the previous six months.
+</p>
+<p>
+  If the recent monthly average CBOE put-call ratio is lower than its six-month average and the one-month average of VIX  is higher than its six-month average, the algorithm goes long on an equally weighted portfolio consisting of value stocks (the lowest P/B quintile) from the top three size deciles. If recent monthly average CBOE put-call ratio and the VIX index are both higher than their six-month average, the algorithm goes short the value stocks.
+  Otherwise, the algorithm goes long both value stocks and growth stocks. The position holding period is three months, and the portfolio is rebalanced every three months.
+</P>
+<div class="section-example-container">
+<pre class="python">
+stocks_invested = [x.Key for x in self.Portfolio if x.Value.Invested]
+for i in stocks_invested:
+    if i not in self.value_portfolio+self.growth_portfolio:
+        self.Liquidate(i)
+
+if self.vix_SMA_1.Current.Value > self.vix_SMA_6.Current.Value:
+    if self.PCRatio_SMA_1.Current.Value < self.PCRatio_SMA_6.Current.Value:
+        long_weight = 1/len(self.value_portfolio)
+        for long in self.value_portfolio:
+            self.SetHoldings(long, long_weight)
+    elif self.PCRatio_SMA_1.Current.Value > self.PCRatio_SMA_6.Current.Value:
+        short_weight = 1/len(self.value_portfolio)
+        for short in self.value_portfolio:
+            self.SetHoldings(short, -short_weight)
+else:
+    long_weight = 1/len(self.value_portfolio+self.growth_portfolio)
+    for long in self.value_portfolio+self.growth_portfolio:
+        self.SetHoldings(long, long_weight)
+</pre>
+</div>
