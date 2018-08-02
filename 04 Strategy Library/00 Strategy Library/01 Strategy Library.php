@@ -238,6 +238,14 @@ $strategyMap = [
         ],
         'description' => 'Goes long asset with better performance over the last period and rebalances portfolio every quarter.'
     ]
+    [
+        'name' => 'Accrual Anomaly',
+        'link' => 'strategy-library/accrual-anomaly',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/38'
+        ],
+        'description' => 'Decile portfolios are formed based on balance sheet based accruals and highest decile is shorted while lowest decile is bought for a year.'
+    ]
 ];
 
 ?>

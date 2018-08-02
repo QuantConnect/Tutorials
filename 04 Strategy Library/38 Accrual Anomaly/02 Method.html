@@ -1,0 +1,69 @@
+<p>
+ The first step is coarse and fine universe selection. Using coarse selection, we create an investment universe with stocks that have fundamental data. The universes will be saved so that we can perform analysis on the annual changes of specific balance sheet data in the following year.
+</p>
+<div class="section-example-container">
+<pre class="python">
+ def CoarseSelectionFunction(self, coarse):
+        if self.yearly_rebalance:
+            self.filtered_coarse = [x.Symbol for x in coarse if (x.HasFundamentalData)
+                                                            and (x.Market == "usa")]
+            return self.filtered_coarse
+        else: 
+            return []      
+    
+def FineSelectionFunction(self, fine):
+    if self.yearly_rebalance:
+        fine = [x for x in fine if (float(x.FinancialStatements.BalanceSheet.CurrentAssets.Value) > 0) 
+                                and (float(x.FinancialStatements.BalanceSheet.CashAndCashEquivalents.Value) > 0)
+                               and (float(x.FinancialStatements.BalanceSheet.CurrentLiabilities.Value) > 0)
+                                and (float(x.FinancialStatements.BalanceSheet.CurrentDebt.Value) > 0)
+                                and (float(x.FinancialStatements.BalanceSheet.IncomeTaxPayable.Value) > 0)
+                                and (float(x.FinancialStatements.IncomeStatement.DepreciationAndAmortization.Value) > 0)]
+        
+        if not self.previous_fine:
+            self.previous_fine = fine
+            self.yearly_rebalance = False
+            return []
+        else:
+            self.filtered_fine = self.CalculateAccruals(fine,self.previous_fine)
+            sorted_filter = sorted(self.filtered_fine, key=lambda x: x.bs_acc)
+            self.filtered_fine = [i.Symbol for i in sorted_filter]
+            self.previous_fine = fine
+            return self.filtered_fine
+    else:
+        return []
+</pre>
+</div>
+<p>
+  During fine universe selection we take the stocks from the previous and current year and calculate their balance sheet based accrual values. The stocks are then sorted in ascending order based upon the implemented formula. Note that we account for size difference across the sample firms by scaling the accruals by the average of the beginning and end-of-year book value of total assets.
+</p>
+<div class="section-example-container">
+<pre class="python">
+ def CalculateAccruals(self, current, previous):
+    accruals = []
+    for stock_data in current:
+        try:
+            prev_data = None
+            for x in previous:
+                if x.Symbol == stock_data.Symbol:
+                    prev_data = x
+                    break
+            
+            delta_assets = float(stock_data.FinancialStatements.BalanceSheet.CurrentAssets.Value)-float(prev_data.FinancialStatements.BalanceSheet.CurrentAssets.Value)
+            delta_cash = float(stock_data.FinancialStatements.BalanceSheet.CashAndCashEquivalents.Value)-float(prev_data.FinancialStatements.BalanceSheet.CashAndCashEquivalents.Value)
+            delta_liabilities = float(stock_data.FinancialStatements.BalanceSheet.CurrentLiabilities.Value)-float(prev_data.FinancialStatements.BalanceSheet.CurrentLiabilities.Value)
+            delta_debt = float(stock_data.FinancialStatements.BalanceSheet.CurrentDebt.Value)-float(prev_data.FinancialStatements.BalanceSheet.CurrentDebt.Value)
+            delta_tax = float(stock_data.FinancialStatements.BalanceSheet.IncomeTaxPayable.Value)-float(prev_data.FinancialStatements.BalanceSheet.IncomeTaxPayable.Value)
+            dep = float(stock_data.FinancialStatements.IncomeStatement.DepreciationAndAmortization.Value)
+            avg_total = (float(stock_data.FinancialStatements.BalanceSheet.TotalAssets.Value)+float(prev_data.FinancialStatements.BalanceSheet.TotalAssets.Value))/2
+
+            stock_data.bs_acc = ((delta_assets-delta_cash)-(delta_liabilities-delta_debt-delta_tax)-dep)/avg_total
+            accruals.append(stock_data)
+        except:
+            pass
+    return accruals
+</pre>
+</div>
+<p>
+   In <code>OnData()</code>, we short top decile of the stocks in the sorted list and long the bottom decile of stocks. The portfolio is rebalanced every year at the start of June.
+</p>
