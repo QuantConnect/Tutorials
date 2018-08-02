@@ -1,7 +1,7 @@
 <p>
-  As we know, the stock market index tracks the price changes of a select group of stocks and compiles those stock price changes into a single value.
-  For example, S&P500 is composed of only 500 large-cap stocks. A broad market index is characterized by including stocks from companies of all sizes(large, mid and small-cap based on their values).
-  The most popular U.S. broad market indexes include the Russell 3000, the Wilshire 5000 Total Market Index and the MSCI U.S. Broad Market Index. Those broad-based market indexes attempt to own the entire market
+  As we know, a stock market index tracks the price changes of a select group of stocks and compiles those stock price changes into a single value.
+  For example, S&amp;P500 is composed of only 500 large-cap stocks. A broad market index is characterized by including stocks from companies of all sizes(large, mid and small-cap based on their values).
+  The most popular U.S. broad market indexes include the Russell 3000, the Wilshire 5000 Total Market Index and the MSCI U.S. Broad Market Index. Those broad-based market indexes attempt to cover the entire market
   and their return can be a good benchmark of the current market state.
 </P>
 <div class="section-example-container">
@@ -31,7 +31,7 @@ class Wilshire5000(PythonData):
     "Class to import Wilshire 5000 Total Market Index data from Dropbox"
 
     def GetSource(self, config, date, isLiveMode):
-        return SubscriptionDataSource("https://www.dropbox.com/s/tfky2mm0dsqte3a/W5000.csv?dl=1",
+        return SubscriptionDataSource("https://www.dropbox.com/s/z9rof4fr9cqzgpt/W5000.csv?dl=1",
                                       SubscriptionTransportMedium.RemoteFile)
     def Reader(self, config, line, date, isLiveMode):
         if not (line.strip() and line[1].isdigit()): return None

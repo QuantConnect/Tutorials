@@ -1,6 +1,6 @@
 <h4>Roll Return</h4>
 <p>
-  The universe is created with 22 commodity futures. For multiple commodities, we save the future chain of each commodity in dictionary <code>self.chains<code>.
+  The universe is created with 22 commodity futures. For multiple commodities, we save the future chain of each commodity in dictionary <code>self.chains</code>.
   First, we compute the roll-returns at the start of each month and sort the roll-return list. 1/3 breakpoints are used to split the cross-section of futures contracts into 3 portfolios, labeled <code>Low</code>, <code>Med</code> and <code>High</code>. For the formula of the roll-return, please see <a href="https://www.quantconnect.com/tutorials/strategy-library/term-structure-effect-in-commodities">Term Structure Effect in Commodities</a>.
   Contracts fall into <code>Med</code> level are eliminated from the universe. Next we'll calculate the mean return of contracts in <code>High</code> and <code>Low</code>.
 </p>
