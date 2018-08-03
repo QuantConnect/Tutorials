@@ -245,7 +245,15 @@ $strategyMap = [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/51'
         ],
         'description' => 'Goes long stocks with the decreasing return from the winner group and short stocks with the increasing return from the loser group.'
-    ]
+    ],
+    [
+        'name' => 'Pairs Trading with Country ETFs',
+        'link' => 'strategy-library/pairs-trading-with-country-etfs',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/55'
+        ],
+        'description' => 'Identifies the price divergence from two highly correlated country ETFs and takes a market neutral position.'
+    ],
 ];
 
 ?>
