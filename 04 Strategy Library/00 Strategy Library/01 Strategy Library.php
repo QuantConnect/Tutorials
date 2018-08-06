@@ -254,6 +254,14 @@ $strategyMap = [
         ],
         'description' => 'Creates long-short positions of growth and value stocks based on the investment sentiment.'
     ],
+    [
+        'name' => 'Asset Growth Effect',
+        'link' => 'strategy-library/asset-growth-effect',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/52'
+        ],
+        'description' => 'Creates long-short positions of stocks based on the annual change of their total assets.'
+    ],
 ];
 
 ?>
