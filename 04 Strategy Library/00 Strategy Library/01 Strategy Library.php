@@ -247,12 +247,21 @@ $strategyMap = [
         'description' => 'Goes long stocks with the decreasing return from the winner group and short stocks with the increasing return from the loser group.'
     ],
     [
+<<<<<<< .merge_file_mEiqFp
         'name' => 'Pairs Trading with Country ETFs',
         'link' => 'strategy-library/pairs-trading-with-country-etfs',
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/55'
         ],
         'description' => 'Identifies the price divergence from two highly correlated country ETFs and takes a market neutral position.'
+=======
+        'name' => 'Sentiment and Style Rotation Effect in Stocks',
+        'link' => 'strategy-library/sentiment-and-style-rotation-effect-in-stocks',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/53'
+        ],
+        'description' => 'Creates long-short positions of growth and value stocks based on the investment sentiment.'
+>>>>>>> .merge_file_aU2v6h
     ],
 ];
 
