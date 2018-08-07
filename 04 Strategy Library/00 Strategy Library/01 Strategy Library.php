@@ -254,6 +254,14 @@ $strategyMap = [
         ],
         'description' => 'Creates long-short positions of growth and value stocks based on the investment sentiment.'
     ],
+    [
+        'name' => 'Momentum and State of Market Filters',
+        'link' => 'strategy-library/momentum-and-state-of-market-filters',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/54'
+        ],
+        'description' => 'Goes long and short stocks with the highest and lowest six-month momentum respectively if the previous 12 months return on the broad market index was positive.'
+    ],
 ];
 
 ?>
