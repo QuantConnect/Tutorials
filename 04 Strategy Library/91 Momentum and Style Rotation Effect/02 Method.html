@@ -1,0 +1,44 @@
+<p>
+  We choose six index ETFs to represent different equity styles(small-cap value, mid-cap value, large-cap value,
+  small-cap growth, mid-cap growth, large-cap growth). After adding the assets, we save the momentum indicator in
+  the dictionary <code>self.mom</code> for each style. The formation period of 12-month is used to gauge the value of momentum.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def Initialize(self):
+    self.SetStartDate(2001, 1, 1)
+    self.SetEndDate(2018, 8, 1)
+    self.SetCash(100000)
+    self.tickers = [
+                    "IJJ", # iShares S&P MidCap 400 Value Index ETF
+                    "IJS", # iShares S&P SmallCap 600 Value ETF
+                    "IVE", # iShares S&P 500 Value Index ETF
+                    "IVW", # iShares S&P 500 Growth ETF
+                    "IJK", # iShares S&P Mid-Cap 400 Growth ETF
+                    "IJT", # iShares S&P Small-Cap 600 Growth ETF
+                    ]
+    self.symbols = []
+    for ticker in self.tickers:
+        self.symbols.append(self.AddEquity(ticker, Resolution.Daily).Symbol)
+    self.SetWarmUp(timedelta(days=12*20))
+    # save all momentum indicator in the dictionary
+    self.mom = {i:self.MOM(i, 12*20, Resolution.Daily) for i in self.symbols}
+</pre>
+</div>
+<p>
+  Six ETFs are ranked based on their prior 12-month performance in the formation period. The algorithm
+  goes long the top performing ETF and short the ETF at the bottom and holds the position for one month.
+  The portfolio is rebalanced at the start of next month.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def Rebalance(self):
+    sorted_mom = sorted(self.mom, key = lambda x: self.mom[x].Current.Value)
+    invested = [x.Key for x in self.Portfolio if x.Value.Invested]
+    for i in invested:
+        if i not in [sorted_mom[0], sorted_mom[1]]:
+            self.Liquidate(i)
+    self.SetHoldings(sorted_mom[0], -0.5)
+    self.SetHoldings(sorted_mom[-1], 0.5)
+</pre>
+</div>

@@ -285,6 +285,14 @@ $strategyMap = [
         ],
         'description' => 'Decile portfolios are formed based on balance sheet based accruals and highest decile is shorted while lowest decile is bought for a year.'
      ],
+     [
+         'name' => 'Momentum and Style Rotation Effect',
+         'link' => 'strategy-library/momentum-and-style-rotation-effect',
+         'sources' => [
+             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/91'
+         ],
+         'description' => 'Goes long style index ETF with the highest 12-month momentum and short ETF with the lowest 12-month momentum.'
+      ],
 ];
 
 ?>
