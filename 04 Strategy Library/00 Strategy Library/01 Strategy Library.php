@@ -270,6 +270,7 @@ $strategyMap = [
         ],
         'description' => 'Creates long-short positions of stocks based on the annual change of their total assets.'
     ],
+    [
         'name' => 'Momentum and State of Market Filters',
         'link' => 'strategy-library/momentum-and-state-of-market-filters',
         'sources' => [
