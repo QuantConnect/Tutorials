@@ -263,6 +263,13 @@ $strategyMap = [
         'description' => 'Creates long-short positions of growth and value stocks based on the investment sentiment.'
     ],
     [
+        'name' => 'Asset Growth Effect',
+        'link' => 'strategy-library/asset-growth-effect',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/52'
+        ],
+        'description' => 'Creates long-short positions of stocks based on the annual change of their total assets.'
+    ],
         'name' => 'Momentum and State of Market Filters',
         'link' => 'strategy-library/momentum-and-state-of-market-filters',
         'sources' => [
@@ -278,7 +285,6 @@ $strategyMap = [
         ],
         'description' => 'Decile portfolios are formed based on balance sheet based accruals and highest decile is shorted while lowest decile is bought for a year.'
      ],
-
 ];
 
 ?>
