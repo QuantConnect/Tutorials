@@ -1,0 +1,69 @@
+<h4>The selection of pairs</h4>
+<p>
+  The investment universe consists of 25 international ETFs. The pair selection is based on a rolling time period called the formation period.
+  During each formation period, we save the history closing price of each ETF. Here we use a Python list-like container called<code>deque</code> to keep a fixed-length price series. From these prices, we compute normalized cumulative price indices which are comparable across the ETFs in the group.
+  According to the paper <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1958546">Pairs Trading on International ETFs</a> from Panagiotis, Dimitrios and Tao,
+  here the formation period is 120 days.
+</P>
+\[R_t^n=\prod_{1}^{t}(1+r_t^n)  \ \ \  for \ \ \ t=1,2,...,120 \]
+\[r_t^n=\frac{P_t}{P_{t-1}}-1\]
+<p>
+  Where \(r_t^n\) is the simple return of the n-th ETF. \(R_t^n\) is the index value.
+</p>
+<p>
+  For each formation period, we compute the average absolute distance among all pairs in the group and
+  then rank the distances from the smallest to largest to identify the trading opportunities.
+  The top 5 pairs with the smallest distance are used in the subsequent 20 day trading period.
+  The definition of distance is
+</P>
+\[D_t^{a,b}=\frac{1}{120}\sum_{t+1}^{t+120}\mid P_t^a-P_t^b\mid \ for \ all\ pairs \ a,b \]
+<div class="section-example-container">
+<pre class="python">
+  class Pair:
+      def __init__(self, symbol_a, symbol_b, price_a, price_b):
+          self.symbol_a = symbol_a
+          self.symbol_b = symbol_b
+          self.price_a = np.array(price_a)
+          self.price_b = np.array(price_b)
+          # compute normalized cumulative price indices
+          self.index_a = np.cumprod(self.price_a[1:]/self.price_a[:-1])
+          self.index_b = np.cumprod(self.price_b[1:]/self.price_b[:-1])
+
+      def distance(self):
+          return 1/120*sum(abs(self.index_a -self.index_b))
+</pre>
+</div>
+
+<h4>The Definition of Divergence</h4>
+<p>
+  Now we consider the top 5 pairs. For each of the one month trading period, we compute the 120-day normalized cumulative price indices and compare them to a fraction of the distance value \(D_t^{a,b}\) for each pair (a,b). Assume the threshold is 0.5, if the index value of asset A is greater than asset B by 0.5 times the current distance \(D_t^{a,b}\),
+  then we sell asset A and buy asset B. The quantity of A and B is based on the dollar neutral. We invest the same amount of money in the long leg and the short leg, vice versa if the index value of asset B is greater than asset A by 0.5 times the distance. When the difference between index A and index B falls into the range \(\left(-0.5D_t^{a,b},0.5D_t^{a,b}\right)\),
+  we liquidate the pair. The above procedure is repeated for all top 5 pairs. At the start of next month, the new pairs are selected and trade for next month.
+</P>
+<div class="section-example-container">
+<pre class="python">
+for i in self.sorted_pairs:
+    pair = Pair(i[0], i[1], self.history_price[i[0].Value],  self.history_price[i[1].Value])
+    index_a = pair.index_a[-1]
+    index_b = pair.index_b[-1]
+    delta = pair.distance()
+    if index_a - index_b > self.threshold*delta:
+        if not self.Portfolio[pair.symbol_a].Invested and not self.Portfolio[pair.symbol_b].Invested:
+            ratio = self.Portfolio[pair.symbol_a].Price / self.Portfolio[pair.symbol_b].Price
+            quantity = int(self.CalculateOrderQuantity(pair.symbol_a, 0.2))
+            self.Sell(pair.symbol_a, quantity)
+            self.Buy(pair.symbol_b,  floor(ratio*quantity))
+
+    elif index_a - index_b < -self.threshold*delta:
+        if not self.Portfolio[pair.symbol_a].Invested and not self.Portfolio[pair.symbol_b].Invested:
+            ratio = self.Portfolio[pair.symbol_b].Price / self.Portfolio[pair.symbol_a].Price
+            quantity = int(self.CalculateOrderQuantity(pair.symbol_b, 0.2))
+            self.Sell(pair.symbol_b, quantity)
+            self.Buy(pair.symbol_a, floor(ratio*quantity))
+
+    # the position is closed when prices revert back
+    elif self.Portfolio[i[0]].Invested and self.Portfolio[i[1]].Invested:
+            self.Liquidate(pair.symbol_a)
+            self.Liquidate(pair.symbol_b)
+</pre>
+</div>
