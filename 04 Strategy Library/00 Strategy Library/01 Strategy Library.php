@@ -247,6 +247,14 @@ $strategyMap = [
         'description' => 'Goes long stocks with the decreasing return from the winner group and short stocks with the increasing return from the loser group.'
     ],
     [
+        'name' => 'Pairs Trading with Country ETFs',
+        'link' => 'strategy-library/pairs-trading-with-country-etfs',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/55'
+        ],
+        'description' => 'Identifies the price divergence from two highly correlated country ETFs and takes a market neutral position.'
+    ],
+    [
         'name' => 'Sentiment and Style Rotation Effect in Stocks',
         'link' => 'strategy-library/sentiment-and-style-rotation-effect-in-stocks',
         'sources' => [
@@ -262,6 +270,21 @@ $strategyMap = [
         ],
         'description' => 'Creates long-short positions of stocks based on the annual change of their total assets.'
     ],
+        'name' => 'Momentum and State of Market Filters',
+        'link' => 'strategy-library/momentum-and-state-of-market-filters',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/54'
+        ],
+        'description' => 'Goes long and short stocks with the highest and lowest six-month momentum respectively if the previous 12 months return on the broad market index was positive.'
+    ],
+    [
+        'name' => 'Accrual Anomaly',
+        'link' => 'strategy-library/accrual-anomaly',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/38'
+        ],
+        'description' => 'Decile portfolios are formed based on balance sheet based accruals and highest decile is shorted while lowest decile is bought for a year.'
+     ],
 ];
 
 ?>
