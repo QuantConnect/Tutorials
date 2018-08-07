@@ -263,6 +263,13 @@ $strategyMap = [
         'description' => 'Creates long-short positions of growth and value stocks based on the investment sentiment.'
     ],
     [
+        'name' => 'Asset Growth Effect',
+        'link' => 'strategy-library/asset-growth-effect',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/52'
+        ],
+        'description' => 'Creates long-short positions of stocks based on the annual change of their total assets.'
+    ],
         'name' => 'Momentum and State of Market Filters',
         'link' => 'strategy-library/momentum-and-state-of-market-filters',
         'sources' => [
@@ -286,7 +293,6 @@ $strategyMap = [
          ],
          'description' => 'Goes long style index ETF with the highest 12-month momentum and short ETF with the lowest 12-month momentum.'
       ],
-
 ];
 
 ?>

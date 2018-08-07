@@ -1,0 +1,57 @@
+<p>
+ The first step is coarse and fine universe selection. Using coarse selection, we create an investment universe with all non-financial U.S. stocks listed on NYSE, AMEX, and NASDAQ that contain fundamental data. The universes will be saved so that we can perform analysis on the annual changes of the total assets in the following year.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def CoarseSelectionFunction(self, coarse):
+        if self.yearly_rebalance:
+            filtered_coarse = [x.Symbol for x in coarse if (x.HasFundamentalData)
+                                                            and (x.Market == "usa")]
+            return filtered_coarse
+        else: 
+            return []
+
+def FineSelectionFunction(self, fine):
+    if self.yearly_rebalance:
+        fine = [x for x in fine if x.FinancialStatements.BalanceSheet.TotalAssets.Value > 0
+                and ((x.SecurityReference.ExchangeId == "NYS") or (x.SecurityReference.ExchangeId == "NAS") or (x.SecurityReference.ExchangeId == "ASE"))
+                and (x.CompanyReference.IndustryTemplateCode!="B")
+                and (x.CompanyReference.IndustryTemplateCode!="I")]
+        if not self.previous_fine:
+            self.previous_fine = fine
+            self.yearly_rebalance = False
+            return []
+        else:
+            self.filtered_fine = self.Calculate(fine,self.previous_fine)
+            sorted_filter = sorted(self.filtered_fine, key=lambda x: x.delta_assets)
+            self.filtered_fine = [i.Symbol for i in sorted_filter]
+            self.previous_fine = fine
+            return self.filtered_fine
+    else:
+        return []
+</pre>
+</div>
+<p>
+  During fine universe selection we take the stocks from the previous and current year and calculate their total asset growth. The stocks are then sorted in ascending order based upon the implemented calculation. Note that we account for size difference across the sample firms by scaling the growth by last year's total assets.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def Calculate(self, current, previous):
+        growth = []
+        for stock_data in current:
+            try:
+                prev_data = None
+                for x in previous:
+                    if x.Symbol == stock_data.Symbol:
+                        prev_data = x
+                        break
+                stock_data.delta_assets = (float(stock_data.FinancialStatements.BalanceSheet.TotalAssets.Value)-float(prev_data.FinancialStatements.BalanceSheet.TotalAssets.Value))/float(prev_data.FinancialStatements.BalanceSheet.TotalAssets.Value) 
+                growth.append(stock_data)
+            except:
+                pass
+        return growth
+</pre>
+</div>
+<p>
+   In <code>OnData()</code>, we short top decile of the stocks in the sorted list and long the bottom decile of stocks. The portfolio is rebalanced every year at the end of June.
+</p>
