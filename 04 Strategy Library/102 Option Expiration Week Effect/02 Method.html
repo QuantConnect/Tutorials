@@ -1,0 +1,50 @@
+<p>
+  S&amp;P 100 index includes 102 leading U.S. stocks with exchange-listed options. The constituents represent almost 51% of the market capitalization of the U.S. equity market.
+  Here we trade the S&amp;P 100 index ETF as a portfolio of U.S. large-cap stocks.
+</p>
+<p>
+  In the next step, we add the options to get their expiration dates. The range of expiration dates should bigger enough to include the
+  the contract which expires in this month.
+</P>
+<div class="section-example-container">
+<pre class="python">
+def Initialize(self):
+    self.SetStartDate(2007, 1, 1)
+    self.SetEndDate(2018, 8, 1)
+    self.SetCash(10000)
+    self.AddEquity("OEF", Resolution.Minute)
+    option = self.AddOption("OEF")
+    option.SetFilter(-3, 3, timedelta(0), timedelta(days = 60))
+</pre>
+</div>
+<p>
+  To get a list of expiration dates from the contracts in the current option chain, we can use <code>TradingCalendar</code> object.
+  It allows us to filter the calendar days by the type <code>TradingDayType.OptionExpiration</code> and the start as well as the end date.
+  The expiry at the top of the list is the most recent expiration date.
+</p>
+<p>
+  The long position is opened at the start of the expiration week. Therefore, we use the scheduled event to fire the rebalance method every Monday.
+  If the current Monday is in the expiration week, we long the S&amp;P 100 index ETF.
+</P>
+<div class="section-example-container">
+<pre class="python">
+def Rebalance(self):
+    calendar = self.TradingCalendar.GetDaysByType(TradingDayType.OptionExpiration, self.Time, self.EndDate)
+    expiries = [i.Date for i in calendar]
+    if len(expiries) == 0: return
+    self.lastest_expiry = expiries[0]
+
+    if (self.lastest_expiry - self.Time).days <= 5:
+        self.SetHoldings("OEF", 1)
+</pre>
+</div>
+<p>
+   The algorithm stays in cash during days out of the options expiration week.
+ </P>
+<div class="section-example-container">
+<pre class="python">
+def OnData(self, slice):
+    if self.Time.date() == self.lastest_expiry.date():
+        self.Liquidate()
+</pre>
+</div>
