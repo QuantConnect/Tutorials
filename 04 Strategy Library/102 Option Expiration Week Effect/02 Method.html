@@ -15,6 +15,7 @@ def Initialize(self):
     self.AddEquity("OEF", Resolution.Minute)
     option = self.AddOption("OEF")
     option.SetFilter(-3, 3, timedelta(0), timedelta(days = 60))
+    self.SetBenchmark("OEF")
 </pre>
 </div>
 <p>
