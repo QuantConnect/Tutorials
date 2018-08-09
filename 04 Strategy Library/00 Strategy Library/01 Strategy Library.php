@@ -294,6 +294,14 @@ $strategyMap = [
          ],
          'description' => 'Goes long style index ETF with the highest 12-month momentum and short ETF with the lowest 12-month momentum.'
       ],
+      [
+          'name' => 'Option Expiration Week Effect',
+          'link' => 'strategy-library/option-expiration-week-effect',
+          'sources' => [
+              'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/102'
+          ],
+          'description' => 'Goes long S&amp;P 100 index ETF during option expiration week and stays in cash during other days.'
+       ],
 ];
 
 ?>
