@@ -295,6 +295,14 @@ $strategyMap = [
          'description' => 'Goes long style index ETF with the highest 12-month momentum and short ETF with the lowest 12-month momentum.'
       ],
       [
+         'name' => 'Momentum Effect in REITs',
+         'link' => 'strategy-library/momentum-effect-in-reits',
+         'sources' => [
+             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/152'
+         ],
+         'description' => 'Trecile portfolios are formed based on momentum and the best performing portfolio is held.'
+      ],
+      [
           'name' => 'Option Expiration Week Effect',
           'link' => 'strategy-library/option-expiration-week-effect',
           'sources' => [
