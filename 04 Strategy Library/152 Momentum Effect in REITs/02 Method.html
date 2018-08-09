@@ -1,0 +1,56 @@
+<p>
+  The first step is coarse and fine universe selection. During coarse selection, we create an investment universe with securities in the USA and during the fine selection we take all available REITs by using the Morningstar field <code>IsREIT</code>. 
+</p>
+<p>
+  In the fine selection we also calculate each REIT's past 11-month return one-month lagged and rank them. This is used to determine the top tercile of portfolio.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def CoarseSelectionFunction(self, coarse):
+        if self.quarterly_rebalance:
+            self.filtered_coarse = [x.Symbol for x in coarse if (x.Market == "usa")]
+            return self.filtered_coarse
+        else: 
+            return []      
+    
+def FineSelectionFunction(self, fine):
+    if self.quarterly_rebalance:
+        fine = [x for x in fine if (x.CompanyReference.IsREIT == 1)] 
+        
+        start = self.Time-timedelta(days = 365)
+        end = self.Time-timedelta(days = 30)
+        for x in fine:
+            hist = self.History([x.Symbol],start,end,Resolution.Daily)
+            if not hist.empty:
+                start_price = hist["close"].iloc[0]
+                end_price = hist["close"].iloc[-1]
+                x.momentum = (start_price-end_price)/start_price
+        
+        fine = [x for x in fine if hasattr(x, 'momentum')]
+        sorted_filter = sorted(fine, key=lambda x: x.momentum)
+        self.filtered_fine = [i.Symbol for i in sorted_filter]
+        return self.filtered_fine
+    else:
+        return []
+</pre>
+</div>
+<p>
+   In <code>OnData()</code>, we buy the stocks in the best performing tercile for three months and the portfolio is rebalanced every three months.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def OnData(self, data):
+        if not self.quarterly_rebalance: return 
+        if self.filtered_fine:
+            portfolio_size = int(len(self.filtered_fine)/3)
+            long_stocks = self.filtered_fine[-portfolio_size:]
+            stocks_invested = [x.Key for x in self.Portfolio]
+            for i in stocks_invested:
+                if i not in long_stocks:
+                    self.Liquidate(i) 
+                elif i in long_stocks:
+                    self.SetHoldings(i, 1/(portfolio_size))
+            self.quarterly_rebalance = False
+            self.filtered_fine = False
+</pre>
+</div>
