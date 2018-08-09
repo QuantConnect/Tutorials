@@ -1,14 +1,16 @@
 <p>
-  The first step is coarse and fine universe selection. During coarse selection, we create an investment universe with securities in the USA and during the fine selection we take all available REITs by using the Morningstar field <code>IsREIT</code>. 
+  The first step is coarse and fine universe selection. During coarse selection, we create an investment universe of stocks that have prices greater than $1, contain fundamental data and do not have a very low trading volume for liquidity purposes. During the fine selection we take all available REITs by using the Morningstar field <code>IsREIT</code>. 
 </p>
 <p>
   In the fine selection we also calculate each REIT's past 11-month return one-month lagged and rank them. This is used to determine the top tercile of portfolio.
 </p>
 <div class="section-example-container">
 <pre class="python">
-def CoarseSelectionFunction(self, coarse):
+ def CoarseSelectionFunction(self, coarse):
         if self.quarterly_rebalance:
-            self.filtered_coarse = [x.Symbol for x in coarse if (x.Market == "usa")]
+            self.filtered_coarse = [x.Symbol for x in coarse if (float(x.Price) > 1)
+                                                            and (x.HasFundamentalData)
+                                                            and float(x.Volume) > 10000]
             return self.filtered_coarse
         else: 
             return []      
@@ -24,7 +26,7 @@ def FineSelectionFunction(self, fine):
             if not hist.empty:
                 start_price = hist["close"].iloc[0]
                 end_price = hist["close"].iloc[-1]
-                x.momentum = (start_price-end_price)/start_price
+                x.momentum = (end_price-start_price)/start_price
         
         fine = [x for x in fine if hasattr(x, 'momentum')]
         sorted_filter = sorted(fine, key=lambda x: x.momentum)
