@@ -1,0 +1,69 @@
+<p>
+  The investment universe consists of US-listed companies. A minimum stock price filter is used to avoid penny stocks. To avoid stocks that are not liquid enough, we select 1000 stocks with the highest dollar volume.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def CoarseSelectionFunction(self, coarse):
+    if self.monthly_rebalance:
+        self.coarse = True
+        coarse = [x for x in coarse if (x.AdjustedPrice > 10)]
+        topDollarVolume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True)[:1000]
+        return [i.Symbol for i in topDollarVolume]
+    else:
+        return []
+</pre>
+</div>
+<p>
+  In <code>FineSelectionFunction(self, fine)</code>, we calculate the market cap value with shares outstanding, earning per shares and the PE ratio.
+  Then stocks are sorted by their market capitalization. The top 10 stocks are selected as the large-cap group and the bottom 10 stocks belong to the small-cap group.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def FineSelectionFunction(self, fine):
+    if self.monthly_rebalance:
+        fine =[i for i in fine if i.EarningReports.BasicAverageShares.ThreeMonths>0
+                              and i.EarningReports.BasicEPS.TwelveMonths>0
+                              and i.ValuationRatios.PERatio>0]
+        for i in fine:
+            i.MarketCap = float(i.EarningReports.BasicAverageShares.ThreeMonths * (i.EarningReports.BasicEPS.TwelveMonths*i.ValuationRatios.PERatio))
+        sorted_market_cap = sorted(fine, key = lambda x:x.MarketCap, reverse=True)
+        symbols = [i.Symbol for i in sorted_market_cap]
+        self.top_market_cap = symbols[:10]
+        self.bottom_market_cap = symbols[-10:]
+        return self.top_market_cap + self.bottom_market_cap
+    else:
+        return []
+</pre>
+</div>
+<p>
+  The algorithm invests into small-cap stocks at the beginning of each January and stays invested in large-cap stocks for rest of the year.
+  The portfolio is rebalanced every month.
+</P>
+<div class="section-example-container">
+<pre class="python">
+  def OnData(self, data):
+      if not (self.monthly_rebalance and self.coarse): return
+      self.coarse = False
+      self.monthly_rebalance = False
+      stocks_invested = [x.Key for x in self.Portfolio if x.Value.Invested]
+      # invest in small cap stocks at the beginning of each January
+      if self.Time.month == 1:
+          # liquidate stocks not in the small-cap group
+          for i in stocks_invested:
+              if i not in self.bottom_market_cap:
+                  self.Liquidate(i)
+          weight = 1/len(self.bottom_market_cap)
+          for i in self.bottom_market_cap:
+              self.SetHoldings(i, weight)
+      # invest in large cap stocks for rest of the year
+      else:
+          # liquidate stocks not in the large-cap group
+          for i in stocks_invested:
+              if i not in self.top_market_cap:
+                  self.Liquidate(i)
+
+          weight = 1/len(self.top_market_cap)
+          for i in self.top_market_cap:
+              self.SetHoldings(i, weight)
+</pre>
+</div>
