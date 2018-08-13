@@ -310,6 +310,14 @@ $strategyMap = [
           ],
           'description' => 'Goes long S&amp;P 100 index ETF during option expiration week and stays in cash during other days.'
        ],
+       [
+           'name' => 'January Effect in Stocks',
+           'link' => 'strategy-library/january-effect-in-stocks',
+           'sources' => [
+               'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/114'
+           ],
+           'description' => 'Invests into small cap stocks at the beginning of each January and stays invested in large cap stocks for rest of the year.'
+        ],
 ];
 
 ?>
