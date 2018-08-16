@@ -317,6 +317,14 @@ $strategyMap = [
                'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/229'
            ],
            'description' => 'Goes long stocks with high earnings quality and short stocks with low earnings quality based on composite factor score.'
+       ],
+       [
+           'name' => 'January Effect in Stocks',
+           'link' => 'strategy-library/january-effect-in-stocks',
+           'sources' => [
+               'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/114'
+           ],
+           'description' => 'Invests into small cap stocks at the beginning of each January and stays invested in large cap stocks for rest of the year.'
         ],
 ];
 
