@@ -65,12 +65,12 @@ def FineSelectionFunction(self, fine):
     if self.yearly_rebalance:
         #filters out the non-financial companies that don't contain the necessary data
         fine = [x for x in fine if (x.CompanyReference.IndustryTemplateCode != "B")
-                                and (x.FinancialStatements.BalanceSheet.CurrentAssets.Value > 0)
-                                and (x.FinancialStatements.BalanceSheet.CashAndCashEquivalents.Value > 0)
-                                and (x.FinancialStatements.BalanceSheet.CurrentLiabilities.Value > 0)
-                                and (x.FinancialStatements.BalanceSheet.CurrentDebt.Value > 0)
-                                and (x.FinancialStatements.BalanceSheet.IncomeTaxPayable.Value > 0)
-                                and (x.FinancialStatements.IncomeStatement.DepreciationAndAmortization.Value > 0)]
+                                and (x.FinancialStatements.BalanceSheet.CurrentAssets.Value != 0)
+                                and (x.FinancialStatements.BalanceSheet.CashAndCashEquivalents.Value != 0)
+                                and (x.FinancialStatements.BalanceSheet.CurrentLiabilities.Value != 0)
+                                and (x.FinancialStatements.BalanceSheet.CurrentDebt.Value != 0)
+                                and (x.FinancialStatements.BalanceSheet.IncomeTaxPayable.Value != 0)
+                                and (x.FinancialStatements.IncomeStatement.DepreciationAndAmortization.Value != 0)]
 
         if not self.previous_fine:
             # will wait one year in order to have the historical fundamental data
@@ -80,11 +80,11 @@ def FineSelectionFunction(self, fine):
         else:
             # calculate the accrual for each stock
             fine = self.CalculateAccruals(fine, self.previous_fine)
-            filtered_fine = [x for x in fine if (x.FinancialStatements.CashFlowStatement.OperatingCashFlow.Value> 0)
-                                            and (x.EarningReports.BasicEPS.Value>0)
-                                            and (x.EarningReports.BasicAverageShares.Value>0)
-                                            and (x.OperationRatios.DebttoAssets.Value>0)
-                                            and (x.OperationRatios.ROE.Value>0)]
+            filtered_fine = [x for x in fine if (x.FinancialStatements.CashFlowStatement.OperatingCashFlow.Value != 0)
+                                            and (x.EarningReports.BasicEPS.Value != 0)
+                                            and (x.EarningReports.BasicAverageShares.Value != 0)
+                                            and (x.OperationRatios.DebttoAssets.Value != 0)
+                                            and (x.OperationRatios.ROE.Value != 0)]
             for i in filtered_fine:
                 # cash flow to assets
                 i.CFA = i.FinancialStatements.CashFlowStatement.OperatingCashFlow.Value/(i.EarningReports.BasicEPS.Value * i.EarningReports.BasicAverageShares.Value)
