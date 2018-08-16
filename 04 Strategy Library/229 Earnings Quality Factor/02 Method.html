@@ -1,0 +1,157 @@
+<h4>Earnings Quality Metrics</h4>
+<p>
+  Earnings quality refers to the ability of reported earnings to predict a company's future earnings.
+  The earnings should be attributable to higher sales or lower costs, rather than artificial profits created by accounting anomalies or tricks such as inflation of inventories or changing depreciation.
+  It is one of the most critical measures in financial reporting systems. High earnings quality indicates a healthy development in the firm's business and can improve the market efficiency.
+</P>
+<p>
+  The first metric of earnings quality is accruals. It is defined by cash flow relative to reported earnings. The high-quality earnings firms are characterized by low accruals while the low-quality firms are characterized by high accruals.
+  The formula is
+</P>
+\[Accruals= ( \Delta CA - \Delta Cash) - ( \Delta CL - \Delta STD - \Delta ITP) - Dep\]
+<p>Where</P>
+  <ul>
+       <li>\(\Delta CA\) = annual change in current assets</li>
+       <li>(\Delta Cash\) = change in cash and cash equivalents</li>
+       <li>(\Delta CL\) = change in current liabilities</li>
+       <li>(\Delta STD\) = change in debt included in current liabilities</li>
+       <li>(\Delta ITP\) =  change in income taxes payable</li>
+       <li>(\Delta Dep\) annual depreciation and amortization expense</li>
+  </ul>
+<p>
+  We use an annual change reported for two consecutive fiscal years.
+  To calculate the accruals, we save the fine fundamental object in the last year and calculate the difference in the next year.
+  The algorithm will start to trade after one-year initialization.
+</p>
+  <div class="section-example-container">
+  <pre class="python">
+    def CalculateAccruals(self, current, previous):
+        accruals = []
+        for stock_data in current:
+            #compares this and last year's fine fundamental objects
+            try:
+                prev_data = None
+                for x in previous:
+                    if x.Symbol == stock_data.Symbol:
+                        prev_data = x
+                        break
+
+                #calculates the balance sheet accruals and adds the property to the fine fundamental object
+                delta_assets = float(stock_data.FinancialStatements.BalanceSheet.CurrentAssets.Value)-float(prev_data.FinancialStatements.BalanceSheet.CurrentAssets.Value)
+                delta_cash = float(stock_data.FinancialStatements.BalanceSheet.CashAndCashEquivalents.Value)-float(prev_data.FinancialStatements.BalanceSheet.CashAndCashEquivalents.Value)
+                delta_liabilities = float(stock_data.FinancialStatements.BalanceSheet.CurrentLiabilities.Value)-float(prev_data.FinancialStatements.BalanceSheet.CurrentLiabilities.Value)
+                delta_debt = float(stock_data.FinancialStatements.BalanceSheet.CurrentDebt.Value)-float(prev_data.FinancialStatements.BalanceSheet.CurrentDebt.Value)
+                delta_tax = float(stock_data.FinancialStatements.BalanceSheet.IncomeTaxPayable.Value)-float(prev_data.FinancialStatements.BalanceSheet.IncomeTaxPayable.Value)
+                dep = float(stock_data.FinancialStatements.IncomeStatement.DepreciationAndAmortization.Value)
+                avg_total = (float(stock_data.FinancialStatements.BalanceSheet.TotalAssets.Value)+float(prev_data.FinancialStatements.BalanceSheet.TotalAssets.Value))/2
+                #accounts for the size difference
+                stock_data.Accrual = ((delta_assets-delta_cash)-(delta_liabilities-delta_debt-delta_tax)-dep)/avg_total
+                accruals.append(stock_data)
+            except:
+                #value in current universe does not exist in the previous universe
+                pass
+        return accruals
+  </pre>
+  </div>
+<p>
+  The second metric is cash flow to assets ratio. It is calculated by dividing cash flows from operations by the average total assets. Firms with high cash flow to total assets are of high earnings quality.
+  The other two metrics are Return on Equity(ROE) and Debt to Assets(DA) which are available properties of fine fundamental objects. The Higher the ROE ratio, the better the earnings quality.
+  Low debt to assets means low leverage. It leads to more stable earnings and less dependence on the current financing conditions in the economy. Therefore, low debt to assets ratios is a signal of high earnings quality.
+  Before calculating those variables, we should make sure their values are all positive.
+</P>
+<div class="section-example-container">
+<pre class="python">
+def FineSelectionFunction(self, fine):
+    if self.yearly_rebalance:
+        #filters out the non-financial companies that don't contain the necessary data
+        fine = [x for x in fine if (x.CompanyReference.IndustryTemplateCode != "B")
+                                and (x.FinancialStatements.BalanceSheet.CurrentAssets.Value > 0)
+                                and (x.FinancialStatements.BalanceSheet.CashAndCashEquivalents.Value > 0)
+                                and (x.FinancialStatements.BalanceSheet.CurrentLiabilities.Value > 0)
+                                and (x.FinancialStatements.BalanceSheet.CurrentDebt.Value > 0)
+                                and (x.FinancialStatements.BalanceSheet.IncomeTaxPayable.Value > 0)
+                                and (x.FinancialStatements.IncomeStatement.DepreciationAndAmortization.Value > 0)]
+
+        if not self.previous_fine:
+            # will wait one year in order to have the historical fundamental data
+            self.previous_fine = fine
+            self.yearly_rebalance = False
+            return []
+        else:
+            # calculate the accrual for each stock
+            fine = self.CalculateAccruals(fine, self.previous_fine)
+            filtered_fine = [x for x in fine if (x.FinancialStatements.CashFlowStatement.OperatingCashFlow.Value> 0)
+                                            and (x.EarningReports.BasicEPS.Value>0)
+                                            and (x.EarningReports.BasicAverageShares.Value>0)
+                                            and (x.OperationRatios.DebttoAssets.Value>0)
+                                            and (x.OperationRatios.ROE.Value>0)]
+            for i in filtered_fine:
+                # cash flow to assets
+                i.CFA = i.FinancialStatements.CashFlowStatement.OperatingCashFlow.Value/(i.EarningReports.BasicEPS.Value * i.EarningReports.BasicAverageShares.Value)
+                # debt to assets
+                i.DA = i.OperationRatios.DebttoAssets.Value
+                # return on equity
+                i.ROE = i.OperationRatios.ROE.Value
+</pre>
+</div>
+
+<h4>The Scoring System</h4>
+<p>
+  The investment universe consists of all non-financial stocks from NYSE, Amex and Nasdaq. Next, we will build a composite scoring system to rank the stocks in the universe.
+  The first step is sorting stocks by four factors respectively. “good” quality has a high score, so ideally a stock has low accruals, low debt to assets, high ROE, and high cash flow to assets will be allocated high score.
+  Therefore, we sort the accruals and debt to assets ratio in descending orders and sort the ROE and cash flow to assets ratios in ascending order.
+  Then the score of each stock is the sum of rank in four factors.
+</P>
+<div class="section-example-container">
+<pre class="python">
+  # sort stocks by four factors respectively
+   sortedByAccrual = sorted(filtered_fine, key=lambda x: x.Accrual, reverse=True) # high score with low accrual
+   sortedByCFA = sorted(filtered_fine, key=lambda x: x.CFA)                       # high score with high CFA
+   sortedByDA = sorted(filtered_fine, key=lambda x: x.DA, reverse=True)           # high score with low leverage
+   sortedByROE = sorted(filtered_fine, key=lambda x: x.ROE)                       # high score with high ROE
+   # create dict to save the score for each stock
+   score_dict = {}
+   # assign a score to each stock according to their rank with different factors
+   for i,obj in enumerate(sortedByAccrual):
+       scoreAccrual = i
+       scoreCFA = sortedByCFA.index(obj)
+       scoreDA = sortedByDA.index(obj)
+       scoreROE = sortedByROE.index(obj)
+       score = scoreAccrual + scoreCFA + scoreDA + scoreROE
+       score_dict[obj.Symbol] = score
+
+   sortedByScore = sorted(score_dict, key = lambda x: score_dict[x], reverse = True)
+   # long stocks with the top score (> 30%) and short stocks with the bottom score (< 70%)
+   self.long = sortedByScore[:int(0.3*len(sortedByScore))]
+   self.short = sortedByScore[-int(0.3*len(sortedByScore)):]
+</pre>
+</div>
+<h4>Trade and Rebalance</h4>
+<p>
+  Based on the composite factor score, the algorithm goes long the top 30% of high score stocks and short the bottom 30% of low score stocks.
+  Final factor portfolio is formed at the end of each June and is rebalanced yearly.
+</P>
+<div class="section-example-container">
+<pre class="python">
+def OnData(self, data):
+    if not self.yearly_rebalance: return
+    if self.long and self.short:
+        long_stocks = [x.Key for x in self.Portfolio if x.Value.IsLong]
+        short_stocks = [x.Key for x in self.Portfolio if x.Value.IsShort]
+        # liquidate the stocks not in the filtered long/short list
+        for long in long_stocks:
+            if long not in self.long:
+                self.Liquidate(long)
+
+        for short in short_stocks:
+            if short not in self.short:
+                self.Liquidate(short)
+
+        long_weight = 0.8/len(self.long)
+        for i in self.long:
+            self.SetHoldings(i, long_weight)
+        short_weight = 0.8/len(self.short)
+        for i in self.short:
+            self.SetHoldings(i, -short_weight)
+</pre>
+</div>
