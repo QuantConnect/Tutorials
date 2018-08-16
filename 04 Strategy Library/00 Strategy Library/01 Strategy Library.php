@@ -295,6 +295,14 @@ $strategyMap = [
          'description' => 'Goes long style index ETF with the highest 12-month momentum and short ETF with the lowest 12-month momentum.'
       ],
       [
+          'name' => 'Trading with WTI BRENT Spread',
+          'link' => 'strategy-library/trading-with-wti-brent-spread',
+          'sources' => [
+              'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/100'
+          ],
+          'description' => 'Goes long the spread if the spread is below 20-day moving average and short if the spread is above 20-day moving average.'
+      ],
+      [
          'name' => 'Momentum Effect in REITs',
          'link' => 'strategy-library/momentum-effect-in-reits',
          'sources' => [
