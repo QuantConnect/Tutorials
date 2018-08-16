@@ -319,6 +319,14 @@ $strategyMap = [
           'description' => 'Goes long S&amp;P 100 index ETF during option expiration week and stays in cash during other days.'
        ],
        [
+           'name' => 'Earnings Quality Factor',
+           'link' => 'strategy-library/earnings-quality-factor',
+           'sources' => [
+               'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/229'
+           ],
+           'description' => 'Goes long stocks with high earnings quality and short stocks with low earnings quality based on composite factor score.'
+       ],
+       [
            'name' => 'January Effect in Stocks',
            'link' => 'strategy-library/january-effect-in-stocks',
            'sources' => [
