@@ -1,0 +1,134 @@
+<h4>The Universe Initial Filter</h4>
+<p>
+  The investment universe consists of NYSE, AMEX and NASDAQ stocks with prices higher than $5 per share.
+  In <code>FineSelectionFunction</code>, we divide the universe into two equal halves by size of the company.
+  Here size is defined as the share price times the number of shares outstanding.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def CoarseSelectionFunction(self, coarse):
+    # update the price of stocks in universe everyday
+    for i in coarse:
+        if i.Symbol not in self.dataDict:
+            self.dataDict[i.Symbol] = SymbolData(i.Symbol, self.lookback)
+        self.dataDict[i.Symbol].Update(i.AdjustedPrice)
+
+    if self.monthly_rebalance:
+        # drop stocks which have no fundamental data or have too low prices
+        filteredCoarse = [x.Symbol for x in coarse if (x.HasFundamentalData) and (float(x.Price) > 5)]
+        return filteredCoarse
+    else:
+        return []
+
+def FineSelectionFunction(self, fine):
+
+    if self.monthly_rebalance:
+        sortedFine = sorted(fine, key = lambda x: x.EarningReports.BasicAverageShares.Value * self.dataDict[x.Symbol].Price, reverse=True)
+        # select stocks with large size
+        topFine = sortedFine[:int(0.5*len(sortedFine))]
+        self.filteredFine = [x.Symbol for x in topFine]
+        return self.filteredFine
+    else:
+        return []
+</pre>
+</div>
+<h4>The Realized Return and Volatility</h4>
+<p>
+  At the beginning of each month, realized returns and realized (annualized) volatilities are calculated for each stock.
+  The realized volatility refers to the historical volatility. The formula of the realized volatility \(\sigma\) is
+</p>
+\[R_{avg}=\frac{\sum_{i=1}^n R_i}{n}\]
+\[\sigma=\sqrt{\frac{\sum_{i=1}^n(R_i-R_{avg})^2}{n-1}}\]
+<p>
+   To annualize the volatility, we multiply the 1-day volatility by the square root of the number of trading days in a year – in our case square root of 252.
+</p>
+<p>
+  A 6-month warm-up period is required to initialize the history price for stocks in the universe. We create the class
+  <code>SymbolData</code> to save all required variables associated with a single stock.
+  One week (5 trading days) prior to the beginning of each month is skipped to avoid biases due to microstructures.
+</P>
+<div class="section-example-container">
+<pre class="python">
+  class SymbolData:
+    '''Contains data specific to a symbol required by this model'''
+
+    def __init__(self, symbol, lookback):
+        self.symbol = symbol
+        # self.History = RollingWindow[Decimal](lookback)
+        self.History = deque(maxlen=lookback)
+        self.Price = None
+
+    def Update(self, value):
+        # update yesterday's close price
+        self.Price = value
+        # update the history price series
+        self.History.append(float(value))
+        # self.History.Add(value)
+
+    def IsReady(self):
+        return len(self.History) == self.History.maxlen
+
+    def Volatility(self):
+        # one week (5 trading days) prior to the beginning of each month is skipped
+        prices = np.array(self.History)[:-5]
+        returns = (prices[1:]-prices[:-1])/prices[:-1]
+        # calculate the annualized realized volatility
+        return np.std(returns)*np.sqrt(252)
+
+    def Return(self):
+        # one week (5 trading days) prior to the beginning of each month is skipped
+        prices = np.array(self.History)[:-5]
+        # calculate the annualized realized return
+        return (prices[-1]-prices[0])/prices[0]
+</pre>
+</div>
+
+<p>
+  After the warm-up period, the historical price series is ready. Stocks are sorted into quintiles based on their realized volatility.
+  Stocks in the top 20% highest volatility are further sorted into quintiles by their six-month realized returns.
+  The algorithm goes long on stocks from the highest performing quintile from the highest volatility group and short on stocks from the lowest performing quintile from the highest volatility group.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def OnData(self, data):
+    if self.monthly_rebalance and self.filteredFine:
+        filtered_data = {symbol: symbolData for (symbol, symbolData) in self.dataDict.items() if symbol in self.filteredFine and symbolData.IsReady()}
+        self.filteredFine = None
+        self.monthly_rebalance = False
+        if len(filtered_data) < 100: return
+        # sort the universe by volatility and select stocks in the top high volatility quintile
+        sortedByVol = sorted(filtered_data.items(), key=lambda x: x[1].Volatility(), reverse = True)[:int(0.2*len(filtered_data))]
+        sortedByVol = dict(sortedByVol)
+        # sort the stocks in top-quintile by realized return
+        sortedByReturn = sorted(sortedByVol, key = lambda x: sortedByVol[x].Return(), reverse = True)
+        long = sortedByReturn[:int(0.2*len(sortedByReturn))]
+        short = sortedByReturn[-int(0.2*len(sortedByReturn)):]
+</pre>
+</div>
+<h4>Portfolio Rebalance and Trade</h4>
+<p>
+  The methodology of Jegadeesh and Titamn (1993) is used to rebalance the portfolio.
+  Specifically, at the beginning of each month, stocks are sorted into quintiles based on their realized returns and equally weighted portfolios are formed to be held for the next six months.
+  This sorting and portfolio formation procedure is performed each month. In any given month t, the strategy holds 6 portfolios that are selected in the current month as well as the previous 5 months.
+  Therefore 1/6 of the portfolio is rebalanced every month. We save those 6 portfolios in a deque list <code>self.portfolios</code> and the list is updated every month. The portfolio of the current month is added while the portfolio selected from six months ago is removed from the list.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def Initialize(self):
+    self.portfolios = deque(maxlen=6)
+def OnData(self, data):
+    self.portfolios.append(short+long)
+    # 1/6 of the portfolio is rebalanced every month
+    if len(self.portfolios) == self.portfolios.maxlen:
+        for i in list(self.portfolios)[0]:
+            self.Liquidate(i)
+    # stocks are equally weighted and held for 6 months
+    short_weight = 1/len(short)
+    for i in short:
+        self.SetHoldings(i, -1/6*short_weight)
+
+    long_weight = 1/len(long)
+    for i in long:
+        self.SetHoldings(i, 1/6*long_weight)
+  </pre>
+  </div>

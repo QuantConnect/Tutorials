@@ -334,6 +334,14 @@ $strategyMap = [
            ],
            'description' => 'Invests into small cap stocks at the beginning of each January and stays invested in large cap stocks for rest of the year.'
         ],
+        [
+            'name' => 'Momentum and Reversal Combined with Volatility Effect in Stocks',
+            'link' => 'strategy-library/momentum-and-reversal-combined-with-volatility-effect-in-stocks',
+            'sources' => [
+                'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/155'
+            ],
+            'description' => 'Goes long on stocks from the highest performing quintile from the highest volatility group and short on stocks from the lowest performing quintile from the highest volatility group.'
+         ],
 ];
 
 ?>
