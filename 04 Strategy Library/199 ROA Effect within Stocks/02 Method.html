@@ -29,7 +29,7 @@ def FineSelectionFunction(self, fine):
                               and i.OperationRatios.ROA.Value != 0]
         for i in fine:
             i.MarketCap = float(i.EarningReports.BasicAverageShares.ThreeMonths * (i.EarningReports.BasicEPS.TwelveMonths*i.ValuationRatios.PERatio))
-        # sort into 2 halves based on market capitalization
+        # sort into 2 halfs based on market capitalization
         sorted_market_cap = sorted(fine, key = lambda x:x.MarketCap, reverse=True)
         top = sorted_market_cap[:int(len(sorted_market_cap)*0.5)]
         bottom = sorted_market_cap[-int(len(sorted_market_cap)*0.5):]
@@ -37,10 +37,10 @@ def FineSelectionFunction(self, fine):
         sortedTopByROA = sorted(top, key = lambda x: x.OperationRatios.ROA.Value, reverse = True)
         sortedBottomByROA = sorted(bottom, key = lambda x: x.OperationRatios.ROA.Value, reverse = True)
         # long top decile from each market capitalization group
-        long = sortedTopByROA[:int(len(sortedTopByROA)*0.05)] + sortedBottomByROA[:int(len(sortedTopByROA)*0.05)]
+        long = sortedTopByROA[:int(len(sortedTopByROA)*0.1)] + sortedBottomByROA[:int(len(sortedTopByROA)*0.1)]
         self.longStocks = [i.Symbol for i in long]
         # short bottom decile from each market capitalization group
-        short = sortedTopByROA[-int(len(sortedTopByROA)*0.05):] + sortedBottomByROA[-int(len(sortedTopByROA)*0.05):]
+        short = sortedTopByROA[-int(len(sortedTopByROA)*0.1):] + sortedBottomByROA[-int(len(sortedTopByROA)*0.1):]
         self.shortStocks = [i.Symbol for i in short]
 
         return self.longStocks+self.shortStocks
@@ -49,7 +49,7 @@ def FineSelectionFunction(self, fine):
 </pre>
 </div>
 <p>
-  The algorithm goes long top decile from each market capitalization group and short bottom deciles.
+  The algorithm goes long the top decile from each market capitalization group and short the bottom decile.
   The strategy is rebalanced monthly and stocks are equally weighted.
 </P>
 <div class="section-example-container">
