@@ -342,6 +342,14 @@ $strategyMap = [
             ],
             'description' => 'Goes long on stocks from the highest performing quintile from the highest volatility group and short on stocks from the lowest performing quintile from the highest volatility group.'
          ],
+         [
+             'name' => 'January Barometer',
+             'link' => 'strategy-library/january-barometer',
+             'sources' => [
+                 'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/113'
+             ],
+             'description' => "Invested in equity market with ETF only if January return is positive otherwise switch investments to T-Bills.'
+          ],
 ];
 
 ?>

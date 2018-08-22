@@ -1,0 +1,20 @@
+<p>
+  We use the S&amp;P500 ETF as the underlying. In January, the algorithm buys SPY and hold until the end of January.
+  At the end of January, we calculate the January return, if the return is greater than zero, the algorithm will continue to hold the SPY. If the January return is negative instead, the algorithm will liquidate the SPY asset and invest in the treasury bill for the rest of the year. The portfolio is rebalanced every year in January.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def Rebalance(self):
+    if self.Time.month == 1:
+        self.Liquidate("BIL")
+        self.SetHoldings("SPY", 1)
+        self.startPrice = self.Securities["SPY"].Price
+    if self.Time.month == 2 and self.startPrice is not None:
+        returns = (self.Securities["SPY"].Price - self.startPrice)/self.startPrice
+        if returns > 0:
+            self.SetHoldings("SPY", 1)
+        else:
+            self.Liquidate("SPY")
+            self.SetHoldings("BIL", 1)
+</pre>
+</div>
