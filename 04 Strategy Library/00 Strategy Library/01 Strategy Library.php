@@ -343,6 +343,14 @@ $strategyMap = [
             'description' => 'Goes long on stocks from the highest performing quintile from the highest volatility group and short on stocks from the lowest performing quintile from the highest volatility group.'
          ],
          [
+             'name' => 'ROA Effect within Stocks',
+             'link' => 'strategy-library/roa-effect-within-stocks',
+             'sources' => [
+                 'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/199'
+             ],
+             'description' => 'Goes long on stocks with highest ROA and short stocks with the lowest ROA from each market capitalization group.'
+         ],
+         [
              'name' => 'January Barometer',
              'link' => 'strategy-library/january-barometer',
              'sources' => [
