@@ -1,0 +1,74 @@
+<p>
+  The investment universe contains all stocks on NYSE and AMEX and Nasdaq.
+  In <code>CoarseSelectionFunction</code>, we eliminated ETFa which does not have fundamental data.
+</P>
+<div class="section-example-container">
+<pre class="python">
+def CoarseSelectionFunction(self, coarse):
+    if self.monthly_rebalance:
+        self.coarse = True
+        filteredCoarse = [x.Symbol for x in coarse if x.HasFundamentalData]
+        return filteredCoarse
+    else:
+        return []
+</pre>
+</div>
+<p>
+  In <code>FineSelectionFunction</code>, stocks with sales greater than 10 milion USD are selected.
+  Then we calculate the market cap for those stocks and sort them into two groups: Big size group with the higher market cap and small size group with the lower market cap. Each half is then divided into deciles based on Return on assets (ROA).
+</P>
+<div class="section-example-container">
+<pre class="python">
+def FineSelectionFunction(self, fine):
+    if self.monthly_rebalance:
+        fine =[i for i in fine if i.EarningReports.BasicAverageShares.ThreeMonths != 0
+                              and i.EarningReports.BasicEPS.TwelveMonths != 0
+                              and i.ValuationRatios.PERatio != 0
+                              # sales is greater than 10 million
+                              and i.ValuationRatios.SalesPerShare*i.EarningReports.DilutedAverageShares.Value > 10000000
+                              and i.OperationRatios.ROA.Value != 0]
+        for i in fine:
+            i.MarketCap = float(i.EarningReports.BasicAverageShares.ThreeMonths * (i.EarningReports.BasicEPS.TwelveMonths*i.ValuationRatios.PERatio))
+        # sort into 2 halves based on market capitalization
+        sorted_market_cap = sorted(fine, key = lambda x:x.MarketCap, reverse=True)
+        top = sorted_market_cap[:int(len(sorted_market_cap)*0.5)]
+        bottom = sorted_market_cap[-int(len(sorted_market_cap)*0.5):]
+        # each half is then divided into deciles based on Return on Assets (ROA)
+        sortedTopByROA = sorted(top, key = lambda x: x.OperationRatios.ROA.Value, reverse = True)
+        sortedBottomByROA = sorted(bottom, key = lambda x: x.OperationRatios.ROA.Value, reverse = True)
+        # long top decile from each market capitalization group
+        long = sortedTopByROA[:int(len(sortedTopByROA)*0.05)] + sortedBottomByROA[:int(len(sortedTopByROA)*0.05)]
+        self.longStocks = [i.Symbol for i in long]
+        # short bottom decile from each market capitalization group
+        short = sortedTopByROA[-int(len(sortedTopByROA)*0.05):] + sortedBottomByROA[-int(len(sortedTopByROA)*0.05):]
+        self.shortStocks = [i.Symbol for i in short]
+
+        return self.longStocks+self.shortStocks
+    else:
+        return []
+</pre>
+</div>
+<p>
+  The algorithm goes long top decile from each market capitalization group and short bottom deciles.
+  The strategy is rebalanced monthly and stocks are equally weighted.
+</P>
+<div class="section-example-container">
+<pre class="python">
+  def OnData(self, data):
+      if not (self.monthly_rebalance and self.coarse): return
+      self.coarse = False
+      self.monthly_rebalance = False
+      stocks_invested = [x.Key for x in self.Portfolio if x.Value.Invested]
+      for i in stocks_invested:
+          if i not in self.longStocks+self.shortStocks:
+              self.Liquidate(i)
+
+      long_weight = 0.5/len(self.longStocks)
+      for i in self.longStocks:
+          self.SetHoldings(i, long_weight)
+
+      short_weight = 0.5/len(self.shortStocks)
+      for i in self.shortStocks:
+          self.SetHoldings(i, -short_weight)
+</pre>
+</div>
