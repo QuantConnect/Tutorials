@@ -1,0 +1,49 @@
+<p>
+  To assess if the implied volatility turns out to be relevant trading signals for
+  long and short positions, we must first define what we mean by large or small implied volatility levels.
+  At any given time, we create 20 equally spaced percentiles for the history close price of VIX in the last two years.
+  By 20 equally spaced percentiles, it means the 5%, 10%, . . . , 95% percentiles. Then the current VIX index price is compared to these percentiles and ranked accordingly.
+</P>
+<p>
+  We import the daily VIX data from Quandl. The correspondent stock index is S&amp;P100 index. We use the iShares S&P 100 ETF <code>OEF</code>
+  In the first step, we create a rolling window to save the history VIX price. The history request is used to initialize the rolling window.
+</P>
+<div class="section-example-container">
+<pre class="python">
+def Initialize(self):
+    self.SetStartDate(2006, 1, 1)
+    self.SetEndDate(2018, 8, 1)
+    self.SetCash(100000)
+    self.AddEquity("OEF", Resolution.Daily)
+    self.vix = 'CBOE/VIX'
+    self.AddData(QuandlVix, self.vix, Resolution.Daily)
+    self.window = RollingWindow[float](252*2)
+    hist = self.History([self.vix], 1000, Resolution.Daily)
+    for close in hist.loc[self.vix]['vix close']:
+        self.window.Add(close)
+
+class QuandlVix(PythonQuandl):
+    def __init__(self):
+        self.ValueColumnName = "VIX Close"
+</pre>
+</div>
+
+<p>
+  The rolling past 2-year history of the VIX index is then split to create 20 equally spaced percentiles.
+  The algorithm goes long on the equity index if the VIX index on the current day is higher than on any other day during the rolling 2-year window or if the VIX index value is in the highest 2 percentile boxes.
+  If the VIX index on the current day is lower than on any other day during the rolling 2-year window or if the VIX index value is in the lowest two percentile boxes. The algorithm goes short on the equity index.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def OnData(self, data):
+    if not data.ContainsKey(self.vix): return
+    self.window.Add(self.Securities[self.vix].Price)
+    if not self.window.IsReady: return
+    history_close = [i for i in self.window]
+
+    if self.Securities[self.vix].Price > np.percentile(history_close, 90):
+        self.SetHoldings("OEF", 1)
+    elif self.Securities[self.vix].Price < np.percentile(history_close, 10):
+        self.SetHoldings("OEF", -1)
+</pre>
+</div>
