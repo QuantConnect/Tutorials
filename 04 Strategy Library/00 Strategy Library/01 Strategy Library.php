@@ -348,7 +348,7 @@ $strategyMap = [
              'sources' => [
                  'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/199'
              ],
-             'description' => 'Goes long on stocks with highest ROA and short stocks with the lowerst RPA from each market capitalization group.'
+             'description' => 'Goes long on stocks with highest ROA and short stocks with the lowerst ROA from each market capitalization group.'
           ],
 ];
 
