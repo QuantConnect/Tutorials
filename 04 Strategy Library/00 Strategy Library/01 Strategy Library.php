@@ -349,6 +349,14 @@ $strategyMap = [
                  'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/199'
              ],
              'description' => 'Goes long on stocks with highest ROA and short stocks with the lowerst ROA from each market capitalization group.'
+         ],
+         [
+             'name' => 'January Barometer',
+             'link' => 'strategy-library/january-barometer',
+             'sources' => [
+                 'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/113'
+             ],
+             'description' => "Invested in equity market with ETF only if January return is positive otherwise switch investments to T-Bills.'
           ],
 ];
 
