@@ -285,79 +285,79 @@ $strategyMap = [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/38'
         ],
         'description' => 'Decile portfolios are formed based on balance sheet based accruals and highest decile is shorted while lowest decile is bought for a year.'
-     ],
-     [
-         'name' => 'Momentum and Style Rotation Effect',
-         'link' => 'strategy-library/momentum-and-style-rotation-effect',
-         'sources' => [
-             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/91'
-         ],
-         'description' => 'Goes long style index ETF with the highest 12-month momentum and short ETF with the lowest 12-month momentum.'
-      ],
-      [
-          'name' => 'Trading with WTI BRENT Spread',
-          'link' => 'strategy-library/trading-with-wti-brent-spread',
-          'sources' => [
-              'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/100'
-          ],
-          'description' => 'Goes long the spread if the spread is below 20-day moving average and short if the spread is above 20-day moving average.'
-      ],
-      [
-         'name' => 'Momentum Effect in REITs',
-         'link' => 'strategy-library/momentum-effect-in-reits',
-         'sources' => [
-             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/152'
-         ],
-         'description' => 'Trecile portfolios are formed based on momentum and the best performing portfolio is held.'
-      ],
-      [
-          'name' => 'Option Expiration Week Effect',
-          'link' => 'strategy-library/option-expiration-week-effect',
-          'sources' => [
-              'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/102'
-          ],
-          'description' => 'Goes long S&amp;P 100 index ETF during option expiration week and stays in cash during other days.'
-       ],
-       [
-           'name' => 'Earnings Quality Factor',
-           'link' => 'strategy-library/earnings-quality-factor',
-           'sources' => [
-               'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/229'
-           ],
-           'description' => 'Goes long stocks with high earnings quality and short stocks with low earnings quality based on composite factor score.'
-       ],
-       [
-           'name' => 'January Effect in Stocks',
-           'link' => 'strategy-library/january-effect-in-stocks',
-           'sources' => [
-               'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/114'
-           ],
-           'description' => 'Invests into small cap stocks at the beginning of each January and stays invested in large cap stocks for rest of the year.'
+    ],
+    [
+        'name' => 'Momentum and Style Rotation Effect',
+        'link' => 'strategy-library/momentum-and-style-rotation-effect',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/91'
         ],
-        [
-            'name' => 'Momentum and Reversal Combined with Volatility Effect in Stocks',
-            'link' => 'strategy-library/momentum-and-reversal-combined-with-volatility-effect-in-stocks',
-            'sources' => [
-                'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/155'
-            ],
-            'description' => 'Goes long on stocks from the highest performing quintile from the highest volatility group and short on stocks from the lowest performing quintile from the highest volatility group.'
-         ],
-         [
-             'name' => 'ROA Effect within Stocks',
-             'link' => 'strategy-library/roa-effect-within-stocks',
-             'sources' => [
-                 'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/199'
-             ],
-             'description' => 'Goes long on stocks with highest ROA and short stocks with the lowest ROA from each market capitalization group.'
-         ],
-         [
-             'name' => 'January Barometer',
-             'link' => 'strategy-library/january-barometer',
-             'sources' => [
-                 'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/113'
-             ],
-             'description' => "Invested in equity market with ETF only if January return is positive otherwise switch investments to T-Bills.'
-          ],
+        'description' => 'Goes long style index ETF with the highest 12-month momentum and short ETF with the lowest 12-month momentum.'
+    ],
+    [
+        'name' => 'Trading with WTI BRENT Spread',
+        'link' => 'strategy-library/trading-with-wti-brent-spread',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/100'
+        ],
+        'description' => 'Goes long the spread if the spread is below 20-day moving average and short if the spread is above 20-day moving average.'
+    ],
+    [
+        'name' => 'Momentum Effect in REITs',
+        'link' => 'strategy-library/momentum-effect-in-reits',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/152'
+        ],
+        'description' => 'Trecile portfolios are formed based on momentum and the best performing portfolio is held.'
+    ],
+    [
+        'name' => 'Option Expiration Week Effect',
+        'link' => 'strategy-library/option-expiration-week-effect',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/102'
+        ],
+        'description' => 'Goes long S&amp;P 100 index ETF during option expiration week and stays in cash during other days.'
+    ],
+    [
+        'name' => 'Earnings Quality Factor',
+        'link' => 'strategy-library/earnings-quality-factor',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/229'
+        ],
+        'description' => 'Goes long stocks with high earnings quality and short stocks with low earnings quality based on composite factor score.'
+    ],
+    [
+        'name' => 'January Effect in Stocks',
+        'link' => 'strategy-library/january-effect-in-stocks',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/114'
+        ],
+        'description' => 'Invests into small cap stocks at the beginning of each January and stays invested in large cap stocks for rest of the year.'
+    ],
+    [
+        'name' => 'Momentum and Reversal Combined with Volatility Effect in Stocks',
+        'link' => 'strategy-library/momentum-and-reversal-combined-with-volatility-effect-in-stocks',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/155'
+        ],
+        'description' => 'Goes long on stocks from the highest performing quintile from the highest volatility group and short on stocks from the lowest performing quintile from the highest volatility group.'
+    ],
+    [
+        'name' => 'ROA Effect within Stocks',
+        'link' => 'strategy-library/roa-effect-within-stocks',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/199'
+        ],
+        'description' => 'Goes long on stocks with highest ROA and short stocks with the lowest ROA from each market capitalization group.'
+    ],
+    [
+        'name' => 'January Barometer',
+        'link' => 'strategy-library/january-barometer',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/113'
+        ],
+        'description' => "Invested in equity market with ETF only if January return is positive otherwise switch investments to T-Bills."
+    ]
 ];
 
 ?>
