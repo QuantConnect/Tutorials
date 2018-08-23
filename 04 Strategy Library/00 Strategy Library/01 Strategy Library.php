@@ -357,6 +357,14 @@ $strategyMap = [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/113'
         ],
         'description' => "Invested in equity market with ETF only if January return is positive otherwise switch investments to T-Bills."
+    ],
+    [
+        'name' => 'Lunar Cycle in Equity Market',
+        'link' => 'strategy-library/lunar-cycle-in-equity-market',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/61'
+        ],
+        'description' => "Goes long in emerging market index ETF 7 days before the new moon and switch to a short position on emerging market index ETF 7 days before the full moon."
     ]
 ];
 
