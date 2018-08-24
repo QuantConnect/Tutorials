@@ -357,7 +357,15 @@ $strategyMap = [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/113'
         ],
         'description' => "Invested in equity market with ETF only if January return is positive otherwise switch investments to T-Bills."
-    ]
+    ],
+    [
+        'name' => 'VIX Predicts Stock Index Returns',
+        'link' => 'strategy-library/vix-predicts-stock-index-returns',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/58'
+        ],
+        'description' => "Goes long on equity index ETF if the VIX is in the highest percentile short if VIX is in the lowest percentile in the last two-year history."
+    ],
 ];
 
 ?>
