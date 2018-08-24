@@ -365,7 +365,15 @@ $strategyMap = [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/61'
         ],
         'description' => "Goes long in emerging market index ETF 7 days before the new moon and switch to a short position on emerging market index ETF 7 days before the full moon."
-    ]
+    ],
+    [
+        'name' => 'VIX Predicts Stock Index Returns',
+        'link' => 'strategy-library/vix-predicts-stock-index-returns',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/58'
+        ],
+        'description' => "Goes long on equity index ETF if the VIX is in the highest percentile short if VIX is in the lowest percentile in the last two-year history."
+    ],
 ];
 
 ?>
