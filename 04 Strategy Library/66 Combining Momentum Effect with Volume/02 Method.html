@@ -1,0 +1,108 @@
+<p>
+  The investment universe consists of all stocks on NYSE and NASDAQ. The momentum is usually defined by the stock return in the last N months.
+  The indicator <code>RateOfChange</code> is constructed to represent the return. The lookback period is one year.
+</P>
+<div class="section-example-container">
+<pre class="python">
+  class SymbolData:
+      def __init__(self, symbol, lookback):
+          self.Symbol = symbol
+          self.ROC = RateOfChange(lookback)
+          self.Volume = None
+</pre>
+</div>
+<p>
+  The ROC indicator and volume are updated everyday in <code>CoarseSelectionFunction</code>. Securities which do not have fundamental data are eliminated.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+  def CoarseSelectionFunction(self, coarse):
+      for i in coarse:
+          if i.Symbol not in self.dataDict:
+              self.dataDict[i.Symbol] = SymbolData(i.Symbol, self.lookback)
+          self.dataDict[i.Symbol].ROC.Update(i.EndTime, i.AdjustedPrice)
+          self.dataDict[i.Symbol].Volume = i.Volume
+
+      if self.monthly_rebalance:
+          # drop stocks which have no fundamental data
+          filteredCoarse = [x for x in coarse if (x.HasFundamentalData)]
+          return [i.Symbol for i in filteredCoarse]
+      else:
+          return []
+</pre>
+</div>
+<p>
+  Trading volume (turnover) serves as a useful indicator of the level of investor interest in stocks.
+  The number of sellers tends to exceed the number of buyers when the stock falls into disfavor, which will lead to a falling share price.
+  When a stock is popular, the number of buyers exceeds the number of sellers, the price tends to rise.
+  As a result, a firm’s turnover may be a measure of investors' interest in the firm's stock so it could help to identify the future trend of stocks.
+  Here the turnover is calculated as the ratio of the number of shares traded each day to the number of shares outstanding.
+</p>
+<p>
+  In <code>FineSelectionFunction</code>, after the indicator is ready for all symbols in dictionary <code>self.dataDict</code>, turnover is calculated
+  with the <code>Volume</code> and <code>EarningReports.BasicAverageShares</code>.
+</P>
+<div class="section-example-container">
+<pre class="python">
+def FineSelectionFunction(self, fine):
+    if self.monthly_rebalance:
+        dataReady = {symbol: symbolData for (symbol, symbolData) in self.dataDict.items() if symbolData.ROC.IsReady}
+        if len(dataReady) < 100:
+            self.filteredFine = []
+        else:
+            sortedFine = [i for i in fine if i.EarningReports.BasicAverageShares.ThreeMonths != 0 and i.Symbol in dataReady]
+            sortedFineSymbols = [i.Symbol for i in sortedFine]
+            filteredData = {symbol: symbolData for (symbol, symbolData) in dataReady.items() if symbol in sortedFineSymbols}
+            for i in sortedFine:
+                if i.Symbol in filteredData and filteredData[i.Symbol].Volume != 0:
+                    filteredData[i.Symbol].Turnover = i.EarningReports.BasicAverageShares.ThreeMonths / filteredData[i.Symbol].Volume
+</pre>
+</div>
+<p>
+  Stocks are sorted into deciles every month based on previous 12-month returns.
+  Each momentum decile is then divided into terciles based on turnover. The long and short portfolios are constructed with the highest turnover from the top momentum decile and the highest volume from the bottom momentum decile respectively.
+</P>
+<div class="section-example-container">
+<pre class="python">
+for i in sortedFine:
+    if i.Symbol in filteredData and filteredData[i.Symbol].Volume != 0:
+        filteredData[i.Symbol].Turnover = i.EarningReports.BasicAverageShares.ThreeMonths / filteredData[i.Symbol].Volume
+sortedByROC = sorted(filteredData.values(), key = lambda x: x.ROC.Current.Value, reverse = True)
+topROC = sortedByROC[:int(len(sortedByROC)*0.2)]
+bottomROC = sortedByROC[-int(len(sortedByROC)*0.2):]
+HighTurnoverTopROC = sorted(topROC, key = lambda x: x.Turnover, reverse = True)
+HighTurnoverBottomROC = sorted(bottomROC, key = lambda x: x.Turnover, reverse = True)
+self.long =  [i.Symbol for i in HighTurnoverTopROC[:int(len(HighTurnoverTopROC)*0.01)]]
+self.short = [i.Symbol for i in HighTurnoverBottomROC[:int(len(HighTurnoverBottomROC)*0.01)]]
+self.filteredFine = self.long + self.short
+self.portfolios.append(self.filteredFine)
+</pre>
+</div>
+<p>
+  A long-short portfolio is held for three months, and then it is rebalanced.
+  Therefore, the investor buys 1/3 of its portfolio for three consecutive months and rebalances 1/3 of its portfolio each month.
+  We save each portfolio in deque list <code>self.portfolios</code> and liquidate the portfolio three-months ago when rebalancing.
+</P>
+<div class="section-example-container">
+<pre class="python">
+def OnData(self, data):
+    if self.monthly_rebalance and self.filteredFine:
+     self.filteredFine = None
+     self.monthly_rebalance = False
+
+     # 1/3 of the portfolio is rebalanced every month
+     if len(self.portfolios) == self.portfolios.maxlen:
+         for i in list(self.portfolios)[0]:
+             self.Liquidate(i)
+
+     # stocks are equally weighted and held for 3 months
+     short_weight = 1/len(self.short)
+     for i in self.short:
+         self.SetHoldings(i, -1/3*short_weight)
+
+     long_weight = 1/len(self.long)
+     for i in self.long:
+         self.SetHoldings(i, 1/3*long_weight)
+</pre>
+</div>
