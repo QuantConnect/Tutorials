@@ -374,6 +374,14 @@ $strategyMap = [
         ],
         'description' => "Goes long on equity index ETF if the VIX is in the highest percentile short if VIX is in the lowest percentile in the last two-year history."
     ],
+    [
+        'name' => 'Combining Momentum Effect with Volume',
+        'link' => 'strategy-library/combining-momentum-effect-with-volume',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/66'
+        ],
+        'description' => "Goes long stocks with the highest volume from the top momentum decile and short stocks with the highest volume from the bottom momentum decile."
+    ],
 ];
 
 ?>
