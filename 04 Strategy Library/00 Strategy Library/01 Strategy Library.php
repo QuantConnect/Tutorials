@@ -382,6 +382,14 @@ $strategyMap = [
         ],
         'description' => "Goes long stocks with the highest volume from the top momentum decile and short stocks with the highest volume from the bottom momentum decile."
     ],
+    [
+        'name' => 'Short Term Reversal with Futures',
+        'link' => 'strategy-library/short-term-reversal-with-futures',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/71'
+        ],
+        'description' => "Goes long (short) on futures from the high-volume, low-open interest group with the lowest (greatest) returns in the previous week."
+    ],
 ];
 
 ?>
