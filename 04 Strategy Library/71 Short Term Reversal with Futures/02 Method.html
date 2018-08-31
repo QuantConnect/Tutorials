@@ -1,0 +1,108 @@
+<p>
+  The daily continuous futures data with the adjusted price is from <a href="https://www.quandl.com/databases/SCF" rel="nofollow">Quandl</a>.
+  The investment universe consists of 24 types of US futures contracts: 4 currencies, five financial indices, eight agricultural products, and seven commodities.
+  The contracts are all front month contracts.
+</P>
+<div class="section-example-container">
+<pre class="python">
+class Futures(PythonData):
+    # import the futures custom data from dropbox
+    def GetSource(self, config, date, isLiveMode):
+        source = "your_custom_source_url"
+        return SubscriptionDataSource(source, SubscriptionTransportMedium.RemoteFile)
+
+    def Reader(self, config, line, date, isLiveMode):
+        futures = Futures()
+        futures.Symbol = config.Symbol
+        data = line.split(',')
+        if data[0] == "date": return None
+        futures.Time = datetime.strptime(data[0], "%m/%d/%y")
+        futures.Value = float(data[4])
+        futures["settle"] = float(data[4]) # add the settle price
+        futures["volume"] = float(data[5]) # add the volume
+        futures["open_interest"] = float(data[6]) # add the open interest
+        return futures
+</pre>
+</div>
+<p>
+  The algorithm uses a weekly time frame(Wednesday-Wednesday interval). Therefore the <code>self.Schedule.On()</code> will fire the trading every Wednesday.
+  To compare the weekly change of volume and open interest, we create the <code>deque</code> list with the length to be two to save the history data frame of
+  the most recent week and the week before.
+</p>
+<div class="section-example-container">
+<pre class="python">
+  def Initialize(self):
+      self.SetStartDate(2017, 7, 10)
+      self.SetEndDate(2018, 8, 1)
+      self.SetCash(10000000)
+
+      self.tickers = ["CME_SF1_EF", "CME_MP1_FF",  "CME_CD1_EF", "CME_ED8_FF",               # Currencies
+                      "CME_NQ1_EF", "CME_MD1_EF", "CME_ES1_EF", "CME_YM1_EF", "CME_NK1_EF",  # Financial indices
+                      "CME_C1_EF", "CME_SM1_EF",  "ICE_CC1_EF",  "CME_LC1_EF",               # Agricultural product
+                      "CME_KW1_EF", "CME_S1_EF", "ICE_KC1_EF", "CME_LC1_EF",
+                      "CME_HG1_FF",  "CME_GC1_EF", "SHFE_AL1_EF",  "SHFE_CU1_EF",            # Commodities
+                      "CME_CL1_EF", "ICE_T1_FR", "CME_HO1_EF"]
+      self.length = len(self.tickers)
+      for ticker in self.tickers:
+          self.AddData(Futures, ticker)
+      # create the deque list to save the weekly history dataframe
+      self.window = deque(maxlen=2)
+      # rebalance the portfolio every week on Wednesday
+      self.Schedule.On(self.DateRules.Every(DayOfWeek.Wednesday, DayOfWeek.Wednesday), self.TimeRules.At(0, 0), self.WeeklyTrade)
+</pre>
+</div>
+<p>
+  In the weekly rebalance function, weekly history data frame is saved. The contract is defined as the high(low) volume contract if the contract's volume changes between the period from t-1 to t and period from t-2 to t-1 is above(below) the median volume change of all contracts,
+  In addition, all contracts are also assigned to either high-open interest (top 50% of changes in open interest) or low-open interest groups (bottom 50% of changes in open interest) based on lagged changes in open interest between the period from t-1 to t and period from t-2 to t-1.
+  We created the method <code>CalculateChange</code> to calculate the increment value and rank the contracts based on the weekly history data frame.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+  def WeeklyTrade(self):
+      hist = self.History(self.tickers, self.Time-timedelta(days=7), self.Time,Resolution.Daily)
+      self.window.append(hist)
+      if len(self.window) == self.window.maxlen:
+          hist_t2 = self.window[0] # the weekly history dataframe two week ago
+          hist_t1 = self.window[1] # the weekly history dataframe a week ago
+          top_vol, bottom_vol = self.CalculateChange("volume", hist_t2, hist_t1)
+          top_OI, bottom_OI = self.CalculateChange("open_interest", hist_t2, hist_t1)
+</pre>
+</div>
+
+<div class="section-example-container">
+<pre class="python">
+  def CalculateChange(self, column_name, hist_t2, hist_t1):
+      # calculate the weekly change and sort by the colume value
+      value_t2 = hist_t2[column_name].unstack(level=0).sum(axis=0)
+      value_t1 = hist_t1[column_name].unstack(level=0).sum(axis=0)
+      delta = (value_t1 - value_t2).sort_values(ascending=True)
+      top = list(delta[:int(self.length*0.5)].index)
+      bottom = list(delta[-int(self.length*0.5):].index)
+      return top, bottom
+</pre>
+</div>
+
+<p>
+  We take the intersection of the top volume group and bottom open interest group. The trading candidates are selected from this group.
+  Next futures in the intersection are sorted based on the return in the previous week.
+  The algorithm goes long on futures from the high-volume, low-open interest group with the lowest return and shorts the contract with the highest return.
+</P>
+<div class="section-example-container">
+<pre class="python">
+# the intersection of top volume group and bottom open interest group
+trade_group = list(set(top_vol) & set(bottom_OI))
+returns = {}
+for ticker in trade_group:
+    res = (hist_t1.loc[ticker]["settle"][-1] - hist_t2.loc[ticker]["settle"][-1]) / hist_t2.loc[ticker]["settle"][-1]
+    returns[ticker] = res
+
+sortedByReturn = sorted(returns, key = lambda x: returns[x])
+
+if len(sortedByReturn) >= 2:
+    if self.Portfolio.Invested:
+        self.Liquidate()
+    self.SetHoldings(sortedByReturn[-1], -0.3)
+    self.SetHoldings(sortedByReturn[0], 0.3)
+</pre>
+</div>
