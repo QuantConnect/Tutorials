@@ -390,6 +390,14 @@ $strategyMap = [
         ],
         'description' => "Goes long (short) on futures from the high-volume, low-open interest group with the lowest (greatest) returns in the previous week."
     ],
+    [
+        'name' => 'Pre-holiday Effect',
+        'link' => 'strategy-library/pre-holiday-effect',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/83'
+        ],
+        'description' => "Invests in equity market 2 days preceding holiday days and stays in cash during the other trading days."
+    ],
 ];
 
 ?>

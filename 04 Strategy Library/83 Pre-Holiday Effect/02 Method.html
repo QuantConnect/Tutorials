@@ -1,0 +1,23 @@
+<p>
+  <code>TradingCalendar</code> class can help us find all the available holidays during a period of time.
+  <code>GetDaysByType</code> returns trading days of the specified <code>TradingDayType</code> that contains trading events associated with the range of dates.
+  Here we choose the type to be <code>PublicHoliday</code> and list all holidays from today to the next two days.
+</P>
+<div class="section-example-container">
+<pre class="python">
+def OnData(self, data):
+    calendar = self.TradingCalendar.GetDaysByType(TradingDayType.PublicHoliday, self.Time, self.Time+timedelta(days=2))
+    holidays = [i.Date for i in calendar]
+</pre>
+</div>
+<p>
+  The investment vehicle is SPDR S&amp;P500 ETF. The algorithm will trade the ETF if there are holidays within the next two days and stays in cash during other trading days.
+</P>
+<div class="section-example-container">
+<pre class="python">
+if not self.Portfolio.Invested and len(holidays)>0:
+    self.SetHoldings("SPY", 1)
+elif self.Portfolio.Invested and len(holidays)==0:
+    self.Liquidate()
+</pre>
+</div>
