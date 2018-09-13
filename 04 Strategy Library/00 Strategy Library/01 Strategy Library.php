@@ -399,8 +399,8 @@ $strategyMap = [
         'description' => "Invests in equity market 2 days preceding holiday days and stays in cash during the other trading days."
     ],
     [
-        'name' => 'Term Structure of VIX Futures',
-        'link' => 'strategy-library/term-structure-of-vix-futures',
+        'name' => 'Exploiting Term Structure of VIX Futures',
+        'link' => 'strategy-library/exploiting-term-structure-of-vix-futures',
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/198'
         ],
