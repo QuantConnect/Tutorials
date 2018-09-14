@@ -406,6 +406,14 @@ $strategyMap = [
         ],
         'description' => "Goes long stocks with the bottom beta and short stocks with the top beta, securities are weighted by the ranked betas."
     ],
+    [
+        'name' => 'Exploiting Term Structure of VIX Futures',
+        'link' => 'strategy-library/exploiting-term-structure-of-vix-futures',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/198'
+        ],
+        'description' => "Buys or sells the nearest VIX futures based on the daily roll and hedge against the open positions with E-mini S&amp;P500 futures."
+    ],
 ];
 
 ?>
