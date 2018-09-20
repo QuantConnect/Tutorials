@@ -1,0 +1,125 @@
+<p>
+  The investment universe consists of all stocks in Nasdaq and NYSE.
+  We use the Wilshire 5000 Total Market Index which covers all stocks actively traded in the United States.
+</P>
+<div class="section-example-container">
+<pre class="python">
+def Initialize(self):
+    self.SetStartDate(2011, 1, 1)
+    self.SetEndDate(2018, 9, 1)
+    self.SetCash(1000000)
+    self.UniverseSettings.Resolution = Resolution.Daily
+    self.AddUniverse(self.CoarseSelectionFunction)
+    self.AddEquity("SPY", Resolution.Daily)
+    # add Wilshire 5000 Total Market Index data from Dropbox
+    self.AddData(Wilshire5000, "W5000", Resolution.Daily)
+    self.Schedule.On(self.DateRules.MonthStart("SPY"), self.TimeRules.AfterMarketOpen("SPY"), self.rebalance)
+    self.data = {}
+    self.monthly_rebalance = False
+    self.long = None
+    self.short = None
+    self.market_price = deque(maxlen=253)
+    hist = self.History(["W5000"], 400, Resolution.Daily)
+    for i in hist.loc["W5000"].itertuples():
+        self.market_price.append(i.value)
+</pre>
+</div>
+<p>
+  The formula for calculating beta is the covariance of the return of an asset with the return of the market divided by the variance of the return of the market over a certain period.
+</P>
+\[\beta_i=\frac{cov(R_i,R_{m})}{Var(R_m)}\]
+<p>
+  We choose the 1-year rolling window as the period in the beta calculation. We created the <code>SymbolData</code> class to update the rolling window of return
+  and the calculation of beta.
+</P>
+<div class="section-example-container">
+<pre class="python">
+  class SymbolData:
+      def __init__(self, symbol):
+          self.Symbol = symbol
+          self.window = RollingWindow[Decimal](2)
+          self.returns = deque(maxlen=252)
+
+      def Update(self, price):
+          if price != 0:
+              self.window.Add(price)
+              if self.window.IsReady:
+                  self.returns.append((self.window[0]-self.window[1])/self.window[1])
+
+      def IsReady(self):
+          return len(self.returns) == self.returns.maxlen
+
+      def beta(self, market_ret):
+          asset_return = np.array(self.returns, dtype=np.float32)
+          market_return = np.array(market_ret, dtype=np.float32)
+          return np.cov(asset_return, market_return)[0][1]/np.var(market_return)
+</pre>
+</div>
+<p>
+  In <code>CoarseSelectionFunction</code>, we filter the stocks which price is lower than five as they are not active in the market.
+  When the return rolling window is ready, Stocks are then ranked in ascending order on the basis of their estimated beta.
+  The algorithm goes long on five stocks at the bottom beta list and short on five stocks at the top beta list.
+</P>
+<div class="section-example-container">
+<pre class="python">
+  def CoarseSelectionFunction(self, coarse):
+
+      if self.Securities["W5000"].Price is not None:
+          self.market_price.append(self.Securities["W5000"].Price)
+      for i in coarse:
+          if i.Symbol not in self.data:
+              self.data[i.Symbol] = SymbolData(i.Symbol)
+          self.data[i.Symbol].Update(i.AdjustedPrice)
+
+      if self.monthly_rebalance:
+          sortedByPrice = [i.Symbol for i in coarse if i.AdjustedPrice>5]
+          ready_data = {symbol: data for symbol, data in self.data.items() if symbol in sortedByPrice and data.IsReady()}
+          if len(ready_data) > 20:
+              self.market_return = np.diff(np.array(self.market_price))/np.array(self.market_price)[:-1]
+              # sort the dictionary in ascending order by beta value
+              sorted_beta = sorted(ready_data, key = lambda x: ready_data[x].beta(self.market_return))
+              self.long = sorted_beta[:5]
+              self.short = sorted_beta[-5:]
+              return self.long+self.short
+          else:
+              self.monthly_rebalance = False
+              return []
+      else:
+          return []
+</pre>
+</div>
+<p>
+  In each portfolio, securities are weighted by the ranked betas. Lower-beta stocks have larger weights in the low-beta portfolio and higher-beta
+  stocks have larger weights in the high-beta portfolio. The portfolios are rebalanced every calendar month.
+</P>
+<div class="section-example-container">
+<pre class="python">
+def OnData(self, data):
+      if not self.monthly_rebalance: return
+      if self.long is None or self.short is None: return
+
+      long_invested = [x.Key for x in self.Portfolio if x.Value.IsLong]
+      short_invested = [x.Key for x in self.Portfolio if x.Value.IsShort]
+
+      for i in long_invested:
+          if i not in self.long:
+              self.Liquidate(i)
+
+      for i in short_invested:
+          if i not in self.short:
+              self.Liquidate(i)
+
+      long_scale_factor = 0.5/sum(range(1,len(self.long)+1))
+      for rank, symbol in enumerate(self.long):
+          self.SetHoldings(symbol, (len(self.long)-rank+1)*long_scale_factor)
+
+      short_scale_factor = 0.5/sum(range(1,len(self.long)+1))
+      for rank, symbol in enumerate(self.short):
+          self.SetHoldings(symbol, -(rank+1)*short_scale_factor)
+
+
+      self.monthly_rebalance = False
+      self.long = None
+      self.short = None
+</pre>
+</div>
