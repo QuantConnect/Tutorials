@@ -1,11 +1,11 @@
 <p>
-  For QuantConnect API, <a href="https://www.quantconnect.com/lean/docs#topic3838.html">Slice</a> class provides a data structure for all of an algorithm's data at a single time step. So you need use property <code>Slice.OptionChains</code> to request options data for this slice.
+  For QuantConnect API, <a href="https://www.quantconnect.com/lean/docs#topic8772.html">Slice</a> class provides a data structure for all of an algorithm's data at a single time step. So you need use property <code>Slice.OptionChains</code> to request options data for this slice.
 
-<a href="https://www.quantconnect.com/lean/docs#topic19269.html">OptionChains</a> is a collection of  OptionChain keyed by the option's underlying symbol. The elements in <code>Slice.OptionChains</code> have properties <code>Key</code>(the underlying symbol object) <code>Value</code>(the option chain).
+<a href="https://www.quantconnect.com/lean/docs#topic24223.html">OptionChains</a> is a collection of  OptionChain keyed by the option's underlying symbol. The elements in <code>Slice.OptionChains</code> have properties <code>Key</code>(the underlying symbol object) <code>Value</code>(the option chain).
 
-<a href="https://www.quantconnect.com/lean/docs#topic19245.html">OptionChain</a>  represents an entire chain of option contracts for a single underlying security. In other words, It is a list of option contracts.
+<a href="https://www.quantconnect.com/lean/docs#topic24199.html">OptionChain</a>  represents an entire chain of option contracts for a single underlying security. In other words, It is a list of option contracts.
 
-<a href="https://www.quantconnect.com/lean/docs#topic19279.html">OptionContract</a> defines a single option contract at a specific expiration and strike price. For any contract x in option chain, you can use the following statements to check different options properties.
+<a href="https://www.quantconnect.com/lean/docs#topic24232.html">OptionContract</a> defines a single option contract at a specific expiration and strike price. For any contract x in option chain, you can use the following statements to check different options properties.
 </p>
 
 <table class="table qc-table">
