@@ -1,0 +1,74 @@
+<p>
+  The investment universe consists of all stocks from AMEX and NYSE. Firstly, in <code>CoarseSelectionFunction</code>, we remove stocks which do not have fundamental data.
+</P>
+<div class="section-example-container">
+<pre class="python">
+def CoarseSelectionFunction(self, coarse):
+        if self.monthly_rebalance:
+            coarse = [x for x in coarse if (x.HasFundamentalData)
+                                        and (x.Market == "usa")]
+            return [i.Symbol for i in coarse]
+        else:
+            return []
+</pre>
+</div>
+<p>
+  Next, we are going to filter the top 30% of stocks based on their market cap.
+  In implementation, the market cap is calculated with the <code>BasicAverageShares</code>, <code>BasicEPS</code> and <code>PERatio</code>.
+  Then we request the history price 12 months ago and 11 months ago to calculate the January return of the last year.
+</P>
+<div class="section-example-container">
+<pre class="python">
+def FineSelectionFunction(self, fine):
+    if self.monthly_rebalance:
+        fine =[i for i in fine if ((i.SecurityReference.ExchangeId == "NYS") or (i.SecurityReference.ExchangeId == "ASE"))]
+        self.filtered_fine = []
+
+        for i in fine:
+            i.MarketCap = float(i.EarningReports.BasicAverageShares.TwelveMonths * (i.EarningReports.BasicEPS.TwelveMonths*i.ValuationRatios.PERatio))
+            history_start = self.History([i.Symbol], TimeSpan.FromDays(365))
+            history_end = self.History([i.Symbol],TimeSpan.FromDays(335))
+            if not history_start.empty and not history_end.empty:
+                i.Returns = float(history_end.iloc[0]["close"] - history_start.iloc[0]["close"])
+                self.filtered_fine.append(i)
+
+        size = int(len(fine)*.3)
+        self.filtered_fine = sorted(self.filtered_fine, key = lambda x: x.MarketCap, reverse=True)
+        self.filtered_fine = self.filtered_fine[:size]
+        self.filtered_fine = sorted(self.filtered_fine, key = lambda x: x.Returns, reverse=True)
+        symbols = [i.Symbol for i in self.filtered_fine]
+        self.filtered_fine = symbols
+        return symbols
+    else:
+        return []
+</pre>
+</div>
+<p>
+  Every month, stocks are grouped into ten portfolios with the equal number of stocks in each portfolio according to their performance in January one year ago.
+  Investors go long in stocks from the winner decile and shorts stocks from loser decile. The portfolio is equally weighted and rebalanced every month.
+</p>
+
+</P>
+<div class="section-example-container">
+<pre class="python">
+def OnData(self, data):
+       if not (self.monthly_rebalance): return
+       if not (self.filtered_fine): return
+       self.monthly_rebalance = False
+
+       portfolio_size = int(len(self.filtered_fine)/10)
+       short_stocks = self.filtered_fine[-portfolio_size:]
+       long_stocks = self.filtered_fine[:portfolio_size]
+       stocks_invested = [x.Key for x in self.Portfolio]
+       for i in stocks_invested:
+           #liquidate the stocks not in the filtered balance sheet accrual list
+           if i not in self.filtered_fine:
+               self.Liquidate(i)
+           #long the stocks in the list
+           elif i in long_stocks:
+               self.SetHoldings(i, 1/(portfolio_size*2))
+           #short the stocks in the list
+           elif i in short_stocks:
+               self.SetHoldings(i,-1/(portfolio_size*2))
+</pre>
+</div>

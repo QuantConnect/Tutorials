@@ -406,6 +406,14 @@ $strategyMap = [
         ],
         'description' => "Buys or sells the nearest VIX futures based on the daily roll and hedge against the open positions with E-mini S&amp;P500 futures"
     ],
+    [
+        'name' => '12 Month Cycle in Cross-Section of Stocks Returns',
+        'link' => 'strategy-library/12-month-cycle-in-cross-section-of-stocks-returns',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/125'
+        ],
+        'description' => "Goes long in stocks from the winner of and shorts stocks from loser according to their performance in January one year ago"
+    ],
 ];
 
 ?>
