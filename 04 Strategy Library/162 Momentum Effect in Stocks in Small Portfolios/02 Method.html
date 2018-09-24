@@ -1,0 +1,68 @@
+<p>
+  The investment universe consists of all US listed companies. Stocks which have no fundamental data are ruled out from the universe.
+</P>
+<div class="section-example-container">
+<pre class="python">
+def CoarseSelectionFunction(self, coarse):
+    if self.yearly_rebalance:
+        # drop stocks which have no fundamental data
+        self.filtered_coarse = [x.Symbol for x in coarse if (x.HasFundamentalData)]
+        return self.filtered_coarse
+    else:
+        return []
+</pre>
+</div>
+<p>
+  In <code>FineSelectionFunction</code>, stocks with the lowest market capitalization (25% of the universe) are excluded due to liquidity reasons.
+  The momentum is defined as the stock market return over the previous 12 months. Momentum profits are calculated by ranking companies on the basis of yearly return.
+  The ranking period is one year.
+</P>
+<div class="section-example-container">
+<pre class="python">
+  def FineSelectionFunction(self, fine):
+      if self.yearly_rebalance:
+          # Calculate the yearly return and market cap
+          for i in fine:
+              i.MarketCap = float(i.EarningReports.BasicAverageShares.ThreeMonths * (i.EarningReports.BasicEPS.TwelveMonths*i.ValuationRatios.PERatio))
+          top_market_cap = sorted(fine, key = lambda x:x.MarketCap, reverse=True)[:int(len(fine)*0.75)]
+          has_return = []
+          for i in top_market_cap:
+              history = self.History([i.Symbol], timedelta(days=365), Resolution.Daily)
+              if not history.empty:
+                  close = history.loc[str(i.Symbol)]['close']
+                  i.returns = (close[0]-close[-1])/close[-1]
+                  has_return.append(i)
+          sorted_by_return = sorted(has_return, key = lambda x: x.returns)
+          self.long = [i.Symbol for i in sorted_by_return[-10:]]
+          self.short = [i.Symbol for i in sorted_by_return[:10]]
+
+          return self.long+self.short
+      else:
+          return []
+</pre>
+</div>
+<p>
+  The investor goes long in the ten stocks with the highest performance and goes short in the ten stocks with the lowest performance.
+  The portfolio is equally weighted and rebalanced yearly.
+</p>
+
+</P>
+<div class="section-example-container">
+<pre class="python">
+  def OnData(self, data):
+      if not self.yearly_rebalance: return
+      if self.long and self.short:
+          stocks_invested = [x.Key for x in self.Portfolio if x.Value.Invested]
+          # liquidate stocks not in the trading list
+          for i in stocks_invested:
+              if i not in self.long+self.short:
+                  self.Liquidate(i)
+          for i in self.short:
+              self.SetHoldings(i, -0.5/len(self.short))
+          for i in self.long:
+              self.SetHoldings(i, 0.5/len(self.long))
+          self.long = None
+          self.short = None
+          self.yearly_rebalance = False
+</pre>
+</div>
