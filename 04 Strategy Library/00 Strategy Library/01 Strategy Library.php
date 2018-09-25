@@ -420,7 +420,15 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/125'
         ],
-        'description' => "Goes long in stocks from the winner of and shorts stocks from loser according to their performance in January one year ago"
+        'description' => "Reviews the returns from last January, going long on the top 10% winners and short the bottom 10%."
+    ],
+    [
+        'name' => 'Momentum Effect in Stocks in Small Portfolios',
+        'link' => 'strategy-library/momentum-effect-in-stocks-in-small-portfolios',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/162'
+        ],
+        'description' => "Goes long in the 10 stocks with the highest performance and goes short in the 10 stocks with the lowest performance in the previous one year."
     ],
 ];
 
