@@ -3,16 +3,20 @@
 </p>
 <div class="section-example-container">
 
-<pre class="python">def Initialize(self):
-	self.SetStartDate(2017, 2, 1)
-	self.SetEndDate(2017, 3, 31)
-	self.SetCash(150000)
-	equity = self.AddEquity("GOOG", Resolution.Minute)
-	option = self.AddOption("GOOG", Resolution.Minute)
-	self.symbol = option.Symbol
-	option.SetFilter(-20, 20, timedelta(0), timedelta(40))
-	# use the underlying equity GOOG as the benchmark
-	self.SetBenchmark(equity.Symbol)
+<pre class="python">
+def Initialize(self):
+		self.SetStartDate(2017, 2, 1)
+		self.SetEndDate(2017, 3, 1)
+		self.SetCash(500000)
+		equity = self.AddEquity("GOOG", Resolution.Minute)
+		option = self.AddOption("GOOG", Resolution.Minute)
+		self.symbol = option.Symbol
+		option.SetFilter(self.UniverseFunc)
+		# use the underlying equity GOOG as the benchmark
+		self.SetBenchmark(equity.Symbol)
+
+def UniverseFunc(self, universe):
+    return universe.IncludeWeeklys().Strikes(-15, 15).Expiration(timedelta(0), timedelta(40))
 </pre>
 </div>
 <p>
