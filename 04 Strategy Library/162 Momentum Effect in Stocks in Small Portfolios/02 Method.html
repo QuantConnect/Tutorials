@@ -1,6 +1,6 @@
 <p>
   The investment universe consists of all US listed companies. Stocks which have no fundamental data are ruled out from the universe.
-</P>
+</p>
 <div class="section-example-container">
 <pre class="python">
 def CoarseSelectionFunction(self, coarse):
@@ -13,10 +13,10 @@ def CoarseSelectionFunction(self, coarse):
 </pre>
 </div>
 <p>
-  In <code>FineSelectionFunction</code>, stocks with the lowest market capitalization (25% of the universe) are excluded due to liquidity reasons.
+  In <code>FineSelectionFunction</code>, stocks with the lowest market capitalization (25% of the universe) are excluded due to low liquidity.
   The momentum is defined as the stock market return over the previous 12 months. Momentum profits are calculated by ranking companies on the basis of yearly return.
   The ranking period is one year.
-</P>
+</p>
 <div class="section-example-container">
 <pre class="python">
   def FineSelectionFunction(self, fine):
@@ -45,8 +45,6 @@ def CoarseSelectionFunction(self, coarse):
   The investor goes long in the ten stocks with the highest performance and goes short in the ten stocks with the lowest performance.
   The portfolio is equally weighted and rebalanced yearly.
 </p>
-
-</P>
 <div class="section-example-container">
 <pre class="python">
   def OnData(self, data):
