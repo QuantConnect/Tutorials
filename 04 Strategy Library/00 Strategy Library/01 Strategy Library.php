@@ -430,6 +430,14 @@ $strategyMap = [
         ],
         'description' => "Goes long in the 10 stocks with the highest performance and goes short in the 10 stocks with the lowest performance in the previous one year."
     ],
+    [
+        'name' => 'Value Effect within Countries',
+        'link' => 'strategy-library/value-effect-within-countries',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/207'
+        ],
+        'description' => "invests in the cheapest 33% of country ETFs according to CAPE ratios."
+    ],
 ];
 
 ?>
