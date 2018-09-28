@@ -1,12 +1,12 @@
 <p>
-  This new metric is called the cyclically adjusted price-to-earnings ratio (CAPE). The basic idea is comparing the stock prices with earnings smoothed across multiple years.
-  Using backward-looking earnings allows us to smooth out the economic cycle as well as the price fluctuations.
-  By definition, CAPE is the price divided by the average of ten years of earnings (moving average), adjusted for inflation.
+  The cyclically adjusted price-to-earnings ratio (CAPE) compares the stock prices with earnings smoothed across multiple years.
+  It is the price divided by the average of ten years of earnings (moving average), adjusted for inflation.
+  The backward-looking earnings smooth out the economic cycle as well as the price fluctuations.
 </p>
 <p>
   The investment universe consists of 22 countries with easily accessible equity markets via ETFs.
   We import the custom CAPE ratio(Shiller PE Ratio) data of those 22 countries and create a dictionary to save the corresponding country ETF.
-  The CAPE ratio data is in monthly resolution and it starts from January 2000.
+  This data from Quandl is in monthly resolution and starts January 2000.
 </p>
 <div class="section-example-container">
 <pre class="python">
@@ -61,8 +61,9 @@
 </pre>
 </div>
 <p>
-  According to the academic research of Shiller and Campbell using market data from the S&P index, the lower the CAPE, the higher the investors' likely return from equities.
-  Therefore, the algorithm then invests in the cheapest 33% of countries from the sample with the lowest CAPE ratio if those countries have a CAPE below 15 (the algorithm holds 0% cash instead of countries with a CAPE higher than 15).
+  According to the academic research of Shiller and Campbell using market data from the S&amp;P index, the lower the CAPE, the higher the investors' likely return from equities.
+  Therefore, the algorithm then invests in the cheapest 33% of countries from the sample with the lowest CAPE ratio if those countries have a CAPE below 15.
+  If there are no countries with CAPE lower than 15, the algorithm holds cash instead of country ETFs.
   The portfolio is equally weighted and rebalanced monthly.
 </p>
 <div class="section-example-container">

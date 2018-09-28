@@ -436,7 +436,7 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/207'
         ],
-        'description' => "invests in the cheapest 33% of country ETFs according to CAPE ratios."
+        'description' => "Invests in the cheapest 33% of country ETFs according to CAPE ratios."
     ],
 ];
 
