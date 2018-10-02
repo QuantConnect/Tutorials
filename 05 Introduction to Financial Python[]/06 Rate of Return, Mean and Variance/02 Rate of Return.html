@@ -32,12 +32,12 @@ print rate_return
   The rate of return we calculate here is called <strong>cumulative return</strong> or<strong> overall return</strong>. It measures the total return of this asset over a period of time.
 </p>
 <p>
-  Now consider the following situation: we have two strategies: strategy A and strategy B. We backtested strategy A for 1 years and the cumulative return is 20%, while we backtested strategy B and the cumulative return is 65%. Which strategy has a high rate of return? Our commonly used method is to convert all the returns into <strong>compounding annual return</strong>, regardless of the investing horizon of each strategy. We can compare the returns of strategies with different time horizon now!
+  Now consider the following situation: we have two strategies: strategy A and strategy B. We backtested strategy A for 1 years and the cumulative return is 20%, while we backtested strategy B for 3 months and the cumulative return is 65%. Which strategy has a high rate of return? Our commonly used method is to convert all the returns into <strong>compounding annual return</strong>, regardless of the investing horizon of each strategy. We can compare the returns of strategies with different time horizon now. Since there are four quarters in a year,the annual return of strategy B is
 </p>
-\[(1+r)^3 = 1+0.65\]
-\[ r = \sqrt[3]{1.65} - 1\ = 0.18167\]
+\[(1+r)^4 = 1+0.65\]
+\[ r = \sqrt[4]{1.65} - 1\ = 0.133368\]
 <p>
-  Strategy A has an higher compounding annual return!
+  Strategy A has an higher compounding annual return when we compare 0.133 and 0.2.
 </p>
 <h4>Logarithm Return</h4>
 <p>
