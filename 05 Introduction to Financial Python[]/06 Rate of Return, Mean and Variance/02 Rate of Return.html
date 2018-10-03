@@ -37,19 +37,19 @@ print rate_return
 \[(1+0.06)^4 = 1+r\]
 \[ r = 0.262\]
 <p>
-  Strategy B has an higher compounding annual return when we compare 0.26 with 0.2.
+  Strategy B has an higher compounding annual return when we compare 26% with 20%.
 </p>
 <h4>Logarithm Return</h4>
 <p>
-  We introduced compounding annual return above, which is a kind of <strong>effective rate of return</strong>. You can regard it as a 'hypothetical return'. Strategy B might never have a 18.167% rate of rate annually during the 3-year backtesting period. However, if we assume that the strategy has a 18.167% rate of return every year, it has the same cumulative return over the 3 years. As we mentioned previously, if we assume a strategy is quarterly compounding, the relation between quarterly effective rate of return and annual return is:
+  In the above example, strategy A has 6% return over three months. Nominally, the annual return would be 3*6% = 18%.
+  This nominal annual interest rate is called the stated annual interest rate.
+  It is calculated as the periodic interest rate times the number of periods per year. It works according to the simple interest and does not take into account the compounding periods, while the effective annual interest rate is 26% as we calculated above and it does account for intra-year compounding.
+  The effective annual interest rate is an essential tool that allows the evaluation of the real return on investment.
+  If we assume the number of compounding periods in one year is n, the formula to convert the stated annual interest rate to the effective annual interest rate is
 </p>
-\[(1+\frac{r}{4})^4 = 1+r\]
+\[r_{effective}=(1+\frac{r_{nominal}}{n})^n-1\]
 <p>
-  More generally, if the times of compounding in one year is \(n\) and the annual rate of return is \(r\), the relation is given by:
-</p>
-\[(1+\frac{r}{n})^n = 1+r\]
-<p>
-  Now imagine the stock markets. The prices of your assets is changing every second, or even every millisecond. If the times of compounding, or n, approach to infinite, this is called <strong>continuous compounding</strong>. The calculation formula is given below:
+  Now imagine the price of asset is changing every second or even every millisecond, the period of compounding n approaches infinite. This is called <strong>continuous compounding</strong>. The calculation formula is given below:
 </p>
 \[\lim_{n \to \infty }(1+\frac{r}{n})^n = e^r\]
 <p>
