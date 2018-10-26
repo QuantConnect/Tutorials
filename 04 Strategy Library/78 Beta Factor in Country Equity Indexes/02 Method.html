@@ -30,7 +30,7 @@ class SymbolData:
 </pre>
 </div>
 <p>
-  <code>self.assets<code> is a dictionary to save the price series for each country ETF. The key is the ETF symbol.
+  <code>self.assets</code> is a dictionary to save the price series for each country ETF. The key is the ETF symbol.
   For new symbols added to the algorithm, we request the one-year history data to initialize the price series.
 </p>
 <div class="section-example-container">
@@ -55,7 +55,7 @@ def OnSecuritiesChanged(self, algorithm, changes):
 </pre>
 </div>
 <p>
-  In the Alpha model, <code>Update(self, algorithm, data)<code> method updates this model with the latest data from the algorithm.
+  In the Alpha model, <code>Update(self, algorithm, data)</code> method updates this model with the latest data from the algorithm.
   This method is called each time the algorithm receives data for subscribed securities. In this method, we update the price series with new trade bars.
   The price series is converted to return series. We plug the market return and the country ETF return into the beta formula.
   ETFs are then ranked in ascending order by their estimated beta. The ranked ETFs are assigned to one of two portfolios: low beta and high beta.
