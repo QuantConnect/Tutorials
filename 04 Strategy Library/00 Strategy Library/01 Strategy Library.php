@@ -438,6 +438,14 @@ $strategyMap = [
         ],
         'description' => "Invests in the cheapest 33% of country ETFs according to CAPE ratios."
     ],
+    [
+        'name' => 'Beta Factor in Country Equity Indexes',
+        'link' => 'strategy-library/beta-factor-in-country-equity-indexes',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/78'
+        ],
+        'description' => "Goes long on the low-beta portfolio and short on the high-beta portfolio in country indexes ETFs."
+    ],
 ];
 
 ?>
