@@ -9,22 +9,23 @@
 
 <div class="section-example-container">
 
-<pre class="python">def Initialize(self):
-        self.SetStartDate(2002, 1, 3)
-        self.SetEndDate(2016, 12, 1)
+<pre class="python">    def Initialize(self):
+        self.SetStartDate(2005, 1, 1)
+        self.SetEndDate(2017, 5, 10)
         self.SetCash(1000000)
-
+        
         self.UniverseSettings.Resolution = Resolution.Daily
         self.AddUniverse(self.CoarseSelectionFunction)
         self._numberOfSymbols = 100
-        self._numberOfTradings = 0.1 * self._numberOfSymbols
-
+        self._numberOfTradings = int(0.1 * self._numberOfSymbols)
+        
         self._numOfWeeks = 0
         self._LastDay = -1
         self._ifWarmUp = False
-
+        
         self._stocks = []
-        self._values = {}</pre>
+        self._values = {}
+</pre>
 </div>
 <p>
   Also, we need to use?<em>CoarseSelectionFunction</em> to select 100 qualified stocks from the total stock universe. Here, we sort the total stock universe by each stock's DollarVolume in decreasing order. Then, we select the first 100 stocks that have the largest DollarVolume among all the stocks in the universe.
@@ -32,13 +33,11 @@
 
 <div class="section-example-container">
 
-<pre class="python">def CoarseSelectionFunction(self, coarse):
-        sortedByDollarVolume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True)
-        top100 = sortedByDollarVolume[:self._numberOfSymbols]
-        list = List[Symbol]()
-        for x in top100:
-                list.Add(x.Symbol)
-        return list
+<pre class="python">
+def CoarseSelectionFunction(self, coarse):
+     sortedByDollarVolume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True)
+     top100 = sortedByDollarVolume[:self._numberOfSymbols]
+     return [i.Symbol for i in top100]
 </pre>
 </div>
 <h3>Step 2:Warm Up</h3>
