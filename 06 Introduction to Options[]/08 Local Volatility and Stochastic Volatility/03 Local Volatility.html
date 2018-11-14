@@ -23,10 +23,10 @@ If \(\sigma(S_t,t)=\sigma S_t\), then this is the case of BSM model with constan
   If we assume that we know all the observed market price of European call options C(T, K) for every strike K and every maturity T.  Local volatility model calculates volatilities for a set of options with different combinations of strike prices and expiration dates. For a given date, time(t) and the underlying stock price(St), a local volatility is derived from the equation that options price calculated with the local volatility equals to the market options price.
 </p>
 <p>
-  Usually, we can only get a limited number of contracts with a few strikes and maturities, we can follow steps below to get the local volatility estimation:
+  Usually, we can only get a limited number of contracts with a few strikes and maturities, we can follow the steps below to get the local volatility estimation:
 <ul>
      <li>First, use the available quoted price to calculate the implied volatilities.</li>
-     <li>Appy interpolation method to produce a smooth implied volatility surface.</li>
+     <li>Apply interpolation method to produce a smooth implied volatility surface.</li>
      <li>Plug implied volatilities into BSM model to get all the market prices of European calls.</li>
      <li>Calculate the local volatility according to Dupire formula. To avoid taking derivatives, we could use finite differences to approximate the derivative.</li>
 </ul>
