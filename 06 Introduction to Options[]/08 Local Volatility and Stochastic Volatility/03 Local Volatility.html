@@ -6,12 +6,13 @@
   The the local volatility of the underlying assets is a deterministic function of assets price and the time t.
 </p>
 \[\sigma=\sigma(S_t,t)\]
-
+<p>
 Therefore with the local volatility model, the stochastic process followed by the stock price is
-
+</p>
 \[\text d S_t=\mu S_t\ \text d t+\sigma(S_t,t)\text d W_t\]
-
+<p>
 If \(\sigma(S_t,t)=\sigma S_t\), then this is the case of BSM model with constant volatility\(\sigma\). Here we are not assuming the volatility is constant but a function of the asset price so the stock’s log-returns are not normally distributed anymore. There is only one source of randomness from the stock price: \(W_t\).
+</p>
 <h4>2. Model Calibration</h4>
 <p>
   How to obtain the function \(\sigma(S_t,t)\)? Finding the function \(\sigma(S_t,t)\) is known as the calibration of local volatility model. This is answered by the following Dupire's formula.
