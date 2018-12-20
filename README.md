@@ -13,8 +13,6 @@ Lean Engine is an open-source fully managed C# algorithmic trading engine built 
 
 Please submit new tutorial requests as an issue to the [Tutorial Repository][5]. Before submitting an issue please read others to ensure it is not a duplicate. Edits and fixes for clarity are warmly welcomed! 
 
-We've made a simple editor to help with drafting HTML tutorials: https://www.quantconnect.com/tutorials/editor. Once you've drafted the content there copy the code into a pull-request for the tutorials website.
-
 ## Mailing List ##
 
 The mailing list for the project can be found on [Google Groups][6]
