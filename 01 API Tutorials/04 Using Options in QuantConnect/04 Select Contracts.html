@@ -153,7 +153,7 @@ x.Right ＝ 0  put option[right to sell]</td>
 </table>
 
 <p>
-  Here we give an example of how to find ATM, ITM OTM contracts for trading. First, we need to extract the OptionChain from OptionChains according to symbols we added in Initialize step. Secondly, we extract ATM, ITM and OTM contracts by using UnderlyingLastPrice and Strike properties. Note here the strikes of ATM options are not exactly the same as the market price of underlying stocks, thus here we first sort the contracts by the absolute values of the difference between the UnderlyingLastPrice and the Strike. Then we choose the contract with the minimum absolute value as the ATM contract.
+  Here we give an example of how to find ATM, ITM and OTM contracts for trading. First, we need to extract the OptionChain from OptionChains according to symbols we added in Initialize step. Secondly, we extract ATM, ITM and OTM contracts by using UnderlyingLastPrice and Strike properties. Note here the strikes of ATM options are not exactly the same as the market price of underlying stocks, thus here we first sort the contracts by the absolute values of the difference between the UnderlyingLastPrice and the Strike. Then we choose the contract with the minimum absolute value as the ATM contract.
 </p>
 
 <div class="section-example-container">
