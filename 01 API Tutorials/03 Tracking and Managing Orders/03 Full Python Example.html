@@ -43,7 +43,7 @@ class BasicTemplateAlgorithm(QCAlgorithm):
                 -100,
                 slice["SPY"].Close * Decimal(0.9),
                 slice["SPY"].Close * Decimal(0.8),
-                "stop market")
+                "stop limit")
 
 
     def OnEndOfDay(self):
