@@ -28,7 +28,7 @@ def mc_euro_options(option_type,s0,strike,maturity,r,sigma,num_reps):
             payoff = max(0,strike-st)
         payoff_sum += payoff
     premium = (payoff_sum/float(num_reps))*e**(-r*maturity)
- return premium
+    return premium
 mc_euro_options('c',927.96,785,100.0/252,0.01,0.23,500)
 </pre>
 </div>
