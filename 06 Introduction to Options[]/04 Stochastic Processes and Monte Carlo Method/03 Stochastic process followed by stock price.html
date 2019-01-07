@@ -5,16 +5,16 @@
   On the other hand, if the spot price is small for a stock, then it tends to have small increments in price over a given time interval, on the contrary, stocks with high prices tend to have much larger increments in price on the same interval. But Wiener process has a variance which depends on just the time interval but not on the price itself. Thus it is not appropriate to assume that a stock price follows a generalized Wiener process with constant drift rate and variance rate.
 </p>
 <p>
-  In order to characterize the dynamics of a stock price process and fix this problem, we model the proportional increase in the stock price as follows(This kind of equation is often called the stochastic differential equation (SDE)):
+  In order to characterize the dynamics of a stock price process and fix this problem, we model the proportional increase in the stock price by using the stochastic differential equation (SDE):
 </p>
 
 \[\text dS_t=\mu S_t\ \text d t+\sigma S_t\ \text dW_t \cdot\cdot\cdot\cdot\cdot\cdot(1)\]
 <p>
-  Where \(dS_t\) is the change in the stock price over a short time period from t to\(t+\Delta t\). μ is the drift term and can be deemed as the annual expected level of the stock return, σ is the annual volatility of the stock. Here \(dS_t\) at different time t are independent, which means today's price change is independent with tomorrows change. \(W_t\) is a standard Wiener process (1) we discussed above.
+  Where \(dS_t\) is the change in the stock price over a short time period from \(t\) to \(t+\Delta t\). \(μ\) is the drift term and can be deemed as the annual expected level of the stock return, \(σ\) is the annual volatility of the stock. Here \(dS_t\) at different time \(t\) are independent, which means today's price change is independent with tomorrows change. \(W_t\) is a standard Wiener process (1) we discussed above.
 </p>
 
 <p>
-  Now in the above equation, the drift and variance rate of stock price S is not only correlated with time t but also a function of both S itself and time t.
+  Now in the above equation, the drift and variance rate of stock price \(S\) is not only correlated with time \(t\) but also a function of both \(S\) itself and time \(t\).
 </p>
 
 <p>
@@ -22,17 +22,17 @@
 </p>
 \[\Delta S=\mu S\Delta t+\sigma S\epsilon\sqrt{\Delta t}\]
 <p>
-  We can also derive the process that \(lnS_t\) follows is(Here we just give the result, the derivation should use the Ito Lemma):
+  We can also derive the process that \(ln(S_t)\) follows (here we just give the result, but the derivation uses the Ito Lemma):
 </p>
 \[\text d\ ln(S_t)=(\mu-\frac{\sigma^2}{2}) \ \text d t+\sigma \ \text dW_t \cdot\cdot\cdot\cdot\cdot\cdot(2)\]
 <p>
-  Here ln S follows a generalized Wiener process as which has constant drift rate and variance rate. That means the change in ln(S) during time interval  \(\Delta t\) is normally distributed. This is the lognormal property of stock prices.
+  Here \(ln(S_t)\) follows a generalized Wiener process as which has constant drift rate and variance rate. That means the change in \(ln(S_t)\) during time interval \(\Delta t\) is normally distributed. This is the lognormal property of stock prices.
 </p>
 \[lnS_{t+\Delta t}-lnS_t\sim N\left[(\mu-\frac{\sigma^2}{2})\Delta t,\sigma^2\Delta t\right]\]
 
 \[lnS_{t+\Delta t}\sim N\left[\text ln{S_t}+(\mu-\frac{\sigma^2}{2})\Delta t,\sigma^2\Delta t\right]\]
 <p>
-  Now the logarithm stock price follows the normal distribution.We write (2) into discrete approximation form as:
+  Now the logarithm stock price follows the normal distribution. We write (2) into discrete approximation form as:
 </p>
 \[ln(S_{t+\Delta t})-ln(S_{t})=(\mu-\frac{\sigma^2}{2})\ \Delta t+\sigma \epsilon\sqrt{\Delta t}\]
 <p>Equivalently</p>
@@ -43,5 +43,5 @@
 </p>
 \[S_{T}=S_{0}\exp\left[(\mu-\frac{\sigma^2}{2})\ T+\sigma \epsilon\sqrt{T}\right]\]
 <p>
-  According to the above equation, we know the stock price at time T should always greater than 0, the problem for negative price is fixed. Thus we say stock price S is a Geometric Brownian motion because the logarithm of S follows a Brownian motion.
+  According to the above equation, we know the stock price at time \(T\) should always greater than 0 and the problem of having a negative price is fixed. Thus we say the stock price \(S\) is a Geometric Brownian motion because the logarithm of \(S\) follows a Brownian motion.
 </p>
