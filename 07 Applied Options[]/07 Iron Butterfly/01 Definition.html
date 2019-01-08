@@ -1,5 +1,5 @@
 <p>
-	Iron Butterfly is an option strategy which involves four option contracts. All options have the same expiration date. The order of strike for four contracts is A &gt; B &gt; C.
+	The Iron Butterfly is an option strategy which involves four option contracts, all of which have the same expiration date. The order of strike prices for the four contracts is A &gt; B &gt; C.
 </p>
 <table class="table qc-table">
 <thead>
@@ -28,7 +28,7 @@
 </tbody>
 </table>
 <p>
-	Similar to the Iron Condor, Iron Butterfly is a limited risk, limited profit trading strategy. It profits from lower volatility meaning that traders gain profits from this strategy if the stock price changes within a small range. Iron Butterfly has a more narrow range for the price to move up or down compared with Iron Condor.
+	Similar to the Iron Condor, the Iron Butterfly is a limited risk, limited profit trading strategy. It profits from lower volatility, meaning that traders profit if the stock price has marginal movement within a small range. The Iron Butterfly has a more narrow range for the price to move up or down compared with the Iron Condor.
 </p>
 <div class="section-example-container">
 
@@ -65,8 +65,8 @@ plt.grid(True)
 </div>
 <img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial07-iron-butterfly.png" alt="iron butterfly strategy payoff"/>
 <p>
-	From the payoff plot, the maximum gain is simply the net credit you received when you buy and sell 4 options. This occurs if the stock price is exactly the same as the strike price of ATM options. In this condition, all options expire worthless and you keep all premiums received. We can see the Iron Butterfly has more narrow structures than the Iron Condor. However, the profit can be higher than with the Iron Condor as you receive more premium by selling ATM options than OTM options.
+	From the payoff plot, the maximum gain is simply the net credit you received when you buy and sell 4 options. This occurs if the stock price is exactly the same as the strike price of the ATM options. In this situation, all options expire worthless and you keep all premiums received. Although the Iron Butterfly has a narrower structure than the Iron Condor, the profit can be higher than with the Iron Condor as you receive a higher premium by selling ATM options than OTM options.
 </p>
 <p>
-	The maximum loss occurs if the underlying price is either below the OTM put strike or above the OTM call strike. In these two conditions, two puts or two calls are exercised and the other two options expire worthless.
+	The maximum loss occurs if the underlying price is either below the OTM put strike or above the OTM call strike. In these two situations, two puts or two calls are exercised and the other two options expire worthless.
 </p>
