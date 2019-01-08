@@ -1,5 +1,5 @@
 <p>
-	Protective Collar is an option strategy that involves both the underlying stock and two option contracts. The trader buys (or already owns) a stock, then buys an out-the-money put option and sells an out-the-money call option.  It is similar to the covered call strategy with the purchase of an additional put option. It is being used if the trader is writing covered calls but wish to protect himself from an unexpected downside sharp move in the price of the underlying security. As a tradeoff, the profit will become limited compared with the covered call strategy.
+	A Protective Collar is an option strategy that involves both the underlying stock and two option contracts. The trader buys (or already owns) a stock, then buys an out-the-money put option and sells an out-the-money call option.  It is similar to the covered call strategy but with the purchase of an additional put option. This strategy is employed if the trader is writing covered calls but wishes to protect himself from an unexpected drop in the price of the underlying security. As a tradeoff for loss-protection, the profit is limited compared with the Covered Call strategy.
 </p>
 <div class="section-example-container">
 
@@ -32,5 +32,5 @@ plt.grid(True)
 </div>
 <img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial08-protective-collar.png" alt="protective collar strategy payoff"/>
 <p>
-	According to the payoff plot, the maximum profit is the strike price of short call minus the purchase price of the underlying asset add the net credit from the premium. It occurs when the stock price is beyond the strike price of the short call option. The maximum loss is the purchase price of the underlying asset minus the strike price of the long put minus the net credit from the premium. It occurs when the stock price is below the strike price of the long put. It is a strategy with limit risk and limit profit.
+	According to the payoff plot, the maximum profit is the strike price of short call minus the purchase price of the underlying asset plus the net credit from the premium. It occurs when the underlying price is beyond the strike price of the short call option. The maximum loss is the purchase price of the underlying asset minus the strike price of the long put minus the net credit from the premium. It occurs when the stock price is below the strike price of the long put. It is a strategy with both limited risk and limited profit.
 </p>
