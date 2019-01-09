@@ -1,5 +1,5 @@
 <p>
-	Step 1: Initialize your algorithm that involves setting the start date and the end date, setting the cash and implement the coarse selection of option contracts.
+	Step 1: Initialize your algorithm by setting the start date, end date and cash. Then implement the coarse selection of options contracts.
 </p>
 <div class="section-example-container">
 
@@ -46,7 +46,7 @@ self.Buy(self.otm_put.Symbol, 1) # buy the OTM put
 </pre>
 </div>
 <p>
-	Step 4: In Ondata, if there is no assets in portfolio, we buy the undelying stocks. After that, we trade the options which equivalent to the amount of your stocks holding. (one option contracts equals 100 undelying shares).
+	Step 4: In OnData, if there are no assets in our portfolio, we buy the undelying stock. After that, we trade the options written on the same number of shares of underlying asset (one option contracts equals 100 undelying shares).
 </p>
 <div class="section-example-container">
 

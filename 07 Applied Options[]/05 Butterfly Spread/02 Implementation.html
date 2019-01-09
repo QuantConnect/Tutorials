@@ -1,5 +1,5 @@
 <p>
-	Step 1: Initialize your algorithm including setting the start date and the end date, setting the cash and implement a coarse selection of option contract. <code>SetFilter(-9, 9, timedelta(30), timedelta(60))</code> helps us choose the contracts which expire in 30 to 60 days from now on. Since ITM call strike and OTM call strike are symmetrical with ATM call strike. For the strike parameter, the first parameter is the minimum strike rank relative to market price,  the second parameter is the maximum strike rank relative to market price. The rank of ATM contract is 0. Here we need to choose 2 numbers which are symmetrical with 0.
+	Step 1: Initialize your algorithm including setting the start date and the end date, setting the cash and implement a coarse selection of option contract. <code>SetFilter(-9, 9, timedelta(30), timedelta(60))</code> helps us choose the contracts which expire in 30 to 60 days. For the strike parameter, the first parameter is the minimum strike rank relative to market price,  the second parameter is the maximum strike rank relative to market price. The rank of ATM contract is 0. Here we need to choose 2 numbers which are symmetrical with 0 to get strike prices for both ITM and OTM contracts.
 </p>
 <div class="section-example-container">
 
@@ -16,7 +16,7 @@
 </pre>
 </div>
 <p>
-	Step 2: Second we need to choose an expiration date for all the contracts in Butterfly Spread strategy. Then filter out all the call options expire on that date.
+	Step 2: Second we need to choose an expiration date for all the contracts, then filter out all the call options that expire on that date.
 </p>
 <div class="section-example-container">
 
@@ -30,7 +30,7 @@
 </pre>
 </div>
 <p>
-	Step 3: Sort the call options by their strike price in ascending order. Then the ATM option is the one which has the smallest absolute value of the difference between the strike price and the underlying asset price. The OTM option is the last one in this call options list which has the highest strike price. The corresponding ITM option is the first one in the list which has the lowest strike price.
+	Step 3: Sort the call options by their strike price in ascending order. Then choose the ATM option to be the one with the smallest absolute difference between the strike price and the underlying asset price. The OTM option is the last one in the call options list with the highest strike price. The corresponding ITM option is the first one in the list with the lowest strike price.
 </p>
 <div class="section-example-container">
 

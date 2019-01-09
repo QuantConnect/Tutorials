@@ -1,5 +1,5 @@
 <p>
-	Iron Condor is an option strategy which involves four option contracts.All options have the same expiration date. The order of strike for four contracts is A &gt; B &gt; C &gt; D.
+	An Iron Condor is an option strategy which involves four option contracts. All options have the same expiration date but different strike prices, where generally the spread in the put strike prices is the same as the spread in the calls. The order of strike for four contracts is A &gt; B &gt; C &gt; D.
 </p>
 <table class="table qc-table">
 <thead>
@@ -66,5 +66,5 @@ plt.grid(True)
 </div>
 <img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial06-iron-condor.png" alt="iron condor strategy payoff"/>
 <p>
-	Here the strike price is A(750), B(780), C(820) and D(850). From the payoff plot, the maximum profit all come from the options premium because the deeper OTM options are cheaper than the less deep ones. It is reached when the stock price is between higher put strike and lower call strike. They are two short positions. In this condition, all the options expire worthless.  The maximum loss of Iron Condor is reached when the stock price is lower than the lowest strike A, then the two call options become worthless, the two puts are in the money. For the other condition, the stock price is higher than the highest strike D.Consequently, The two call options are in the money but the two puts expire worthless.
+	Here the strike price is A (750), B (780), C (820) and D (850). As seen in the payoff plot, the maximum profit comes from the options premium because the deeper OTM options are cheaper than the shallower ones. It is reached when the stock price is between the higher put strike and lower call strike (the two short positions) and the options all expire worthless. The maximum loss of Iron Condor is reached when the stock price is lower than the lowest strike A, then the two call options become worthless, the two puts are in the money. For the other condition, the stock price is higher than the highest strike D. Consequently, the two call options are in the money but the two puts expire worthless.
 </p>

@@ -1,11 +1,11 @@
 <p>
- Bull Call Spread is an option strategy involved with two call option contracts with the same expiration but different strikes. The strategy buys the call options with a lower strike and sells the same amount of call options with a higher strike price.
+ Bull Call Spread is an options strategy involving two call option contracts with the same expiration but different strikes. The strategy buys one call option with a lower strike and sells another call option with a higher strike price.
 </p>
 <p>
- This strategy creates a ceiling and floor for the profit. By purchasing a call and selling a call with higher strike simultaneously, traders can reduce the cost of just one long call option with the premium of a short call option. But the premium of ITM call is more expensive than the OTM call. The strategy limits the loss from the dropping price of the stock but still create a ceiling to the profit while the price is increasing.
+ This strategy creates a ceiling and floor for the profit. By purchasing a call and selling a call with higher strike simultaneously, traders can reduce the cost of just one long call option with the premium of a short call option. But the premium of ITM call is more expensive than the OTM call. The strategy limits the loss resulting from a drop in the price of the underlying stock but still creates a ceiling to the profit while the underlying price is increasing.
 </p>
 <p>
- Take GOOG as an example. If the share price of GOOG is $950 at time 0, the premium of ITM call option is 20 with strike 900, the premium of OTM call option is 2 with strike 1000. If we ignore the commission, dividends and other transaction fees, the payoff of Bull Call Spread strategy is as follows:
+ Take GOOG as an example. If the share price of GOOG is $950 at time 0, the premium of ITM call option is 20 with strike 900 and the premium of OTM call option is 2 with strike 1000. If we ignore the commission, dividends and other transaction fees, the payoff of Bull Call Spread strategy is as follows:
 </p>
 <div class="section-example-container">
 
@@ -32,5 +32,5 @@ plt.grid(True)
 </div>
 <img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial02-bull-call-spread.png" alt="Tutorial02-bull-call-spread"/>
 <p>
- From the payoff plot we can see, the maximum profit of the strategy is the difference between call option strike price sold and call option strike price purchased minus the difference between buying lower strike call premium and selling higher strike call premium.
+ From the payoff plot we can see, the maximum payoff of the strategy is the difference between the option strike prices minus the difference between the premiums.
 </p>

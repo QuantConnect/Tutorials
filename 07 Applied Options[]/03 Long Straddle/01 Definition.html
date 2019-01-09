@@ -1,5 +1,5 @@
 <p>
-	Long Straddle is an option strategy involved with the long position of a call option and a put option. Both of them have the same strike price and the same expiration date. This strategy aims to gain profit when you feel that a stock was about to make a big move, but are not sure which way the price will move.
+	Long Straddle is an options trading strategy involving the going long in both a call and a put option, where both options have the same underlying asset, strike price and expiration date. This strategy aims to profit from volatile movements in the underlying stock, either positive or negative.
 </p>
 <div class="section-example-container">
 
@@ -25,5 +25,5 @@ plt.grid(True)
 </div>
 <img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial03-long-straddle.png" alt="long straddle strategy payoff"/>
 <p>
- Given this plot, if the stock price moves sharply at the expiration either up or down, the Long Straddle will collect positive profit. the potential profit is unlimited on the upside because the stock price can rise indefinitely. On the downside, the potential profit is substantial, because the stock price can fall to zero. The potential loss is limited to the premium of both call and put options. The maximum loss will be reached if the stock price is exactly equal to the strike price at expiration. Both options will expire worthless.
+ Given this plot, if the stock price moves significantly away from the strike price in either direction, the Long Straddle will profit. The potential profit is unlimited on the upside because the stock price can rise indefinitely. On the downside, the potential profit is substantial but limited since the stock price can't fall below zero. The potential loss is limited to the premium of both call and put options. The maximum loss will be realized if the stock price is exactly equal to the strike price at expiration, and both options will expire worthless.
 </p>
