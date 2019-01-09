@@ -63,7 +63,7 @@ for i in range(5):
 <p>
   Where ε follows the standard normal distribution N(0,1). Thus \(\Delta x\) has normal distribution with the mean being \(a\Delta t\), variance being \(b^2\Delta t\). And because \(\Delta t\) is independent, from time 0 to time T, the change in the value of x is just the sum of \(\Delta x\) in each small time interval. It means that the change in the value of x follows the normal distribution \(N(aT,b^2T)\).
 </p>
-<h3>2. The stochastic process followed by stock price</h3>
+<h3> Modeling Stock Price as a Stochastic Process</h3>
 <p>
   Then we go back to the stock price. If we use the generalized Wiener process to model the stock price, for example, the share price of a stock is $30 now, then the percentage change in price from now to say the end of this year is normally distributed with constant mean and variance. But there is a problem that for normal distribution assumption of return, there is the possibility that the stock price will be negative this is unrealistic for stock prices. For example, this percentage change could be -1.1, which means the stock price at the end of the year is -$3.
 </p>
@@ -116,7 +116,7 @@ for i in range(5):
 <p>
   Monte Carlo method divides a time interval into many small time steps and randomly sampling possible paths for the variable, then repeats this process many times attempting to predict all the possible future outcomes of random variables.
 </p>
-<h3>1. Monte Carlo Simulation of Stock Price</h3>
+<h3>Monte Carlo Simulation of Stock Price</h3>
 <p>
   We apply this technique to modeling stock prices in order to look at the potential evolution of stock prices over time and then demonstrate how to price the European options. Here we use Google as an example. Suppose today is 07/31/2017, the share price of GOOG is $930.5. We use the historical close price from 01/2015 to 07/2017 to compute the historical annual return and volatility as the mu and sigma parameters. (Note, we do not need to concern with the detailed determinants of 􏰯\(\mu\) because the value of options written on a stock is, in general, independent of􏰯 \(\mu\). In contrast, the stock price volatility \(\sigma\) is of crucial importance to the determination of the value of options). Consider GOOG that pays no-dividends, has an expected return 39.64% per annum with continuous compounding and a volatility of 23.44% per annum. Observe today’s price $903.5 per share and with ∆t = 0.001 yr. Then we apply Monte Carlo to simulate 500 price paths in the next three months.
 </p>
@@ -149,7 +149,7 @@ plt.xlabel('steps',fontsize=15)
 </pre>
 </div>
 <img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial03-stock-price-path.png" alt="stock price path"/>
-<h3>1. Monte Carlo Simulation of European Options</h3>
+<h3>Monte Carlo Simulation of European Options</h3>
 <p>
   Monte Carlo simulation is a commonly used method for derivatives pricing where the payoff is dependent on the history of the underlying asset or where there are several underlying variables.
 </p>
