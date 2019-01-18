@@ -10,57 +10,68 @@ $strategyMap = [
     [
         'name' => 'CAPM Alpha Ranking Strategy on Dow 30 Companies',
         'link' => 'strategy-library/capm-alpha-ranking-strategy-on-dow-30-companies',
-        'description' => 'Applies CAPM model to rank Dow Jones 30 companies.'
+        'description' => 'Applies CAPM model to rank Dow Jones 30 companies.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Combining Mean Reversion and Momentum in Forex Market',
         'link' => 'strategy-library/combining-mean-reversion-and-momentum-in-forex-market',
-        'description' => 'Combines momentum and mean reversion techniques in the forex markets.'
+        'description' => 'Combines momentum and mean reversion techniques in the forex markets.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Pairs Trading-Copula vs Cointegration',
         'link' => 'strategy-library/pairs-trading-copula-vs-cointegration',
-        'description' => 'Applies Copula and Cointergration method to pairs trading.'
+        'description' => 'Applies Copula and Cointergration method to pairs trading.',
+        'tags'=>'Expert'
     ],
     [
         'name' => 'The Dynamic Breakout II Strategy',
         'link' => 'strategy-library/the-dynamic-breakout-ii-strategy',
-        'description' => 'A demonstration of dynamic breakout II strategy.'
+        'description' => 'A demonstration of dynamic breakout II strategy.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Dual Thrust Trading Algorithm',
         'link' => 'strategy-library/dual-thrust-trading-algorithm',
-        'description' => 'A demontration of Dual Thrust Intraday strategy.'
+        'description' => 'A demontration of Dual Thrust Intraday strategy.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Can Crude Oil Predict Equity Returns',
         'link' => 'strategy-library/can-crude-oil-predict-equity-returns',
-        'description' => 'Applies regression method to predict the return from the stock market and compare it to the short-term U.S. T-bill rate.'
+        'description' => 'Applies regression method to predict the return from the stock market and compare it to the short-term U.S. T-bill rate.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Intraday Dynamic Pairs Trading using Correlation and Cointegration Approach',
         'link' => 'strategy-library/intraday-dynamic-pairs-trading-using-correlation-and-cointegration-approach',
-        'description' => 'A high frequency pairs trading algorithm based on cointegration.'
+        'description' => 'A high frequency pairs trading algorithm based on cointegration.',
+        'tags'=>'Expert'
     ],
     [
         'name' => 'The Momentum Strategy Based on the Low Frequency Compoment of Forex Market',
         'link' => 'strategy-library/the-momentum-strategy-based-on-the-low-frequency-Component-of-forex-market',
-        'description' => 'Applies high frequency filter to the momentum strategy.'
+        'description' => 'Applies high frequency filter to the momentum strategy.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Stock Selection Strategy Based on Fundamental Factors',
         'link' => 'strategy-library/stock-selection-strategy-based-on-fundamental-factors',
-        'description' => 'MorningStar Fundamental factors universe selection algorithm.'
+        'description' => 'MorningStar Fundamental factors universe selection algorithm.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Short-Term Reversal Strategy in Stocks',
         'link' => 'strategy-library/short-term-reversal-strategy-in-stocks',
-        'description' => 'A short term reversal algorithm which gives the opposite signal by analyzing recent period price action.'
+        'description' => 'A short term reversal algorithm which gives the opposite signal by analyzing recent period price action.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Fundamental Factor Long Short Strategy',
         'link' => 'strategy-library/fundamental-factor-long-short-strategy',
-        'description' => 'A basic monthly rebalance long short algorithm based on fundamental factors.'
+        'description' => 'A basic monthly rebalance long short algorithm based on fundamental factors.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Asset Class Trend Following',
@@ -68,7 +79,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/1'
         ],
-        'description' => 'Selects ETFs over ten-month moving average and assigns an equally weighted allocation.'
+        'description' => 'Selects ETFs over ten-month moving average and assigns an equally weighted allocation.',
+        'tags'=>'Beginner'
     ],
     [
         'name' => 'Asset Class Momentum',
@@ -76,7 +88,9 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/2'
         ],
-        'description' => 'Selects ETFs in different asset classes with the highest momentum and assigns an equally weighted allocation.'
+        'description' => 'Selects ETFs in different asset classes with the highest momentum and assigns an equally weighted allocation.',
+        'tags'=>'Beginner'
+        
     ],
     [
         'name' => 'Sector Momentum',
@@ -84,7 +98,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/3'
         ],
-        'description' => 'Selects ETFs in different sectors with the highest momentum and assigns an equally weighted allocation.'
+        'description' => 'Selects ETFs in different sectors with the highest momentum and assigns an equally weighted allocation.',
+        'tags'=>'Beginner'
     ],
     [
         'name' => 'Overnight Anomaly',
@@ -92,7 +107,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/4'
         ],
-        'description' => 'Buy SPY ETF at its closing price and sell it at the opening each day.'
+        'description' => 'Buy SPY ETF at its closing price and sell it at the opening each day.',
+        'tags'=>'Beginner'
     ],
     [
         'name' => 'Forex Carry Trade',
@@ -100,7 +116,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/5'
         ],
-        'description' => 'Goes long the currency with the highest central bank interest rate and goes short the currency with the lowest interest rate.'
+        'description' => 'Goes long the currency with the highest central bank interest rate and goes short the currency with the lowest interest rate.',
+        'tags'=>'Beginner'
     ],
     [
         'name' => 'Volatility Effect in Stocks',
@@ -108,7 +125,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/7'
         ],
-        'description' => 'Constructs equally weighted portfolios by selecting stocks with the lowest volatility in the past one year.'
+        'description' => 'Constructs equally weighted portfolios by selecting stocks with the lowest volatility in the past one year.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Forex Momentum',
@@ -116,7 +134,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/8'
         ],
-        'description' => 'Goes long currencies with strongest 12 month momentum against USD and goes short currencies with the lowest 12 month momentum against USD.'
+        'description' => 'Goes long currencies with strongest 12 month momentum against USD and goes short currencies with the lowest 12 month momentum against USD.',
+        'tags'=>'Beginner'
     ],
     [
         'name' => 'Pairs Trading with Stocks',
@@ -124,7 +143,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/12'
         ],
-        'description' => 'Looks for the security that minimizes the sum of squared deviations and long-short position is opened when pair prices have diverged by multiple of standard deviations.'
+        'description' => 'Looks for the security that minimizes the sum of squared deviations and long-short position is opened when pair prices have diverged by multiple of standard deviations.',
+        'tags'=>'Expert'
     ],
     [
         'name' => 'Short Term Reversal',
@@ -132,7 +152,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/13'
         ],
-        'description' => 'Goes long stocks with the lowest return in the previous month and goes short stocks with the greatest return from the previous month.'
+        'description' => 'Goes long stocks with the lowest return in the previous month and goes short stocks with the greatest return from the previous month.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Momentum Effect in Stocks',
@@ -148,7 +169,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/15'
         ],
-        'description' => 'Goes long stocks with the best 12-month momentum in the country equity indexes ETFs.'
+        'description' => 'Goes long stocks with the best 12-month momentum in the country equity indexes ETFs.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Mean Reversion Effect in Country Equity Indexes',
@@ -164,7 +186,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/18'
         ],
-        'description' => 'Goes long stocks with the lowest turnover and short on stocks with the highest turnover from the lowest market-cap quartile.'
+        'description' => 'Goes long stocks with the lowest turnover and short on stocks with the highest turnover from the lowest market-cap quartile.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Volatility Risk Premium Effect',
@@ -172,7 +195,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/20'
         ],
-        'description' => 'Sells at-the-money straddle with one month until maturity and buys an offsetting 15% out-of-the-money puts each month.'
+        'description' => 'Sells at-the-money straddle with one month until maturity and buys an offsetting 15% out-of-the-money puts each month.',
+        'tags'=>'Expert'
     ],
     [
         'name' => 'Momentum Effect in Commodities Futures',
@@ -180,7 +204,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/21'
         ],
-        'description' => 'Goes long commodity futures with the highest momentum and short on futures with the lowest momentum.'
+        'description' => 'Goes long commodity futures with the highest momentum and short on futures with the lowest momentum.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Small Capitalization Stocks Premium Anomaly',
@@ -196,7 +221,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/44'
         ],
-        'description' => 'Goes long asset with better performance over the last period and rebalances portfolio every quarter.'
+        'description' => 'Goes long asset with better performance over the last period and rebalances portfolio every quarter.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Term Structure Effect in Commodities',
@@ -204,7 +230,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/22'
         ],
-        'description' => 'Buys each month the 20% of commodities with the highest roll-returns and shorts the 20% of commodities with the lowest roll-returns and holds the long-short positions for one month.'
+        'description' => 'Buys each month the 20% of commodities with the highest roll-returns and shorts the 20% of commodities with the lowest roll-returns and holds the long-short positions for one month.',
+        'tags'=>'Expert'
     ],
     [
         'name' => 'Momentum Effect Combined with Term Structure in Commodities',
@@ -212,7 +239,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/23'
         ],
-        'description' => 'Portfolios are formed based on roll returns and the algorithm goes long and short contracts with the highest and lowest one-month performance.'
+        'description' => 'Portfolios are formed based on roll returns and the algorithm goes long and short contracts with the highest and lowest one-month performance.',
+        'tags'=>'Expert'
     ],
     [
         'name' => 'Book-to-Market Value Anomaly',
@@ -220,7 +248,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/26'
         ],
-        'description' => 'Quintile portfolios are formed based on the Book-to-Market ratio and the highest quintile is held for one year.'
+        'description' => 'Quintile portfolios are formed based on the Book-to-Market ratio and the highest quintile is held for one year.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Gold Market Timing',
@@ -228,7 +257,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/43'
         ],
-        'description' => 'Goes long gold when the Fed model shows that the market is undervalued (the earnings yield is higher than the bond yield and their ratio is at least 2).'
+        'description' => 'Goes long gold when the Fed model shows that the market is undervalued (the earnings yield is higher than the bond yield and their ratio is at least 2).',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Turn of the Month in Equity Indexes',
@@ -236,7 +266,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/41'
         ],
-        'description' => 'Buys SPY the day before the end of the month and liquidates position on 3rd trading day of new month.'
+        'description' => 'Buys SPY the day before the end of the month and liquidates position on 3rd trading day of new month.',
+        'tags'=>'Beginner'
     ],
     [
         'name' => 'Momentum - Short Term Reversal Strategy',
@@ -244,7 +275,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/51'
         ],
-        'description' => 'Goes long stocks with the decreasing return from the winner group and short stocks with the increasing return from the loser group.'
+        'description' => 'Goes long stocks with the decreasing return from the winner group and short stocks with the increasing return from the loser group.',
+        'tags'=>'Beginner'
     ],
     [
         'name' => 'Pairs Trading with Country ETFs',
@@ -252,7 +284,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/55'
         ],
-        'description' => 'Identifies the price divergence from two highly correlated country ETFs and takes a market neutral position.'
+        'description' => 'Identifies the price divergence from two highly correlated country ETFs and takes a market neutral position.',
+        'tags'=>'Expert'
     ],
     [
         'name' => 'Sentiment and Style Rotation Effect in Stocks',
@@ -260,7 +293,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/53'
         ],
-        'description' => 'Creates long-short positions of growth and value stocks based on the investment sentiment.'
+        'description' => 'Creates long-short positions of growth and value stocks based on the investment sentiment.',
+        'tags'=>'Expert'
     ],
     [
         'name' => 'Asset Growth Effect',
@@ -268,7 +302,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/52'
         ],
-        'description' => 'Creates long-short positions of stocks based on the annual change of their total assets.'
+        'description' => 'Creates long-short positions of stocks based on the annual change of their total assets.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Momentum and State of Market Filters',
@@ -276,7 +311,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/54'
         ],
-        'description' => 'Goes long and short stocks with the highest and lowest six-month momentum respectively if the previous 12 months return on the broad market index was positive.'
+        'description' => 'Goes long and short stocks with the highest and lowest six-month momentum respectively if the previous 12 months return on the broad market index was positive.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Accrual Anomaly',
@@ -284,7 +320,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/38'
         ],
-        'description' => 'Decile portfolios are formed based on balance sheet based accruals and highest decile is shorted while lowest decile is bought for a year.'
+        'description' => 'Decile portfolios are formed based on balance sheet based accruals and highest decile is shorted while lowest decile is bought for a year.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Momentum and Style Rotation Effect',
@@ -292,7 +329,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/91'
         ],
-        'description' => 'Goes long style index ETF with the highest 12-month momentum and short ETF with the lowest 12-month momentum.'
+        'description' => 'Goes long style index ETF with the highest 12-month momentum and short ETF with the lowest 12-month momentum.',
+        'tags'=>'Beginner'
     ],
     [
         'name' => 'Trading with WTI BRENT Spread',
@@ -300,7 +338,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/100'
         ],
-        'description' => 'Goes long the spread if the spread is below 20-day moving average and short if the spread is above 20-day moving average.'
+        'description' => 'Goes long the spread if the spread is below 20-day moving average and short if the spread is above 20-day moving average.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Momentum Effect in REITs',
@@ -308,7 +347,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/152'
         ],
-        'description' => 'Trecile portfolios are formed based on momentum and the best performing portfolio is held.'
+        'description' => 'Trecile portfolios are formed based on momentum and the best performing portfolio is held.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Option Expiration Week Effect',
@@ -316,7 +356,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/102'
         ],
-        'description' => 'Goes long S&amp;P 100 index ETF during option expiration week and stays in cash during other days.'
+        'description' => 'Goes long S&amp;P 100 index ETF during option expiration week and stays in cash during other days.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Earnings Quality Factor',
@@ -324,7 +365,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/229'
         ],
-        'description' => 'Goes long stocks with high earnings quality and short stocks with low earnings quality based on composite factor score.'
+        'description' => 'Goes long stocks with high earnings quality and short stocks with low earnings quality based on composite factor score.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'January Effect in Stocks',
@@ -332,7 +374,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/114'
         ],
-        'description' => 'Invests into small cap stocks at the beginning of each January and stays invested in large cap stocks for rest of the year.'
+        'description' => 'Invests into small cap stocks at the beginning of each January and stays invested in large cap stocks for rest of the year.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Momentum and Reversal Combined with Volatility Effect in Stocks',
@@ -340,7 +383,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/155'
         ],
-        'description' => 'Goes long on stocks from the highest performing quintile from the highest volatility group and short on stocks from the lowest performing quintile from the highest volatility group.'
+        'description' => 'Goes long on stocks from the highest performing quintile from the highest volatility group and short on stocks from the lowest performing quintile from the highest volatility group.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'ROA Effect within Stocks',
@@ -348,7 +392,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/199'
         ],
-        'description' => 'Goes long on stocks with highest ROA and short stocks with the lowest ROA from each market capitalization group.'
+        'description' => 'Goes long on stocks with highest ROA and short stocks with the lowest ROA from each market capitalization group.',
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'January Barometer',
@@ -356,7 +401,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/113'
         ],
-        'description' => "Invested in equity market with ETF only if January return is positive otherwise switch investments to T-Bills."
+        'description' => "Invested in equity market with ETF only if January return is positive otherwise switch investments to T-Bills.",
+        'tags'=>'Beginner'
     ],
     [
         'name' => 'Lunar Cycle in Equity Market',
@@ -364,7 +410,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/61'
         ],
-        'description' => "Goes long in emerging market index ETF 7 days before the new moon and switch to a short position on emerging market index ETF 7 days before the full moon."
+        'description' => "Goes long in emerging market index ETF 7 days before the new moon and switch to a short position on emerging market index ETF 7 days before the full moon.",
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'VIX Predicts Stock Index Returns',
@@ -372,7 +419,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/58'
         ],
-        'description' => "Goes long on equity index ETF if the VIX is in the highest percentile short if VIX is in the lowest percentile in the last two-year history."
+        'description' => "Goes long on equity index ETF if the VIX is in the highest percentile short if VIX is in the lowest percentile in the last two-year history.",
+        'tags'=>'Beginner'
     ],
     [
         'name' => 'Combining Momentum Effect with Volume',
@@ -380,7 +428,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/66'
         ],
-        'description' => "Goes long stocks with the highest volume from the top momentum decile and short stocks with the highest volume from the bottom momentum decile."
+        'description' => "Goes long stocks with the highest volume from the top momentum decile and short stocks with the highest volume from the bottom momentum decile.",
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Short Term Reversal with Futures',
@@ -388,7 +437,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/71'
         ],
-        'description' => "Goes long (short) on futures from the high-volume, low-open interest group with the lowest (greatest) returns in the previous week."
+        'description' => "Goes long (short) on futures from the high-volume, low-open interest group with the lowest (greatest) returns in the previous week.",
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Pre-holiday Effect',
@@ -396,7 +446,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/83'
         ],
-        'description' => "Invests in equity market 2 days preceding holiday days and stays in cash during the other trading days."
+        'description' => "Invests in equity market 2 days preceding holiday days and stays in cash during the other trading days.",
+        'tags'=>'Beginner'
     ],
     [
         'name' => 'Beta Factors in Stocks',
@@ -404,7 +455,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/77'
         ],
-        'description' => "Goes long stocks with the bottom beta and short stocks with the top beta, securities are weighted by the ranked betas."
+        'description' => "Goes long stocks with the bottom beta and short stocks with the top beta, securities are weighted by the ranked betas.",
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Exploiting Term Structure of VIX Futures',
@@ -412,7 +464,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/198'
         ],
-        'description' => "Buys or sells the nearest VIX futures based on the daily roll and hedge against the open positions with E-mini S&amp;P500 futures."
+        'description' => "Buys or sells the nearest VIX futures based on the daily roll and hedge against the open positions with E-mini S&amp;P500 futures.",
+        'tags'=>'Expert'
     ],
     [
         'name' => '12 Month Cycle in Cross-Section of Stocks Returns',
@@ -420,7 +473,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/125'
         ],
-        'description' => "Reviews the returns from last January, going long on the top 10% winners and short the bottom 10%."
+        'description' => "Reviews the returns from last January, going long on the top 10% winners and short the bottom 10%.",
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Momentum Effect in Stocks in Small Portfolios',
@@ -428,7 +482,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/162'
         ],
-        'description' => "Goes long in the 10 stocks with the highest performance and goes short in the 10 stocks with the lowest performance in the previous one year."
+        'description' => "Goes long in the 10 stocks with the highest performance and goes short in the 10 stocks with the lowest performance in the previous one year.",
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Value Effect within Countries',
@@ -436,7 +491,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/207'
         ],
-        'description' => "Invests in the cheapest 33% of country ETFs according to CAPE ratios."
+        'description' => "Invests in the cheapest 33% of country ETFs according to CAPE ratios.",
+        'tags'=>'Intermediate'
     ],
     [
         'name' => 'Beta Factor in Country Equity Indexes',
@@ -444,7 +500,8 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/78'
         ],
-        'description' => "Goes long on the low-beta portfolio and short on the high-beta portfolio in country indexes ETFs."
+        'description' => "Goes long on the low-beta portfolio and short on the high-beta portfolio in country indexes ETFs.",
+        'tags'=>'Intermediate'
     ],
 ];
 
