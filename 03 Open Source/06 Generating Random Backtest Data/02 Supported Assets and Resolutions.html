@@ -1,3 +1,27 @@
-<p>
-The Random Data Generator currently supports the following asset types and resolutions:
-</p>
+<p>The Random Data Generator currently supports the following asset types and resolutions:</p>
+
+<table class="table qc-table table-itemized table-reflow">
+<thead>
+<tr>
+<th colspan="2">Supported Data Types and Resolutions</th></tr></thead>
+<tbody>
+    <tr>
+        <td width="30%">Equity <br/>Trade Only</td>
+        <td><code>Resolutions Tick, Second, Minute, Hour and Daily</code><p>All Equity data resolutions are supported.</p></td>
+    </tr>
+    <tr>
+        <td>Forex, CFD<br/>Quotes Only</td>
+        <td>
+                <code>Resolutions Tick, Second, Minute, Hour and Daily</code></code>
+                <p>Forex and CFD generator supports quote (spread) data in all resolutions.</p></td>
+    </tr>
+    <tr>
+        <td>Futures, Crypto<br/> Trades and Quotes</td>
+        <td><code>Resolutions Tick, Second, Minute, Hour and Daily</code><p>All Futures and crypto data types and resolutions are supported</p></td>
+    </tr>
+    <tr>
+        <td>Options<br/> Trades and Quotes</td>
+        <td><code>Resolution Minute</code><p>Options are partially supported. Currently option random data is generated independent of a random underlying asset making its usefulness limited. This will be fixed by <a href="https://github.com/QuantConnect/Lean/issues/2824">Github Issue #2824</a>.</p></td>
+    </tr>
+</tbody>
+</table>
