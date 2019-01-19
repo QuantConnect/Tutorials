@@ -25,8 +25,8 @@ fillDataForward)</td>
     self.SetStartDate(2017, 01, 01)  #Set Start Date
     self.SetEndDate(2017, 06, 30)  #Set End Date
     self.SetCash(50000)  #Set Strategy Cash
-    equity = self.AddEquity("GOOG", Resolution.Daily) # Add the underlying stock: Google
-    option = self.AddOption("GOOG", Resolution.Daily) # Add the option corresponding to underlying stock
+    equity = self.AddEquity("GOOG", Resolution.Minute) # Add the underlying stock: Google
+    option = self.AddOption("GOOG", Resolution.Minute) # Add the option corresponding to underlying stock
     self.symbol = option.Symbol
 </pre>
 </div>
