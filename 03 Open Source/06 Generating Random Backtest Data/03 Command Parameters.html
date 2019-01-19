@@ -1,3 +1,77 @@
-<p>
-Options Commands
-</p>
+<table class="table qc-table table-itemized table-reflow">
+<thead>
+<tr>
+<th colspan="2">Random Data Generator Parameters</th></tr></thead>
+<tbody>
+    <tr>
+        <td width="30%">security-type</td>
+        <td>
+            <p>
+                Security type to generate.<br/>
+                Possible Values: <code>Equity, Crypto, Forex, Cfd, Option, Future</code><br/>
+                Default: Equity
+            </p>
+            Example: <code>--security-type=Equity</code>
+        </td>
+    </tr>
+    <tr>
+        <td>resolution</td>
+        <td>
+            <p>
+                Resolution of data to store.<br/>
+                Possible Values: <code>Tick, Second, Minute, Hour, Daily</code><br/>
+                Default: Minute
+            </p>
+            Example: <code>--resolution=Minute</code>
+        </td>
+    </tr>
+    <tr>
+        <td>from-date</td>
+        <td>
+            <p>
+                Start date for the data to generate: format yyyy-mm-dd.<br/>
+            </p>
+            Example: <code>--from-date=2018-01-01</code>
+        </td>
+    </tr>
+    <tr>
+        <td>to-date</td>
+        <td>
+            <p>
+                Final date of the generated data: format yyyy-mm-dd.<br/>
+            </p>
+            Example: <code>--to-date=2019-01-01</code>
+        </td>
+    </tr>
+    <tr>
+        <td>Symbol Count</td>
+        <td>
+            <p>
+                Number of tickers to generate<br/>
+            </p>
+            Example: <code>--symbol-count=100</code>
+        </td>
+    </tr>
+    <tr>
+        <td>data-density</td>
+        <td>
+            <p>
+                Tick density of the data generated to model low volume data.<br/>
+                Possible Values: <code>Dense, Sparse, VerySparse</code><br/>
+                Default: Dense
+            </p>
+            Example: <code>--density=Dense</code>
+        </td>
+    </tr>
+    <tr>
+        <td>include-coarse</td>
+        <td>
+            <p>
+                Generate the coarse universe data when generating Equity data.<br/>
+                Default: true
+            </p>
+            Example: <code>--include-coarse=true</code>
+        </td>
+    </tr>
+</tbody>
+</table>
