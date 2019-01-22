@@ -216,7 +216,7 @@ $strategyMap = [
         'sources' => [
             'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/25'
         ],
-         'tags'=>'Intermediate,Fundamental Factors,Equities'
+         'tags'=>'Intermediate,Fundamental Factors,Equities',
         'description' => 'Goes long stocks with the lowest market capitalization and rebalances the portfolio once a year.'
     ],
     [
