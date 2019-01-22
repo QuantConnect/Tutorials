@@ -503,6 +503,15 @@ $strategyMap = [
         'description' => "Goes long on the low-beta portfolio and short on the high-beta portfolio in country indexes ETFs.",
         'tags'=>'Intermediate'
     ],
+    [
+        'name' => 'Low Price to Earnings Effect',
+        'link' => 'strategy-library/beta-factor-in-country-equity-indexes',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/78'
+        ],
+        'description' => "Goes long on the low-beta portfolio and short on the high-beta portfolio in country indexes ETFs.",
+        'tags'=>'Intermediate'
+    ],
 ];
 
 ?>
