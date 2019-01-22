@@ -1,0 +1,44 @@
+<p>
+We pick the 10 stocks that have the lowest P/E ratio in our universe, at the beginning of each year, 
+and we invest an equal amount of capital in each stock.
+</p>
+ 
+<p>
+To construct the universe, first, we eliminate stocks which don't have fundamental data and
+stocks that have a lower price than $5 per share, using the <code>CoarseSelectionFunction</code>.
+</p>
+ 
+<div class="section-example-container">
+<pre class="python">
+    def CoarseSelectionFunction(self, coarse):
+        if self.yearly_rebalance:
+            # drop stocks which have no fundamental data and have low price
+            CoarseWithFundamental = [x for x in coarse if x.HasFundamentalData and x.Price > 5]
+            sortedByDollarVolume = sorted(CoarseWithFundamental, key=lambda x: x.DollarVolume, reverse=False) 
+            top = sortedByDollarVolume[:self._NumCoarseStocks]
+            return [i.Symbol for i in top]
+        else: 
+            return [] 
+</pre>
+</div>
+ 
+<p>
+Then, in the <code>FineSelectionFunction</code>, we retrieve the list of 25 stocks, that have the lowest P/E ratio.
+</p>
+ 
+<div class="section-example-container">
+<pre class="python">
+ 
+    def FineSelectionFunction(self, fine):
+        if self.yearly_rebalance:
+            fine = [x for x in fine if (x.ValuationRatios.PERatio > 0)]
+            for i in fine:
+                i.PERatio = float(i.ValuationRatios.PERatio)
+            sortedPERatio = sorted(fine, key=lambda x: x.PERatio,reverse=True)
+            self.filtered_fine = [i.Symbol for i in sortedPERatio[:self._NumStocksInPortfolio]]
+            self.yearly_rebalance = False
+            return self.filtered_fine
+        else:
+            return []
+</pre>
+</div>
