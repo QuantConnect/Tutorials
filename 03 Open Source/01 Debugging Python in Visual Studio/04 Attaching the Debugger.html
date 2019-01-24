@@ -1,3 +1,56 @@
 <p>
-Run and attach.
+The process that we will use to attach the python debugger requires that we run Lean from the command line and attach the process.
 </p>
+<p>
+First, we will add the <b>sys</b> and <b>time</b> libraries, and the following statements:
+<div class="section-example-container" >
+<pre class="python" >
+while not sys.gettrace():
+    time.sleep(0.01)
+</pre>
+</div> 
+These statements will hold the algorithm execution until Lean is attached to the python debugger. 
+</p>
+<p>
+For example, place them in the OnData method to enable a breakpoint on the SetHoldings statement.
+<div class="section-example-container" >
+<pre class="python" >
+import sys, time
+
+class BasicTemplateAlgorithm(QCAlgorithm):
+    def Initialize(self):
+        self.SetStartDate(2013,10, 7)
+        self.SetEndDate(2013,10,11)
+        self.SetCash(100000)
+        self.AddEquity("SPY", Resolution.Second)
+        self.Debug("numpy test >>> print numpy.pi: " + str(np.pi))
+
+    def OnData(self, data):
+        while not sys.gettrace():
+            time.sleep(0.01)
+
+        if not self.Portfolio.Invested:
+            self.SetHoldings("SPY", 1)
+</pre>
+</div>
+</p>
+<p>
+Rebuild Lean and run it from the command line:
+<div class="section-example-container" >
+<pre>
+C:\Users\Guest> cd .\Lean\Launcher\bin\Debug\
+C:\Users\Guest\Lean\Launcher\bin\Debug> .\QuantConnect.Lean.Launcher.exe
+</pre>
+</div>
+</p>
+<p>
+Finally, attach the debugger to the process 
+<ul style="list-style-type:disc;">
+  <li>Open the Attach to Process dialog by clicking on Debug -> Attach to Process...</li>
+  <li>In "Attach to", click on Select button and select "Python code"</li>
+  <li>In "Available processes", select "QuantConnect.Lean.Launcher.exe" and click "Attach" button</li>
+</ul>
+At this moment the code execution will stop on the breakpoint placed on the SetHoldings statement.
+</p>
+</p>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/visual-studio-python.gif"/>
