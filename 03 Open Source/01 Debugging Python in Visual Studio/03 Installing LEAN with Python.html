@@ -1,9 +1,35 @@
 <p>
-First step is to install LEAN and get it running with python algorithms
+The first step is to install LEAN and get it running with python algorithms.
 </p>
 <p>
-To do this install : - - - - - 
+To do this install:
+<ul style="list-style-type:disc;">
+  <li>Download Lean at the <a href="https://github.com/QuantConnect/Lean">open-source project page</a>.</li>
+  <li>Install <a href="https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx">Visual Studio</a>.</li>
+  <li>Open <mark>QuantConnect.Lean.sln</mark> in Visual Studio</li>
+  <li>Build the solution by clicking Build Menu -> Build Solution</li>
+  <li>Press <mark>F5</mark> to run</li>
+</ul>
 </p>
 <p>
-Run the BasicTemplateALgorithm.py successfully. Screen Shot oof the successful run.
+By default, Lean will run the C# version of BasicTemplateFrameworkAlgorithm.
 </p>
+<p>
+Next step is to run the python version of BasicTemplateAlgorithm successfully.
+</p>
+<p>
+To run that algorithm:
+<ul style="list-style-type:disc;">
+  <li>Edit config.json with the following paramenters:</li>
+  <div class="section-example-container">
+  <pre>
+      "algorithm-type-name": "BasicTemplateAlgorithm",
+      "algorithm-language": "Python",
+      "algorithm-location": "../../../Algorithm.Python/BasicTemplateAlgorithm.py",
+  </pre>
+  </div>
+  <li>Build the solution by clicking Build Menu -> Build Solution</li>
+  <li>Press <mark>F5</mark> to run</li>
+</ul>
+</p>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/visual-studio-python-success.png" />
