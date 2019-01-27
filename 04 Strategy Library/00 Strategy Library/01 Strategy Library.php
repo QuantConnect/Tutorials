@@ -508,8 +508,8 @@ $strategyMap = [
         'tags'=>'Intermediate,Long Short,ETFs'
     ],
     [
-        'name' => 'Price to Earnings Anamoly',
-        'link' => 'strategy-library/price-earnings-anamoly',
+        'name' => 'Price to Earnings Anomaly',
+        'link' => 'strategy-library/price-earnings-anomaly',
         'description' => "Invests in stocks with low P/E ratio.",
         'tags'=>'Beginner,Fundamental Factors,Equities'
     ],
