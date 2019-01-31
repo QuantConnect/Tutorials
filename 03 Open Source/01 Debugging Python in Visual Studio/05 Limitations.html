@@ -1,11 +1,3 @@
 <p>Unfortunately, this debugging scenario entails some limitations.</p>
-<p>
-It is not possible to concurrently debug the python algorithm and Lean (C# code). That means that the debugger will not stop at breakpoints in Lean nor we can step into methods defined in Lean (e.g., SetHoldings).
-</p>
-<p>
-Debugging the same method is not smooth since we need to detach and reattach the process every time we leave the method we are debugging.
-</p><ul style="list-style-type:disc;">
-  <li>Detach Lean by clicking on Debug -&gt; Detach All</li>
-  <li>Reattach Lean by clicking on Debug -&gt; Reattach to Process</li>
-  </ul>
-<p></p>
+<p>It is not possible to concurrently debug the python algorithm and Lean (C# code). That means that the debugger will not stop at breakpoints in Lean nor we can step into methods defined in Lean (e.g., SetHoldings).</p>
+<p>The algorithm will always stop after <mark>ptvsd.break_into_debugger()</mark> call and it not possible to untoggled it. However, we can use conditional statements to prevent its call and avoid unnecessary breaks.</p>
