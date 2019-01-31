@@ -1,19 +1,27 @@
-<p>The process that we will use to attach the python debugger requires that we run Lean from the command line and attach the process.</p>
+<p>The process that we will use to attach the python debugger requires that we run Lean <b>without</b> debugging and attach the process.</p>
 
-<p>First, we will add the <b>sys</b> and <b>time</b> libraries, and the following statements:</p>
+<p>First, we will add the <b>ptvsd</b> library, and the following statements:</p>
 
-<div class="section-example-container">
-<pre class="python">while not sys.gettrace():
-    time.sleep(0.01)
-</pre>
-</div>
+<div class="section-example-container"><pre class="python">
+import ptvsd
+ptvsd.enable_attach()
+ptvsd.wait_for_attach()
+</pre></div>
 
 <p>These statements will hold the algorithm execution until Lean is attached to the python debugger.</p>
-
-<p>For example, place them in the OnData() method to enable a breakpoint on the SetHoldings statement.</p>
+<p>The breakpoint is set by the following statement:</p>
+<div class="section-example-container"><pre class="python">ptvsd.break_into_debugger()</pre></div>
+<p>For example, place it in the OnData() method:</p>
 
 <div class="section-example-container">
-<pre class="python">import sys, time
+<pre class="python">import ptvsd
+ptvsd.enable_attach()
+print(f'''Python Tool for Visual Studio Debugger {ptvsd.__version__}
+Please attach the python debugger:
+- In Visual Studio, select Debug > Attach to Process (or press Ctrl+Alt+P) to open the Attach to Process dialog box.
+- For Connection type, select Python remote (ptvsd)
+- In the Connection target box, select tcp://localhost:5678/ and click "Attach" button''')
+ptvsd.wait_for_attach()
 
 class BasicTemplateAlgorithm(QCAlgorithm):
     def Initialize(self):
@@ -21,12 +29,12 @@ class BasicTemplateAlgorithm(QCAlgorithm):
         self.SetEndDate(2013,10,11)
         self.SetCash(100000)
         self.AddEquity("SPY", Resolution.Second)
-        self.Debug("numpy test &gt;&gt;&gt; print numpy.pi: " + str(np.pi))
+        self.Debug(f"numpy test &gt;&gt;&gt; print numpy.pi: {np.pi}")
 
     def OnData(self, data):
-        while not sys.gettrace():
-            time.sleep(0.01)
+        ptvsd.break_into_debugger()
 
+        close = data["SPY"].Close
         if not self.Portfolio.Invested:
             self.SetHoldings("SPY", 1)
 </pre>
@@ -36,10 +44,10 @@ class BasicTemplateAlgorithm(QCAlgorithm):
 <p>Finally, attach the debugger to the process:</p>
 <ul style="list-style-type:disc;">
   <li>Run Lean without debugging by clicking on Debug -&gt; Start Without Debugging</li>
-  <li>Open the Attach to Process dialog by clicking on Debug -&gt; Attach to Process...</li>
-  <li>In "Attach to", click on Select button and select "Python code"</li>
-  <li>In "Available processes", select "QuantConnect.Lean.Launcher.exe" and click "Attach" button</li>
+  <li>In Visual Studio, select Debug -&gt; Attach to Process (or press Ctrl+Alt+P) to open the Attach to Process dialog box.</li>
+  <li>For Connection type, select Python remote (ptvsd)</li>
+  <li>In the Connection target box, select <mark>tcp://localhost:5678/</mark> and click "Attach" button</li>
 </ul>
 
-<p>Once you attach the process the code execution will stop on the breakpoint placed on the SetHoldings statement.</p>
+<p>Once you attach the process the code execution will stop after <mark>ptvsd.break_into_debugger()</mark> statement.</p>
 <img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/visual-studio-python.gif">
