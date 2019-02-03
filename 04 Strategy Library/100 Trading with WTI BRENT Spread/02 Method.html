@@ -88,11 +88,11 @@ def OnData(self, data):
     self.SpreadSMA.Update(self.Time, data["WTI"].Price - data["BRENT"].Price)
     if not self.SpreadSMA.IsReady: return
     spread = self.Securities["WTI"].Price - self.Securities["BRENT"].Price
-    fair_value =self.Securities["WTI"].Price - Decimal(self.regr.predict(self.Securities["WTI"].Price)[0])
+    fair_value =self.Securities["WTI"].Price - Decimal(self.regr.predict([[self.Securities["WTI"].Price]])[0])
 
     if spread > self.SpreadSMA.Current.Value and not (self.Portfolio["WTI"].IsShort and self.Portfolio["BRENT"].IsLong):
         self.SetHoldings("WTI", -0.5)
-        self.SetHoldings("BRENT", 0.5)
+        self.SetHoldings("BRENT", 0.5) 
         self.Plot("Spread Plot", "Long Spread Trade", data["WTI"].Price - data["BRENT"].Price)
 
     elif spread < self.SpreadSMA.Current.Value and not (self.Portfolio["WTI"].IsLong and self.Portfolio["BRENT"].IsShort):
