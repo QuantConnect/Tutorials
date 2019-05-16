@@ -1,0 +1,82 @@
+<p>
+  As the strategy needs the continuous futures contract, we import the custom data from Quandl.
+  We create a universe of tradable commodity futures from liquid commodity futures traded on CME and ICE and CBOT, you could add more using Quandl API.
+  They are all liquid and active financial derivatives. The data from Quandl are non-adjusted price based on spot-month continuous contract calculations.
+  The data resolution is daily.
+</p>
+<p>
+  The first step is importing the data.
+</p>
+<div class="section-example-container">
+<pre class="python">from QuantConnect.Python import PythonQuandl
+for symbol in self.symbols_Settle:
+    self.AddData(QuandlFutures, symbol, Resolution.Daily)
+
+class QuandlFutures(PythonQuandl):
+    def __init__(self):
+        self.ValueColumnName = "Settle"
+</pre>
+</div>
+<p>
+  Here we use the indicator <code>RateOfChange(period)</code> to simulate the momentum return. Here the period is 12 months.
+  As we are using the custom data, the indicator initialization should use the history request to update the value manually.
+  All indicators are saved in the dictionary <code>self.roc</code>.
+</p>
+<div class="section-example-container">
+<pre class="python">self.roc = {}
+for symbol in self.symbols:
+    self.AddData(QuandlFutures, symbol, Resolution.Daily)
+    self.roc[symbol] = RateOfChange(period)
+    hist = self.History([symbol], 300, Resolution.Daily).loc[symbol]
+    for i in hist.itertuples():
+        self.roc[symbol].Update(i.Index, i.value)
+</pre>
+</div>
+<p>
+  In <code>OnData(self, data)</code>, indicators for all futures contracts are updated every day with the settlement price.
+</p>
+<p>
+  We choose instruments with positive 12-month momentum to long, and instrucments with negative 12-month momentum to short.
+</p>
+<div class="section-example-container">
+    <pre class="python">
+        self.long = [symbol for symbol in self.roc if self.roc[symbol].Current.Value > 0]
+        self.short =  [symbol for symbol in self.roc if self.roc[symbol].Current.Value < 0]
+    </pre>
+</div>
+
+<p>
+    The weights are inversely proportional to the contracts' <a href="https://www.investopedia.com/terms/v/volatility.asp">volatility</a>. As we stated in the introduction, the volatility can be estimated by GARCH model or histrocial volatility. Here, for the sake of simplity, we use historical volatility here. The <code> volatility </code> here is a dictionary containging the reciprocal 252-day historical volatility.
+</p>
+
+<div class="section-example-container">
+    <pre class="python">
+        hist = self.History(self.Symbol(symbol), 252, Resolution.Daily).loc[symbol]['value']
+        log_return = np.log(hist/hist.shift()).dropna().tolist()
+        volatility[symbol] = 1/np.std(log_return,ddof = 1)
+    </pre>
+</div>
+
+
+<p>
+    Then we determine the weights for every contract and then trade.
+
+</p>
+<div class="section-example-container">
+    <pre class="python">
+for long in self.long:
+    weights_long[long] = volatility[long]/sum(volatility.values())
+for short in self.short:
+    weights_short[short] = volatility[short]/sum(volatility.values())
+        
+for long in self.long:
+    self.SetHoldings(long, 0.5*weights_long[long]/sum(weights_long.values()))
+for short in self.short:
+    self.SetHoldings(short, -0.5*weights_short[short]/sum(weights_short.values()))
+    </pre>
+</div>
+
+
+
+
+
