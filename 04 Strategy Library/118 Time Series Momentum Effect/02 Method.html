@@ -1,8 +1,7 @@
 <p>
   As the strategy needs the continuous futures contract, we import the custom data from Quandl.
-  We create a universe of tradable commodity futures from liquid commodity futures traded on CME and ICE and CBOT, you could add more using Quandl API.
-  They are all liquid and active financial derivatives. The data from Quandl are non-adjusted price based on spot-month continuous contract calculations.
-  The data resolution is daily.
+  We create a universe of highly liquid commodity futures that are traded on CME, ICE and CBOT (more contracts can be added using the Quandl API).
+  We will use Quandl's daily, non-adjusted price data, which is based on spot-month continuous contract calculations.
 </p>
 <p>
   The first step is importing the data.
@@ -18,8 +17,8 @@ class QuandlFutures(PythonQuandl):
 </pre>
 </div>
 <p>
-  Here we use the indicator <code>RateOfChange(period)</code> to simulate the momentum return. Here the period is 12 months.
-  As we are using the custom data, the indicator initialization should use the history request to update the value manually.
+  Here we use a 12-month <code>RateOfChange(period)</code> indicator to simulate the momentum return. Here the period is 12 months.
+  As we are using the custom data, the indicator initialization should use a historical data request and update the value manually.
   All indicators are saved in the dictionary <code>self.roc</code>.
 </p>
 <div class="section-example-container">
@@ -36,7 +35,7 @@ for symbol in self.symbols:
   In <code>OnData(self, data)</code>, indicators for all futures contracts are updated every day with the settlement price.
 </p>
 <p>
-  We choose instruments with positive 12-month momentum to long, and instrucments with negative 12-month momentum to short.
+  We take a long position in instruments with positive 12-month momentum and short positions with negative momentum.
 </p>
 <div class="section-example-container">
     <pre class="python">
@@ -46,7 +45,7 @@ for symbol in self.symbols:
 </div>
 
 <p>
-    The weights are inversely proportional to the contracts' <a href="https://www.investopedia.com/terms/v/volatility.asp">volatility</a>. As we stated in the introduction, the volatility can be estimated by GARCH model or histrocial volatility. Here, for the sake of simplity, we use historical volatility here. The <code> volatility </code> here is a dictionary containging the reciprocal 252-day historical volatility.
+  As we stated in the introduction, a security's volatility can be estimated using a GARCH model or historical volatility. For the sake of simplicity, we use historical volatility. The <code>volatility</code> here is a dictionary containing the reciprocal of 252-day historical volatility.
 </p>
 
 <div class="section-example-container">
@@ -59,7 +58,7 @@ for symbol in self.symbols:
 
 
 <p>
-    Then we determine the weights for every contract and then trade.
+    Then we determine the weights for every contract and place our orders.
 
 </p>
 <div class="section-example-container">
