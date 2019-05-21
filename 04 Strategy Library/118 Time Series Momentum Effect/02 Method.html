@@ -17,7 +17,7 @@ class QuandlFutures(PythonQuandl):
 </pre>
 </div>
 <p>
-  Here we use a 12-month <code>RateOfChange(period)</code> indicator to simulate the momentum return. Here the period is 12 months.
+  Here we use a 12-month <code>RateOfChange(period)</code> indicator to simulate the momentum return.
   As we are using the custom data, the indicator initialization should use a historical data request and update the value manually.
   All indicators are saved in the dictionary <code>self.roc</code>.
 </p>
@@ -35,7 +35,7 @@ for symbol in self.symbols:
   In <code>OnData(self, data)</code>, indicators for all futures contracts are updated every day with the settlement price.
 </p>
 <p>
-  We take a long position in instruments with positive 12-month momentum and short positions with negative momentum.
+  We take a long position in instruments with positive 12-month momentum and short positions in those with negative momentum.
 </p>
 <div class="section-example-container">
     <pre class="python">
