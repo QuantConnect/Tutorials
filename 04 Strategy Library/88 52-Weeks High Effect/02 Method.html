@@ -1,0 +1,99 @@
+<p>
+  <h4>Initialization of universe </h4>
+  We use coarse and fundamental selection as our universe selection. 
+  Here, <code>x.AssetClassification.MorningstarSectorCode</code> is used to assign each stock into different sectors. 
+  More available objects for use in QuantConnect Fine Universe filter can be found <a href="https://www.quantconnect.com/docs/data-library/fundamentals">here</a>.
+<p>
+<div class="section-example-container">
+    <pre class="python">
+        self.BasicMaterialsIndustry = [x for x in fine if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.BasicMaterials]
+        self.ConsumerCyclicalIndustry = [x for x in fine if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.ConsumerCyclical]
+        self.FinancialServicesIndustry = [x for x in fine if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.FinancialServices]
+        self.RealEstateIndustry = [x for x in fine if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.RealEstate]
+        self.ConsumerDefensiveIndustry = [x for x in fine if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.ConsumerDefensive]
+        self.HealthcareIndustry = [x for x in fine if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Healthcare]
+        self.UtilitiesIndustry = [x for x in fine if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Utilities]
+        self.CommunicationServicesIndustry = [x for x in fine if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.CommunicationServices]
+        self.EnergyIndustry = [x for x in fine if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Energy]
+        self.IndustrialsIndustry = [x for x in fine if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Industrials]
+        self.TechnologyIndustry = [x for x in fine if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology]
+        
+    </pre>
+</div>
+<p>
+  <h4>Calculation of market capitalization</h4>
+  In FineSelectionFunction, we calculate the market capitalization for each stock in our universe.
+</p>
+  <div class="section-example-container">
+      <pre class="python">
+        hist = self.History(self.symbols, 252, Resolution.Daily)
+        for x in fineFiltered:
+            if str(x.Symbol) in hist.index.get_level_values(0):   #If the historical data is available
+                self.mktCap[x.Symbol] = float(x.EarningReports.BasicAverageShares.ThreeMonths) * hist.loc[str(x.Symbol)]['close'][-1]
+            else:
+                del self.symbols[self.symbols.index(x.Symbol)]    # Delete if we can't find any historical data
+                for industry in self.industry_list:
+                    if x in industry: del industry[industry.index(x)]
+      </pre>
+  </div>
+
+  <p>
+      <h4>Rolling window of stock prices</h4>
+      We also initialize rolling windows of 252 days for each stock in FineSelectionFunction so that we can use <code>max(self.windows[symbol])</code> to track its 52-weeks high.
+    </p>
+      <div class="section-example-container">
+          <pre class="python">
+            for symbol in self.symbols:
+            if not symbol in self.windows.keys():
+                self.windows[symbol] = RollingWindow[Decimal](252)
+            if str(symbol) in hist.index.get_level_values(0):
+                for historical_close in hist.loc[str(symbol)]['close']:
+                    self.windows[symbol].Add(historical_close)
+                    
+          </pre>
+      </div>
+
+
+      <p>
+          <h4>Order placements and rebalance</h4>
+          To find out the weighted ratios of each industry sector, we need to retrieve the ratios and weights.
+          The weights are each stock's market capitalization we allocated in <code>self.mktCap</code>.
+        </p>
+          <div class="section-example-container">
+              <pre class="python">
+                  weights = np.array([self.mktCap[x.Symbol]/mktCap_sum for x in industry_list[i]])
+              </pre>
+          </div>
+        <p>
+          The ratio is the current prices divided by 52-weeks highs:
+          <div class="section-example-container">
+              <pre class="python">
+                curPrice = np.array([self.windows[x.Symbol][0] for x in (self.industry_list[i])])            
+                fiftyTwoHigh = np.array( [ max(self.windows[x.Symbol]) for x in self.industry_list[i] ] )    
+                ratios = curPrice/fiftyTwoHigh                                                          
+                weights = np.array([self.mktCap[x.Symbol]/mktCap_sum for x in self.industry_list[i]])
+                </pre>
+
+              </div>
+        </p>
+        Add each industry's weighted score into <code>weighted_scores</code> and simply pick the industry with highest(lowest) score to long(short). Within the target industries, the investment weights are equal.
+
+        <p>
+          <div class="section-example-container">
+              <pre class="python">
+                  weighted_scores = []
+                  for i in range(0,len(self.industry_list)):
+                    weighted_scores.append(sum(ratios*weights))
+                  
+                  long_industry = industry_list[np.argmax(weighted_scores)]
+                  short_industry = industry_list[np.argmin(weighted_scores)]
+                  for x in long_industry:
+                      self.SetHoldings(x.Symbol, 0.5/len(long_industry))
+                  for x in short_industry:
+                      self.SetHoldings(x.Symbol, -0.5/len(short_industry))  
+
+                </pre>
+
+              </div>
+        </p>
+
