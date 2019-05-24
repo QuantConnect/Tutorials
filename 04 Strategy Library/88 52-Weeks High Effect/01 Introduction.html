@@ -1,0 +1,15 @@
+<p>
+    The “52-week high effect” states that stocks with prices close to the 52-week highs have better subsequent returns than stocks with prices far from the 52-week highs. 
+    Investors use the 52-week high as an “anchor” which they value stocks against. 
+    When stock prices are near the 52-week high, investors are unwilling to bid the price all the way to the fundamental value. 
+    As a result, investors under-react when stock prices approach the 52-week high, and this creates the 52-week high effect. 
+    
+    
+    This tutorial strategy consists of 500 most liquid stocks which are assigned into 11 industry sectors. 
+    We calculate each stock's ratio between its current price and 52-weeks high, and get the weighted ratios for each industry
+    sector (the weights are stocks' market capitalizations). Then we pick the industry with highest(lowest) weighted ratio to long(short). The investment weights are equal within the industry sector, 
+    and rebalance happens every month. There are two key points in this strategy: <br>
+    1.To initialize a rolling window to track each stock's history prices so that we have access to its 52-weeks high;<br>
+    2.To build a dictionary to store each stock's market capitalization as we will use it as weights when calculating weighted ratios for each industry.
+
+</p>
