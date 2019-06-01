@@ -1,0 +1,91 @@
+<p>
+  The investment universe consists of US listed companies. A minimum stock price filter is used to avoid penny stocks, 
+  and we pick 30 most liquid stocks. The trick here is to use a global variable <code>self.month</code> to schedule the universe selection once a month.
+</p>
+
+<div class="section-example-container">
+  <pre class="python">
+  if self.Time.month == self.month:
+  return self.symbols
+  selected = [x for x in coarse if x.HasFundamentalData and x.Price > 3]
+  filtered = sorted(selected, key=lambda x: x.DollarVolume, reverse=True)
+  self.symbols = [x.Symbol for x in filtered[:30]]
+  self.month = self.Time.month
+  </pre>
+  </div>
+
+
+<p>
+In this algorithm, we need multiple dictionaries keyed by symbol (ATR indicator, a rolling window to track the recent 3 days' prices, and the historical highs for each stock).
+The convention is to create a class for all the thing we want to cache and manage it from there.
+</p>
+
+<div class="section-example-container">
+    <pre class="python">
+    class SymbolData:
+    def __init__(self, algorithm, symbol):
+        self.Symbol = symbol
+        self.ATR = algorithm.ATR(symbol, 10)
+        self.High = 0
+        self.Prices = RollingWindow[float](3)
+    </pre>
+    </div>
+<p>
+  What <code>OnSecuritiesChanged(self,changes)</code> does is to initialize the dictionaries when there are new stocks added into the universe.
+  It calls history request first and create the pandas series for historical highs and close prices and then set up ATR indicator and price rolling window. 
+  Notice that the ATR indicator takes in <code>TradeBar</code> as argument.
+</p>
+
+<div class="section-example-container">
+    <pre class="python">
+    history = self.History(self.symbols, 252*5, Resolution.Daily)
+    high = history.high.unstack(level=0).max()
+    close = history.close.unstack(level=0).tail(3).fillna(0)
+    for symbol in self.symbols:
+      ticker = str(symbol)
+      if ticker not in close.columns or ticker not in high.index:
+          self.symbols.remove(symbol)
+          continue
+      if symbol not in self.symbolData:
+          self.symbolData[symbol] = SymbolData(self, symbol)
+      self.symbolData[symbol].ATR.Reset()
+      self.symbolData[symbol].High = high[ticker]
+      for value in close[ticker]:
+        self.symbolData[symbol].Prices.Add(value)
+      for index, row in history.loc[ticker].tail(10).iterrows():
+        bar = TradeBar(index, symbol, row.open, row.high, row.low, row.close, row.volume)
+        self.symbolData[symbol].ATR.Update(bar)
+    </pre>
+    </div>
+
+<p>
+  Next, in <code>OnData(self,data)</code> function, we handle the data, update the historical high, ATR indicator and price rolling window. Moreover, place the orders.
+  The idea is that if we find a stock which triggers the entry condition (current price is greater than or equal to the highest price in the stock's history), we long it and place the trailing stop orders.
+  The key point is to implement the trailing orders. As the definition says, the stop price of trailing orders goes up as the stock goes up, but keep constant as the stock goes down.
+  However, be careful of look-ahead bias. When placing the market stop order, we will never know the close price of that day, so we use previous close.
+</p>
+<div class="section-example-container">
+  <pre class="python">
+  if self.symbolData[symbol].Prices[1] > self.symbolData[symbol].Prices[2]:
+    self.StopMarketOrder(symbol, -holding.Quantity , self.symbolData[symbol].Prices[1] - 3*self.symbolData[symbol].ATR.Current.Value)
+  else:
+    self.StopMarketOrder(symbol, -holding.Quantity , self.symbolData[symbol].Prices[2] - 3*self.symbolData[symbol].ATR.Current.Value)
+  </pre>
+</div>
+
+<p>
+  Last, we rebalance the portfolio every day.
+</p>
+
+<div class="section-example-container">
+    <pre class="python">
+    target = 1 / sum(x.Invested for x in self.Portfolio.Values)
+    for holding in self.Portfolio.Values:
+      if holding.Invested:
+        self.SetHoldings(holding.Symbol, target)
+    </pre>
+</div>
+
+
+
+
