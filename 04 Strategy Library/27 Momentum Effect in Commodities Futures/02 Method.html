@@ -14,7 +14,7 @@ for symbol in self.symbols:
 
 class QuandlFutures(PythonQuandl):
     def __init__(self):
-        self.ValueColumnName = "settle"
+        self.ValueColumnName = "Settle"
 </pre>
 </div>
 <p>
@@ -29,7 +29,7 @@ for symbol in self.symbols:
     self.roc[symbol] = RateOfChange(period)
     hist = self.History([symbol], 400, Resolution.Daily).loc[symbol]
     for i in hist.itertuples():
-        self.roc[symbol].Update(i.Index, i.settle)
+        self.roc[symbol].Update(i.Index, i.value)
 </pre>
 </div>
 <p>
