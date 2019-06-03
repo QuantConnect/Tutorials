@@ -1,0 +1,10 @@
+<p>
+Time series momentum is related to, but different from the phenomenon known as “momentum” in the finance literature, which is primarily cross-sectional in nature.
+The momentum literature focuses on the relative performance of securities in the cross section, finding that securities that recently outperformed their peers over the past 3 to 12 months continue to do so on average over the next month. 
+Rather than focus on the relative returns of securities in the cross section, this time series momentum strategy focuses purely on the past returns of each individual futures contract.
+Every month, the investor considers whether the excess return of each asset over the past 12 months is positive or negative and goes long on the contract if it is positive and short if negative. 
+The position size is set to be inversely proportional to the <a href="https://www.investopedia.com/terms/v/volatility.asp">volatility</a> of the security's returns.
+A univariate <a href="https://www.investopedia.com/terms/g/generalalizedautogregressiveconditionalheteroskedasticity.asp">GARCH</a> model could be used to estimate volatility. 
+However, other simple models could probably be easily used with good results (for example, the easiest one would be using historical volatility). For the sake of simplicity, we will use historical volatility.
+The portfolio is rebalanced monthly.
+</p>

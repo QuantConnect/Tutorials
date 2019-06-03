@@ -1,0 +1,60 @@
+<p>
+  As the strategy needs the continuous futures contract, we import the custom data from Quandl.
+  We create a universe of highly liquid commodity futures that are traded on CME, ICE and CBOT (more contracts can be added using the Quandl API).
+  We will use Quandl's daily, non-adjusted price data, which is based on spot-month continuous contract calculations.
+</p>
+<p>
+  The first step is importing the data.
+</p>
+<div class="section-example-container">
+<pre class="python">from QuantConnect.Python import PythonQuandl
+for symbol in self.symbols  :
+    self.AddData(QuandlFutures, symbol, Resolution.Daily)
+
+class QuandlFutures(PythonQuandl):
+    def __init__(self):
+        self.ValueColumnName = "Settle"
+</pre>
+</div>
+<p>
+  Here we use a 12-month <code>RateOfChange(period)</code> indicator to simulate the momentum returns.
+  All indicators are saved in the dictionary <code>self.roc</code>.
+</p>
+<div class="section-example-container">
+<pre class="python">
+self.period = 252
+self.roc = {}
+for symbol in self.symbols:
+  self.roc[symbol] = self.ROC(symbol, self.period)   #Initialize ROC indicator : ROC is short for RateofChange
+
+</pre>
+</div>
+
+<p>
+  We use history request to obtain historical prices. Here, <code>history</code> is the daily returns, which will be used to calculate volatilities.
+</p>
+<div class="section-example-container">
+    <pre class="python">
+        history = self.History(self.symbols, self.period, Resolution.Daily)
+        history = history.value.unstack(level=0).pct_change().dropna()
+    </pre>
+</div>
+
+<p>Then we calculate the historical volatilities and place orders. 
+  Note that the weights are inversely proportional to volatilities and <code>np.sign</code> determines whether to long or short.
+</p>
+
+<div class="section-example-container">
+    <pre class="python">
+        vol_inv = 1 / history.std(ddof=1)
+        vol_sum = vol_inv.sum()
+        weights = (vol_inv / vol_sum).fillna(0).to_dict()
+        self.Liquidate()
+        for symbol, roc in self.roc.items():
+            percentage = np.sign(roc.Current.Value) * weights[symbol] *.5
+            self.SetHoldings(symbol, percentage)
+    </pre>
+</div>
+
+
+
