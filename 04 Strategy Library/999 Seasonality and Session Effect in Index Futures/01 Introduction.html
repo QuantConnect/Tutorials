@@ -1,7 +1,22 @@
 <p>
-	In this research, we investigate the Seasonality and Market Session effect in the E-Mini S&P 500 futures. A recent article, Market Seasonality Study
-, argues that there is a seasonality effect in the futures market, specifically relating to E-Mini S&P 500 futures. The study argues that it's trading strategy implemented in the period from November to May lends itself to a bull market (Bullish Season), while the trading days between June and October (Bearish Season) hold far less profit. 
+	In this research, we investigate the Seasonality and Market Session effect in the E-Mini S&P 500 futures. A recent article, Market Seasonality Study, argues that there is a seasonality effect in the S&P 500. The study argues that it's trading strategy implemented in the period from November to May lends itself to a bull market (Bullish Season), while the trading days between June and October (Bearish Season) hold far less profit. 
+</p>
 
-	As for Session effect, another article, Seasonality S&P Market Session
-, shows that, after splitting each trading day into 8 basic sessions, the Night Session (18:00 - 5:30) provides a much greater profit for a single contract of the E-mini S&P 500 futures, compared to other sessions, both on Bullish Season and Bearish Season. Additionally, the Afternoon Session (12:15 - 14:00) and the Close Session (14:00 - 15:15) perform well in the Bullish Season too, and so does the Afternoon Session (12:15 - 14:00) in the Bearish Season. Therefore, it is natural to come up with a combined strategy which aggregates the top three profitable bullish and the top two profitable bearish strategies to see if we can maximize the returns.
+<p>
+	As for Session effect, another article, Seasonality S&P Market Session, argues that a trading day can be broken up into eight distinct sessions:
+</p>
+
+<ul>
+	<li>Pre-Market: Between 05:30 and 08:30</li>
+	<li>Open: Between 08:30 and 09:00</li>
+	<li>Morning: Between 09:00 and 11:30</li>
+	<li>Lunch: Between 11:30 and 13:15</li>
+	<li>Afternoon: Between 13:15 and 14:00</li>
+	<li>Close: Between 14:00 and 15:15</li>
+	<li>Post-Market: Between 15:15 and 18:00</li>
+	<li>Night: Between 18:00 and 05:30</li>
+</ul>
+
+<p>
+	One can exploit these sessions by making a round-trip trade on a single E-Mini S&P500 futures contract by entering at the beginning of a session and exiting at the end of a session. The article argues that, in a Bullish Season (November to May, as defined in the first article), the Night Session (18:00 - 05:30) provides the most significant opportunity for profit, followed by the Afternoon Session and the Close Session. However, in a Bearish Season, only the Night Session and the Afternoon Session proved consistently profitable.
 </p>
