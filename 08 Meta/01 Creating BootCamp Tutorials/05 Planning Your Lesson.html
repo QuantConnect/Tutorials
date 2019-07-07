@@ -2,13 +2,38 @@
 Carefully planning and structuring your lesson is critical to ensuring its success. In the next section, we'll create this plan step by step.
 </p>
 
-<h4>1. Strategy Selection and Implementation</h4>
+<h4>1. Strategy Selection</h4>
 <p>
 Every BootCamp lesson is focused on an algorithmic strategy's implementation. The first step to planning a lesson is choosing a strategy which does not overlap with any of the existing BootCamp topics. This can be incrementally more difficult but should introduce new concepts.
 </p>
+<p>
+QuantConnect has worked with the community to create a list of lessons to be created which would be eligible for compensation. The table below describes these strategies and their associated difficulty level.
+</p>
+<table class="table">
+<thead>
+<tr>
+<th style="width: 60%;">BootCamp Lesson</th>
+<th style="width: 15%;">Difficulty</th> 
+<th style="width: 15%;">Status</th> 
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p>Buy and Hold (Equities/Forex) <br/> <small style="font-size: 0.9em">Strategy purchasing assets and holding them for the duration of the algorithm. Seeking to demonstrate how to initialize an algorithm and access price data.</small></p></td>
+<td><p>Beginner</p></td>
+<td><p>Completed</p></td>
+</tr>
+<tr>
+<td><p>Buy and Hold with Trailing Stop <br/> <small style="font-size: 0.9em">Placing and updating a stop-market order combined with basic charting to visualize the stop price movement.</small></p></td>
+<td><p>Beginner</p></td>
+<td><p>Assigned</p></td>
+</tr>
+</tbody>
+</table>
 
+<h4>2. Strategy Implementation</h4>
 <p>
 After selecting your strategy you need to fully implement the algorithm, writing the code in C# and Python as simply as possible. Users new to coding have a hard time deciphering large blocks of code so strategies should be kept very simple.
 </p>
 
-<p>In writing the strategy remain aware of the conceptual layers you put into the algorithm's codebase. These layers of concepts are where you can separate out the lesson tasks. For example: in writing a lesson <i>"Buy and Hold, with Trailing Stop"</i> you might start by coding up the buy and hold logic, followed by placing a "trailing stop" (Stop Market Order), then finally you can make the stop move by updating its trigger price.</p>
+<p>In writing the strategy remain aware of the conceptual layers you put into the algorithm's codebase. These layers of concepts are where you can separate out the lesson tasks. For example: in writing a lesson <i>"Buy and Hold, with Trailing Stop"</i> you might start by coding up the buy and hold logic, followed by placing a "trailing stop" (Stop Market Order), then finally you can make the stop move by updating its trigger price. These conceptual layers form the basis for how tasks are grouped together.</p>
