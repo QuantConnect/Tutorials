@@ -11,9 +11,14 @@ QuantConnect has worked with the community to create a list of lessons to be cre
 </p>
 <style>
 .status p { text-align: right; }
+.bootcamp-lessons p { margin-bottom: 0px;}
+.badge { background-color: #ccc; margin-right: 5px; }
+.badge::before {
+  content: "\25CF \00A0";
+}
 </style>
 
-<table class="table">
+<table class="table bootcamp-lessons">
 <thead>
 <tr>
 <th style="width: 75%;">Beginner BootCamp Lessons</th>
@@ -23,39 +28,50 @@ QuantConnect has worked with the community to create a list of lessons to be cre
 <tbody>
 
 <tr>
-<td><p>Buy and Hold (Equities/Forex) <br/> <small style="font-size: 0.9em">Strategy purchasing assets and holding them for the duration of the algorithm. Seeking to demonstrate how to initialize an algorithm and access price data.</small></p></td>
+<td><p>Buy and Hold (Equities/Forex) <br/> <small style="font-size: 0.9em">Strategy purchasing assets and holding them for the duration of the algorithm. Seeking to demonstrate how to initialize an algorithm and access price data.</small></p>
+<span class="badge">Accessing Data</span><span class="badge">Initializing Algorithms</span>
+</td>
 <td class="status"><p>Completed</p></td>
 </tr>
 
 <tr>
-<td><p>Buy and Hold with Trailing Stop <br/> <small style="font-size: 0.9em">Placing and updating a stop-market order combined with basic charting to visualize the stop price movement.</small></p></td>
+<td><p>Buy and Hold with Trailing Stop <br/> <small style="font-size: 0.9em">Placing and updating a stop-market order combined with basic charting to visualize the stop price movement.</small></p>
+<span class="badge">Order Management</span><span class="badge">Basic Charting</span></td>
 <td class="status"><p>Assigned</p></td>
 </tr>
 
 <tr>
-<td><p>Momentum-Based Tactical Allocation <br/> <small style="font-size: 0.9em">Using a momentum indicator to shift investment between the S&amp;P500 to a Bond ETF. Introducing multiple asset portfolios and the use of an indicator.</small></p></td>
+<td><p>Momentum-Based Tactical Allocation <br/> <small style="font-size: 0.9em">Using a momentum indicator to shift investment between the S&amp;P500 to a Bond ETF. Introducing multiple asset portfolios and the use of an indicator.</small></p>
+<span class="badge">Multi-Asset Portfolio</span><span class="badge">Using Indicators</span>
+</td>
 <td class="status"><p><a href="/contact?subject=bootcamp-tactical-allocation">Available</a></p></td>
 </tr>
 
 <tr>
-<td><p>Liquid Universe Selection<br/> <small style="font-size: 0.9em">Using a universe selection filter, invest in the top 10 stocks which are liquid and cost more than $10 per share. Introduces universe selection features.</small></p></td>
+<td><p>Open Range Breakout <br/> <small style="font-size: 0.9em">Uses consolidators to aggregate the first 20 minutes of a day and trades when the price moves beyond that range. Introduces custom period consolidated price bars.</small></p>
+<span class="badge">Consolidators</span>
+</td>
+<td class="status"><p><a href="/contact?subject=bootcamp-open-range">Available</a></p></td>
+</tr>
+
+<tr>
+<td><p>Liquid Universe Selection<br/> <small style="font-size: 0.9em">Using a universe selection filter, invest in the top 10 stocks which are liquid and cost more than $10 per share. Introduces universe selection features.</small></p>
+<span class="badge">Universes</span><span class="badge">Price Volume Filtering</span></td>
 <td class="status"><p><a href="/contact?subject=bootcamp-liquid-universe">Available</a></p></td>
 </tr>
 
 <tr>
-<td><p>200-50 EMA Momentum Universe<br/> <small style="font-size: 0.9em">Select assets where the 50-EMA is greater than the 200 EMA. Seeking to introduce creating structures to contain symbol specific data, and using the history API to warm them up.</small></p></td>
+<td><p>200-50 EMA Momentum Universe<br/> <small style="font-size: 0.9em">Select assets where the 50-EMA is greater than the 200 EMA. Seeking to introduce creating structures to contain symbol specific data, and using the history API to warm them up.</small></p><span class="badge">Universes</span><span class="badge">SymbolData Pattern</span><span class="badge">History</span></td>
 <td class="status"><p><a href="/contact?subject=bootcamp-momentum-universe">Available</a></p></td>
 </tr>
 
 <tr>
-<td><p>Fading The Gap<br/> <small style="font-size: 0.9em">Using scheduled events to monitor for overnight price gaps in the market and shorting abnormal activity. Introduces scheduled events, and elimination of a parameter with STD indicator.</small></p></td>
-<td class="status"><p><a href="/contact?subject=bootcamp-scheduling">Available</a></p></td>
+<td><p>Fading The Gap<br/> <small style="font-size: 0.9em">Using scheduled events to monitor for overnight price gaps in the market and shorting abnormal activity. Introduces scheduled events, and elimination of a parameter with STD indicator.</small></p><span class="badge">Scheduled Events</span><span class="badge">STD Indicator</span><span class="badge">Parameter Minimization</span></td>
+<td class="status"><p><a href="/contact?subject=bootcamp-scheduling">Available</a></p>
+</td>
 </tr>
 
-<tr>
-<td><p>Open Range Breakout<br/> <small style="font-size: 0.9em">Uses consolidators to aggregate the first 20 minutes of a day and trades when the price moves beyond that range. Introduces custom period consolidated price bars.</small></p></td>
-<td class="status"><p><a href="/contact?subject=bootcamp-open-range">Available</a></p></td>
-</tr>
+
 </tbody>
 </table>
 
