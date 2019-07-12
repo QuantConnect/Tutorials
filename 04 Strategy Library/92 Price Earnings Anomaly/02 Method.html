@@ -11,13 +11,15 @@ stocks that have a lower price than $5 per share, using the <code>CoarseSelectio
 <div class="section-example-container">
     <pre class="python">
     def CoarseSelectionFunction(self, coarse):
-        if self.Time.year == self.year: return []
+        
+        if self.Time.year == self.year:
+            return self.symbols
         
         # drop stocks which have no fundamental data or have low price
         CoarseWithFundamental = [x for x in coarse if x.HasFundamentalData and x.Price > 5]
         sortedByDollarVolume = sorted(CoarseWithFundamental, key=lambda x: x.DollarVolume, reverse=False) 
-        top = sortedByDollarVolume[:self._NumCoarseStocks]
-        return [i.Symbol for i in top] 
+        
+        return [i.Symbol for i in sortedByDollarVolume[:self._NumCoarseStocks]] 
 </pre>
 </div>
  
@@ -29,17 +31,18 @@ Then, in the <code>FineSelectionFunction</code>, we retrieve the list of 10 stoc
     <pre class="python">
  
     def FineSelectionFunction(self, fine):
+        
         if self.Time.year == self.year:
-            self.filtered_fine = []
-        else:
-            fine = [x for x in fine if (x.ValuationRatios.PERatio > 0)]
-            for i in fine:
-                i.PERatio = float(i.ValuationRatios.PERatio)
-            sortedPERatio = sorted(fine, key=lambda x: x.PERatio)
-            
-            self.filtered_fine = [i.Symbol for i in sortedPERatio[:self._NumStocksInPortfolio]]
-            
-        return self.filtered_fine
+            return self.symbols
+        
+        self.year = self.Time.year
+        
+        fine = [x for x in fine if x.ValuationRatios.PERatio > 0]
+        sortedPERatio = sorted(fine, key=lambda x: x.ValuationRatios.PERatio)
+
+        self.symbols = [i.Symbol for i in sortedPERatio[:self._NumStocksInPortfolio]]
+        
+        return self.symbols
 </pre>
 </div>
 
