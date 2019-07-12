@@ -9,16 +9,15 @@ stocks that have a lower price than $5 per share, using the <code>CoarseSelectio
 </p>
  
 <div class="section-example-container">
-<pre class="python">
+    <pre class="python">
     def CoarseSelectionFunction(self, coarse):
-        if self.yearly_rebalance:
-            # drop stocks which have no fundamental data and have low price
-            CoarseWithFundamental = [x for x in coarse if x.HasFundamentalData and x.Price > 5]
-            sortedByDollarVolume = sorted(CoarseWithFundamental, key=lambda x: x.DollarVolume, reverse=False) 
-            top = sortedByDollarVolume[:self._NumCoarseStocks]
-            return [i.Symbol for i in top]
-        else: 
-            return [] 
+        if self.Time.year == self.year: return []
+        
+        # drop stocks which have no fundamental data or have low price
+        CoarseWithFundamental = [x for x in coarse if x.HasFundamentalData and x.Price > 5]
+        sortedByDollarVolume = sorted(CoarseWithFundamental, key=lambda x: x.DollarVolume, reverse=False) 
+        top = sortedByDollarVolume[:self._NumCoarseStocks]
+        return [i.Symbol for i in top] 
 </pre>
 </div>
  
@@ -27,19 +26,20 @@ Then, in the <code>FineSelectionFunction</code>, we retrieve the list of 10 stoc
 </p>
  
 <div class="section-example-container">
-<pre class="python">
+    <pre class="python">
  
     def FineSelectionFunction(self, fine):
-        if self.yearly_rebalance:
+        if self.Time.year == self.year:
+            self.filtered_fine = []
+        else:
             fine = [x for x in fine if (x.ValuationRatios.PERatio > 0)]
             for i in fine:
                 i.PERatio = float(i.ValuationRatios.PERatio)
-            sortedPERatio = sorted(fine, key=lambda x: x.PERatio,reverse=True)
+            sortedPERatio = sorted(fine, key=lambda x: x.PERatio)
+            
             self.filtered_fine = [i.Symbol for i in sortedPERatio[:self._NumStocksInPortfolio]]
-            self.yearly_rebalance = False
-            return self.filtered_fine
-        else:
-            return []
+            
+        return self.filtered_fine
 </pre>
 </div>
 
