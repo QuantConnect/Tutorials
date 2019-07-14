@@ -1,7 +1,87 @@
 <p>
-   Task structure,
-  bulleting out the concepts and tasks,
-  translating to HTML and full tasks.
-  
-  
+Writing a bootcamp lesson starts by carefully writing out the complete code for the strategy, after this you can break it into tasks, and write small text summaries for each task with the documentation required to teach the reader how to complete the task.
 </p>
+
+<style> 
+.arrow-steps {
+margin: 20px 0px;
+}
+.arrow-steps .step {
+	font-size: 14px;
+	text-align: center;
+	color: #666;
+	cursor: default;
+	margin: 0 3px;
+	padding: 6px 10px 6px 20px;
+	min-width: 145px;
+	float: left;
+	position: relative;
+	background-color: #d9e3f7;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;  
+}
+
+.arrow-steps .step:after,
+.arrow-steps .step:before {
+	content: " ";
+	position: absolute;
+	top: 0;
+	right: -17px;
+	width: 0;
+	height: 0;
+	border-top: 17px solid transparent;
+	border-bottom: 17px solid transparent;
+	border-left: 17px solid #d9e3f7;	
+	z-index: 2; 
+}
+
+.arrow-steps .step:before {
+	right: auto;
+	left: 0;
+	border-left: 17px solid #fff;	
+	z-index: 0;
+}
+
+.arrow-steps .step:first-child:before {
+	border: none;
+}
+
+.arrow-steps .step:first-child {
+	border-top-left-radius: 4px;
+	border-bottom-left-radius: 4px;
+}
+</style>	
+<div class="arrow-steps clearfix">
+  <div class="step"><span>Lesson Algorithm</span></div>
+  <div class="step"><span>Task Guides</span></div>
+  <div class="step"><span>Validators</span></div>
+  <div class="step"><span>Hints, Solutions</span></div>
+  <div class="step"><span>Submit</span></div>
+</div>
+
+<h4>1. Write Lesson Algorithm</h4>
+<p>
+Writing a bootcamp lesson starts by carefully writing out the complete code for the strategy. This should be drafted as simply as possible to ensure each task the student needs to complete will only be 2-5 lines of code. 
+<p>
+Readability is critical and the code should be well commented with descriptive variable names. Depending on the complexity of the algorithm sometimes its more readable to use string tickers instead of class variables.
+</p>
+<p>
+Carefully write code in a way which neatly separates the algorithm concepts as much as possible. Keep in mind the algorithm will be implemented in tasks by the student. 
+</p>
+
+<table style="table">
+<thead>
+<tr><th>x</th><th> dx</th></tr>
+</thead>
+<tbody>
+<tr><td>x</td></tr><tr><td>x</td></tr><tr><td>x</td></tr>
+</tbody>
+</table>
+
+<ul style="border: 1px solid green">
+<li>Be Concise.</li>
+<li>Ensure Highly Readable.</li>
+<li>Keep Task Divisions in Mind.</li>
+</ul>
