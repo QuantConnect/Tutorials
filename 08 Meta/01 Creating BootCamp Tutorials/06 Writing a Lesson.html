@@ -1,5 +1,5 @@
 <p>
-Writing a bootcamp lesson starts by carefully writing out the complete code for the strategy, after this you can break it into tasks, and write small text summaries for each task with the documentation required to teach the reader how to complete the task.
+Writing a BootCamp lesson starts by carefully writing out the complete code for the strategy, breaking it into tasks, and write small text summaries for each task with the documentation required to teach the reader how to complete the task.
 </p>
 
 <style> 
@@ -63,7 +63,7 @@ margin: 20px 0px;
 
 <h4>1. Write Lesson Algorithm</h4>
 <p>
-Writing a bootcamp lesson starts by carefully writing out the complete code for the strategy. This should be drafted as simply as possible to ensure each task the student needs to complete will only be 2-5 lines of code. 
+Writing a BootCamp lesson starts by carefully writing out the complete code for the strategy. This should be drafted as simply as possible to ensure each task the student needs to complete will only be 2-5 lines of code. 
 <p>
 Readability is critical and the code should be well commented with descriptive variable names. Depending on the complexity of the algorithm sometimes its more readable to use string tickers instead of class variables.
 </p>
@@ -79,16 +79,41 @@ Carefully write code in a way which neatly separates the algorithm concepts as m
 2. Write Task Guides
 </h4>
 <p>
-Each task has a short write up to explain the features need to complete next step of the BootCamp task. This guide should assume the student has no prior knowledge and include representitive code snippets demonstrating the key API code needed.
+Each task has a short write-up to explain the features needed to complete the next task of BootCamp. This write-up should assume the student has no prior knowledge and include representative code snippets demonstrating the key API code needed.
 </p>
 <table class="table">
 <thead>
-<tr><th style="width: 20%">Style</th><th>Code Tag</th></tr>
+<tr><th style="width: 16%">Style</th><th>Example Code Tag</th></tr>
 </thead>
 <tbody>
 <tr>
 <td><p>Headings</p></td>
 <td><pre class="prettyprint">&lt;h4&gt;Initializaing Algorithms&lt;/h4&gt;</pre> </td>
 </tr>
+<tr>
+<td><p>Paragraphs</p></td>
+<td><pre class="prettyprint">&lt;p&gt;Setting cash is done with &lt;span class="python"&gt;self.SetCash().&lt;/span&gt;&lt;/p&gt;</pre> </td>
+</tr>
+<tr>
+<td><p>Code Snippets</p></td>
+<td><pre class="prettyprint">&lt;pre class="prettyprint python"&gt;self.SetCash()&lt;/pre&gt;</pre> </td>
+</tr>
 </tbody>
 </table>
+<p>
+For a fluent experience between lessons, all content should follow the same structure as the sections laid out below. 
+</p>
+<p>
+<img style="width: 33%; float: left; margin-right: 40px;" src="https://cdn.quantconnect.com/bootcamp/i/20190714-bootcamp-task-content-structure.png"/>
+
+Tasks start their contents divided by subtitle using the <code>h4</code> tag. Use a short title about the specific API or content you're trying to summarize. <br/><br/>
+
+After each heading, write a short paragraph concisely summarizing the content in as few words as possible. Use inline <code>&lt;code&gt;</code> blocks to highlight API syntax, and links to new tabs referencing any documentation required. <br/><br/>
+
+Any content which is specific to one programming language should be wrapped in a span tag with the language set in the class, for example: <code>&lt;span class="python"&gt;</code>.
+
+Each section should include a code snippet of documentation using a <code>&lt;pre class="prettyprint"&gt;</code> code block. <br/><br/>
+
+Finally, each task should define 2-4 objectives to achieve in the task. These tasks should guide the user on the required steps to implement the strategy step. At the end of the task, there should be a measurable output that the system can use to judge if the task is a success. This can be a state change of the algorithm, a debug/log statement, or a trade. This will be covered in the next section, <em>Code Validators</em>.
+</p>
+
