@@ -6,12 +6,12 @@
 
 This repository is a collection of WordPress and Jupyter notebook tutorials for LEAN demonstrating financial concepts and LEAN. Tutorials are categorized into folders with each Category and Tutorial Series. The Jupyter notebook and the associated HTML webpage must use matching file names. The HTML is generated and displayed with wordpress.
 
-Lean Engine is an open-source fully managed C# algorithmic trading engine built for desktop and cloud usage. It was designed in Mono and operates in Windows, Linux and Mac platforms. For more information about the LEAN Algorithmic Trading engine see the [Lean Engine Repository][4].
+Lean Engine is an open-source fully managed C# algorithmic trading engine built for desktop and cloud usage. It was designed in Mono and operates in Windows, Linux and Mac platforms. For more information about the LEAN Algorithmic Trading engine see the [Lean][4] Engine repository.
 
 
 ## New Tutorial Requests and Edits ##
 
-Please submit new tutorial requests as an issue to the [Tutorial Repository][5]. Before submitting an issue please read others to ensure it is not a duplicate. Edits and fixes for clarity are warmly welcomed! 
+Please submit new tutorial requests as an issue to the [Tutorials][5] repository. Before submitting an issue please read others to ensure it is not a duplicate. Edits and fixes for clarity are warmly welcomed!
 
 ## Mailing List ##
 
@@ -24,7 +24,7 @@ Contributions are warmly very welcomed but we ask you read the existing code to 
 [1]: https://www.quantconnect.com/tutorials "Tutorials Viewer"
 [2]: https://www.quantconnect.com/lean/docs "Lean Documentation"
 [3]: https://github.com/QuantConnect/Lean/archive/master.zip
-[4]: https://github.com/QuantConnect/Lean/archive/master.zip
+[4]: https://github.com/QuantConnect/Lean
 [5]: https://github.com/QuantConnect/Tutorials/issues
 [6]: https://groups.google.com/forum/#!forum/lean-engine
 [7]: https://github.com/QuantConnect/Lean/blob/master/CONTRIBUTING.md
