@@ -1,0 +1,25 @@
+<p>This method uses the built in, <mark>cross-platform</mark>, command line python debugger <b><a href="https://docs.python.org/3.6/library/pdb.html">pdb</a></b>.
+
+<p>
+<ul style="list-style-type:disc;">
+  <li>Edit config.json with the following paramenters:</li>
+  <div class="section-example-container">
+  <pre>
+      "debugging": true,
+      "debugging-method": "CommandLine",
+  </pre>
+  </div>
+  <li>Run Lean without debugging by clicking on Debug -> Start Without Debugging</li>
+  <li>Lean will hit a first break outside algorithm code</li>
+  <li>Start debugging! Example commands:</li>
+  <div class="section-example-container">
+  <pre>
+      break add ../../../Algorithm.Python/BasicTemplateAlgorithm.py:37
+      continue
+      print(self.Portfolio.Invested)
+  </pre>
+  </div>
+</ul>
+</p>
+
+<img class="img-responsive" src="http://cdn.quantconnect.com/i/tu/python-debugging-command-line.png" />
