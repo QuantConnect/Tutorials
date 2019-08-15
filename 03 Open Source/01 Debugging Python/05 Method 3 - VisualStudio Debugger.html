@@ -1,0 +1,25 @@
+<p>This method uses the (<b><a href="https://docs.microsoft.com/en-us/visualstudio/python/debugging-python-in-visual-studio?view=vs-2019">VisualStudio python debugger</a></b>).
+
+<h4>Prerequisites</h4>
+<p>Visual Studio <mark>Python development</mark> feature. It can be easily installed at Tools -> Get Tools and Features...</p>
+
+<p>
+<ul style="list-style-type:disc;">
+  <li>Edit config.json with the following paramenters:</li>
+  <div class="section-example-container">
+  <pre>
+      "debugging": true,
+      "debugging-method": "VisualStudio",
+  </pre>
+  </div>
+  <li>Run Lean without debugging by clicking on Debug -> Start Without Debugging</li>
+  <li>Lean will stop and wait for the debugger to attach</li>
+  <li>Set breakpoints</li>
+  <li>In Visual Studio, select Debug -> Attach to Process (or press Ctrl+Alt+P) to open the Attach to Process dialog box.</li>
+  <li>For Connection type, select Default</li>
+  <li>For Attach to, select Python</li>
+  <li>Search for <mark>QuantConnect.Lean.Launcher.exe</mark> process and attach</li>
+</ul>
+</p>
+
+<img class="img-responsive" src="http://cdn.quantconnect.com/i/tu/visual-studio-python-debugger.gif">
