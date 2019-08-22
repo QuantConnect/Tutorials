@@ -1,0 +1,93 @@
+<p>
+    The Fama French five-factor model was proposed in 2014 and is adapted from the Fama French three-factor model (Fama and French, 2015). It builds upon the dividend discount model which states that the value of stocks today is dependent upon future dividends.
+    Fama and French add two factors, investment and profitability, to the dividend discount model to better capture the relationship between risk and return.
+    The model is as follows
+</p>
+\[ R = \alpha + \beta_m MKT + \beta_s SMB + \beta_h HML + \beta_r RMW + \beta_c CMA\]
+
+<p>
+where
+</p>
+<ul>
+    <li>MKT is the excess return of the market. It is the return on the value-weighted market portfolio.</li>
+    <li>SMB is the return on a diversified portfolio of small-cap stocks minus the return on a diversified portfolio of big-cap stocks.</li>
+    <li>HML is the difference between the returns on diversified portfolios of stocks with high and low Book-to-Market ratios.</li>
+    <li>RMW is the difference between the returns on diversified portfolios of stocks with robust (high and steady) and weak (low) profitability.</li>
+    <li>CMA is the difference between the returns on diversified portfolios of the stocks of low and high investment firms, which we call conservative and aggressive. Here, low/high investment means reinvestment ratio is low/high.</li>
+</ul>
+
+<p>
+    Taking inspiration from the Fama French five-factor model, we can develop a multi-factor stock selection strategy that focuses on five factors: size, value, quality, profitability, and investment pattern. 
+</p>
+
+<p>
+    First, we run a Coarse Selection to drop equities which have no fundamental data or have too low prices. Then we select those with the highest dollar volume.
+    Note that a useful technique is used here: we can use Universe.Unchanged to remain the same universe when there is no necessary change, which greatly speeds up the backtest.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+def CoarseSelectionFunction(self, coarse):
+    '''Drop securities which have no fundamental data or have too low prices.
+    Select those with highest by dollar volume'''
+
+    if self.Time < self.nextLiquidate:
+        return Universe.Unchanged
+
+    selected = sorted([x for x in coarse if x.HasFundamentalData and x.Price > 5],
+                        key=lambda x: x.DollarVolume, reverse=True)
+
+    return [x.Symbol for x in selected[:self.num_coarse]]   
+</pre>
+</div>
+
+<p>
+    Secondly, in Fine Selection, we use the terms TotalEquity, BookValuePerShare, OperationProfitMargin, ROE, and TotalAssetsGrowth to account for the five factors, respectively. We then calculate a custom ranking metric for each stock using these five terms. Our algorithm will go long in the five stocks with the highest scores and short the five stocks with the lowest scores.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def FineSelectionFunction(self, fine):
+    '''Select securities with highest score on Fama French 5 factors'''
+
+    # Select stocks with these 5 factors:
+    # MKT -- Book value per share: Value
+    # SMB -- TotalEquity: Size
+    # HML -- Operation profit margin: Quality
+    # RMW -- ROE: Profitability
+    # CMA -- TotalAssetsGrowth: Investment Pattern
+    filtered = [x for x in fine if x.ValuationRatios.BookValuePerShare
+                                and x.FinancialStatements.BalanceSheet.TotalEquity
+                                and x.OperationRatios.OperationMargin.Value
+                                and x.OperationRatios.ROE
+                                and x.OperationRatios.TotalAssetsGrowth]
+
+    # Sort by factors
+    sortedByMkt = sorted(filtered, key=lambda x: x.ValuationRatios.BookValuePerShare, reverse=True)
+    sortedBySmb = sorted(filtered, key=lambda x: x.FinancialStatements.BalanceSheet.TotalEquity.Value, reverse=True)
+    sortedByHml = sorted(filtered, key=lambda x: x.OperationRatios.OperationMargin.Value, reverse=True)
+    sortedByRmw = sorted(filtered, key=lambda x: x.OperationRatios.ROE.Value, reverse=True)
+    sortedByCma = sorted(filtered, key=lambda x: x.OperationRatios.TotalAssetsGrowth.Value, reverse=False)
+
+    stockBySymbol = {}
+
+    # Get the rank based on 5 factors for every stock
+    for index, stock in enumerate(sortedByMkt):
+        mktRank = self.beta_m * index
+        smbRank = self.beta_s * sortedBySmb.index(stock)
+        hmlRank = self.beta_h * sortedByHml.index(stock)
+        rmwRank = self.beta_r * sortedByRmw.index(stock)
+        cmaRank = self.beta_c * sortedByCma.index(stock)
+        avgRank = np.mean([mktRank,smbRank,hmlRank,rmwRank,cmaRank])
+        stockBySymbol[stock.Symbol] = avgRank
+
+    sorted_dict = sorted(stockBySymbol.items(), key = lambda x: x[1], reverse = True)
+    symbols = [x[0] for x in sorted_dict]
+
+    # Pick the stocks with the highest scores to long
+    self.longSymbols= symbols[:self.num_long]
+    # Pick the stocks with the lowest scores to short
+    self.shortSymbols = symbols[-self.num_short:]
+
+    return self.longSymbols + self.shortSymbols   
+</pre>
+</div>
