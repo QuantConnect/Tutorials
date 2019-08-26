@@ -1,0 +1,62 @@
+<p>
+  There are three elements of the strategy that will promote mean-reversion and the opportunity for statistical arbitrage: (1) Utilize Coarse selection to obtain the initial universe, (2) Employ PCA to historical prices to get the first 3 principal components for dimension reduction, (3) Apply Linear Regression to get the residuals for measuring the price deviation of each stock in the universe.
+  We will show how we apply Coarse selection first.
+</P>
+
+<div class="section-example-container">
+<pre class="python">
+  # Sort the equities in DollarVolume decendingly
+  selected = sorted([x for x in coarse if x.Price > 5],
+                    key=lambda x: x.DollarVolume, reverse=True)
+  symbols = [x.Symbol for x in selected[:self.num_equities]]
+</pre>
+</div>
+
+<p>
+  We see that in Coarse selection we drop stocks with prices lower than $5 and pick the ones with the highest dollar volume.
+  Then, we go to the PCA part. In this part, based on historical close values, we perform PCA to get the first 3 principal components of the feature space (formed by the historical close values). This helps us
+  reduce the dimension of the feature space and exclude the noise at the same time.
+</P>
+
+<div class="section-example-container">
+  <pre class="python">
+  # Sample data for PCA (smooth it using np.log function)
+  sample = np.log(history.dropna(axis=1))
+  sample -= sample.mean() # Center it column-wise
+
+  # Fit the PCA model for sample data
+  model = PCA().fit(sample)
+
+  # Get the first n_components factors
+  factors = np.dot(sample, model.components_.T)[:,:self.num_components]
+  </pre>
+</div>
+
+<p>
+  Finally, we get to the linear regression part. This part helps us get the weight of each stock in the portfolio based on its price deviation measured by the residual. 
+  If the absolute value of the residual is large, it means that the level of price deviation is high and hence we should give it more weight in the portfolio. Similarly, if the absolute value of the residual is small,
+  it is reasonable to give the stock less weight in the portfolio. Therefore, we could first standardize the residuals to get their z scores. Then, 
+  based on the z scores, it is easy to detect the level of price deviation. Specifically, the level of deviation is higher when the absolute values of the z scores are large. 
+  So it is natural to use the inverse of the absolute values of the z scores as a measurement of the weights of the portfolio. 
+  All details can be found in the following code snippet.
+</P>
+
+<div class="section-example-container">
+  <pre class="python">
+    # Train Ordinary Least Squares linear model for each stock
+    OLSmodels = {ticker: sm.OLS(sample[ticker], factors).fit() for ticker in sample.columns}
+
+    # Get the residuals from the linear regression after PCA for each stock
+    resids = pd.DataFrame({ticker: model.resid for ticker, model in OLSmodels.items()})
+
+    # Get the Z scores by standarize the given pandas dataframe X
+    zscores = ((resids - resids.mean()) / resids.std()).iloc[-1] # residuals of the most recent day
+
+    # Get the stocks far from mean (for mean reversion)
+    selected = zscores[zscores < -1.5]
+
+    # Return the weights for each selected stock
+    weights = selected * (1 / selected.abs().sum())
+  </pre>
+</div>
+
