@@ -1,3 +1,11 @@
 <p>
-  In this tutorial, we will study the model-driven statistical arbitrage strategies in U.S. stocks market. We employ a combination of Principal Components Analysis (PCA) and Linear Regression to implement this strategy. First, by applying PCA, we get a generalized statistical arbitrage strategy that minimizes exposure to market factors and the asset universe is projected onto its first n (n=3 in our algorithm) orthogonal principal components. Secondly, we model the mean-reverting residuals of the cluster of assets and get their weights based on the level of deviation using linear regression.
+  In this tutorial, we will take a close look at a principal component analysis (PCA)-based statistical arbitrage strategy
+  based on the paper <a target=_BLANK href="https://www.math.nyu.edu/faculty/avellane/AvellanedaLeeStatArb071108.pdf">
+  Statistical Arbitrage in teh U.S. Equities Market</a>.
+</p>
+<p> 
+  First, we will apply PCA to minimizes our algorithm's exposure to market factors and project the first n (n=3 in our algorithm) 
+  orthogonal principal components on our asset universe. Then we will model the mean-reverting residuals of our assets. 
+  Next we will create our model using linear regression. Each factor will have a weight or coefficient equal to the residuals' level 
+  of deviation from the mean. 
 </P>
