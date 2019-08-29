@@ -1,6 +1,6 @@
 <h3>Step 1: Select our universe</h3> 
 <p>
-  We will select our universe of stocks by dropping those with prices lower than $5 and pick the ones with the highest dollar volume.   
+  We will select our universe of stocks by dropping securities with prices lower than $5 and pick the ones with the highest dollar traded volume.   
 </P>
 
 <div class="section-example-container">
@@ -14,9 +14,9 @@
 
 <h3>Step 2: Reduce dimensions to three principal components</h3>
 <p>
-  We want to minimize our algorithm's exposure to market factors. PCA enables us to reduce dimensionality and select the most relevant market factors to shape our asset universe.
-  The number of principal components or eigenvectors we use is variable. For the sake of demonstration we chose 3 components to account for the bulk of the variance.
-  In our algorithm use 3 principal components of the feature space formed by the historical close values. 
+  We want to minimize our algorithm's exposure to market factors. PCA is a procedure that extracts uncorrelated components of a possibly-correlated set of observations to reveal the factors that contribute most to a the variance of the observations. Applying PCA to the data above enables us to reduce dimensionality and select the most relevant market factors to shape our asset universe.
+  Based on the results found in the cited paper, and for the sake of demonstration, we chose 3 components to account for the bulk of the variance.
+  In our algorithm, the 3 principal components of the feature space are formed by the historical close values. 
 </P>
 
 <div class="section-example-container">
@@ -35,14 +35,14 @@
 
 <h3>Step 3: Measure price deviation</h3>  
 <p>
-  We will model the mean-reverting residuals of our assets from our regression line. 
-  We use linear regression to derive the weight of each stock in the portfolio based on its price deviation measured by the residual. 
-  If the absolute value of the residual is large, it means that the level of price deviation is high and hence we should give it 
+  We will model the mean-reverting residuals of our assets from a regression line. 
+  We use linear regression to derive the weight of each stock in the portfolio based on its price deviation, which is measured by the residual. 
+  If the absolute value of a stock's residual is large, it means that the level of price deviation is high and we should give it 
   more weight in the portfolio. Similarly, if the absolute value of the residual is small,
-  it is reasonable to give the stock less weight in the portfolio. Therefore, we could first standardize the residuals to get 
-  their z scores. Then, based on the z scores, it is easy to detect the level of price deviation. 
-  Specifically, the level of deviation is higher when the absolute values of the z scores are large. 
-  So it is natural to use the inverse of the absolute values of the z scores as a measurement of the weights of the portfolio. 
+  it is reasonable to give the stock less weight in the portfolio. To facilitate this, we can first standardize the residuals to get 
+  their z-scores. Then, based on the z-scores, it is easy to detect the level of price deviation. 
+  Specifically, the level of deviation is higher when the absolute values of the z-scores are large. 
+  From this it is natural to use the inverse of the absolute values of the z-scores as a measurement of the weights of the portfolio. 
 </p>
 
 <div class="section-example-container">
