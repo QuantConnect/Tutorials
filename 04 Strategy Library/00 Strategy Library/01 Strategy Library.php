@@ -513,6 +513,15 @@ $strategyMap = [
         'description' => "Invests in stocks with low P/E ratio.",
         'tags'=>'Beginner,Fundamental Factors,Equities'
     ],
+    [
+        'name' => 'Fama French Five Factors',
+        'link' => 'strategy-library/fama-french-five-factors',
+        'sources' => [
+            'NYU' => 'https://www.quantpedia.com/Screener/Details/78'
+        ],
+        'description' => "Stock selecting strategy based on Fama-French Five Factors Model.",
+        'tags'=>'Long Short,Fundamental Factors,Equities'
+    ],
 ];
 
 ?>
