@@ -1,0 +1,50 @@
+<p>
+	We can develop a model of estimated expected idiosyncratic skewness using Fama-French three factors. Lower expected idiosyncratic skewness will predict a higher alpha. We will let the investment horizon over which investors are hoping to experience an extreme positive outcome be 1 month. And, let S(t) denote the set of trading days in the current month, and let N(t) denote the number of days in this set.
+</p>
+
+<h3>Step 1: Getting Fama-French three-factor regression residuals</h3>
+
+<p>
+	Let \(\epsilon_{i,d}\) be the regression residual using the Fama and French (1993) three-factor model on day d for firm i, where the regression coefficients that define this residual are estimated using daily data for days in S(t) as the time-series regression below.
+</p>
+
+\[R_{i,d} - R_{f,d} = \alpha_i + \beta_i [R_{M,d} - R_{f,d}] + s_i SMB_{d} + h_i HML_{d} + \epsilon_{i,d}\]
+
+<p>
+	for all day \(d \in S(t)\) and each \(i = 1,2,\dots,N\).
+</p>
+
+<h3>Step 2: Estimating historical idiosyncratic moments</h3>
+
+<p>
+	Let \(iv_{i,t}\) and \(is_{i,t}\) denote historical estimates of idiosyncratic volatility and skewness (respectively) for firm i using daily data for all days in S(t). We can then define \(iv_{i,t}\) and \(is_{i,t}\) as:
+</p>
+
+\[iv_{i,t} = \left( \frac{1}{N(t) - 1} \sum_{d\in S(t)} \epsilon_{i,d}^2 \right)^{1/2}\]
+
+\[is_{i,t} = \frac{1}{N(t) - 2} \frac{ \sum_{d\in S(t)} \epsilon_{i,d}^3 } { iv_{i,t}^{3/2} }\]
+
+<h3>Step 3: Estimating expected idiosyncratic skewness</h3>
+
+<p>
+	We need measures of expected skewness over a horizon of 1 months for firm i at the end of month t, \(E_t[is_{i,t+1}]\), rather than measures of historical skewness as defined in equation above. To model investor perceptions of expected skewness in a feasible manner, we first estimate cross-sectional regression separately at the end of each month t in our sample,
+</p>
+
+\[is_{i,t} = \beta_0^t + \beta_1^t is_{i,t-1} + \beta_2^t iv_{i,t-1} + \varepsilon_{i,t}\]
+
+<p>
+	Superscripts on regression parameters are included to emphasize that we estimate these parameters using information observable at the end of month t. We then use the regression parameters from equation above, along with information observable at the end of each month t, to estimate expected skewness for each firm,
+</p>
+
+\[ E_t[is_{i,t+1}] = \beta_0^t + \beta_1^t is_{i,t} + \beta_2^t iv_{i,t} \]
+
+<p>
+	This approach provides feasible estimates of each month’s expected skewness and accounts for variation between historical moments and expected skewness across time.
+</p>
+
+<h3>Step 4: Generating trading signals</h3>
+
+<p>
+	At the end of each month, we use the results of equation above to sort stocks by expected idiosyncratic skewness. We construct our universe using the lowest 5% of expected skewness, and long our assets to construct a value-weighted portfolio.
+</p>
+
