@@ -513,6 +513,15 @@ $strategyMap = [
         'description' => "Invests in stocks with low P/E ratio.",
         'tags'=>'Beginner,Fundamental Factors,Equities'
     ],
+    [
+        'name' => 'Mean-Reversion Statistical Arbitrage Strategy in Stocks',
+        'link' => 'strategy-library/mean-reversion-statistical-arbitrage-strategy-in-stocks',
+        'sources' => [
+            'NYU' => 'https://www.math.nyu.edu/faculty/avellane/AvellanedaLeeStatArb071108.pdf'
+        ],
+        'description' => "Apply statistical arbitrage to take advantage of pricing inefficiencies in stocks.",
+        'tags'=>'PCA,Mean Reversion,Stocks,Arbitrage'
+    ],
 ];
 
 ?>
