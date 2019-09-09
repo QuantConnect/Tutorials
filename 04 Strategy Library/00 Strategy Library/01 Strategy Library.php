@@ -514,6 +514,15 @@ $strategyMap = [
         'tags'=>'Beginner,Fundamental Factors,Equities'
     ],
     [
+        'name' => 'Fama French Five Factors',
+        'link' => 'strategy-library/fama-french-five-factors',
+        'sources' => [
+            'NYU' => 'https://www.sciencedirect.com/science/article/pii/S0304405X14002323'
+        ],
+        'description' => "Stock selecting strategy based on Fama-French Five Factors Model.",
+        'tags'=>'Long Short,Fundamental Factors,Equities'
+    ],
+    [
         'name' => 'Mean-Reversion Statistical Arbitrage Strategy in Stocks',
         'link' => 'strategy-library/mean-reversion-statistical-arbitrage-strategy-in-stocks',
         'sources' => [
@@ -521,6 +530,7 @@ $strategyMap = [
         ],
         'description' => "Apply statistical arbitrage to take advantage of pricing inefficiencies in stocks.",
         'tags'=>'PCA,Mean Reversion,Stocks,Arbitrage'
+
     ],
 ];
 
