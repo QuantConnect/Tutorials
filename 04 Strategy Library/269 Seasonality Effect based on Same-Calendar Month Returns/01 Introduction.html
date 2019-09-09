@@ -1,0 +1,19 @@
+<p>
+  This tutorial implements a seasonality strategy that trades based on historical same-calendar-month returns. The strategy is
+  derived from the paper <a target=_BLANK href="https://www.nber.org/papers/w20815.pdf">Common Factors in Return Seasonalities</a>. 
+</p>
+<p>
+  A great deal of research on seasonality effects in algorithmic trading exists. Seasonality patterns are well documented in stock returns across numerous
+  countries and in commodity and country portfolios. The phenomenon’s occurrence is not isolated to specific stocks or monthly time intervals, for example, seasonality is observed at the daily frequency as well. Our implementation reflects the existing research. 
+</p>
+<p>
+  In our algorithm, we will first use a coarse selection filter function to narrow down our universe to the top 100 liquid securities with a price greater than $5.
+</p>
+<p>
+  Next, for each security in the universe, we will calculate the monthly return for the same-calendar month of the previous year. For example, if we implement this strategy on a backtest for the period of August 2019, we would base our long and short positions on monthly returns from August 2018. We will long the securities with top monthly returns and short those with the bottom monthly returns. 
+</p>
+<p>
+  At the end of each month we will rebalance and repeat the strategy. The following section offers further explanation of how to implement each step of the strategy.
+</p>
+  
+  

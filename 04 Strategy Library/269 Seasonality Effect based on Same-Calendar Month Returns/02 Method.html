@@ -1,0 +1,70 @@
+<h3>Step 1: Select our universe</h3>
+<p>
+    We first select liquid securities and ETFs with prices greater than $5 based on Dollar Volume for our universe. Research from “Common Factors” suggests that the U.S. equity, commodity, and index markets are all affected by seasonality patterns. Therefore, we can include any assets in our universe. Note that while this strategy does not require fundamental data for implementation, other strategies in the <a target=”_blank” href=”https://www.quantconnect.com/tutorials/strategy-library”>library</a> do. In those cases we would need to remove ETFs from the universe because we don’t have fundamental data for ETFs.
+</p>  
+
+<div class="section-example-container">
+<pre class="python">
+    # Sort the securities with prices > 5 in DollarVolume decendingly
+    selected = sorted([x for x in coarse if x.Price > 5],
+                        key=lambda x: x.DollarVolume, reverse=True)
+
+    # Get securities after coarse selection
+    symbols = [x.Symbol for x in selected[:self.num_coarse]]
+</pre>
+</div>
+
+<h3>Step 2: Calculate the same-calendar month returns of the previous year</h3>
+<p>
+    “Common Factors” indicates that taking long and short positions based on historical same-calendar month returns earns an average monthly return of 1.88%. Our implementation also selects securities to long and short based on their same-calendar month returns. For each security in the universe, we calculate the monthly return for the same-calendar month of the previous year and choose the symbols as follows:
+</p>
+
+<div class="section-example-container">
+  <pre class="python">
+    # Get historical close data for coarse-selected symbols of the same calendar month
+    start = self.Time.replace(day = 1, year = self.Time.year-1)
+    end = Expiry.EndOfMonth(start) - timedelta(1)
+    history = self.History(symbols, start, end, Resolution.Daily).close.unstack(level=0)
+
+    # Get the same calendar month returns for the symbols
+    MonthlyReturn = {ticker: prices.iloc[-1]/prices.iloc[0] for ticker, prices in history.iteritems()}
+
+    # Sorted the values of monthly return
+    sortedReturn = sorted(MonthlyReturn.items(), key=lambda x:x[1], reverse=True)
+
+    # Get the symbols to long / short
+    self.longSymbols = [x[0] for x in sortedReturn[:self.num_long]]
+    self.shortSymbols = [x[0] for x in sortedReturn[-self.num_short:]]
+
+    # Note that self.longSymbols/self.shortSymbols contains strings instead of symbols
+    return [x for x in symbols if str(x) in self.longSymbols + self.shortSymbols]
+  </pre>
+</div>
+
+<h3>Step 3: Rebalance monthly</h3>
+<p>
+  At the end of each month, we rebalance our portfolio, liquidate the securities that are not part of the new month’s universe, and repeat step 1 and 2. Keep in mind we use equal weights for the long and short positions of securities in our portfolio.
+</p>
+
+<div class="section-example-container">
+  <pre class="python">
+    '''
+    Rebalance every month based on same-calendar month returns effect
+    '''
+    # Before next rebalance, do nothing
+    if self.Time < self.nextRebalance:
+        return
+
+    count = len(self.longSymbols + self.shortSymbols)
+    # Open long positions
+    for symbol in self.longSymbols:
+        self.SetHoldings(symbol, 1/count)
+
+    # Open short positions
+    for symbol in self.shortSymbols:
+        self.SetHoldings(symbol, -1/count)
+
+    # Rebalance at the end of every month
+    self.nextRebalance = Expiry.EndOfMonth(self.Time) - timedelta(1)
+  </pre>
+</div>
