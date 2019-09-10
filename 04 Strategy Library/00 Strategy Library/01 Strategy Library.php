@@ -530,8 +530,16 @@ $strategyMap = [
         ],
         'description' => "Apply statistical arbitrage to take advantage of pricing inefficiencies in stocks.",
         'tags'=>'PCA,Mean Reversion,Stocks,Arbitrage'
-
     ],
+	[
+		'name' => 'Expected Idiosyncratic Skewness',
+		'link' => 'strategy-library/expected-idiosyncratic-skewness',
+		'sources' => [
+			'NYU' => 'http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.825.592&rep=rep1&type=pdf'
+		],
+		'description' => "Stock selection strategy that calculates expected idiosyncratic skewness using Fama-French three-factor model, sorts stocks based on the calculated skewness, and longs the bottom 5%.",
+		'tags' => 'Equities, Skewness, Fundamental Factors, Statistical Arbitrage'
+	],
 ];
 
 ?>
