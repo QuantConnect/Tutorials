@@ -1,0 +1,124 @@
+<p>
+	Unexpected earnings, or earnings surprise, is the difference between reported earnings and the expected earnings of a firm. Expected earnings is calculated using a combination of analyst forecasts and mathematical models based on earnings of previous periods. In this tutorial, we use standardized unexpected earnings (SUE) to measure earnings surprise. SUE’s numerator is the change in quarterly earnings per share (EPS) from EPS four quarters ago. Its denominator is the standard deviation of a series of deltas each calculated by subtracting EPS at quarter q-4 from EPS at quarter q. It can be formulated as
+</p>
+
+\[ 
+	SUE_q = \frac{ EPS_q - EPS_{q-4} }{ \sigma( EPS_q - EPS_{q-4} ) }
+\]
+
+<p>
+	where \(\sigma(X)\) is the standard deviation of X, EPS a firm’s quarterly earnings per share, q the current quarter, and q-4 four quarters ago. Keep in mind that although we use quarterly EPS data, the portfolio rebalances monthly. Additionally, note that SUE’s stock ranking changes month to month because each company’s earnings announcement release date for the quarter differs (i.e., firm A’s Q3 announcement may come out in August while firm B’s Q3 announcement comes out in September).
+</p>
+
+
+<h3>Step 1: Narrow down the universe with a coarse selection filter function</h3>
+
+<p>
+	We use a coarse selection filter to narrow down the universe to 1000 stocks at the beginning of each month according to dollar volume, price and whether the stock has fundamental data in our data library. 
+</p>
+
+<div class="section-example-container">
+
+<pre class="python">def CoarseSelectionFunction(self, coarse):
+    '''Get dynamic coarse universe to be further selected in fine selection
+    '''
+    # Before next rebalance time, just remain the current universe
+    if self.Time < self.next_rebalance:
+        return Universe.Unchanged
+        
+    ### Run the coarse selection to narrow down the universe
+    # filter by fundamental data and price & Sort descendingly by daily dollar volume
+    sorted_by_volume = sorted([ x for x in coarse if x.HasFundamentalData and x.Price > 5 ],
+                                key = lambda x: x.DollarVolume, reverse = True)
+    self.new_fine = [ x.Symbol for x in sorted_by_volume[:self.num_coarse] ]
+        
+    # Return all symbols that have appeared in Coarse Selection
+    return list( set(self.new_fine).union( set(self.eps_by_symbol.keys()) ) )
+	</pre>
+	</div>
+
+<h3>Step 2: Sort the universe by SUE and select the top 5%</h3>
+
+<p>
+	Next we use a fine universe selection filter to extract quarterly EPS data and save it in a rolling window for each stock. We don’t trade during the first 36-month warm-up period because the window is not ready yet. After the warm-up period, we can calculate quarterly EPS change from four quarters ago and the standard deviation of the change over the prior eight quarters using historical EPS data saved in the rolling windows. Then we sort the universe and assign the top 5% of symbols to self.long.
+</p>
+
+
+<div class="section-example-container">
+
+<pre class="python">def FineSelectionAndSueSorting(self, fine):
+	'''Select symbols to trade based on sorting of SUE'''
+	
+	sue_by_symbol = dict()
+	
+	for stock in fine:
+		
+		### Save (symbol, rolling window of EPS) pair in dictionary
+		if not stock.Symbol in self.eps_by_symbol:
+			self.eps_by_symbol[stock.Symbol] = RollingWindow[float](self.months_count)
+		# update rolling window for each stock
+		self.eps_by_symbol[stock.Symbol].Add(stock.EarningReports.BasicEPS.ThreeMonths)
+	
+		### Calculate SUE
+	
+		if stock.Symbol in self.new_fine and self.eps_by_symbol[stock.Symbol].IsReady:
+	
+			# Calculate the EPS change from four quarters ago
+			rw = self.eps_by_symbol[stock.Symbol]
+			eps_change = rw[0] - rw[self.months_eps_change]
+			
+			# Calculate the st dev of EPS change for the prior eight quarters
+			new_eps_list = list(rw)[:self.months_count - self.months_eps_change:3]
+			old_eps_list = list(rw)[self.months_eps_change::3]
+			eps_std = np.std( [ new_eps - old_eps for new_eps, old_eps in 
+								zip( new_eps_list, old_eps_list )
+							] )
+			
+			# Get Standardized Unexpected Earnings (SUE)
+			sue_by_symbol[stock.Symbol] = eps_change / eps_std
+	
+	# Sort and return the top quantile
+	sorted_dict = sorted(sue_by_symbol.items(), key = lambda x: x[1], reverse = True)
+	
+	self.long = [ x[0] for x in sorted_dict[:math.ceil( self.top_percent * len(sorted_dict) )] ]
+	# If universe is empty, OnData will not be triggered, then update next rebalance time here
+	if not self.long:
+		self.next_rebalance = Expiry.EndOfMonth(self.Time)
+	
+	return self.long
+	</pre>
+	</div>
+
+<h3>Step 3: Form an equal-weighted portfolio and place orders</h3>
+
+<p>
+	Once the symbols are selected, we form an equal-weighted portfolio and place orders. Finally, we update the next rebalance time to the beginning of the next calendar month. The portfolio will be held until liquidated at next rebalance time.
+</p>
+
+
+<div class="section-example-container">
+
+<pre class="python">def OnSecuritiesChanged(self, changes):
+	'''Liquidate symbols that are removed from the dynamic universe
+	'''
+	for security in changes.RemovedSecurities:
+		if security.Invested:
+			self.Liquidate(security.Symbol, 'Removed from universe')        
+	
+
+def OnData(self, data):
+	'''Monthly rebalance at the beginning of each month. Form portfolio with equal weights.
+	'''
+	# Before next rebalance, do nothing
+	if self.Time < self.next_rebalance or not self.long:
+		return
+	
+	# Placing orders (with equal weights)
+	equal_weight = 1 / len(self.long)
+	for stock in self.long:
+		self.SetHoldings(stock, equal_weight)
+	
+	# Rebalance at the beginning of every month
+	self.next_rebalance = Expiry.EndOfMonth(self.Time)
+	</pre>
+	</div>

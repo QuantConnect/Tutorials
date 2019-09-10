@@ -1,0 +1,10 @@
+<p>
+	This tutorial shows that SEU is a valid indicator for earnings surprise, which can be used as a trading signal to follow post-earning announcement drifts. Our implementation generations a non-trivial 11.8% annual return. Interested users can build from this implementation by trying the following extensions:
+</p>
+
+<ol>
+	<li> Using a more complicated measure for expected earnings to replace the historical EPS from four quarters ago.
+	<li> Using different investment horizons such as 3 months, 6 months, 1 year. In a longer investment horizon of n months, each month’s decile will have n subdeciles, each of which is initiated in a different month in the prior n-month period. An example is a horizon of 6 months with each month having 6 subdeciles, each initiated in a different month in the prior 6-month period.
+	<li> Importing custom data of analysts’ forecasts of firms’ earnings to replace the expected earnings based on historical EPS.
+	<li> Selecting small-size companies and then trade based on SUE ranking, since studies suggest that post-earnings announcement is more significant for small-size companies than larger ones.
+</ol>
