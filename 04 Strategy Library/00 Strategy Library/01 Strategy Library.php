@@ -532,6 +532,16 @@ $strategyMap = [
         'tags'=>'PCA,Mean Reversion,Stocks,Arbitrage'
 
     ],
+    [
+        'name' => 'Risk Premia in Forex Markets',
+        'link' => 'strategy-library/risk-premia-in-forex-markets',
+        'sources' => [
+            'NYU' => 'https://arxiv.org/pdf/1409.7720.pdf'
+        ],
+        'description' => "A strategy based on asymmetric tail risks and excess returns in forex markets.",
+        'tags'=>'Forex,Skewness,Risk Premium'
+
+    ],
 ];
 
 ?>

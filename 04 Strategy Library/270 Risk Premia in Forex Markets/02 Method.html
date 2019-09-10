@@ -1,0 +1,73 @@
+<h3>Step 1: Select our forex universe</h3> 
+<p>
+  In this algorithm, we use a fixed forex universe which contains four symbols: "EURUSD", "AUDUSD", "USDCAD" and "USDJPY". By using self.AddForex(), we add the requested forex data into the data feed. 
+</P>
+
+<div class="section-example-container">
+<pre class="python">
+  # Add forex data of the following symbols
+  for pair in ['EURUSD', 'AUDUSD', 'USDCAD', 'USDJPY']:
+      self.AddForex(pair, Resolution.Hour, Market.FXCM)    
+</pre>
+</div>
+
+<h3>Step 2: Calculate the skewness indicator</h3>
+<p>
+  In statistics, <a href="https://en.wikipedia.org/wiki/Skewness" rel="nofollow">skewness</a> is a measure of the asymmetry of the probability distribution of a real-valued random variable about its mean. Lemperiere et al. suggest there is a positive relationship between risk premia strategies and their negative skewness. We will use this relationship in our trading logic. Our implementation goes long for a forex pair when the skewness indicator is lower than a minimum threshold (-0.6) and short the pair when the indicator exceeds a maximum threshold (0.6). For each forex pair in the universe, we will calculate the skewness indicator with historical close prices and select the symbols as follows:
+</p>
+
+<div class="section-example-container">
+  <pre class="python">
+    ### In OnData()
+    # Get historical close data for the symbols
+    history = self.History(self.Securities.Keys, self.lookback, Resolution.Daily)
+    history = history.drop_duplicates().close.unstack(level=0)
+
+    # Get the skewness of the historical data
+    skewness = self.GetSkewness(history)
+
+    longSymbols = [k for k,v in skewness.items() if v < self.longSkewLevel]
+    shortSymbols = [k for k,v in skewness.items() if v > self.shortSkewLevel]
+
+  def GetSkewness(self, values):
+    '''
+    Get the skewness for all forex symbols based on its historical data
+    Ref: https://www.itl.nist.gov/div898/handbook/eda/section3/eda35b.htm
+    '''
+    # Get the numerator of the skewness
+    numer = ((values - values.mean()) ** 3).sum()
+
+    # Get the denominator of the skewness
+    denom = self.lookback * values.std() ** 3
+
+    # Return the skewness
+    return (numer/denom).to_dict()
+  </pre>
+</div>
+
+<h3>Step 3: Rebalance weekly</h3>  
+<p>
+  We rebalance every week, liquidate the forex pairs not on the trading list, then repeat steps 1-2. We use equal weights for the long and short positions of securities in our portfolio.
+</p>
+
+<div class="section-example-container">
+  <pre class="python">
+  # Liquidate the holdings for pairs that will not trade
+  for holding in self.Portfolio.Values:
+      symbol = holding.Symbol
+      if holding.Invested and symbol.Value not in longSymbols + shortSymbols:
+          self.Liquidate(symbol, 'Not selected pair')
+
+  # Open positions for the symbols with equal weights
+  count = len(longSymbols) + len(shortSymbols)
+
+  for pair in longSymbols:
+      self.SetHoldings(pair, 1/count)
+
+  for pair in shortSymbols:
+      self.SetHoldings(pair, -1/count)
+
+  # Set next rebalance time
+  self.nextRebalance += timedelta(self.rebalanceDays)    
+  </pre>
+</div>
