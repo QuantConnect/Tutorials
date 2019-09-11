@@ -1,5 +1,5 @@
 <p>
-	Unexpected earnings, or earnings surprise, is the difference between reported earnings and the expected earnings of a firm. Expected earnings is calculated using a combination of analyst forecasts and mathematical models based on earnings of previous periods. In this tutorial, we use standardized unexpected earnings (SUE) to measure earnings surprise. SUE’s numerator is the change in quarterly earnings per share (EPS) from EPS four quarters ago. Its denominator is the standard deviation of a series of deltas each calculated by subtracting EPS at quarter q-4 from EPS at quarter q. It can be formulated as
+	Unexpected earnings, or earnings surprise, is the difference between reported earnings and the expected earnings of a firm. Expected earnings is calculated using a combination of analyst forecasts and mathematical models based on earnings of previous periods. In this tutorial, we use standardized unexpected earnings (SUE) to measure earnings surprise. SUE's numerator is the change in quarterly earnings per share (EPS) from EPS four quarters ago. Its denominator is the standard deviation of a series of deltas each calculated by subtracting EPS at quarter q-4 from EPS at quarter q. It can be formulated as
 </p>
 
 \[ 
@@ -7,7 +7,7 @@
 \]
 
 <p>
-	where \(\sigma(X)\) is the standard deviation of X, EPS a firm’s quarterly earnings per share, q the current quarter, and q-4 four quarters ago. Keep in mind that although we use quarterly EPS data, the portfolio rebalances monthly. Additionally, note that SUE’s stock ranking changes month to month because each company’s earnings announcement release date for the quarter differs (i.e., firm A’s Q3 announcement may come out in August while firm B’s Q3 announcement comes out in September).
+	where \(\sigma(X)\) is the standard deviation of X, EPS a firm's quarterly earnings per share, q the current quarter, and q-4 four quarters ago. Keep in mind that although we use quarterly EPS data, the portfolio rebalances monthly. Additionally, note that SUE's stock ranking changes month to month because each company's earnings announcement release date for the quarter differs (i.e., firm A's Q3 announcement may come out in August while firm B's Q3 announcement comes out in September).
 </p>
 
 
@@ -22,12 +22,13 @@
 <pre class="python">def CoarseSelectionFunction(self, coarse):
     '''Get dynamic coarse universe to be further selected in fine selection
     '''
-    # Before next rebalance time, just remain the current universe
+    # Before next rebalance time, keep the current universe unchanged
     if self.Time < self.next_rebalance:
         return Universe.Unchanged
         
     ### Run the coarse selection to narrow down the universe
-    # filter by fundamental data and price & Sort descendingly by daily dollar volume
+    # Filter stocks by price and whether they have fundamental data
+	# Then, sort descendingly by daily dollar volume
     sorted_by_volume = sorted([ x for x in coarse if x.HasFundamentalData and x.Price > 5 ],
                                 key = lambda x: x.DollarVolume, reverse = True)
     self.new_fine = [ x.Symbol for x in sorted_by_volume[:self.num_coarse] ]
@@ -40,7 +41,7 @@
 <h3>Step 2: Sort the universe by SUE and select the top 5%</h3>
 
 <p>
-	Next we use a fine universe selection filter to extract quarterly EPS data and save it in a rolling window for each stock. We don’t trade during the first 36-month warm-up period because the window is not ready yet. After the warm-up period, we can calculate quarterly EPS change from four quarters ago and the standard deviation of the change over the prior eight quarters using historical EPS data saved in the rolling windows. Then we sort the universe and assign the top 5% of symbols to self.long.
+	Next we use a fine universe selection filter to extract quarterly EPS data and save it in a rolling window for each stock. We don't trade during the first 36-month warm-up period because the window is not ready yet. After the warm-up period, we can calculate quarterly EPS change from four quarters ago and the standard deviation of the change over the prior eight quarters using historical EPS data saved in the rolling windows. Then we sort the universe and assign the top 5% of symbols to self.long.
 </p>
 
 
