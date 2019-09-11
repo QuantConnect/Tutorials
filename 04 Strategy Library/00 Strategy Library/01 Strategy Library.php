@@ -540,6 +540,16 @@ $strategyMap = [
 		'description' => "Stock selection strategy that calculates expected idiosyncratic skewness using Fama-French three-factor model, sorts stocks based on the calculated skewness, and longs the bottom 5%.",
 		'tags' => 'Equities, Skewness, Fundamental Factors, Statistical Arbitrage'
 	],
+    [
+        'name' => 'Risk Premia in Forex Markets',
+        'link' => 'strategy-library/risk-premia-in-forex-markets',
+        'sources' => [
+            'NYU' => 'https://arxiv.org/pdf/1409.7720.pdf'
+        ],
+        'description' => "A strategy based on asymmetric tail risks and excess returns in forex markets.",
+        'tags'=>'Forex,Skewness,Risk Premium'
+
+    ],
 ];
 
 ?>
