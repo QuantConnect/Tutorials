@@ -1,6 +1,6 @@
 <h3>Step 1: Select our universe</h3>
 <p>
-    We first select liquid securities and ETFs with prices greater than $5 based on Dollar Volume for our universe. Research from “Common Factors” suggests that the U.S. equity, commodity, and index markets are all affected by seasonality patterns. Therefore, we can include any assets in our universe. Note that while this strategy does not require fundamental data for implementation, other strategies in the <a target=”_blank” href=”https://www.quantconnect.com/tutorials/strategy-library”>library</a> do. In those cases we would need to remove ETFs from the universe because we don’t have fundamental data for ETFs.
+    We first select the top 100 liquid securities and ETFs with prices greater than $5 based on Dollar Volume for our universe. Research from "Common Factors" suggests that the U.S. equity, commodity, and index markets are all affected by seasonality patterns. Therefore, we can include any assets in our universe. Note that while this strategy does not require fundamental data for implementation, other strategies in the <a target="_blank" href="https://www.quantconnect.com/tutorials/strategy-library">library</a> do. In those cases we would need to remove ETFs from the universe because we don’t have fundamental data for ETFs.
 </p>  
 
 <div class="section-example-container">
@@ -16,7 +16,7 @@
 
 <h3>Step 2: Calculate the same-calendar month returns of the previous year</h3>
 <p>
-    “Common Factors” indicates that taking long and short positions based on historical same-calendar month returns earns an average monthly return of 1.88%. Our implementation also selects securities to long and short based on their same-calendar month returns. For each security in the universe, we calculate the monthly return for the same-calendar month of the previous year and choose the symbols as follows:
+    "Common Factors" indicates that taking long and short positions based on historical same-calendar month returns earns an average monthly return of 1.88%. Our implementation also selects securities to long and short based on their same-calendar month returns. For each security in the universe, we calculate the monthly return for the same-calendar month of the previous year and choose the symbols as follows:
 </p>
 
 <div class="section-example-container">
