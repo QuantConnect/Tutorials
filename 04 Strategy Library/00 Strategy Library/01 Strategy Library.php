@@ -550,6 +550,15 @@ $strategyMap = [
         'tags'=>'Forex,Skewness,Risk Premium'
 
     ],
+	[
+		'name' => 'Standardized Unexpected Earnings',
+		'link' => 'strategy-library/standardized-unexpected-earnings',
+		'sources' => [
+			'NYU' => 'https://www.jstor.org/stable/pdf/247321.pdf'
+		],
+		'description' => "Stock selection strategy that calculates the unexpected earnings, standardizes the unexpected earnings, goes long on the top 5%, and rebalances the portfolio monthly."
+		'tags' => 'Equities, Fundamental Factors, Earnings, Anomaly'
+	]
 ];
 
 ?>
