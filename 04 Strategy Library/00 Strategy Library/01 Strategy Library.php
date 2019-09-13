@@ -550,6 +550,16 @@ $strategyMap = [
         'tags'=>'Forex,Skewness,Risk Premium'
 
     ],
+    [
+        'name' => 'Seasonality Effect based on Same-Calendar Month Returns',
+        'link' => 'strategy-library/seasonality-effect-based-on-same-calendar-month-returns',
+        'sources' => [
+            'NYU' => 'https://www.nber.org/papers/w20815.pdf'
+        ],
+        'description' => "A strategy that takes long and short positions based on historical same-calendar month returns",
+        'tags'=>'Seasonality,Stocks,Universe Selection'
+
+    ],
 	[
 		'name' => 'Standardized Unexpected Earnings',
 		'link' => 'strategy-library/standardized-unexpected-earnings',
