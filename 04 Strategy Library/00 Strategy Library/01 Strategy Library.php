@@ -530,6 +530,24 @@ $strategyMap = [
         ],
         'description' => "Apply statistical arbitrage to take advantage of pricing inefficiencies in stocks.",
         'tags'=>'PCA,Mean Reversion,Stocks,Arbitrage'
+    ],
+	[
+		'name' => 'Expected Idiosyncratic Skewness',
+		'link' => 'strategy-library/expected-idiosyncratic-skewness',
+		'sources' => [
+			'NYU' => 'http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.825.592&rep=rep1&type=pdf'
+		],
+		'description' => "Stock selection strategy that calculates expected idiosyncratic skewness using Fama-French three-factor model, sorts stocks based on the calculated skewness, and longs the bottom 5%.",
+		'tags' => 'Equities, Skewness, Fundamental Factors, Statistical Arbitrage'
+	],
+    [
+        'name' => 'Risk Premia in Forex Markets',
+        'link' => 'strategy-library/risk-premia-in-forex-markets',
+        'sources' => [
+            'NYU' => 'https://arxiv.org/pdf/1409.7720.pdf'
+        ],
+        'description' => "A strategy based on asymmetric tail risks and excess returns in forex markets.",
+        'tags'=>'Forex,Skewness,Risk Premium'
 
     ],
     [
@@ -542,6 +560,15 @@ $strategyMap = [
         'tags'=>'Seasonality,Stocks,Universe Selection'
 
     ],
+	[
+		'name' => 'Standardized Unexpected Earnings',
+		'link' => 'strategy-library/standardized-unexpected-earnings',
+		'sources' => [
+			'NYU' => 'https://www.jstor.org/stable/pdf/247321.pdf'
+		],
+		'description' => "Stock selection strategy that calculates the unexpected earnings, standardizes the unexpected earnings, goes long on the top 5%, and rebalances the portfolio monthly.",
+		'tags' => 'Equities, Fundamental Factors, Earnings, Anomaly'
+	]
 ];
 
 ?>
