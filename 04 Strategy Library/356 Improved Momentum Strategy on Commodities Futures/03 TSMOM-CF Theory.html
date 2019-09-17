@@ -1,0 +1,99 @@
+<p>
+Baltas and Kosowski’s modifications to the basic time-series momentum strategy can be summarized in the formula below:
+</p>
+
+\[r_{t,t+1}^{TSMOM-CF} = \frac{1}{N_t} \sum_{i=1}^{N_t} X_t^i \frac{\sigma_{P,tgt}{\sigma_t^i} CF(\bar{\rho}_t)r_{t,t+1}^i\]
+
+<p>
+	where:
+</p>
+\[r_{t,t+1}^{TSMOM-CF} = \text{TSMOM-CF portfolio return from time t to time t+1}\]
+\[N_t = \text{Number of portfolio constituents at time t}\]
+\[X_t^i = \text{Trading signal value of asset i at time t}\]
+\[\sigma_{P,tgt} = \text{Target level of volatility for the overall portfolio}\]
+\[\sigma_t^i = \text{Estimated volatility of asset i at time t}\]
+\[CF(\bar{\rho}_t) = \text{Correlation factor that adjusts the level of leverage applied to each portfolio constituents at time t}\] 
+\[r_{t,t+1}^i = \text{return of asset i from time t to time t+1}\]
+
+<p>
+	The formula shows that the weights for each portfolio constituent are dependent on three parts:
+</p>
+
+
+<h3>Part I: Trading Rule Adjustment (\(X_t^i\))</h3>
+
+<p>
+The TREND trading rule determines the trading signal based on the statistical strength of the realized return:
+</p>
+
+<script src=
+http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+></script>
+\[
+\text{TREND}_i^{12M} \quad
+\begin{cases} +1, \text{   if } t(r_{t-12,t})>+1 \\
+t(r_{t-12,t}), \text{   otherwise} \\
+-1, \text{   if } t(r_{t-12,t})<-1 \\
+\end{cases}
+\]
+
+<p>
+where t() is the t-statistic of the daily futures log-returns over the past 12 months to scale the gross exposure to each portfolio constituents.
+</p>
+
+<p>
+When the absolute value of our t-statistic is greater than 1, the trend is highly statistically significant, so the strategy puts 100% exposure to the asset. When the t-statistic is between -1 and 1, the strength of the trend is not as significant, so the strategy scales its exposure to less than 100%.
+</p>
+
+
+<h3>Part II: Yang and Zhang Volatility Estimato(\(\sigma_{YZ}\))</h3>
+<p>
+	Instead of estimating each asset’s volatility as the standard deviation of past close-to-close daily logarithmic returns, Baltas and Kosowski adopt a more efficient volatility estimator proposed by Yang and Zhang (2000). The formula for the Yang and Zhang volatility estimator (\(\sigma_{YZ}\)) is shown below:
+</p>
+
+\[\sigma_{YZ}^2(t) = \sigma_{OJ}^2(t) + k \sigma_{SD}^2(t) + (1-k) \sigma_{RS}^2(t)\]
+
+<p>
+	where:
+</p>
+
+\[\sigma_{OJ} = \text{Overnight jump estimator (standard deviation of close-to-open daily logarithmic returns)}\]
+\[\sigma_{SD} = \text{Standard volatility estimator (standard deviation of close-to-close daily logarithmic returns)}\]
+\[\sigma_{RS} = \text{Rogers and Satchell (1991) range estimator}\]
+\[k = \text{parameter that minimizes YZ estimator variance, which is a function of the numbers of days in the estimation}\]
+
+<p>
+The formula for parameter k is below:
+</p>
+\[k = \frac{0.34}{1.34+\frac{N_D+1}{N_D-1}}\]
+
+<p>
+The Rogers and Satchell range estimator calculation is based on the following formula:
+</p>
+
+\[\sigma_{RS}^2(\tau) = h(\tau)[h(\tau)-c(\tau)]+l(\tau)[l(\tau)-c(\tau)]\]
+
+<p>
+	where \(h(\tau)\), \(l(\tau)\) and \(c(\tau)\) denote the logarithmic difference between the high, low and closing prices respectively with the opening price. The RS volatility of an asset at the end of month t, assuming a certain estimation period, is equal to the average daily RS volatility over this period.
+</p>
+
+<p>
+The estimation period is chosen to be 1 month, or 21 trading days, based on Baltas and Kosowski's suggestions.
+</p>
+
+
+<h3>Part III: Correlation Factor (CF)</h3>
+Baltas and Kosowski’s correlation factor (CF) is a function of \(\bar{\rho}\), which is the average pairwise signed correlation of all portfolio constituents. The calculations are shown below:
+
+\[CF(\bar{\rho}) = \sqrt{\frac{N}{1+(N-1)\bar{\rho}}\]
+\[\bar{\rho} = 2 \frac{\sum_{i=1}^N \sum_{j=i+1}^N X_i X_j \rho_{i,j}{N(N-1)}\]
+
+<p>
+	where:
+</p>
+
+\[N = \text{number of assets in the portfolio}\]
+\[\rho_{i,j} = \text{correlation between asset i, j}\]
+\[X_i = \text{trade signal of asset i}\]
+\[\bar{\rho} = \text{average pairwise signed correlation for the entire portfolio}\]
+
