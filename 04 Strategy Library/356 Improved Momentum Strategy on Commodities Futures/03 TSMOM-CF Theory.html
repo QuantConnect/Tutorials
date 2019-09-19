@@ -2,7 +2,7 @@
 Baltas and Kosowski's modifications to the basic time-series momentum strategy can be summarized in the formula below:
 </p>
 
-\[r_{t,t+1}^{TSMOM-CF} = \frac{1}{N_t} \sum_{i=1}^{N_t} X_t^i \frac{\sigma_{P,tgt}{\sigma_t^i} CF(\bar{\rho}_t)r_{t,t+1}^i\]
+\[r_{t,t+1}^{TSMOM-CF} = \frac{1}{N_t} \sum_{i=1}^{N_t} X_t^i \frac{\sigma_{P,tgt}}{\sigma_t^i} CF(\bar{\rho}_t)r_{t,t+1}^i\]
 
 <p>
 	where:
@@ -86,7 +86,7 @@ The estimation period is chosen to be 1 month, or 21 trading days, based on Balt
 Baltas and Kosowski's correlation factor (CF) is a function of \(\bar{\rho}\), which is the average pairwise signed correlation of all portfolio constituents. The calculations are shown below:
 
 \[CF(\bar{\rho}) = \sqrt{\frac{N}{1+(N-1)\bar{\rho}}\]
-\[\bar{\rho} = 2 \frac{\sum_{i=1}^N \sum_{j=i+1}^N X_i X_j \rho_{i,j}{N(N-1)}\]
+\[\bar{\rho} = 2 \frac{\sum_{i=1}^N \sum_{j=i+1}^N X_i X_j \rho_{i,j}}{N(N-1)}\]
 
 <p>
 	where:
