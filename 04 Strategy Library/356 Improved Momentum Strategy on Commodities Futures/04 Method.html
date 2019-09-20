@@ -1,0 +1,207 @@
+<p>
+	The strategy requires the continuous futures contract, so we import the custom data from Quandl. We manually create a universe of tradable commodity futures from all available commodity futures traded on CME and ICE. They are all liquid and active continuous contracts #1. The data from Quandl are non-adjusted price based on spot-month continuous contract calculations. The data resolution is daily.
+</p>
+
+
+<h3>Step 1: Import the data</h3>
+
+<div class="section-example-container">
+<pre class="python">
+from QuantConnect.Python import PythonQuandl
+class ImprovedCommodityMomentumTrading(QCAlgorithm):
+	def Initialize(self):
+		for ticker in tickers:
+			data = self.AddData(QuandlFutures, ticker, Resolution.Daily)
+			data.SetLeverage(3) # Leverage was set to 3 for each of the futures contract
+class QuandlFutures(PythonQuandl):
+    def __init__(self):
+        self.ValueColumnName = "Settle"
+</pre>
+</div>
+
+
+
+<h3>Step 2: Set the portfolio target volatility and decide rebalance schedule</h3>
+<div class="section-example-container">
+<pre class="python">
+def Initialize(self):
+	# Last trading date tracker to achieve rebalancing the portfolio every month
+    self.nextRebalance = self.Time
+
+	# Set portfolio target level of volatility, set to 12% 
+	self.portfolio_target_sigma = 0.12
+</pre>
+</div>
+
+<h3>Step 3: Implement functions to calculate the three components of Baltas and Kosowski weights</h3>
+<h4>1. TREND Trade Signal</h4>
+<div class="section-example-container">
+<pre class="python">
+def GetTradingSignal(self, history):
+	'''
+	TREND Trading Signal
+	- Uses the t-statistics of historical daily log-returns to reflect the strength of price movement trend
+	- TREND Signal Conditions:
+		t-stat > 1 => TREND Signal = 1
+		t-stat < 1 => TREND Signal = -1
+		-1 < t-stat < 1 => TREND Signal = t-stat
+	'''
+	settle = history.settle.unstack(level = 0)
+
+	# daily futures log-returns based on close-to-close
+	log_returns = np.log(settle/settle.shift(1)).dropna()
+
+	# Calculate the t-statistics as
+	# (mean-0)/(stdev/sqrt(n)), where n is sample size
+	mean = np.mean(log_returns)
+	std = np.std(log_returns)
+	n = len(log_returns)
+	t_stat = mean/(std/np.sqrt(n))
+
+	# cap holding at 1 and -1
+	return np.clip(t_stat, a_max=1, a_min=-1)
+</pre>
+</div>
+
+<h4>2. Yang and Zhang Volatility Estimator</h4>
+<div class="section-example-container">
+<pre class="python">
+def GetYZVolatility(self, history, available_symbols):
+	'''
+	Yang and Zhang 'Drift-Independent Volatility Estimation'
+	
+	Formula: sigma_YZ^2 = sigma_OJ^2 + self.k * sigma_SD^2 + (1-self.k)*sigma_RS^2 (Equation 20 in [1])
+		where,  sigma_OJ - (Overnight Jump Volitility estimator)
+				sigma_SD - (Standard Volitility estimator)
+				sigma_RS - (Rogers and Satchell Range Volatility estimator)'''
+	YZ_volatility = []
+
+	time_index = history.loc[available_symbols[0]].index
+	today = time_index[-1]
+
+	#Calculate YZ volatility for each security and append to list
+	for ticker in available_symbols:
+	    past_month_ohlc = history.loc[ticker].loc[today-timedelta(self.OneMonth):today]
+	    open, high, low, close = past_month_ohlc.open, past_month_ohlc.high, past_month_ohlc.low, past_month_ohlc.settle
+	    estimation_period = past_month_ohlc.shape[0]
+
+	    # Calculate constant parameter k for Yang and Zhang volatility estimator
+	    # using the formula found in Yang and Zhang (2000)
+	    k = 0.34 / (1.34 + (estimation_period + 1) / (estimation_period - 1))
+
+	    # sigma_OJ (overnight jump => stdev of close-to-open log returns)
+	    open_to_close_log_returns = np.log(open/close.shift(1))
+	    open_to_close_log_returns = open_to_close_log_returns[np.isfinite(open_to_close_log_returns)] 
+	    sigma_OJ = np.std(open_to_close_log_returns) 
+
+	    # sigma_SD (standard deviation of close-to-close log returns)
+	    close_to_close_log_returns = np.log(close/close.shift(1))
+	    close_to_close_log_returns = close_to_close_log_returns[np.isfinite(close_to_close_log_returns)]
+	    sigma_SD = np.std(close_to_close_log_returns) 
+
+	    # sigma_RS (Rogers and Satchell (1991))
+	    h = np.log(high/open)
+	    l = np.log(low/open)
+	    c = np.log(close/open)
+	    sigma_RS_daily = (h * (h - c) + l * (l - c))**0.5
+	    sigma_RS_daily = sigma_RS_daily[np.isfinite(sigma_RS_daily)] 
+	    sigma_RS = np.mean(sigma_RS_daily) 
+		
+	    # daily Yang and Zhang volatility
+	    sigma_YZ = np.sqrt(sigma_OJ**2 + k * sigma_SD**2 + (1 - k) * sigma_RS**2) 
+
+	    # append annualized volatility to the list
+	    YZ_volatility.append(sigma_YZ*np.sqrt(252)) 
+
+	return YZ_volatility
+</pre>
+</div>
+
+<h4>3. Correlation Factor (CF)</h4>
+<div class="section-example-container">
+<pre class="python">
+def GetCorrelationFactor(self, history, trade_signals, available_symbols):
+	'''
+	Calculate the Correlation Factor, which is a function of the average pairwise correlation of all portfolio contituents
+	- the calculation is based on past three month pairwise correlation
+	- Notations:
+	    rho_bar - average pairwise correlation of all portfolio constituents
+	    CF_rho_bar - the correlation factor as a function of rho_bar'''
+
+	# Get the past three month simple daily returns for all securities
+	settle = history.settle.unstack(level = 0)
+	past_three_month_returns = settle.pct_change().loc[settle.index[-1]-timedelta(self.ThreeMonths):]
+
+	# Get number of assets 
+	N_assets = len(available_symbols)
+	
+	# Get the pairwise signed correlation matrix for all assets
+	correlation_matrix = past_three_month_returns.corr() 
+
+	# Calculate rho_bar
+	summation = 0
+	for i in range(N_assets-1):
+	    for temp in range(N_assets - 1 - i):
+		    j = i + temp + 1
+		    x_i = trade_signals[i]
+		    x_j = trade_signals[j]
+		    rho_i_j = correlation_matrix.iloc[i,j]
+		    summation += x_i * x_j * rho_i_j
+			
+	# Equation 14 in [1]
+	rho_bar = (2 * summation) / (N_assets * (N_assets - 1)) 
+
+	# Calculate the correlation factor (CF_rho_bar)
+	# Equation 18 in [1]
+	return np.sqrt(N_assets / (1 + (N_assets - 1) * rho_bar)) 
+</pre>
+</div>
+
+<h3>Step 4: Construct/Rebalance the Portfolio</h3>
+<p>
+For efficiency purposes, a History() request is called once on each rebalance date to get all the data from the past year for all securities. We retrieve our trade signal, Yang and Zhang volatility, and correlation factor by passing the history data frame to each respective function. 
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+def OnData(self, data):
+	'''
+	Monthly rebalance at the beginning of each month.
+	Portfolio weights for each constituents are calculated based on Baltas and Kosowski weights.
+	'''
+
+	# skip if less than 30 days passed since the last trading date
+	if self.Time < self.nextRebalance:
+		return
+
+	'''Monthly Rebalance Execution'''
+	# dataframe that contains the historical data for all securities
+	history = self.History(self.Securities.Keys, self.OneYear, Resolution.Daily)
+	history.replace(0, np.nan, inplace = True)
+
+	# Get the security symbols are are in the history dataframe
+	available_symbols = list(set(history.index.get_level_values(level = 0)))
+
+	# Liquidate symbols that are not in the history dataframe anymore
+	for security in self.Securities.Keys:
+		if security.Value not in available_symbols:
+			self.Liquidate(security, 'Not found in history request')
+
+	# Get the trade signals and YZ volatility for all securities
+	trade_signals = self.GetTradingSignal(history) 
+	volatility = self.GetYZVolatility(history, available_symbols) 
+	
+	# Get the correlation factor
+	CF_rho_bar = self.GetCorrelationFactor(history, trade_signals, available_symbols)
+
+	#Rebalance the portfolio according to Baltas and Kosowski suggested weights
+	N_assets = len(available_symbols)
+	for symbol, signal, vol in zip(available_symbols, trade_signals, volatility):
+		# Baltas and Kosowski weights (Equation 19 in [1])
+		weight = (signal*self.portfolio_target_sigma*CF_rho_bar)/(N_assets*vol)
+		self.SetHoldings(symbol, weight)
+
+	# Set next rebalance time
+	self.nextRebalance = Expiry.EndOfMonth(self.Time)
+</pre>
+</div>

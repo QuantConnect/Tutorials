@@ -579,6 +579,15 @@ $strategyMap = [
         'tags'=>'Momentum, Stocks, Universe Selection, Historical Data, Rolling Window'
 
     ]
+	[
+		'name' => 'Improved Momentum Strategy on Commodities Futures',
+		'link' => 'strategy-library/improved-momentum-strategy-on-commodities-futures',
+		'sources' => [
+			'NYU' => 'https://pdfs.semanticscholar.org/a2e9/df201d4b4774fda84a961cc804f2450988c5.pdf'
+		],
+		'description' => "An advanced momentum strategy that modifies the basic momentum strategies by introducing Baltas and Kosowski weights and rebalances the portfolio monthly. The new weighing scheme incorporates trend strength into the trading signal, uses an efficient volatility estimator, and adds a dynamic leverage mechanism.",
+		'tags' => 'Momentum, Futures, Commodities'
+	]
 ];
 
 ?>

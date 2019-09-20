@@ -1,0 +1,16 @@
+<p>
+	Baltas and Kosowski modify the basic momentum strategy by incorporating trend strength into the trading signal, using an efficient volatility estimator, and adding a dynamic leverage mechanism. The modifications overcome these three weaknesses:
+</p>
+
+<ol>
+	<li>
+	<strong>An Oversimplified Trading Signal:</strong> The traditional time-series momentum strategy (TSMOM) results in high portfolio turnover which, after accounting for transaction costs, leads to diminished performance. Baltas and Kosowski attribute the traditional strategy's extreme long/short positions to an oversimplified trading signal whose values are a discrete +1 or -1. The traditional trading signal is based on the sign of the past 12-month average simple return. Baltas and Kosowski propose a trading signal with a continuous value between +1 and -1. Their signal is a statistical measure that reflects the strength of the price trend.
+	</li>
+	<li>
+	<strong>An Inefficient Volatility Estimator:</strong> The TSMOM generally scales asset positions using the estimated volatility of portfolio constituents. The traditional strategy's volatility estimator is the standard deviation of past daily close-to-close returns, which is subject to large estimation errors. Baltas and Kosowski demonstrate that a more efficient volatility estimator can significantly reduce portfolio turnover which, after taking into account transaction costs, boosts the portfolio performance. They present the Yang and Zhang volatility estimator, a range-based estimator that considers the open, high, low, and close prices of assets. The next section will discuss this estimator in greater detail.
+	</li>
+	<li>
+	<strong>A Fixed Portfolio Allocation Mechanism:</strong> The TSMOM does not consider the correlation between assets during portfolio construction. It simply allocates funds to each asset based on the properties of the individual assets. Strategies based on TSMOM significantly underperform in the post-2008 global financial crisis (GFC) period due to the increased level of asset co-movement at the time. As a remedy, Baltas and Kosowski introduce a dynamic leverage adjustment for the overall portfolio by adding a correlation factor to the weighting scheme.
+	</li>
+</ol>
+
