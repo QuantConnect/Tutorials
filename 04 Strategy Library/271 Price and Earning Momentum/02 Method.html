@@ -1,0 +1,166 @@
+<h3>Step 1: Select the coarse universe</h3> 
+<p>
+  We will use both a coarse selection filter and in a later step, a fine universe filter, to narrow down our universe of assets. Our coarse universe filter creates a set of stocks based on volume, price, and whether fundamental data on the stock exists. In this step we filter for the top 100 liquid equities with prices greater than $5. We also exclude the equities missing fundamental data because EPS is needed in the fine selection step.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+def CoarseSelection(self, coarse):
+  '''
+  Pick the top 100 liquid equities as the coarse-selected universe
+  '''
+  # Before next rebalance time, just remain the current universe
+  if self.Time < self.nextRebalance:
+      return Universe.Unchanged
+
+  # Sort the equities (prices > 5) by Dollar Volume descendingly
+  selectedByDollarVolume = sorted([x for x in coarse if x.Price > 5 and x.HasFundamentalData], 
+                                  key = lambda x: x.DollarVolume, reverse = True)
+
+  # Pick the top 100 liquid equities as the coarse-selected universe
+  return [x.Symbol for x in selectedByDollarVolume[:self.numOfCoarse]]  
+</pre>
+</div>
+
+<h3>Step 2: Calculate quarterly return and earnings growth</h3>
+<p>
+  N.Jegadeesh et al. state price momentum and earnings momentum can be used as two indicators for trading. We will calculate for price momentum with the "GetQuarterlyReturn" method and for earnings momentum with the "GetEarningGrowth" method.
+</p>
+<p>
+  "GetQuarterlyReturn" calculates price momentum for each symbol in our coarse universe and ranks each stock based on its quarterly return. First we request last quarter’s close price for all stocks. Then we calculate quarterly return by taking the delta of the first day’s close price and the last day’s close price. Finally, we store the symbols and their corresponding rankings by quarterly return in a dictionary in preparation for fine selection.
+</p>
+
+<div class="section-example-container">
+  <pre class="python">
+    def GetQuarterlyReturn(self, history):
+        '''
+        Get the rank of securities based on their quarterly return from historical close prices
+        Return: dictionary
+        '''
+        # Get quarterly returns for all symbols
+        # (The first row divided by the last row)
+        returns = history.iloc[0] / history.iloc[-1]
+
+        # Transform them to dictionary structure
+        returns = returns.to_dict()
+
+        # Get the rank of the returns (key: symbol; value: rank)
+        # (The symbol with the 1st quarterly return ranks the 1st, etc.)
+        ranked = sorted(returns, key = returns.get, reverse = True)
+        return {symbol: rank for rank, symbol in enumerate(ranked, 1)}
+  </pre>
+</div>
+<p>
+  "GetEarningGrowth" calculates earnings momentum for each symbol in our coarse universe and ranks each stock based on its earnings growth. First we use a RollingWindow to store and update the BasicEPS to reflect quarterly earnings reports. A RollingWindow holds a set of the most recent entries of data. As we move from time t=0 forward, our rolling window will shuffle data further along to a different index until it leaves the window completely. The object in the window with index[0] refers to the most recent item. The length-1 in the window is the oldest object.
+</p>
+
+<p>
+  Our rolling window has a length of 2 so index[0] is the current EPS and index[1] is last quarter's EPS. We calculate earnings growth for each stock by taking the delta of this quarter’s EPS and last quarter’s EPS divided by last quarter’s EPS. Finally we rank each asset based on earnings growth.
+</p>
+<div class="section-example-container">
+  <pre class="python">
+    def GetEarningGrowth(self, fine):
+        '''
+        Get the rank of securities based on their EPS growth
+        Return: dictionary
+        '''
+
+        # Earning Growth by symbol
+        egBySymbol = {}
+        for stock in fine:
+
+            # Select the securities with EPS (> 0)
+            if stock.EarningReports.BasicEPS.ThreeMonths == 0:
+                continue
+
+            # Add the symbol in the dict if not exist
+            if not stock.Symbol in self.epsBySymbol:
+                self.epsBySymbol[stock.Symbol] = RollingWindow[float](2)
+
+            # Update the rolling window for each stock
+            self.epsBySymbol[stock.Symbol].Add(stock.EarningReports.BasicEPS.ThreeMonths)
+
+            # If the rolling window is ready
+            if self.epsBySymbol[stock.Symbol].IsReady:
+                rw = self.epsBySymbol[stock.Symbol]
+                # Caculate the Earning Growth
+                egBySymbol[stock.Symbol] = (rw[0] - rw[1]) / rw[1]
+
+        # Get the rank of the Earning Growth
+        ranked = sorted(egBySymbol, key = egBySymbol.get, reverse = True)
+        return {symbol: rank for rank, symbol in enumerate(ranked, 1)}
+  </pre>
+</div>
+
+<h3>Step 3: Select the fine universe</h3>  
+<p>
+  We use a fine selection filter in addition to a coarse selection filter to refine our asset selection based on corporate fundamental data. We can use both quarterly return and earnings growth from our two indicators to generate an average rank for each stock. Then we can go long on the top 10 and short the bottom 10.
+</p>
+
+<div class="section-example-container">
+  <pre class="python">
+    def FineSelection(self, fine):
+        '''
+        Select securities based on their quarterly return and their earnings growth 
+        '''
+        symbols = [x.Symbol for x in fine]
+
+        # Get the quarterly returns for each symbol
+        history = self.History(symbols, self.rebalanceDays, Resolution.Daily)
+        history = history.drop_duplicates().close.unstack(level = 0)
+        rankByQuarterReturn = self.GetQuarterlyReturn(history)
+
+        # Get the earning growth for each symbol
+        rankByEarningGrowth = self.GetEarningGrowth(fine) 
+
+        # Get the sum of rank for each symbol and pick the top ones to long and the bottom ones to short
+        rankSumBySymbol = {key: rankByQuarterReturn.get(key, 0) + rankByEarningGrowth.get(key, 0) 
+                                for key in set(rankByQuarterReturn) | set(rankByEarningGrowth)}
+
+        # Get 10 symbols to long and short respectively
+        sortedDict = sorted(rankSumBySymbol.items(), key = lambda x: x[1], reverse = True)
+        self.longSymbols = [x[0] for x in sortedDict[:10]]
+        self.shortSymbols = [x[0] for x in sortedDict[-10:]]
+
+        return [x for x in symbols if str(x) in self.longSymbols + self.shortSymbols]    
+  </pre>
+</div>
+
+<h3>Step 4: Rebalance quarterly</h3>  
+<p>
+  We choose to rebalance every quarter and use equal weights for the long and short positions of securities in our portfolio.
+</p>
+
+<div class="section-example-container">
+  <pre class="python">
+    def OnData(self, data):
+        '''
+        Rebalance quarterly
+        '''
+        # Do nothing until next rebalance
+        if self.Time < self.nextRebalance:
+            return
+
+        # Liquidate the holdings if necessary
+        for holding in self.Portfolio.Values:
+            symbol = holding.Symbol
+            if holding.Invested and symbol.Value not in self.longSymbols + self.shortSymbols:
+                self.Liquidate(symbol, "Not Selected")
+
+        # Open positions for the symbols with equal weights
+        count = len(self.longSymbols + self.shortSymbols)
+        if count == 0:
+            return
+
+        # Enter long positions
+        for symbol in self.longSymbols:
+            self.SetHoldings(symbol, 1 / count)
+
+        # Enter short positions
+        for symbol in self.shortSymbols:
+            self.SetHoldings(symbol, -1 / count)
+
+        # Set next rebalance time
+        self.nextRebalance += timedelta(self.rebalanceDays)   
+  </pre>
+</div>
