@@ -1,0 +1,71 @@
+<h3>1.定义</h3>
+<p>
+  给定一个随机向量\(X_1,X_2,...,X_p\)，其边际累积分布函数(CDF)为\(F_i(x) = P[X_i \leq x]\)。通过对每个分量进行概率积分变换，\((U_1,U_2,...,U_p) = (F_1(X_1),F_2(X_2),...,F_p(X_p))\)的边际分布是一致的(from <a href="https://en.wikipedia.org/wiki/Copula_(probability_theory)">Wikipedia</a>)。然后将\(X_1,X_2,...,X_p\)的联系定义为\(U_1,U_2,...,U_p\)的联合累积分布函数，其中每个变量U的边际分布均为\(U(0,1)\)。
+</p>
+
+\[C(u_1,u_2,...,u_p) = P[U_1\leq u_1,U_2\leq u_2,..., U_1\leq u_1]\]
+
+<p>
+  联系函数包含了所有边际分布的依赖性特征，能够更好地利用概率描述变量之间的线性和非线性关系。它们使边际分布能够彼此独立地建模，并且不需要对边际分布的联合行为进行假设。
+</p>
+
+<h3>2.二元联系</h3>
+<p>
+  由于本研究的重点是二元联系 (对于配对交易，我们有2个随机变量)，因此指定了一些概率性质。
+  设X和Y为两个随机变量，累积概率函数为\(F_1(X)\)和\(F_2(Y)\)。\(U=F_1(X), V=F_2(Y)\)是均匀分布的。则联系函数为\(C(u,v)=P(U\leq u,V\leq v)\)。取U和V联系函数的偏导数，所得到条件分布函数如下：
+</p>
+
+\[P(U\leq u\mid V= v)=\frac{\partial C(u,v)}{\partial v}\]
+\[P(V\leq v\mid U= u)=\frac{\partial C(u,v)}{\partial u}\]
+
+<h3>3.阿基米德联系</h3>
+<p>
+  除了高斯假设之外，还有许多联系函数可以用来描述变量之间的依附结构。这里我们将重点讨论其中的三种，它们分别是来自阿基米德分类中的<em>Clayton</em>，<em>Gumbel</em>和<em>Frank</em>。
+  阿基米德联系是基于单变量分布函数的Laplace变换参数φ。它们是由特定的生成器函数\(\phi\)创建的。
+</p>
+
+\[C(u,v)=\phi^{-1}( \phi(u),\phi(v) )\]
+
+<p>
+  概率密度函数为：
+</p>
+
+\[c(u,v)=\phi_{(2)}^{-1}(\phi(u)+\phi(v))\phi^{'}(u)\phi^{'}(v)\]
+
+<p>
+  其中，\(\phi_{(2)}^{-1}\)是生成器函数二次导数的倒数。
+</p>
+
+<table class="table qc-table">
+<thead>
+<tr>
+<th style="text-align: left;">联系</th>
+<th style="text-align: center;">联系函数C(u,v;θ)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Clayton联系公式</td>
+<td style="text-align: left;">\[(u^{-\theta}+v^{-\theta}-1)^{-1/\theta}\]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Gumbel联系公式</td>
+<td style="text-align: left;">\[exp(-[(-\ln u)^{\theta}＋(-\ln v)^{\theta}]^{1/\theta})\]</td>
+</tr>
+<tr>
+<td style="text-align: left;">Frank联系公式</td>
+<td>\[-\theta^{-1}\ln\left[1+\frac{(exp(-\theta u)-1)(exp(-\theta v)-1)}{exp(-\theta)-1}\right]\]</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>
+  Genest和MacKay证明了在双变量情况下联系生成器函数与Kendall秩相关tau之间的关系为：
+</p>
+
+\[\tau=1+4\int_{0}^{1} \frac{\partial \phi (v)}{\partial \phi^{'}(v)}dv\]
+
+<p>
+  因此，只要知道Kendall的tau秩测量值和生成器函数，就可以很容易地估算出阿基米德联系函数中的参数。请参照步骤3查看公式。
+</p>

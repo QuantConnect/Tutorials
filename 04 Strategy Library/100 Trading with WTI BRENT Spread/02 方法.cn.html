@@ -1,0 +1,117 @@
+<p>
+  我们从<a href="www.macrotrends.net" rel="nofollow">Macrotrends</a>下载WTI和Brent原油价格，并使用自定义数据下载器导入csv文件。单位为美元/桶。
+</p>
+<div class="section-example-container">
+<pre class="python">
+  class WTI(PythonData):
+      "Class to import WTI Spot Price(Dollars per Barrel) data from Dropbox"
+
+      def GetSource(self, config, date, isLiveMode):
+          return SubscriptionDataSource("https://www.dropbox.com/s/jpie3z6j0stp97d/wti-crude-oil-prices-10-year-daily.csv?dl=1", SubscriptionTransportMedium.RemoteFile)
+
+      def Reader(self, config, line, date, isLiveMode):
+          if not (line.strip() and line[1].isdigit()): return None
+          index = WTI()
+          index.Symbol = config.Symbol
+          try:
+              data = line.split(',')
+              index.Time = datetime.strptime(data[0], "%Y-%m-%d")
+              index.Value = Decimal(data[1])
+          except:
+              return None
+          return index
+
+  class BRENT(PythonData):
+      "Class to import BRENT Spot Price(Dollars per Barrel) data from Dropbox"
+
+      def GetSource(self, config, date, isLiveMode):
+          return SubscriptionDataSource("https://www.dropbox.com/s/w380c4n7xjmdqxl/brent-crude-oil-prices-10-year-daily.csv?dl=1", SubscriptionTransportMedium.RemoteFile)
+
+      def Reader(self, config, line, date, isLiveMode):
+          if not (line.strip() and line[1].isdigit()): return None
+          index = BRENT()
+          index.Symbol = config.Symbol
+          try:
+              data = line.split(',')
+              index.Time = datetime.strptime(data[0], "%Y-%m-%d")
+              index.Value = Decimal(data[1])
+          except:
+              return None
+          return index
+</pre>
+</div>
+<p>
+  价差定义为WTI价格与Brent价格之间的差。接下来，我们需要使用指标<code>SimpleMovingAverage</code>来计算价差系列的移动平均值。由于指标使用的是价格差异而不是价格系列，因此需要使用历史请求手动初始化指标。
+</p>
+<div class="section-example-container">
+<pre class="python">
+self.SpreadSMA = SimpleMovingAverage(20)
+hist = self.History(["WTI", "BRENT"], 400, Resolution.Daily)["value"].unstack(level=0).dropna()
+hist_20days = hist[-20:]
+spread = (hist_20days["WTI"] - hist_20days["BRENT"]).dropna()
+for index, value in spread.items():
+    self.SpreadSMA.Update(index, value)
+</pre>
+</div>
+<p>
+  为了得到价差的公允价值，我们对WTI和Brent价格在过去一年的历史价格进行了线性回归。
+</P>
+ \[P_{Brent}=\beta \cdot P_{WTI}+\alpha\]
+<p>
+   那么差价的公允价值是
+</P>
+\[Fair \ Spread =(1-\beta)\cdot CurrentPrice_{WTI}-\alpha\]
+</P>
+<div class="section-example-container">
+<pre class="python">
+hist_one_year = hist[-252:]
+X = hist_one_year["WTI"][:, np.newaxis]
+y = hist_one_year["BRENT"]
+self.regr = linear_model.LinearRegression()
+self.regr.fit(X, y)
+</pre>
+</div>
+<p>
+  公允价值每天计算一次。如果当前价差值高于SMA 20，那么我们将在收盘时进入价差空头头寸(押注价差将降至SMA 20所代表的公允价值)。当价差低于公允价值时，交易在交易日收盘时结束。如果当前价差低于SMA 20，那么我们就进入多头头寸，押注价差将会增加，当价差超过公允价值时，交易将在交易日收盘时结束。
+</P>
+
+<div class="section-example-container">
+<pre class="python">
+def OnData(self, data):
+    if not (data.ContainsKey("WTI") and data.ContainsKey("BRENT")): return
+    self.Plot("Spread Plot", "Spread", data["WTI"].Price - data["BRENT"].Price)
+
+    self.SpreadSMA.Update(self.Time, data["WTI"].Price - data["BRENT"].Price)
+    if not self.SpreadSMA.IsReady: return
+    spread = self.Securities["WTI"].Price - self.Securities["BRENT"].Price
+    fair_value =self.Securities["WTI"].Price - Decimal(self.regr.predict([[self.Securities["WTI"].Price]])[0])
+
+    if spread > self.SpreadSMA.Current.Value and not (self.Portfolio["WTI"].IsShort and self.Portfolio["BRENT"].IsLong):
+        self.SetHoldings("WTI", -0.5)
+        self.SetHoldings("BRENT", 0.5) 
+        self.Plot("Spread Plot", "Long Spread Trade", data["WTI"].Price - data["BRENT"].Price)
+
+    elif spread < self.SpreadSMA.Current.Value and not (self.Portfolio["WTI"].IsLong and self.Portfolio["BRENT"].IsShort):
+        self.SetHoldings("WTI", 0.5)
+        self.SetHoldings("BRENT", -0.5)
+        self.Plot("Spread Plot", "Short Spread Trade", data["WTI"].Price - data["BRENT"].Price)
+
+    if self.Portfolio["WTI"].IsShort and self.Portfolio["BRENT"].IsLong and spread < fair_value:
+        self.Liquidate()
+
+    if self.Portfolio["WTI"].IsLong and self.Portfolio["BRENT"].IsShort and spread > fair_value:
+        self.Liquidate()
+</pre>
+</div>
+<p>
+  为了显示价差序列的趋势，我们添加了价差图，并在价差曲线上标记了价差的多头/空头点。
+</P>
+<div class="section-example-container">
+<pre class="python">
+spreadPlot = Chart("Spread Plot")
+spreadPlot.AddSeries(Series("Spread", SeriesType.Line, 0))
+spreadPlot.AddSeries(Series("Long Spread Trade", SeriesType.Scatter, 0))
+spreadPlot.AddSeries(Series("Short Spread Trade", SeriesType.Scatter, 0))
+self.AddChart(spreadPlot)
+</pre>
+</div>
