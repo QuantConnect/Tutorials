@@ -1,0 +1,21 @@
+<p>
+The paper  highlights the existence of trends as an anomaly that contradicts the efficient market hypothesis. If financial markets are completely efficient as the hypothesis suggests, then asset price changes should be totally unpredictable. In other words, no systematic excess return based on public information should exist since asset prices ought to reflect all public information available. However observationally, trend existence in the market do exist. They make it possible to use the simple trend following strategy which states, buy when prices goes up and sell when prices goes down. Numerous academic studies have demonstrated that trend following strategies generate persistent returns over long periods of time.
+</p>
+
+<p>
+The paper extends the backtest period of trend following strategies to two centuries and demonstrates statistically significant systematic excess returns on four asset classes (commodities, currencies, stock indices, and bonds). It implements a risk managed strategy that buys or sells a quantity of \(\sigma_n^{-1}\) of the underlying contract depending on the sign of \(s_n\). 
+</p>
+
+<p>
+The signal \(s_n(t)\) at the beginning of month t is:
+</p>
+
+\[s_n(t) = \frac{p(t-1)-\text{&lt;}p\text{&gt;}_{n,t-1}}{\sigma_n(t-1)}\]
+
+<p>
+where \(\text{&lt;}p\text{&gt;}_{n,t-1}\) is last month's exponential moving average of past prices with a decay rate equal to n months,\(p(t-1)\) is the price of last month, and \(\sigma_n(t-1)\) is last month's volatility, estimated as the exponential moving average of the absolute monthly price changes, with a decay rate equal to n months. The decay rate was set to 5 months.
+</p>
+
+<p>
+Below, we will implement the above monthly-rebalanced trend following strategy on commodities futures.
+</p>
