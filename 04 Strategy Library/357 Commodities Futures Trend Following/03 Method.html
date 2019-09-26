@@ -6,7 +6,7 @@
 <h3>Step 1: Import futures data from Quandl</h3>
 
 <p>
-The paper selected a well-balanced commodities pool to include 7 representative contracts: Crude oil, Henry Hub Natural Gas, Corn, Wheat, Super, Live Cattle and Copper.  We will add continuous futures data of these contracts from Quandl. This implementation performs a backtest on 20 years as opposed to 200 years of data for the purpose of comparing to benchmark SPY.
+The paper selected a well-balanced commodities pool to include 7 representative contracts: Crude oil, Henry Hub Natural Gas, Corn, Wheat, Super, Live Cattle and Copper. We will add continuous futures data of these contracts from Quandl. This implementation performs a backtest on 20 years as opposed to 200 years of data for the purpose of comparing to benchmark SPY.
 </p>
 
 <div class="section-example-container">
@@ -35,7 +35,7 @@ class QuandlFutures(PythonQuandl):
 <h3>Step 2: Create a SymbolData class to store and update the number of contracts to trade for each security</h3>
 
 <p>
-In Initialize(), we create a dictionary to store the SymbolData object for each security. The strategy is designed to trade monthly, so we will create a MonthlyConsolidator for each security as well. When a new monthly data becomes available, the consolidator calls an event handler CalendarHandler. Within this event handler, we will update the SymbolData object with the freshly produced monthly data.
+In Initialize(), we create a dictionary to store the SymbolData object for each security. The strategy is designed to trade monthly, so we will create a monthly consolidator for each security as well. When a new monthly data becomes available, the consolidator calls an event handler CalendarHandler. Within this event handler, we will update the SymbolData object with the freshly received monthly data.
 </p>
 <div class="section-example-container">
 <pre class="python">
@@ -49,9 +49,10 @@ def Initialize(self):
 		data.SetLeverage(3) 
 		
 		# Create a monthly consolidator for each security
-		MonthlyConsolidator = self.Consolidate(ticker, CalendarType.Monthly, self.CalendarHandler)
+		self.Consolidate(ticker, CalendarType.Monthly, self.CalendarHandler)
 		
-		# Create a SymbolData object for each security to store relevant indicators and calculated quantity of contracts to Buy/Sell
+		# Create a SymbolData object for each security to store relevant indicators 
+		# and calculate quantity of contracts to Buy/Sell
 		self.Data[data.Symbol] = SymbolData()
 def CalendarHandler(self, bar):
 	'''
@@ -62,7 +63,7 @@ def CalendarHandler(self, bar):
 </div>
 
 <p>
-The SymbolData class is designed to contain everything we need for calculating how many contracts to Buy/Sell at the beginning of each month. LEAN provides helpful indicators to get the exponential moving average and momentum.
+The SymbolData class is designed to contain everything we need for calculating how many contracts to Buy/Sell at the beginning of each month. LEAN provides helpful indicators to get the exponential moving average and momentum indicators. The Introduction section above detailed the formula for calculating the number of contracts to Buy/Sell. We implement the formula in the Update function.
 </p>
 
 <div class="section-example-container">
@@ -73,54 +74,50 @@ class SymbolData:
     '''
     def __init__(self):
         self.ema = ExponentialMovingAverage("MonthEMA", 5)
-		
-		# Volatility estimation is defined as the EMA of absolute monthly price changes
-		# Use Momentum indicator to get absolute monthly price changes. Then use the IndicatorExtensions.Of and pass the momentum indicator values to get the volatility
-        self.mom = Momentum("MonthMOM", 1) 
-        self.vol = IndicatorExtensions.Of(ExponentialMovingAverage("Vol", 5), self.mom)
+
+        # Volatility estimation is defined as the EMA of absolute monthly price changes
+        # Use Momentum indicator to get absolute monthly price changes. 
+        # Then use the IndicatorExtensions.EMA and pass the momentum indicator values to get the volatility
+        self.mom = Momentum("MonthMOM", 1)
+        # Note: self.vol will automatically be updated with self.mom
+        self.vol = IndicatorExtensions.EMA(self.mom, 5)
+
         self.Quantity = 0
-        
+
+
     def Update(self, bar):
         self.ema.Update(bar.Time, bar.Value)
         self.mom.Update(bar.Time, bar.Value)
-        self.vol.Update(bar.Time, self.mom.Current.Value)
+        
         if self.ema.IsReady and self.vol.IsReady:
             # Equation 1 in [1]
-            signal = ( bar.Value - self.ema.Current.Value )/ self.vol.Current.Value
+            signal = (bar.Value - self.ema.Current.Value) / self.vol.Current.Value
             # Equation 2 in [1]
             self.Quantity = np.sign(signal)/abs(self.vol.Current.Value)
-        
+
         return self.Quantity != 0
 </pre>
 </div>
 
 <h3>Step 3: Buy and Sell at the beginning of each month</h3>
 <p>
-Now we’ll place orders based on the quantity of contracts calculated from previous month stored in the SymbolData object. Note that we have set a warm up period of 5 months which prepares data to allow the algorithm to execute trades on the start date.
+Now we’ll place orders based on the quantity of contracts calculated from previous month stored in the SymbolData object. Note that we warm up the algorithm with 150 days of data to allow the algorithm to execute trades on the start date.
 </p>
 
 <div class="section-example-container">
 <pre class="python">
-
-def Initialize(self):
-	# Set decay rate equal to 5 months and warm up period
-	period = 150
-	self.SetWarmUp(period)
-	
-	# Set monthly rebalance
-	self.nextRebalance = self.Time
 def OnData(self, data):
-	'''
-	Buy/Sell security every month
-	'''
-	if self.IsWarmingUp: return
-	if self.Time < self.nextRebalance: return
-	
-	for symbol in data.Keys:
-		symbolData = self.Data[symbol]
-		if symbolData.Quantity != 0:
-			self.MarketOrder(symbol, symbolData.Quantity)
-	
-	self.nextRebalance = Expiry.EndOfMonth(self.Time)
+        '''
+        Buy/Sell security every month
+        '''
+        if self.Time < self.nextRebalance or self.IsWarmingUp:
+            return
+
+        for symbol in data.Keys:
+            symbolData = self.Data[symbol]
+            if symbolData.Quantity != 0:
+                self.MarketOrder(symbol, symbolData.Quantity)
+
+        self.nextRebalance = Expiry.EndOfMonth(self.Time)
 </pre>
 </div>
