@@ -15,11 +15,10 @@
         self.b = b
         self.name = str(a) + ':' + str(b)
         self.df = pd.concat([a.df,b.df],axis = 1).dropna()
-    # The number of bars in the rolling window would be determined by the resolution, so we get this
-      information from the shape of the DataFrame here.
+    # 滚动窗口中的条数应由分辨率确定，因此我们可以得到
         self.num_bar = self.df.shape[0]
         self.cor = self.df.corr().ix[0][1]
-    # Set the initial signals to be 0
+    # 将初始信号设置为0
         self.error = 0
         self.last_error = 0
         self.a_price = []
@@ -32,8 +31,7 @@
 
     def cointegration_test(self):
         self.model = sm.ols(formula = '%s ~ %s'%(str(self.a),str(self.b)), data = self.df).fit()
-    # This line conduct ADF test on the residual. ts.adfuller() returns a tuple and the first element in
-      the tuple is the test value.
+    # 此行对残差进行ADF测试，ts.adfuller() 返回元组，第一元素为
         self.adf = ts.adfuller(self.model.resid,autolag = 'BIC')[0]
         self.mean_error = np.mean(self.model.resid)
         self.sd = np.std(self.model.resid)
@@ -49,15 +47,14 @@
                  [self.a_date]).dropna()
         self.df = pd.concat([self.df,new_df])
         self.df = self.df.tail(self.num_bar)
-    # after updating the DataFrame, we empty the lists for the incoming data
+    # 更新数据框架后，我们清空输入数据列表
         for list in [self.a_price,self.a_date,self.b_price,self.b_date]:
             list = []
 </pre>
 </div>
-<h3>Step 2: Generate and Clean Pairs</h3>
+<h3>步骤2：生成并整理配对</h3>
 <p>
-  The function generate_pairs generates pairs using the stock symbols. self.pair_threshold and self.pair_num are pre-determined to control the number of candidate pairs. The pairs in self.pair_list would be kept and updated throughout our backtesting period. we set self.pair_threshold to 0.88 and self.pair_num to 120 to limit the number of pairs in the list. If we put too many pairs in the list, the backtesting would be too time consuming.
-  The function pair_clean is called after the two-stage screen. If the first pair contains stock A and stock B, and the second pair contains stock B and stock C, we would remove the second pair because the overlapped signal would disturb the balance of our portfolio.
+  函数generate_pair使用股票代码生成配对。self.pair_threshold和self.pair_num是预先确定的，用于控制候选配对的数量。在我们的回溯测试期间，self.pair_list中的配对将保留并更新。我们将self.pair_threshold设置为0.88，将self.pair_num设置为120，以限制列表中配对的数量。如果我们列表中的配对过多，那么回溯测试将会非常耗时。在两阶段筛选后会调用函数pair_clean。如果第一对包含股票A和股票B，第二对包含股票B和股票C，我们将删除第二对，因为重叠的信号会干扰投资组合的平衡。
 </p>
 
 <div class="section-example-container">
@@ -87,9 +84,9 @@ def pair_clean(self,list):
 </pre>
 </div>
 
-<h3>Step 3: Warming up Period</h3>
+<h3>步骤3：预热期</h3>
 <p>
-  This part is under the OnData step. We set self.num_bar equals to the number of TradeBar in three months, which is determined by the resolution. During this period we fill the stock prices in lists, and assign each stock's price list to the symbol as a property. We would also remove the symbol from the symbol list if it has no data.
+  此部分属于OnData步骤。我们将self.num_bar设置为三个月内TradeBar的数量，这将由决议决定。在此期间，我们将股票价格填入列表，并将每支股票的价格列表作为属性分配给代码。如果代码列表中没有数据，我们还将从代码列表中删除此代码。
 </p>
 
 <div class="section-example-container">
@@ -105,9 +102,9 @@ def pair_clean(self,list):
     self.data_count = 0
     return</pre>
 </div>
-<h3>Step 4: Pairs Selection</h3>
+<h3>步骤4：配对选择</h3>
 <p>
-  This process is also under the OnData step. This step would generate pairs if it is the first trading period of this algorithm. If it's not, it will update the DataFrame and correlation coefficient of each pair in self.pair_list. After that the pairs have a correlation coefficient higher than 0.9 would be selected into self.selected_pair. Then all the pairs in self.selected_pair would be tested on their cointegration, and the pairs with a test value less than -3.34 would be selected to the final list. This step will also limit the number of stocks in the final list, by default we set self.selected_num to 10. self.count is a flag to count the number of datapoint we received. Once it reach 1-month amount, that means one trading period is passed and it would be set to 0.
+  这一过程同样属于OnData步骤。如果这是此算法的第一个交易周期，则此步骤将生成配对。如果不是，它将更新self.pair_list中每对股票的数据框架和关联系数。然后将关联系数大于0.9的配对选择到self.selected_pair中。然后对self.selected_pair中的所有配对进行协整，测试值小于-3.34的配对将被选择到最终列表中。此步骤还会限制最终列表中的股票数量，在默认情况下我们将self.selected_num设置为10。self.count是一个标志，用于计算我们所接收到数据点的数量。一旦达到1个月的数量，这意味着一个交易周期已经过去，它将被设置为0。
 </p>
 
 <div class="section-example-container">
@@ -123,31 +120,31 @@ def pair_clean(self,list):
 
         for pair in self.pair_list:
             pair.cor_update()
-    # Update the DataFrame and correlation selection
+    # 更新数据框架和关联性选择
     if len(self.pair_list[0].a_price) != 0:
         for pair in self.pair_list:
     	    pair.df_update()
             pair.cor_update()
 
     self.selected_pair = [x for x in self.pair_list if x.cor &gt; 0.9]
-    # Cointegration test
+    # 协整测试
     for pair in self.selected_pair:
         pair.cointegration_test()
 
     self.selected_pair = [x for x in self.selected_pair if x.adf &lt; self.BIC]
     self.selected_pair.sort(key = lambda x: x.adf)
-    # If no pair passed the two-stage test, return.
+    # 如果没有配对通过两阶段测试，则返回
     if len(self.selected_pair) == 0:
         self.Log('no selected pair')
         self.count += 1
         return
-    # clean the pair to avoid overlapping stocks.
+    # 整理配对避免出现重叠股票
     self.selected_pair = self.pair_clean(self.selected_pair)
-    # assign a property to the selected pair, this is a signal that would be used for trading.
+    # 为所选配对分析属性，这是用于交易的信号
     for pair in self.selected_pair:
         pair.touch = 0
         self.Log(str(pair.adf) + pair.name)
-    # limit the number of selected pairs.
+    # 限制选择配对的数量
     if len(self.selected_pair) &gt; self.selected_num:
         self.selected_pair = self.selected_pair[:self.selected_num]
 
@@ -157,14 +154,14 @@ def pair_clean(self,list):
 </pre>
 </div>
 
-<h3>Step 5: Trade Period</h3>
+<h3>步骤5：交易期</h3>
 <p>
-  It would be too long to read if we paste all the code in trading period together. Thus we would separate the code into three part: updating pairs, opening pairs trading and closing pairs trading. But all those lines are under OnData step and are under the condition: if self.count != 0 and self.count &lt; self.one_month. This means it's in the trading period.
+  如果我们把交易期间的所有代码都粘贴在一起，清单将会过长。因此，我们将代码分为三个部分： 更新配对、开始配对交易和结束配对交易。 但是所有这些行都属于OnData步骤，并且都在此条件下：即self.count != 0且self.count &lt; self.one_month。这意味着它在交易期内。
 </p>
 
-<h4>Updating Pairs</h4>
+<h4>更新配对</h4>
 <p>
-  This step would update the stock prices in each pair. It would also update the signal called 'last_error' and immediately after this the pairs would receive new signals.
+  这一步将更新每对股票的价格。它还会更新名为“last_error”的信号，在此之后，配对会立即接收到新的信号。
 </p>
 
 <div class="section-example-container">
@@ -183,10 +180,9 @@ for pair in self.selected_pair:
 for pair in self.trading_pairs:
     pair.last_error = pair.error</pre>
 </div>
-<h4>Opening Pairs Trading</h4>
+<h4>开始配对交易</h4>
 <p>
-  For each pair in self.selected_pair, we receive the current prices of the stocks, and then use the cointegration model to calculate the residual \(\epsilon\), which is assigned to the pair as a property named 'error'. self.trading.pairs is a list to store the trading pairs. Once a pairs trading is open, this pair would be add to the list, and it would be removed when the trading is closed. The property 'touch' is signal. If the residual \(\epsilon\) cross over the positive threshold standard deviation(we set \(\ 2.23*sigma\) here), the signal would become +1; while if it cross down the negative threshold deviation(\(\ -2.23*sigma\), the signal would become -1. For those pairs with +1 signal, if the error cross down positive threshold, there is a signal to open a trade. We long stock B and short stock A. For those pairs with -1 signal, if the error cross over negative threshold, we long Stock A and short stock B.
-  When we opening a trade, we need to record the current model, current mean and standard deviation of the residual. This is necessary because if we enter a new trading period and the trade has not been closed yet, the cointegration model, mean and standard deviation of the pairs would be changed. We need to use the original thresholds to close the trades. while adding the pairs into self.trading_pairs, we also need to set the signal 'touch' to 0 for further use.
+  对于self.selected_pair中的每对股票，我们接受当前的股票价格，然后使用协整模型计算残差\(\epsilon\)，这是分配给配对的属性，命名为“误差”。 self.trading.pairs是存储交易配对的列表。一旦配对交易开始，配对就会被添加到列表中，当交易结束时将被删除。属性“touch”是一个信号。如果残差\(\epsilon\)超出正阈值标准偏差（我们在此设置为\(\ 2.23*sigma\))，信号会+ 1；如果低于负阈值偏差(\(\ -2.23*sigma\)，则信号会-1。对于那些获得+1信号的配对，如果误差超过正阈值，则会有开始交易的信号。我们买入股票B并抛出股票A。对于那些获得-1信号的配对，如果误差低于负阈值，我们买入股票A并抛出股票B。这是必要的，当我们开始交易时，我们需要记录残差的当前模型、当前平均值和标准。因为如果我们进入一个新的交易周期，而交易尚未结束，配对的协整模型、平均值和标准差将发生变化。我们需要使用最初的阈值来结束交易。同时把配对添加到self.trading_pairs中。我们还需要将信号“touch”设置为0，以便进一步使用。
 </p>
 
 <div class="section-example-container">
@@ -229,9 +225,9 @@ for pair in self.trading_pairs:
 </pre>
 </div>
 
-<h4>Closing Pairs Trading</h4>
+<h4>结束配对交易</h4>
 <p>
-  This part controls pairs trading exit. It works similar to the opening part. It uses the recorded original model and thresholds to determine whether or not we should close the position. If the residual \(\epsilon\) reaches our closing threshold, we liquidate stock A and stock B to close. If the residual continue to deviate from the mean and goes too far, we would also close the position to stop loss. When we close a pairs trading, we also remove the pairs from self.trading_pairs.
+  此部分控制退出交易。它的工作原理与开始部分相似。它使用记录原始模型和阈值来决定我们是否应该结束仓位。如果残差\(\epsilon\)达到结束阈值，我们将平仓股票A和股票B结束交易。如果残差继续偏离平均值，并且偏离太远，我们也会平仓止损。当我们结束配对交易时，我们也从self.trading_pair中删除了这些配对。
 </p>
 
 <div class="section-example-container">

@@ -1,0 +1,95 @@
+<p>
+	我们的投资逻辑简单明了。我们认为上个月跑赢大盘的股票将继续跑赢大盘。我们根据alpha值对股票进行排名，每个月我们都会对排名前两支的股票“做多”。要使这一战略发挥作用，我们需要在每月月初做下列工作：
+</p>
+
+<ul>
+ 	<li>计算道琼斯前30强股票在过去21个交易日的历史价格，并计算它们的日收益。</li>
+ 	<li>根据基准(S&amp;P 500指数，SPY)对每支股票的收益进行简单的线性回归。</li>
+ 	<li>根据截距对股票进行排名。</li>
+ 	<li>平掉所有仓位，并购买排序列表中的排名前两支股票。</li>
+</ul>
+<p>
+	道琼斯指数成份股很少变动，最近一次变动发生在2015年3月19日。为了使实施更加容易，我们在这个算法中简单地列出了当前的道琼期成份股。这意味着该算法最早的开始日期是2015年3月19日。
+</p>
+
+<h3>步骤1：设置事件处理程序</h3>
+<p>
+	在初始化方法中，我们定义了日程事件来触发投资组合的每月重新平衡。有关如何使用日程事件的更多细节，可以阅读<a href="https://www.quantconnect.com/docs#Scheduled-Events">Documentation</a>或查看示例<a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ScheduledEventsAlgorithm.py">ScheduledEventsAlgorithm</a>。
+</p>
+<div class="section-example-container">
+
+<pre class="python">def Initialize(self):
+    self.Schedule.On(self.DateRules.MonthStart(self.benchmark), self.TimeRules.AfterMarketOpen(self.benchmark), Action(self.rebalance))
+	</pre>
+	</div>
+
+<h3>步骤2：线性回归函数</h3>
+<p>
+	为了进行线性回归，我们需要编写一个函数来获取价格数据并输出回归结果。函数获得“资产价格”列表(x)和一个“基准价格”列表(y)，然后计算变化百分比并进行线性回归。输出是一个包含截距和斜率的元组。
+</p>
+
+<div class="section-example-container">
+
+<pre class="python">def regression(self,x,y):
+    x = np.array(x)
+    x = np.diff(x)/x[:-1]
+    y = np.array(y)
+    y = np.diff(y)/y[:-1]
+    A = np.vstack([x, np.ones(len(x))]).T
+    result = np.linalg.lstsq(A, y)[0]
+    beta = result[0]
+    alpha = result[1]
+    return(alpha,beta)
+</pre>
+</div>
+<h3>步骤3：历史功能</h3>
+<p>
+	每个月我们都会使用<a href="https://www.quantconnect.com/lean/docs#topic182.html">History</a> API获得道琼斯30强成份股的历史价格。数据作为复杂的<em>Slice</em>对象从API返回。为了使其在算法中可以使用，我们将资产价格和基准价格提取到一个列表中。
+</p>
+<div class="section-example-container">
+
+<pre class="python">def get_regression_data(self,symbol,history):
+    symbol_price = []
+    benchmark_price = []
+    for i in history:
+        bar = i[symbol]
+        benchmark = i[self.benchmark]
+        symbol_price.append(bar.Close)
+        benchmark_price.append(benchmark.Close)
+
+    result = self.regression(symbol_price,benchmark_price)
+    return result
+</pre>
+</div>
+<h3>步骤4：再平衡功能</h3>
+<p>
+	此功能是所有动作发生的地方，将作为预定事件在每个月的第一个交易日执行。SetHoldings的第二个参数是小数，将其设置为“1”表示算法将投资组合设置为“100%多头”而不使用杠杆。有关这一功能的更多信息可以在链接<a href="https://www.quantconnect.com/docs#Trading-and-Orders">SetHoldings</a>上阅读。
+</p>
+
+<div class="section-example-container">
+
+<pre class="python">def rebalance(self):
+    # 获得历史股票代码和价格，然后放入元组中
+    history = self.History(self.regression_dates, Resolution.Daily)
+    filter = []
+    for i in self.symbols:
+        filter.append((i,self.get_regression_data(i, history)[0]))
+    # 根据alpha排序筛选
+    filter.sort(key = lambda x : x[1],reverse = True)
+    sorted_symbols = []
+    for i in range(2):
+    	sorted_symbols.append(filter[i][0])
+    # 获得所持有股票的代码
+    holding_list = []
+    for i in self.Portfolio:
+    	if i.Value.Invested:
+    		holding_list.append(i.Value.Symbol)
+    # 如果我们不打算继续持有现有的股份，则将其出售
+    if holding_list:
+    	for i in holding_list:
+    		if i not in sorted_symbols:
+    			self.Liquidate(i)
+    # 做多列表中的两支股票
+    for i in sorted_symbols:
+    	self.SetHoldings(i,1)
+		</pre>

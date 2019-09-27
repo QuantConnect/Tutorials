@@ -1,0 +1,44 @@
+<p>
+	资本资产定价模型(CAPM)描述了系统性风险与资产(通常是股票)预期收益之间的关系。给定风险的资产预期收益计算公式如下：
+</p>
+
+\[r_a = r_f + \beta_a*(r_m - r_f) + \epsilon \]
+
+<p>
+	其中：
+</p>
+
+\[r_f = Risk Free Rate\]
+\[\beta = Beta of the security\]
+
+\[r_m = Expected market return\]
+
+\[\epsilon = Tracking error\]
+
+<p>
+	将公式重构如下，可以更好地理解这个公式：
+</p>
+
+\[(r_a - r_f ) = \beta_a*(r_m - r_f) + \epsilon \]
+
+<p>
+	方程的左边给出了资产收益和无风险利率之间的差额，即<strong>"超额收益"</strong>。如果我们将<strong>市场超额收益</strong>与<strong>资产超额收益</strong>进行对比，斜率代表资产的<strong>"beta"</strong>。因此，beta也可以通过公式计算：
+</p>
+
+\[\beta = \frac{Cov(r_a,r_b)}{var(r_b)}\]
+
+<p>
+	因此beta可以描述为：
+</p>
+
+\[\beta = \rho _a,_b*\frac{\sigma _a}{\sigma_b}\]
+
+<p>
+	由上式可知，beta可以解释为<strong>“关联相对波动”</strong>。为了更加简化，可以通过简单的线性回归来计算beta，线性回归可以看作是解释收僧的一个因素，跟踪误差可以表示alpha。为了使这个理论对我们的算法更加便利，我们将上面的公式改为如下形式：
+</p>
+
+\[r_a = \beta*r_m + r_f*(1-\beta) + \epsilon\]
+
+<p>
+	等式右边的<strong>r*(1-β) </strong>是一个非常小的项目，在道琼斯前30强企业的背景下可以忽略不计。如果我们使用基准收益对股票收益进行回归，斜率和截距将分别为beta和alpha。
+</p>

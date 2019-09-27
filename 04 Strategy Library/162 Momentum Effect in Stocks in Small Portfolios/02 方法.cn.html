@@ -1,0 +1,63 @@
+<p>
+  投资集合包括所有美国上市公司。没有基本数据的股票被排除在集合之外。
+</p>
+<div class="section-example-container">
+<pre class="python">
+def CoarseSelectionFunction(self, coarse):
+    if self.yearly_rebalance:
+        # 放弃没有基本数据的股票
+        self.filtered_coarse = [x.Symbol for x in coarse if (x.HasFundamentalData)]
+        return self.filtered_coarse
+    else:
+        return []
+</pre>
+</div>
+<p>
+  在<code>FineSelectionFunction</code>中，由于流动性较低，市值最低的股票（占集合的25%）被排除在外。动量被定义为过去12个月的股市收益。动量利润是根据排名公司的年度收益进行计算的。排名周期为一年。
+</p>
+<div class="section-example-container">
+<pre class="python">
+  def FineSelectionFunction(self, fine):
+      if self.yearly_rebalance:
+          # 计算年收益和市值
+          for i in fine:
+              i.MarketCap = float(i.EarningReports.BasicAverageShares.ThreeMonths * (i.EarningReports.BasicEPS.TwelveMonths*i.ValuationRatios.PERatio))
+          top_market_cap = sorted(fine, key = lambda x:x.MarketCap, reverse=True)[:int(len(fine)*0.75)]
+          has_return = []
+          for i in top_market_cap:
+              history = self.History([i.Symbol], timedelta(days=365), Resolution.Daily)
+              if not history.empty:
+                  close = history.loc[str(i.Symbol)]['close']
+                  i.returns = (close[0]-close[-1])/close[-1]
+                  has_return.append(i)
+          sorted_by_return = sorted(has_return, key = lambda x: x.returns)
+          self.long = [i.Symbol for i in sorted_by_return[-10:]]
+          self.short = [i.Symbol for i in sorted_by_return[:10]]
+
+          return self.long+self.short
+      else:
+          return []
+</pre>
+</div>
+<p>
+  投资者做多表现最好的10支股票，做空表现最差的10支股票。投资组合每年都进行平均加权和重新平衡。
+</p>
+<div class="section-example-container">
+<pre class="python">
+  def OnData(self, data):
+      if not self.yearly_rebalance: return
+      if self.long and self.short:
+          stocks_invested = [x.Key for x in self.Portfolio if x.Value.Invested]
+          # 平仓未进入交易清单的股票
+          for i in stocks_invested:
+              if i not in self.long+self.short:
+                  self.Liquidate(i)
+          for i in self.short:
+              self.SetHoldings(i, -0.5/len(self.short))
+          for i in self.long:
+              self.SetHoldings(i, 0.5/len(self.long))
+          self.long = None
+          self.short = None
+          self.yearly_rebalance = False
+</pre>
+</div>
