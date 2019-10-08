@@ -577,6 +577,15 @@ $strategyMap = [
 		],
 		'description' => "An advanced momentum strategy that modifies the basic momentum strategies by introducing Baltas and Kosowski weights and rebalances the portfolio monthly. The new weighing scheme incorporates trend strength into the trading signal, uses an efficient volatility estimator, and adds a dynamic leverage mechanism.",
 		'tags' => 'Momentum, Futures, Commodities'
+	],
+	[
+		'name' => 'Commodities Futures Trend Following',
+		'link' => 'strategy-library/commodities-futures-trend-following',
+		'sources' => [
+			'NYU' => 'https://arxiv.org/pdf/1404.3274.pdf'
+		],
+		'description' => "A simple trend following strategy on commodities futures.",
+		'tags' => 'Momentum, Futures, Commodities'
 	]
 ];
 

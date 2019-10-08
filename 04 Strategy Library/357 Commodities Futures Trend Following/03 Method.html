@@ -1,0 +1,123 @@
+<p>
+	The strategy requires the continuous futures contract, so we import the custom data from Quandl. We manually create a universe of tradable commodity futures. They are all liquid and active continuous contracts #1. The data from Quandl are non-adjusted price based on spot-month continuous contract calculations. The data resolution is daily.
+</p>
+
+
+<h3>Step 1: Import futures data from Quandl</h3>
+
+<p>
+The paper selected a well-balanced commodities pool to include 7 representative contracts: Crude oil, Henry Hub Natural Gas, Corn, Wheat, Super, Live Cattle and Copper. We will add continuous futures data of these contracts from Quandl. This implementation performs a backtest on 20 years as opposed to 200 years of data for the purpose of comparing to benchmark SPY.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+from QuantConnect.Python import PythonQuandl
+class ImprovedCommodityMomentumTrading(QCAlgorithm):
+	def Initialize(self):
+		tickers = ["CHRIS/CME_W1",  # Wheat Futures, Continuous Contract #1
+                   "CHRIS/CME_C1",  # Corn Futures, Continuous Contract #1
+                   "CHRIS/CME_LC1", # Live Cattle Futures, Continuous Contract #1 
+                   "CHRIS/CME_CL1",  # Crude Oil Futures, Continuous Contract #1
+                   "CHRIS/CME_NG1",  # Natural Gas (Henry Hub) Physical Futures, Continuous Contract #1
+                   "CHRIS/LIFFE_W1", # White Sugar Future, Continuous Contract #1
+                   "CHRIS/CME_HG1"] # Copper Futures, Continuous Contract #1
+		for ticker in tickers:
+			data = self.AddData(QuandlFutures, ticker, Resolution.Daily)
+			data.SetLeverage(3) 
+class QuandlFutures(PythonQuandl):
+    def __init__(self):
+        self.ValueColumnName = "Settle"
+</pre>
+</div>
+
+
+
+<h3>Step 2: Create a SymbolData class to store and update the number of contracts to trade for each security</h3>
+
+<p>
+In Initialize(), we create a dictionary to store the SymbolData object for each security. The strategy is designed to trade monthly, so we will create a monthly consolidator for each security as well. When a new monthly data becomes available, the consolidator calls an event handler CalendarHandler. Within this event handler, we will update the SymbolData object with the freshly received monthly data.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def Initialize(self):                   
+	# Container to store the SymbolData object for each security
+	self.Data = {}
+	
+	for ticker in tickers:
+		# Add Quandl data and set desired leverage
+		data = self.AddData(QuandlFutures, ticker, Resolution.Daily)
+		data.SetLeverage(3) 
+		
+		# Create a monthly consolidator for each security
+		self.Consolidate(ticker, CalendarType.Monthly, self.CalendarHandler)
+		
+		# Create a SymbolData object for each security to store relevant indicators 
+		# and calculate quantity of contracts to Buy/Sell
+		self.Data[data.Symbol] = SymbolData()
+def CalendarHandler(self, bar):
+	'''
+	Event Handler that updates the SymbolData object for each security when a new monthly bar becomes available
+	'''
+	self.Data[bar.Symbol].Update(bar)
+</pre>
+</div>
+
+<p>
+The SymbolData class is designed to contain everything we need for calculating how many contracts to Buy/Sell at the beginning of each month. LEAN provides helpful indicators to get the exponential moving average and momentum indicators. The Introduction section above detailed the formula for calculating the number of contracts to Buy/Sell. We implement the formula in the Update function.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+class SymbolData:
+    '''
+    Contains the relevant indicators used to calculate number of contracts to Buy/Sell
+    '''
+    def __init__(self):
+        self.ema = ExponentialMovingAverage("MonthEMA", 5)
+
+        # Volatility estimation is defined as the EMA of absolute monthly price changes
+        # Use Momentum indicator to get absolute monthly price changes. 
+        # Then use the IndicatorExtensions.EMA and pass the momentum indicator values to get the volatility
+        self.mom = Momentum("MonthMOM", 1)
+        # Note: self.vol will automatically be updated with self.mom
+        self.vol = IndicatorExtensions.EMA(self.mom, 5)
+
+        self.Quantity = 0
+
+
+    def Update(self, bar):
+        self.ema.Update(bar.Time, bar.Value)
+        self.mom.Update(bar.Time, bar.Value)
+        
+        if self.ema.IsReady and self.vol.IsReady:
+            # Equation 1 in [1]
+            signal = (bar.Value - self.ema.Current.Value) / self.vol.Current.Value
+            # Equation 2 in [1]
+            self.Quantity = np.sign(signal)/abs(self.vol.Current.Value)
+
+        return self.Quantity != 0
+</pre>
+</div>
+
+<h3>Step 3: Buy and Sell at the beginning of each month</h3>
+<p>
+Now we’ll place orders based on the quantity of contracts calculated from previous month stored in the SymbolData object. Note that we warm up the algorithm with 150 days of data to allow the algorithm to execute trades on the start date.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+def OnData(self, data):
+        '''
+        Buy/Sell security every month
+        '''
+        if self.Time < self.nextRebalance or self.IsWarmingUp:
+            return
+
+        for symbol in data.Keys:
+            symbolData = self.Data[symbol]
+            if symbolData.Quantity != 0:
+                self.MarketOrder(symbol, symbolData.Quantity)
+
+        self.nextRebalance = Expiry.EndOfMonth(self.Time)
+</pre>
+</div>
