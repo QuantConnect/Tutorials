@@ -1,0 +1,19 @@
+<h4>导入自定义数据</h4>
+<p>
+  央行利率数据来自Quandl。对于交易集合来说，我们选择了央行利率数据在Quandl中可用的9种货币。导入自定义数据的方法是<code>AddData(type, symbol, resoltuion, timeZone, fillDataForward)</code>。由于自定义文件具有唯一的colume名称，因此我们需要创建一个类别来指定利率的colume名称。
+</p>
+<div class="section-example-container">
+<pre class="python">
+from QuantConnect.Python import PythonQuandl
+class QuandlRate(PythonQuandl):
+    def __init__(self):
+        self.ValueColumnName = 'Value'
+</pre>
+</div>
+<p>
+  我们将利率符号和对应的外汇资产符号保存到字典中。
+</p>
+<h4>每月调整交易</h4>
+<p>
+  下一步，我们根据利率的值对外汇符号进行排序。这种算法会做多利率最高的货币，做空利率最低的货币。该战略每月都会重新调整。采用日程事件法在每个月的第一个交易日触发重新调整事件。
+</p>

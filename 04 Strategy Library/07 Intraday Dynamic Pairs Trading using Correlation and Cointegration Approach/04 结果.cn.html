@@ -1,0 +1,20 @@
+<p>
+  我们使用了2013年1月至2016年12月的10分钟分辨率数据对该策略进行了回溯测试。为了证明样本的培训结果，我们随机选取了2016年9月7日至2013年11月30日的训练期。
+</p>
+<p>
+  下表展示了上述训练期间所选择的前10组配对。可以看出，关联系数最高的配对不一定具有最好的ADF测试值。我们用ADF测试值来进行排序，因为它更加稳健。
+</p>
+
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial07-pairs-trading-1.png" alt="Tutorial07-pairs-trading-1" />
+
+<p>
+  下表的上半部分是ING和TCB配对的股票价格。下半部分表示残差偏离平均值的次数。如果我们将开始阈值设为2.32，则有5个交易机会。
+</p>
+
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial07-pairs-trading-2.png" alt="Tutorial07-pairs-trading-2" />
+
+<p>
+  下图是残差的密度图。从图中可以看出，误差近似正常分布。
+</p>
+
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial07-pairs-trading-3.png" alt="Tutorial07-pairs-trading-3" />

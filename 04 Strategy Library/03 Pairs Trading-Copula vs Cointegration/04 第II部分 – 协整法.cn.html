@@ -1,0 +1,47 @@
+<p>
+  对于协整配对交易法，我们选择了相同的基金对“GLD”和“DGL”。不需要选择联系函数，因此只有12个月的滚动形成周期。交易期为5年，从2011年1月到2017年5月。
+</p>
+
+<h3>步骤1：生成价差序列</h3>
+<p>
+  在每个月月初，我们使用每日收盘价生成两支基金的对数价格序列。然后基于对数价格序列数据，采用回归分析法对价差序列进行估算。对于股票X和Y，我们对对数价格序列进行线性回归，得到系数β。
+</p>
+
+\[spread_t=\log(price_t^y)-\beta \log(price_t^x)\]
+
+<h3>步骤2：计算阈值</h3>
+
+<p>
+  在本文中，利用滚动形成期价差的标准差，为交易策略设定了两个标准差的阈值。
+</p>
+
+<div class="section-example-container">
+
+<pre class="python">price_x = pd.Series([float(i.Close) for i in self.symbols[0].hist_window],
+                     index = [i.Time for i in self.symbols[0].hist_window])
+
+price_y = pd.Series([float(i.Close) for i in self.symbols[1].hist_window],
+                     index = [i.Time for i in self.symbols[1].hist_window])
+if len(price_x) < 250: return
+spread = self.regr(np.log(price_x), np.log(price_y))
+mean = np.mean(spread)
+std = np.std(spread)
+ratio = floor(self.Portfolio[self.symbols[1]].Price / self.Portfolio[self.symbols[0]].Price)
+if spread[-1] > mean + self.threshold * std:
+    if not self.Portfolio[self.symbols[0]].Quantity > 0 and not self.Portfolio[self.symbols[0]].Quantity < 0:
+        self.Sell(self.symbols[1], 100)
+        self.Buy(self.symbols[0],  ratio * 100)
+
+elif spread[-1] < mean - self.threshold * std:
+    if not self.Portfolio[self.symbols[0]].Quantity < 0 and not self.Portfolio[self.symbols[0]].Quantity > 0:
+        self.Sell(self.symbols[0], 100)
+        self.Buy(self.symbols[1], ratio * 100)
+else:
+    self.Liquidate()
+</pre>
+</div>
+
+<h3>步骤3：设置交易信号</h3>
+<p>
+  在每个交易日，只要价差偏离平均值超过两个标准差，我们就进入交易。换句话说，我们在价差平均值+2*std的当天构建X的空多头寸和Y的多头头寸。当价差&lt;平均值-2*std时，我们在当天构建Y的空多头寸和X的多头头寸。如果价差恢复到均衡水平(定义为偏离零价差小于标准差的一半)，就会退出交易。平均值和标准偏差的值从滚动形成周期开始计算，每月更新一次。
+</p>

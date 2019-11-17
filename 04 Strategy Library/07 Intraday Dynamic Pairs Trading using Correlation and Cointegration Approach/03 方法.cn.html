@@ -1,0 +1,248 @@
+<p>
+  在此类交易策略中，我们将定义一个名为“配对”的类。我们不直接对股票进行管理，而是对股票配对进行管理，这可以使我们更方便地计算关联性和协整性，更新配对股票的价格，并交易选定的配对。
+</p>
+
+<h3>步骤1：配对分类定义</h3>
+<p>
+  配对由两支股票组成，即股票A和股票B。这一分类有几种属性。基本属性包括股票A和股票B的代码、包含这两支股票时间和价格的数据分析框架、当前误差、最后一个数据点的误差，以及记录股票价格以便进行更新的列表。我们不会每5分钟更新一次数据框架，而是将价格记录在列表中，每月更新一次数据框架。由于操作数据框架非常耗时，这可以使算法的速度至少提高10倍。每个月使用cor_update方法更新配对股票中两支股票之间的关联性。采用cointegration_test每月进行最小二乘法（OLS）回归，进行ADF测试，计算残差的均值和标准差。这种方法还会将这些计算值作为属性分配给配对对象。
+</p>
+
+<div class="section-example-container">
+
+<pre class="python">class pairs(object):
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
+        self.name = str(a) + ':' + str(b)
+        self.df = pd.concat([a.df,b.df],axis = 1).dropna()
+    # 滚动窗口中的条数应由分辨率确定，因此我们可以得到
+        self.num_bar = self.df.shape[0]
+        self.cor = self.df.corr().ix[0][1]
+    # 将初始信号设置为0
+        self.error = 0
+        self.last_error = 0
+        self.a_price = []
+        self.a_date = []
+        self.b_price = []
+        self.b_date = []
+
+    def cor_update(self):
+        self.cor = self.df.corr().ix[0][1]
+
+    def cointegration_test(self):
+        self.model = sm.ols(formula = '%s ~ %s'%(str(self.a),str(self.b)), data = self.df).fit()
+    # 此行对残差进行ADF测试，ts.adfuller() 返回元组，第一元素为
+        self.adf = ts.adfuller(self.model.resid,autolag = 'BIC')[0]
+        self.mean_error = np.mean(self.model.resid)
+        self.sd = np.std(self.model.resid)
+
+    def price_record(self,data_a,data_b):
+        self.a_price.append(float(data_a.Close))
+        self.a_date.append(data_a.EndTime)
+        self.b_price.append(float(data_b.Close))
+        self.b_date.append(data_b.EndTime)
+
+    def df_update(self):
+        new_df = pd.DataFrame({str(self.a):self.a_price,str(self.b):self.b_price},index =
+                 [self.a_date]).dropna()
+        self.df = pd.concat([self.df,new_df])
+        self.df = self.df.tail(self.num_bar)
+    # 更新数据框架后，我们清空输入数据列表
+        for list in [self.a_price,self.a_date,self.b_price,self.b_date]:
+            list = []
+</pre>
+</div>
+<h3>步骤2：生成并整理配对</h3>
+<p>
+  函数generate_pair使用股票代码生成配对。self.pair_threshold和self.pair_num是预先确定的，用于控制候选配对的数量。在我们的回溯测试期间，self.pair_list中的配对将保留并更新。我们将self.pair_threshold设置为0.88，将self.pair_num设置为120，以限制列表中配对的数量。如果我们列表中的配对过多，那么回溯测试将会非常耗时。在两阶段筛选后会调用函数pair_clean。如果第一对包含股票A和股票B，第二对包含股票B和股票C，我们将删除第二对，因为重叠的信号会干扰投资组合的平衡。
+</p>
+
+<div class="section-example-container">
+
+<pre class="python">def generate_pairs(self):
+    for i in range(len(self.symbols)):
+        for j in range(i+1,len(self.symbols)):
+            self.pair_list.append(pairs(self.symbols[i],self.symbols[j]))
+
+    self.pair_list = [x for x in self.pair_list if x.cor &gt; self.pair_threshold]
+
+    self.pair_list.sort(key = lambda x: x.cor, reverse = True)
+
+    if len(self.pair_list) &gt; self.pair_num:
+        	self.pair_list = self.pair_list[:self.pair_num]
+
+def pair_clean(self,list):
+    l = []
+    l.append(list[0])
+    for i in list:
+        symbols = [x.a for x in l] + [x.b for x in l]
+        if i.a not in symbols and i.b not in symbols:
+            l.append(i)
+        else:
+            pass
+    return l
+</pre>
+</div>
+
+<h3>步骤3：预热期</h3>
+<p>
+  此部分属于OnData步骤。我们将self.num_bar设置为三个月内TradeBar的数量，这将由决议决定。在此期间，我们将股票价格填入列表，并将每支股票的价格列表作为属性分配给代码。如果代码列表中没有数据，我们还将从代码列表中删除此代码。
+</p>
+
+<div class="section-example-container">
+
+<pre class="python">if len(self.symbols[0].prices) &lt; self.num_bar:
+    for symbol in self.symbols:
+        if data.ContainsKey(i) is True:
+    	    symbol.prices.append(float(data[symbol].Close))
+            symbol.dates.append(data[symbol].EndTime)
+        else:
+            self.Log('%s is missing'%str(symbol))
+            self.symbols.remove(symbol)
+    self.data_count = 0
+    return</pre>
+</div>
+<h3>步骤4：配对选择</h3>
+<p>
+  这一过程同样属于OnData步骤。如果这是此算法的第一个交易周期，则此步骤将生成配对。如果不是，它将更新self.pair_list中每对股票的数据框架和关联系数。然后将关联系数大于0.9的配对选择到self.selected_pair中。然后对self.selected_pair中的所有配对进行协整，测试值小于-3.34的配对将被选择到最终列表中。此步骤还会限制最终列表中的股票数量，在默认情况下我们将self.selected_num设置为10。self.count是一个标志，用于计算我们所接收到数据点的数量。一旦达到1个月的数量，这意味着一个交易周期已经过去，它将被设置为0。
+</p>
+
+<div class="section-example-container">
+
+<pre class="python">if self.count == 0 and len(self.symbols[0].prices) == self.num_bar:
+    if self.generate_count == 0:
+        for symbol in self.symbols:
+        symbol.df = pd.DataFrame(symbol.prices, index = symbol.dates, columns = ['%s'%str(symbol)])
+
+        self.generate_pairs()
+        self.generate_count +=1
+        self.Log('pair list length:'+str(len(self.pair_list)))
+
+        for pair in self.pair_list:
+            pair.cor_update()
+    # 更新数据框架和关联性选择
+    if len(self.pair_list[0].a_price) != 0:
+        for pair in self.pair_list:
+    	    pair.df_update()
+            pair.cor_update()
+
+    self.selected_pair = [x for x in self.pair_list if x.cor &gt; 0.9]
+    # 协整测试
+    for pair in self.selected_pair:
+        pair.cointegration_test()
+
+    self.selected_pair = [x for x in self.selected_pair if x.adf &lt; self.BIC]
+    self.selected_pair.sort(key = lambda x: x.adf)
+    # 如果没有配对通过两阶段测试，则返回
+    if len(self.selected_pair) == 0:
+        self.Log('no selected pair')
+        self.count += 1
+        return
+    # 整理配对避免出现重叠股票
+    self.selected_pair = self.pair_clean(self.selected_pair)
+    # 为所选配对分析属性，这是用于交易的信号
+    for pair in self.selected_pair:
+        pair.touch = 0
+        self.Log(str(pair.adf) + pair.name)
+    # 限制选择配对的数量
+    if len(self.selected_pair) &gt; self.selected_num:
+        self.selected_pair = self.selected_pair[:self.selected_num]
+
+    self.count +=1
+    self.data_count = 0
+    return
+</pre>
+</div>
+
+<h3>步骤5：交易期</h3>
+<p>
+  如果我们把交易期间的所有代码都粘贴在一起，清单将会过长。因此，我们将代码分为三个部分： 更新配对、开始配对交易和结束配对交易。 但是所有这些行都属于OnData步骤，并且都在此条件下：即self.count != 0且self.count &lt; self.one_month。这意味着它在交易期内。
+</p>
+
+<h4>更新配对</h4>
+<p>
+  这一步将更新每对股票的价格。它还会更新名为“last_error”的信号，在此之后，配对会立即接收到新的信号。
+</p>
+
+<div class="section-example-container">
+
+<pre class="python">num_select = len(self.selected_pair)
+for pair in self.pair_list:
+    if data.ContainsKey(pair.a) is True and data.ContainsKey(pair.b) is True:
+        i.price_record(data[i.a],data[i.b])
+    else:
+        self.Log('%s has no data'%str(pair.name))
+        self.pair_list.remove(pair)
+
+for pair in self.selected_pair:
+    pair.last_error = pair.error
+
+for pair in self.trading_pairs:
+    pair.last_error = pair.error</pre>
+</div>
+<h4>开始配对交易</h4>
+<p>
+  对于self.selected_pair中的每对股票，我们接受当前的股票价格，然后使用协整模型计算残差\(\epsilon\)，这是分配给配对的属性，命名为“误差”。 self.trading.pairs是存储交易配对的列表。一旦配对交易开始，配对就会被添加到列表中，当交易结束时将被删除。属性“touch”是一个信号。如果残差\(\epsilon\)超出正阈值标准偏差（我们在此设置为\(\ 2.23*sigma\))，信号会+ 1；如果低于负阈值偏差(\(\ -2.23*sigma\)，则信号会-1。对于那些获得+1信号的配对，如果误差超过正阈值，则会有开始交易的信号。我们买入股票B并抛出股票A。对于那些获得-1信号的配对，如果误差低于负阈值，我们买入股票A并抛出股票B。这是必要的，当我们开始交易时，我们需要记录残差的当前模型、当前平均值和标准。因为如果我们进入一个新的交易周期，而交易尚未结束，配对的协整模型、平均值和标准差将发生变化。我们需要使用最初的阈值来结束交易。同时把配对添加到self.trading_pairs中。我们还需要将信号“touch”设置为0，以便进一步使用。
+</p>
+
+<div class="section-example-container">
+
+<pre class="python">for i in self.selected_pair:
+    price_a = float(data[i.a].Close)
+    price_b = float(data[i.b].Close)
+    i.error = price_a - (i.model.params[0] + i.model.params[1]*price_b)
+    if (self.Portfolio[i.a].Quantity == 0 and self.Portfolio[i.b].Quantity == 0) and i not in
+    self.trading_pairs:
+        if i.touch == 0:
+            if i.error &lt; i.mean_error - self.open_size*i.sd and i.last_error &gt; i.mean_error -
+            self.open_size*i.sd:
+                i.touch += -1
+            elif i.error &gt; i.mean_error + self.open_size*i.sd and i.last_error &lt; i.mean_error + self.open_size*i.sd: i.touch += 1 else: pass elif i.touch == -1: if i.error &gt; i.mean_error - self.open_size*i.sd and i.last_error &lt; i.mean_error -
+            self.open_size*i.sd:
+                self.Log('long %s and short %s'%(str(i.a),str(i.b)))
+                i.record_model = i.model
+                i.record_mean_error = i.mean_error
+                i.record_sd = i.sd
+                self.trading_pairs.append(i)
+                self.SetHoldings(i.a, 5.0/(len(self.selected_pair)))
+                self.SetHoldings(i.b, -5.0/(len(self.selected_pair)))
+                i.touch = 0
+         elif i.touch == 1:
+             if i.error &lt; i.mean_error + self.open_size*i.sd and i.last_error &gt; i.mean_error +
+             self.open_size*i.sd:
+             self.Log('long %s and short %s'%(str(i.b),str(i.a)))
+             i.record_model = i.model
+             i.record_mean_error = i.mean_error
+             i.record_sd = i.sd
+             self.trading_pairs.append(i)
+             self.SetHoldings(i.b, 5.0/(len(self.selected_pair)))
+             self.SetHoldings(i.a, -5.0/(len(self.selected_pair)))
+             i.touch = 0
+         else:
+             pass
+    else:
+        pass
+</pre>
+</div>
+
+<h4>结束配对交易</h4>
+<p>
+  此部分控制退出交易。它的工作原理与开始部分相似。它使用记录原始模型和阈值来决定我们是否应该结束仓位。如果残差\(\epsilon\)达到结束阈值，我们将平仓股票A和股票B结束交易。如果残差继续偏离平均值，并且偏离太远，我们也会平仓止损。当我们结束配对交易时，我们也从self.trading_pair中删除了这些配对。
+</p>
+
+<div class="section-example-container">
+
+<pre class="python">for i in self.trading_pairs:
+    price_a = float(data[i.a].Close)
+    price_b = float(data[i.b].Close)
+    i.error = price_a - (i.record_model.params[0] + i.record_model.params[1]*price_b)
+    if ((i.error &lt; i.record_mean_error + self.close_size*i.record_sd and i.last_error &gt;i.record_mean_error + self.close_size*i.record_sd) or (i.error &gt; i.record_mean_error -
+    self.close_size*i.record_sd and i.last_error  i.record_mean_error +
+    self.stop_loss*i.record_sd:
+        self.Log('close %s to stop loss'%str(i.name))
+        self.Liquidate(i.a)
+        self.Liquidate(i.b)
+        self.trading_pairs.remove(i)
+    else:
+        pass</pre>
+</div>
