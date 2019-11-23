@@ -1,7 +1,6 @@
 <p>
 	Our investment logic is simple and straightforward. We assume that stocks which beat the market last month will continue to beat the market. We rank stocks according to their alpha, and each month we "long" the top two stocks. For this strategy to work, we need to do the following at the start of each month:
 </p>
-
 <ul>
  	<li>Get the historical price of Dow 30 stocks in the past 21 trading days and calculate their daily rates of return.</li>
  	<li>Conduct simple linear regression on the return of each stock against a benchmark (S&amp;P 500 index, SPY).</li>
@@ -11,85 +10,76 @@
 <p>
 	Dow Jones components change very infrequently, with the last change being on March 19th, 2015. To make the implementation easier we have simply listed the current Dow components in this algorithm. This means that the earliest start date of this algorithm is March 19th, 2015.
 </p>
-
 <h3>Step 1: Setup Event Handler</h3>
 <p>
 	In the initialize method we define a Scheduled Event to trigger a monthly re-balancing of the portfolio. For more details about how to use Scheduled Events, you can read the <a href="https://www.quantconnect.com/docs#Scheduled-Events">Documentation</a> or see the example <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ScheduledEventsAlgorithm.py">ScheduledEventsAlgorithm</a>.
 </p>
 <div class="section-example-container">
-
 <pre class="python">def Initialize(self):
-    self.Schedule.On(self.DateRules.MonthStart(self.benchmark), self.TimeRules.AfterMarketOpen(self.benchmark), Action(self.rebalance))
-	</pre>
-	</div>
-
-<h3>Step 2: Linear Regression Function</h3>
-<p>
-	In order to conduct linear regression, we need to write a function to take the price data and output the regression results. The function takes a list of the "asset prices" (x) and a list of the "benchmark prices" (y). It then calculates the percentage change and conducts a linear regression. The output is a tuple which contains the intercept and slope.
-</p>
-
-<div class="section-example-container">
-
-<pre class="python">def regression(self,x,y):
-    x = np.array(x)
-    x = np.diff(x)/x[:-1]
-    y = np.array(y)
-    y = np.diff(y)/y[:-1]
-    A = np.vstack([x, np.ones(len(x))]).T
-    result = np.linalg.lstsq(A, y)[0]
-    beta = result[0]
-    alpha = result[1]
-    return(alpha,beta)
-</pre>
+    self.Schedule.On(self.DateRules.MonthStart(self.symbols[0]),
+                     self.TimeRules.AfterMarketOpen(self.symbols[0]),
+                     self.Rebalance)</pre>
 </div>
-<h3>Step 3: History Function</h3>
+<h3>Step 2: History Function</h3>
 <p>
-	Each month we get the historical prices of the DOW30 components using the <a href="https://www.quantconnect.com/lean/docs#topic182.html">History</a> API. The data is returned from the API as complex <em>Slice</em> objects. To make this useful in the algorithm we extract the asset prices, and benchmark prices to a list.
+	Each month we get the historical prices of the DOW30 components using the <a href="https://www.quantconnect.com/docs/algorithm-reference/historical-data">History</a> API. The data is returned from the API as a pandas.DataFrame indexed by <em>Symbol</em> objects. The close data is selected and the data frame is unstack to create columns of <em>Symbol</em> objects.
 </p>
 <div class="section-example-container">
+<pre class="python"># Fetch the historical data to perform the linear regression
+history = self.History(
+    self.symbols + [self.benchmark], 
+    self.lookback,
+    Resolution.Daily).close.unstack(level=0)</pre>
+</div>
+<h3>Step 3: Symbol Selection Function</h3>
+<p>
+	We aim to trade the two assets with the highest alpha to the benchmark. In order to conduct linear regression to find the alpha (linear regression intercept), we need to compute returns (percentage change of closing price) benchmark and the asset then conduct a linear regression.
+</p>
+<div class="section-example-container">
+<pre class="python">def SelectSymbols(self, history):
+    '''Select symbols with the highest intercept/alpha to the benchmark
+    '''
+    alphas = dict()
 
-<pre class="python">def get_regression_data(self,symbol,history):
-    symbol_price = []
-    benchmark_price = []
-    for i in history:
-        bar = i[symbol]
-        benchmark = i[self.benchmark]
-        symbol_price.append(bar.Close)
-        benchmark_price.append(benchmark.Close)
+    # Get the benchmark returns
+    benchmark = history[self.benchmark].pct_change().dropna()
 
-    result = self.regression(symbol_price,benchmark_price)
-    return result
-</pre>
+    # Conducts linear regression for each symbol and save the intercept/alpha
+    for symbol in self.symbols:
+
+        # Get the security returns
+        returns = history[symbol].pct_change().dropna()
+        returns = np.vstack([returns, np.ones(len(returns))]).T
+
+        # Simple linear regression function in Numpy
+        result = np.linalg.lstsq(returns, benchmark)
+        alphas[symbol] = result[0][1]
+
+    # Select symbols with the highest intercept/alpha to the benchmark
+    selected = sorted(alphas.items(), key=lambda x: x[1], reverse=True)[:2]
+    return [x[0] for x in selected]</pre>
 </div>
 <h3>Step 4: Rebalance Function:</h3>
 <p>
-	This function is where all the action happens, it will be executed on the first trading day of each month as a scheduled event. The second argument of SetHoldings is a decimal, setting this to "1" tells the algorithm to set the portfolio as "long 100%" with no leverage. More information on the function can be read on this link: <a href="https://www.quantconnect.com/docs#Trading-and-Orders">SetHoldings</a>.
+	This function is where all the action happens, it will be executed on the first trading day of each month as a scheduled event. The algorithm closes all positions of securities that were not selected using <a href="https://www.quantconnect.com/docs/algorithm-reference/trading-and-orders#Trading-and-Orders-Liquidating-Portfolio">Liquidate</a> and go 100% long for both of the selected symbols using <a href="https://www.quantconnect.com/docs/algorithm-reference/trading-and-orders#Trading-and-Orders-Automatic-Position-Sizing-SetHoldings">SetHoldings</a>.
 </p>
-
 <div class="section-example-container">
+<pre class="python">def Rebalance(self):
 
-<pre class="python">def rebalance(self):
-    # get historical stock symbols and prices, then put them in tuples
-    history = self.History(self.regression_dates, Resolution.Daily)
-    filter = []
-    for i in self.symbols:
-        filter.append((i,self.get_regression_data(i, history)[0]))
-    # sort the filter by alpha
-    filter.sort(key = lambda x : x[1],reverse = True)
-    sorted_symbols = []
-    for i in range(2):
-    	sorted_symbols.append(filter[i][0])
-    # get the symbols of our holding stocks
-    holding_list = []
-    for i in self.Portfolio:
-    	if i.Value.Invested:
-    		holding_list.append(i.Value.Symbol)
-    # if we have holdings and we are not going to hold them anymore, sell them
-    if holding_list:
-    	for i in holding_list:
-    		if i not in sorted_symbols:
-    			self.Liquidate(i)
-    # Long the 2 stock in our list.
-    for i in sorted_symbols:
-    	self.SetHoldings(i,1)
-		</pre>
+    # Fetch the historical data to perform the linear regression
+    history = self.History(
+        self.symbols + [self.benchmark], 
+        self.lookback,
+        Resolution.Daily).close.unstack(level=0)
+
+    symbols = self.SelectSymbols(history)
+
+    # Liquidate positions that are not held by selected symbols
+    for holdings in self.Portfolio.Values:
+        symbol = holdings.Symbol
+        if symbol not in symbols and holdings.Invested:
+            self.Liquidate(symbol)
+
+    # Invest 100% in the each of the selected symbols
+    for symbol in symbols:
+        self.SetHoldings(symbol, 1)</pre>
