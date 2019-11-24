@@ -569,6 +569,16 @@ $strategyMap = [
 		'description' => "Stock selection strategy that calculates the unexpected earnings, standardizes the unexpected earnings, goes long on the top 5%, and rebalances the portfolio monthly.",
 		'tags' => 'Equities, Fundamental Factors, Earnings, Anomaly'
 	],
+    [
+        'name' => 'Price and Earnings Momentum',
+        'link' => 'strategy-library/price-and-earnings-momentum',
+        'sources' => [
+            'NYU' => 'http://papers.ssrn.com/sol3/papers.cfm?abstract_id=299107'
+        ],
+        'description' => "A momentum strategy based on quarterly returns and earnings growth",
+        'tags'=>'Momentum, Stocks, Universe Selection, Historical Data, Rolling Window'
+
+    ]
 	[
 		'name' => 'Improved Momentum Strategy on Commodities Futures',
 		'link' => 'strategy-library/improved-momentum-strategy-on-commodities-futures',
