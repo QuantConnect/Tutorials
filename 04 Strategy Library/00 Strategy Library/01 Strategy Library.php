@@ -578,7 +578,7 @@ $strategyMap = [
         'description' => "A momentum strategy based on quarterly returns and earnings growth",
         'tags'=>'Momentum, Stocks, Universe Selection, Historical Data, Rolling Window'
 
-    ]
+    ],
 	[
 		'name' => 'Improved Momentum Strategy on Commodities Futures',
 		'link' => 'strategy-library/improved-momentum-strategy-on-commodities-futures',
