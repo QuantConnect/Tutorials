@@ -7,72 +7,122 @@
 		</h2>
 	</div>
 </div>
-<div>
-	<div class="home-buttons-backdrop"></div>
-	<div class="row home-buttons" style="padding-top: 18px;"><a class="docs-internal-link" href="/tutorials/api-tutorials/introduction"><img src="https://cdn.quantconnect.com/tutorials/i/api_tutorials_2x.png">
-            API Tutorials
-        </a><a class="docs-internal-link" href="/tutorials/tutorial-series/introduction"><img src="https://cdn.quantconnect.com/tutorials/i/tutorial_series_2x.png">
-            Tutorial Series
-        </a>
+
+
+<div class="row" >
+	<div class="column">
+		<div class="card">
+			<div class="image">
+				<img src="http://cdn.quantconnect.com/i/tu/api tutorials@2x.png" width="60px">
+			</div>
+			<div class="content">
+				<a class="" href="/tutorials/api-tutorials/introduction">
+					<h4 style="margin-bottom: 10px;">
+						API Tutorials
+					</h4>
+				</a>
+				Learn how to build algorithms in QuantConnect
+			</div>
+		</div>
 	</div>
-	<div class="row home-buttons" style="padding-bottom: 18px;"><a class="docs-internal-link" href="/tutorials/open-source/introduction"><img src="https://cdn.quantconnect.com/tutorials/i/open_source_2x.png">
-            Open Source
-        </a><a class="docs-internal-link" href="/tutorials/strategy-library/strategy-library"><img src="https://cdn.quantconnect.com/tutorials/i/strategy_library_2x.png">
-            Strategy Library
-        </a>
+	<div class="column" >
+		<div class="card">
+			<div class="image">
+				<img src="http://cdn.quantconnect.com/i/tu/tutorial series@2x.png" width="65px">
+			</div>
+			<div class="content">
+				<a class="" href="/tutorials/tutorial-series/introduction">
+					<h4>
+						Tutorial Series
+					</h4>
+				</a>
+				Step by step introductions to the basics of python and finance
+			</div>
+		</div>
 	</div>
 </div>
+<div class="row" >
+	<div class="column">
+		<div class="card">
+			<div class="image">
+				<img src="http://cdn.quantconnect.com/i/tu/open source@2x.png" width="60px">
+			</div>
+			<div class="content">
+				<a class="" href="/tutorials/open-source/introduction">
+					<h4>
+						Open Source
+					</h4>
+				</a>
+				Deploy and harness the LEAN algorithmic trading engine
+			</div>
+		</div>
+	</div>
+	<div class="column" >
+		<div class="card">
+			<div class="image">
+				<img src="http://cdn.quantconnect.com/i/tu/strategy library@2x.png" width="60px">
+			</div>
+			<div class="content">
+				<a class="" href="/tutorials/strategy-library/strategy-library">
+					<h4>
+						Strategy Library
+					</h4>
+				</a>
+				Hundreds of academic papers implemented as LEAN trading strategies
+			</div>
+		</div>
+	</div>
+</div>
+
+
 <style>
-    .page-sub-heading,
-    .article-body h1.automated {
-        display: none;
-    }
+	* {
+		box-sizing: border-box;
+	}
+	.column {
+		float: left;
+		width: 50%;
+		padding: 10px;
+	}
+	.row:after {
+		content: "";
+		display: table;
+		clear: both;
+	}
+	.card {
+		background: #fff;
+		display: table;
+	}
+	.image {
+		width: 120px;
+		display:table-cell;
+		vertical-align:middle;
+		text-align:center;
+	}
+	.content {
+		width: 80%;
+		overflow: hidden;
+		padding: 5px;
+		color: #8f9ca3;
+		display:table-cell;
+		vertical-align:middle;
+		padding-left: 25px;
+		line-height: 1.8rem;
+	}
+	.content h4 {
+		margin: 2px 0;
+		margin-bottom: 5px;
+		color: #0072bc;
+		font-size: 18px;
+		line-height: 1.4rem;
+	}
 
-    .home-buttons-backdrop {
-        height: 570px;
-        background: url('https://cdn.quantconnect.com/web/i/docs/docs_background_rev0.png');
-        position: absolute;
-        left: -55px;
-        min-width: 910px;
-        width: calc(100vw - 317px);
-        z-index: -1;
-    }
+	.documentation #doc-content h2.page-sub-heading {
+		display:none !important;
+	}
 
-    .home-buttons > a {
-        width: 233px;
-        display: inline-block;
-        text-align: center;
-        background-color: #fff;
-        border-radius: 5px;
-        height: 233px;
-        margin: 17px;
-        font-family: Norpeth-DemiBold, Helvetica, Arial, sans-serif;
-        color: #26262a;
-        font-size: 20px;
-        float: left;
-    }
+	h1.automated {
+		display: none;
+	}
 
-    .home-buttons > a:focus,
-    .home-buttons > a:active,
-    .home-buttons > a:hover {
-        text-decoration: none;
-        color: #93a5b6;
-    }
-
-    .home-buttons > a:last-child {
-        margin-right: 0;
-    }
-
-    .home-buttons > a > img {
-        display: table-row;
-        height: 80px;
-        margin: 50px auto 36px auto;
-    }
-    
-    .documentation #doc-content .pre-title-area > span {
-        display: none;
-    }
-    .documentation #doc-content .pre-title-area > span:first-child{
-        display: inline;
-    }
 </style>
