@@ -75,7 +75,7 @@ aapl_table = quandl.get('WIKI/AAPL')
 aapl = aapl_table.loc['2017-3',['Open','Close']]
 #take log return
 aapl['log_price'] = np.log(aapl.Close)
-aapl['log_return'] = np.log_price.diff()
+aapl['log_return'] = aapl['log_price'].diff()
 print aapl
 </pre>
 </div>
