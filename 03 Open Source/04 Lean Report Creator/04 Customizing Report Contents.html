@@ -1,12 +1,24 @@
 <p>
-The report imports a profile image and description of the strategy. This is stored inside a JSON file <code>user_data.json</code>. You can customize the contents of this file to automatically generate future reports with the new data:
+The report can contain a description of the strategy. This is set either in the <code>config.json</code> file or via the command line argument <code>--strategy-description</code>.
+An example <code>config.json</code> configuration is provided below.
 </p>
 <div class="section-example-container">
 <pre class="all">{
-    "authorName": "Joe Blogs",
-    "authorPicture": "AuthorProfile.png",
-    "authorBiography": "Put your biography here.",
-    "projectName": " -- Page title / project name --",
-    "projectDescription": " -- Longer description text area -- "
-}</pre>
+  "data-folder": "../../../Data",
+  "strategy-name": "Example Algo (FX + Equity) Strategy",
+  "strategy-version": "v1.2.0",
+  "strategy-description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+  "live-data-source-file": "",
+  "backtest-data-source-file": "example_algo_fx.json",
+  "report-destination": "Report.html",
+
+  ...
+}
+</pre>
 </div>
+
+<p>
+We recommend that you use the existing <a href="https://github.com/QuantConnect/Lean/blob/master/Report/config.example.json" target="_blank" rel="noopener noreferer">config.example.json</a> 
+and rename it to <code>config.json</code> once you have finished editing the file. Please rebuild the project on rename or if you make any changes to the configuration  
+so that the file is copied into the binary output path.
+</p>

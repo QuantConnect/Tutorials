@@ -1,32 +1,21 @@
 <p>
-The <code>--backtest</code> switch refers to a JSON file created by the LEAN Engine. This holds all of the backtest data which is required for generating the report html. This data can be sourced for desktop or cloud backtests.
+The <code>--backtest-data-source-file</code> switch refers to a JSON file created by the LEAN Engine. This holds all of the backtest data which is required for generating the report HTML. This data can be sourced from desktop or cloud backtests.
 </p>
 
 <h4>Desktop Backtesting Results</h4>
 <p>
-By default LEAN saves the backtest result data to disk inside of your LEAN launcher folder: <code>Lean/Launcher/bin/Debug/BasicTemplateAlgorithm.json</code>. It is saved there by the <a href="https://github.com/QuantConnect/Lean/blob/master/Engine/Results/BaseResultsHandler.cs#L35">BaseResultHandler.SaveResult</a> method. You can access it like this from the Python Toolbox:
+By default, LEAN saves the backtest result data to disk inside of your LEAN launcher folder: <code>Lean/Launcher/bin/Debug/BasicTemplateAlgorithm.json</code>. You can access it like this from the Report executable:
 </p>
 <div class="section-example-container">
-<pre class="all">python CreateLeanReport.py --backtest=../Launcher/bin/Debug/BasicTemplateAlgorithm.json ....</pre>
+<pre class="all">./QuantConnect.Report.exe --backtest-data-source-file ../../../Launcher/bin/Debug/BasicTemplateAlgorithm.json ...</pre>
 </div>
 
 <h4>Cloud Backtesting Results</h4>
 <p>
-Backtest processed reports can also be downloaded via API. The following example imports the QuantConnect API class; and uses it to download the final HTML report. To access the API you will need to know your API User Id and Token, which can be located on your <a href="/account">Account</a> page.
+Backtest processed reports can be downloaded via API. The following example imports the QuantConnect API class and uses it to download the final HTML report. To access the API you will need to know your API User ID and Token, which can be obtained in the <a href="/account">Account</a> page.
 </p>
 
-<em>Option 1: Easy: Downloading Cloud Generated Reports:</em>
-<div class="section-example-container">
-<pre class="all">
->>> from IPython.core.display import display, HTML
->>> from quantconnect.api import Api
->>> api = Api(your-user-id, your-token)
->>> lean_report = api.read_backtest_report(project-id, backtest-id)
->>> display(HTML(lean_report['report']))
-</pre>
-</div>
-
-<em>Option 2: Harder: Downloading Cloud Generated Backtest Json Files:</em>
+<em>Downloading Cloud Generated Backtest JSON Files:</em>
 <div class="section-example-container">
 <pre class="all">
 >>> from quantconnect.api import Api
@@ -38,7 +27,13 @@ Backtest processed reports can also be downloaded via API. The following example
 </pre>
 </div>
 
+<em>Downloading Cloud Generated Backtest JSON Files (Manually):</em>
 <p>
-You can update your report description by clicking on the Project Description button in your project panel. The report automatically uses your profile picture for the report image.
+You can manually download the backtest result file and place the file in the location configured in the <code>config.json</code> file.
 </p>
-<img src="https://cdn.quantconnect.com/tutorials/i/project-description.png" class="img-responsive" />
+<img src="https://cdn.quantconnect.com/i/tu/tutorial-lrc-download-results-rev0.png" class="img-responsive" />
+
+<p>
+You can update your report description by clicking on the Project Description button in your project panel.
+</p>
+<img src="https://cdn.quantconnect.com/i/tu/tutorial-lrc-project-description-rev0.png" class="img-responsive" />
