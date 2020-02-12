@@ -1,13 +1,14 @@
 <p>
-The LEAN Report Creator is a python script located in the <a href="https://github.com/QuantConnect/Lean/tree/master/PythonToolbox">PythonToolbox</a>. It is a command line tool which takes the json backtest result object as its input. You can run it like this:
+The Lean Report Creator is a project located in the <a href="https://github.com/QuantConnect/Lean/tree/master/Report">Report folder</a>. It is a command line tool that takes the JSON backtest result object as its input. 
+You can run it using command line arguments, or by filling in the <code>config.json</code> file.
 </p>
 <div class="section-example-container">
 <pre class="all">
-python CreateLeanReport.py--backtest=./sample.json --output=./report.html --user=data.json
+./QuantConnect.Report.exe --backtest-data-source-file sample.json --report-destination Example.html
 </pre>
 </div>
 <p>
-The program has three key options you should configure to your requirements:
+The program has a few options you should configure to your requirements:
 </p>
 <style> table.text-left > tbody > tr > td { text-align: left; } </style>
 <table class="table table-striped qc-table text-left">
@@ -19,16 +20,27 @@ The program has three key options you should configure to your requirements:
 </thead>
 <tbody>
 <tr>
-<td><code>--backtest</code></td>
-<td>Location of the source backtest json file.</td>
+<td><code>--backtest-data-source-file</code></td>
+<td>Location of the source backtest JSON file.</td> </tr>
+<tr>
+<td><code>--live-data-source-file</code></td>
+<td>Location of the source live JSON file.</td>
 </tr>
 <tr>
-<td><code>--output</code></td>
+<td><code>--report-destination</code></td>
 <td>Resulting output HTML file location.</td>
 </tr>
 <tr>
-<td><code>--user</code></td>
-<td>Json data object for the user data of the report (see <a href="https://github.com/QuantConnect/Lean/blob/master/PythonToolbox/user_data.json" target="_BLANK">example</a>).</td>
+<td><code>--strategy-name</code></td>
+<td>Name of the strategy. This will appear at the top-right corner of each page in the report.</td>
+</tr>
+<tr>
+<td><code>--strategy-version</code></td>
+<td>Version number of the strategy. This will appear at the top-right corner next to the strategy name.</td>
+</tr>
+<tr>
+<td><code>--strategy-description</code></td>
+<td>Description that describes what the strategy does. This will appear under the "Strategy Description" section of the report.</td>
 </tr>
 </tbody>
 </table>
