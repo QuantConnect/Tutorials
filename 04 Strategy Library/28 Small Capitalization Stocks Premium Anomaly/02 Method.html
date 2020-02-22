@@ -9,19 +9,11 @@
 </p>
 <div class="section-example-container">
 <pre class="python">def FineSelectionFunction(self, fine):
-    if self.year == self.Time.year:
-        return self.symbols
+    ''' Selects the stocks by lowest market cap '''
+    sorted_market_cap = sorted([x for x in fine if x.MarketCap > 0],
+        key=lambda x: x.MarketCap)
 
-    # Calculate the market cap and add the "MarketCap" property to fine universe object
-    for i in fine:
-        i.MarketCap = (i.EarningReports.BasicAverageShares.ThreeMonths * 
-                       i.EarningReports.BasicEPS.TwelveMonths *
-                       i.ValuationRatios.PERatio)
-
-    sorted_market_cap = sorted([x for x in fine if x.MarketCap > 0], key=lambda x: x.MarketCap)
-
-    self.symbols = [i.Symbol for i in sorted_market_cap[:10]]
-    return self.symbols
+    return [x.Symbol for x in sorted_market_cap[:self.count]]
 </pre>
 </div>
 <p>
