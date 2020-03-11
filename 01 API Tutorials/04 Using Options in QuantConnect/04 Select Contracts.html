@@ -65,11 +65,11 @@ x.Right ＝ 0  put option[right to sell]</td>
 <pre class="python">def OnData(self,slice):
     for i in slice.OptionChains:
         if i.Key != self.symbol: continue
-	optionchain = i.Value
-	self.Log("underlying price:" + str(optionchain.Underlying.Price))
-	df = pd.DataFrame([[x.Right,float(x.Strike),x.Expiry,float(x.BidPrice),float(x.AskPrice)] for x in optionchain],
-			   index=[x.Symbol.Value for x in optionchain],
-			   columns=['type(call 0, put 1)', 'strike', 'expiry', 'ask price', 'bid price'])
+	      optionchain = i.Value
+	      self.Log("underlying price:" + str(optionchain.Underlying.Price))
+        df = pd.DataFrame([[x.Right,float(x.Strike),x.Expiry,float(x.BidPrice),float(x.AskPrice)] for x in optionchain],
+        index=[x.Symbol.Value for x in optionchain],
+        columns=['type(call 0, put 1)', 'strike', 'expiry', 'ask price', 'bid price'])
         self.Log(str(df))
 </pre>
 </div>
