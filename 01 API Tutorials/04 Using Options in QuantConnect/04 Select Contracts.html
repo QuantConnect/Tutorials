@@ -160,18 +160,18 @@ x.Right ＝ 0  put option[right to sell]</td>
 
 <pre class="python">for i in slice.OptionChains:
     if i.Key != self.symbol: continue
-    chain = i.Value
-# differentiate the call and put options
-call = [x for x in optionchain if chain.Right == 0]
-put = [x for x in optionchain if chain.Right == 1]
-# choose ITM contracts
-contracts = [x for x in call if call.UnderlyingLastPrice - x.Strike &gt; 0]
-# or choose ATM contracts
-contracts = sorted(optionchain, key = lambda x: abs(optionchain.Underlying.Price - x.Strike))[0]
-# or choose OTM contracts
-contracts = [x for x in call if call.UnderlyingLastPrice - x.Strike &lt; 0]
-# sort the contracts by their expiration dates
-contracts = sorted(contracts, key = lambda x:x.Expiry, reverse = True)
+    optionchain = i.Value
+    # differentiate the call and put options
+    call = [x for x in optionchain if x.Right == 0]
+    put = [x for x in optionchain if x.Right == 1]
+    # choose ITM contracts
+    contracts = [x for x in call if call.UnderlyingLastPrice - x.Strike &gt; 0]
+    # or choose ATM contracts
+    contracts = sorted(optionchain, key = lambda x: abs(optionchain.Underlying.Price - x.Strike))[0]
+    # or choose OTM contracts
+    contracts = [x for x in call if call.UnderlyingLastPrice - x.Strike &lt; 0]
+    # sort the contracts by their expiration dates
+    contracts = sorted(contracts, key = lambda x:x.Expiry, reverse = True)
 </pre>
 </div>
 <p>
