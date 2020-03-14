@@ -63,14 +63,14 @@ x.Right ＝ 0  put option[right to sell]</td>
 <div class="section-example-container">
 
 <pre class="python">def OnData(self,slice):
-    for i in slice.OptionChains:
-        if i.Key != self.symbol: continue
-	      optionchain = i.Value
-	      self.Log("underlying price:" + str(optionchain.Underlying.Price))
+    for kvp in slice.OptionChains:
+        if kvp.Key != self.symbol:
+            continue
+	      optionchain = kvp.Value
         df = pd.DataFrame([[x.Right,float(x.Strike),x.Expiry,float(x.BidPrice),float(x.AskPrice)] for x in optionchain],
         index=[x.Symbol.Value for x in optionchain],
         columns=['type(call 0, put 1)', 'strike', 'expiry', 'ask price', 'bid price'])
-        self.Log(str(df))
+        self.Log(f"Underlying price: {optionchain.Underlying.Price}\n{df}")
 </pre>
 </div>
 <table class="table qc-table">
@@ -158,20 +158,22 @@ x.Right ＝ 0  put option[right to sell]</td>
 
 <div class="section-example-container">
 
-<pre class="python">for i in slice.OptionChains:
-    if i.Key != self.symbol: continue
-    optionchain = i.Value
+<pre class="python">for kvp in slice.OptionChains:
+    if kvp.Key != self.symbol:
+        continue
+    optionchain = kvp.Value
     # differentiate the call and put options
-    call = [x for x in optionchain if x.Right == 0]
-    put = [x for x in optionchain if x.Right == 1]
+    call = [x for x in optionchain if x.Right == OptionRight.Call]
+    put = [x for x in optionchain if x.Right == OptionRight.Put]
+    price = optionchain.Underlying.Price
     # choose ITM contracts
-    contracts = [x for x in call if call.UnderlyingLastPrice - x.Strike &gt; 0]
+    contracts = [x for x in call if price - x.Strike > 0]
     # or choose ATM contracts
-    contracts = sorted(optionchain, key = lambda x: abs(optionchain.Underlying.Price - x.Strike))[0]
+    contracts = [x for x in call if price - x.Strike == 0]
     # or choose OTM contracts
-    contracts = [x for x in call if call.UnderlyingLastPrice - x.Strike &lt; 0]
+    contracts = [x for x in call if price - x.Strike < 0]
     # sort the contracts by their expiration dates
-    contracts = sorted(contracts, key = lambda x:x.Expiry, reverse = True)
+    contracts = sorted(contracts, key = lambda x: x.Expiry, reverse = True)
 </pre>
 </div>
 <p>
