@@ -1,29 +1,28 @@
 <p>
-  We start by creating scheduled events. The event at <code>MonthEnd()</code> will trigger the algorithm to buy SPY and the event at <code>MonthStart()</code> will start the process to sell SPY.  
+  We start by creating a scheduled event, <code>MonthEnd()</code>, that will trigger the algorithm to buy SPY.
 </p>
 <div class="section-example-container">
-<pre class="python">
-self.Schedule.On(self.DateRules.MonthStart("SPY"), self.TimeRules.AfterMarketOpen("SPY", 1), self.rebalance)
-self.Schedule.On(self.DateRules.MonthEnd("SPY"), self.TimeRules.AfterMarketOpen("SPY", 1), self.purchase)
+<pre class="python">self.Schedule.On(
+    self.DateRules.MonthEnd(self.spy),
+    self.TimeRules.AfterMarketOpen(self.spy, 1),
+    self.Purchase)
 </pre>
 </div>
 <p>
-  We will purchase the SPY immediately, and we will wait 3 trading days, as suggested, before liquidating our portfolio. Assigning <code>self.sell_flag</code> in the scheduled event handler will help us wait 3 days before executing the liquidate order in <code>OnData()</code>. The equity index is bought and sold every month.
+  We will purchase the SPY immediately, and we will wait 3 trading days, as suggested, before liquidating our portfolio. The boolean <code>self.Portfolio.Invested</code> will help us wait 3 days before executing the liquidate order in <code>OnData()</code>. The equity index is bought and sold every month.
 </p>
 <div class="section-example-container">
-<pre class="python">
-def purchase(self):
-        self.SetHoldings("SPY", 1)
-    
-def rebalance(self):
-    self.sell_flag = True
-    
+<pre class="python">def Purchase(self):
+    ''' Immediately purchases the ETF at market opening '''
+    self.SetHoldings(self.spy, 1)
+    self.days = 0
+
 def OnData(self, data):
-    if self.sell_flag:
+    if self.Portfolio.Invested:
         self.days += 1
-        if self.days == 3:
-            self.Liquidate()
-            self.sell_flag = False
-            self.days = 0
+
+        # Liquidates after 3 days
+        if self.days > 3:
+            self.Liquidate(self.spy, 'Liquidate after 3 days')
 </pre>
 </div>
