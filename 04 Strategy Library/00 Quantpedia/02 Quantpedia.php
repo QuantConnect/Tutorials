@@ -32,14 +32,16 @@
         
         if (!array_key_exists('sources', $strategy)) continue;
         
+        $isquantpedia = FALSE;
         $sources = '';
         if (array_key_exists('sources', $strategy)) {
             $sources .= '<p class="sources">';
             $sources .= (count($strategy['sources']) > 1 ? 'Sources:' : 'Source:');
             foreach ($strategy['sources'] as $key => $source) {
+                $isquantpedia = $isquantpedia || strcasecmp($key, 'quantpedia') == 0;   
                 $sources .= " <a href=\"{$source}\" rel=\"nofollow\" >{$key}</a>,";
             }
-
+            if (!$isquantpedia) continue;
             $sources = trim($sources, ',');
             $sources .= '</p>';
         }
