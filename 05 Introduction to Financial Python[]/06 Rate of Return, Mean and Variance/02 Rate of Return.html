@@ -132,7 +132,7 @@ print month_return
 <p>
   It may sounds incorrect to sum up the daily returns, but we can prove that it's mathematically correct. Let's assume the stock prices in a period of time are represented by \([p_0, p_1, p_2, p_3.....p_n]\). Then the cumulative rate of return is given by:
 </p>
-\[1+r_{nominal} = ln\frac{p_t}{p_0} = ln\frac{p_t}{p_{t-1}} + ln\frac{p_{t-1}}{p_{t-2}}+......+ln\frac{p_1}{p_0}\]
+\[1 + r_{effective} \approx 1+r_{nominal} = ln\frac{p_t}{p_0} = ln\frac{p_t}{p_{t-1}} + ln\frac{p_{t-1}}{p_{t-2}}+......+ln\frac{p_1}{p_0}\]
 <p>
   According to the equation above, we can simple sum up each logarithmic return in a period to get the cumulative return. The convenience of this method is also one of the reasons why we use logarithmic return in quantitative finance.
 </p>
