@@ -61,7 +61,12 @@ print rate_return
 </p>
 \[r_{nominal} = ln\frac{p_t}{p_0} = lnp_t - lnp_0\]
 <p>
-  Here we got the<strong> logarithmic return, </strong>or <strong>continuously compounded return</strong>. This is frequently used when calculating returns, because once we take logarithm of asset prices, we can calculate the logarithm return by simply doing a subtraction. Here we use Apple stock prices as a example:
+  Here we got the<strong> logarithmic return, </strong>or <strong>continuously compounded return</strong>. This return is the nominal return with the interest compounding every millisecond. To see how it is close to effective interest rate, recall the equation above:
+</p>
+\[e^{r_{nominal}} = 1 + r_{effective}\]
+<p>then we have</p>
+\[r_{effective} = e^{r_{nominal}} - 1 \approx r_{nominal}\]
+<p>where the second equality holds due to Taylor Expansion and the interest rate being small. This is frequently used when calculating returns, because once we take the logarithm of asset prices, we can calculate the logarithm return by simply doing a subtraction. Here we use Apple stock prices as an example:
 </p>
 
 <div class="section-example-container">
