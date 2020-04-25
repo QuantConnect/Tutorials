@@ -1,10 +1,10 @@
 <p>
-  Each random variable follows a <strong>probability distribution</strong>, which is a function that can be thought of as providing the probabilities of occurrence of different possible outcomes in an experiment. In our dice example, the probability distribution of each number is 1/6. We usually use \(P(X)\) to represents probability distribution function, where X is the outcome value. In our example, \(P(1) = P(2) = p(3) = 1/6\). However, we can't use this for a continuous distribution, because the the probability that draw a specific number from a continuous variable is 0, due to the infinity possible outcomes we have. Instead, we use <strong>probability density function</strong>(PDF) function to describe the probability that a value is in a specific range. We we cover this later. For each probability distribution function, we have a <strong>cumulative distribution function</strong>(CDF). It defines as \(P(X&lt;x)\), which models the probability that the random variable X will take a value less than or equal to x. For discrete random variables, we just sum up the values less than or equal to x and then divide it with number of observations.
+  Each random variable follows a <strong>probability distribution</strong>, which is a function that can be thought of as providing the probabilities of occurrence of different possible outcomes in an experiment. In our dice example, the probability distribution of each number is 1/6. We usually use \(P(X)\) to represent a probability distribution function, where X is the outcome value. In our example, \(P(1) = P(2) = p(3) = 1/6\). However, we can't use this for a continuous distribution, because the probability of drawing a specific number from a continuous variable is 0, due to the infinite possible outcomes we have. Instead, we use <strong>probability density function</strong>(PDF) function to describe the probability that a value is in a specific range. We cover this later. For each probability distribution function, we have a <strong>cumulative distribution function</strong>(CDF). It is defined as \(P(X\leq x)\), which models the probability that the random variable X will take a value less than or equal to x. For discrete random variables, we just sum up the values less than or equal to x and then divide it with number of observations.
 </p>
 
 <h4>Uniform Distribution</h4>
 <p>
-  Uniform distribution is the simplest type of probability distribution. A discrete uniform distribution has equal weight assigned to all outcomes. Both rolling a dice and toss a fare coin are classical uniform distributions. Here we use python to simulate rolling a dice 10000 times.
+  Uniform distribution is the simplest type of probability distribution. A discrete uniform distribution has equal weight assigned to all outcomes. Both rolling a dice and tossing a fare coin are classical uniform distributions. Here we use python to simulate rolling a dice 10000 times.
 </p>
 
 <div class="section-example-container">
@@ -24,7 +24,7 @@ print series
 </div>
 
 <p>
-  We create a series of random variable here. We can plot the values on the x-axis and put their number of occurrences on the y-axis to have a direct view of the distribution:
+  We create a series of random variables here. We can plot the values on the x-axis and put their numbers of occurrences on the y-axis to have a direct view of the distribution:
 </p>
 
 <div class="section-example-container">
@@ -39,7 +39,7 @@ plt.show()
 </div>
 <img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial07-plot1.png" alt="plot1" />
 <p>
-  Let's say we want to know the frequency that the observations are less than or equal to 3. In other words we want to seek the value of \(P(X&lt;3)\).
+  Let's say we want to know the frequency that the observations are less than or equal to 3. In other words we want to seek the value of \(P(X\leq 3)\).
 </p>
 <div class="section-example-container">
 
@@ -50,7 +50,7 @@ print np.mean(series)
 </pre>
 </div>
 <p>
-  \(P(X&lt;3)\) is very close to 0.5. This is not surprising because we rolled the dice 1000 times, and the frequency that the observations less than or equal to 3 should be close to the real probability, which is 0.5. For a given uniform distribution, it's straightforward to calculate it's mean: it's the center of the distribution because everyone outcome is equal weight. For our dice example, we can think it as
+  \(P(X\leq 3)\) is very close to 0.5. This is not surprising because we rolled the dice 1000 times, and the frequency that the observations are less than or equal to 3 should be close to the real probability, which is 0.5. For a given uniform distribution, it's straightforward to calculate its mean: it's the center of the distribution because every outcome is of equal weight. For our dice example, we can think of it as
 </p>
 \[\mu = (1+2+3+4+5+6)/6 = 3.5\]
 <p>
