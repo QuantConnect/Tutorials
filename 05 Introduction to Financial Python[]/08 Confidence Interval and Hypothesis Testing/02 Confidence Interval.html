@@ -8,13 +8,18 @@
 <pre class="python">import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import quandl
-quandl.ApiConfig.api_key = 'tAyfv1zpWnyhmDsp91yv'
-#get data from quandl
-spy_table = quandl.get('BCIW/_SPXT')
-spy_total = spy_table[['Open','Close']]
+
+qb = QuantBook()
+spy = qb.AddEquity("SPY").Symbol
+
+#get SPY data from August 2010 to the present
+start_date = datetime(2010, 8, 1, 0, 0, 0)
+end_date = qb.Time
+spy_table = qb.History(spy, start_date, end_date, Resolution.Daily)
+
+spy_total = spy_table[['open','close']]
 #calculate log returns
-spy_log_return = np.log(spy_total.Close).diff().dropna()
+spy_log_return = np.log(spy_total.close).diff().dropna()
 print 'Population mean:', np.mean(spy_log_return)
 [out]: Population mean: 0.000443353825615
 print 'Population standard deviation:',np.std(spy_log_return)
