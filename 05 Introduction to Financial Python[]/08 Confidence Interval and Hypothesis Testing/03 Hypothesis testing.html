@@ -9,7 +9,7 @@ std_1000 = np.std(spy_log_return.tail(1000))
 mean_10 = np.mean(spy_log_return.tail(10))
 std_10 = np.std(spy_log_return.tail(10))
 s = pd.Series([mean_10,std_10,mean_1000,std_1000],index = ['mean_10', 'std_10','mean_1000','std_1000'])
-print s
+print(s)
 
 [out]: mean_10      0.000845
        std_10       0.003136
@@ -25,7 +25,7 @@ print s
 
 <pre class="python">bottom = 0 - 1.64*std_1000/np.sqrt(1000)
 upper = 0 + 1.64*std_1000/np.sqrt(1000)
-print (bottom, upper)
+print((bottom, upper))
 [out]: (-0.00039756352254768874, 0.00039756352254768874)
 </pre>
 </div>
@@ -37,7 +37,7 @@ print (bottom, upper)
 
 <pre class="python">bottom = 0 - 1.96*std_1000/np.sqrt(1000)
 upper = 0 + 1.96*std_1000/np.sqrt(1000)
-print (bottom, upper)
+print((bottom, upper))
 [out]: (-0.00047513689280089639, 0.00047513689280089639)
 </pre>
 </div>
@@ -55,7 +55,7 @@ print (bottom, upper)
 </p>
 <div class="section-example-container">
 
-<pre class="python">print np.sqrt(1000)*(mean_1000 - 0)/std_1000
+<pre class="python">print(np.sqrt(1000)*(mean_1000 - 0)/std_1000)
 [out]: 1.90922032428
 </pre>
 </div>
@@ -66,7 +66,7 @@ print (bottom, upper)
 <div class="section-example-container">
 
 <pre class="python">import scipy.stats as st
-print (1 - st.norm.cdf(1.9488))
+print((1 - st.norm.cdf(1.9488)))
 [out]: 0.025659656888
 </pre>
 </div>
@@ -82,10 +82,10 @@ print (1 - st.norm.cdf(1.9488))
 <pre class="python">mean_1200 = np.mean(spy_log_return.tail(1200))
 std_1200 = np.std(spy_log_return.tail(1200))
 z_score = np.sqrt(1200)*(mean_1200 - 0)/std_1200
-print 'z-score = ',z_score
+print('z-score = ',z_score)
 [out]: z-score =  2.19793023185
 p_value = (1 - st.norm.cdf(z_score))
-print 'p_value = ',p_value
+print('p_value = ',p_value)
 [out]: p_value =  0.0139770390655
 </pre>
 </div>
