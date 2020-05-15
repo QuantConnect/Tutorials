@@ -1,0 +1,31 @@
+<h4>Importing Custom Data</h4>
+<p>
+  The first step of algorithm is to load 3 years of trailing values of the Fama-French factors. We call the AddData method and provide the <a href="https://github.com/QuantConnect/Tutorials/raw/feature-data-directory/Data/F-F_Research_Data_Factors.csv">Fama-French data source URL</a> from our <a href="https://github.com/QuantConnect/Tutorials">Tutorials repo</a>. We save the loaded data into a DataFrame in the alpha model.
+</p>
+
+<h4>Universe Selection</h4>
+<p>
+  In coarse universe selection, we return the first 400 symbols that have fundamental data. In fine universe selection, we rank the stocks by market cap and return the symbols that are in the top 10%. We only create ResidualMomentum objects for stocks added to the universe that have atleast 3 years of historical prices.
+</p>
+
+<h4>Calculate Residual Momentum Score</h4>
+<p>
+  During construction of ResidualMomentum objects, we manually warmup the trailing 3 years of monthly returns for the security. We also set up a monthly consolidator to update the trailing returns each month and to recalculate the score. The score is calculated by fitting a linear regression model to the trailing 36 months of data, using the Fama-French factors as independent variables and the monthly returns of each stock as the dependent variable.
+</p>
+
+\[r_t = \alpha + \beta_1 * Mkt_t + \beta_2 * SMB_t + \beta_3 * HML_t + \epsilon_t \]
+
+\begin{p}
+  where \(r_t\) is the monthly return of the stock in month \(t\); \(Mkt_t\), \(SMB_t\), and \(HML_t\) are the Fama-French factor values in month \(t\); and \(epsilon_t\) is the residual return in month \(t\). After fitting, we test the model on the trailing 12 months of data (excluding the most recent month) to calculate the score. We simply sum the residuals and divide by the standard deviation of the residuals to get the score.
+\end{p}
+
+\[score = \frac{\sum{} \epsilon}{\sigma_\epsilon} \]
+
+<p>
+  If a stock's price is below $1 when calculating the score, it's score is set to None, excluding it from trading during the rebalance.
+</p>
+
+<h4>Rebalancing</h4>
+<p>
+  We rebalance the portfolio at the beginning of each month. After calculating a score for each security, we long the 10% of stocks with the greatest scores and short the 10% of stocks with the lowest scores, holding until the next rebalance.
+</p>
