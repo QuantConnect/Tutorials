@@ -93,6 +93,16 @@ $strategyMap = [
         
     ],
     [
+        'name' => 'Residual Momentum',
+        'link' => 'strategy-library/residual-momentum',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/136'
+        ],
+        'description' => 'Constructs a long/short portfolio based on trailing residual momentum normalized by its standard deviation',
+        'tags'=>'Intermediate,Equities,Momentum'
+        
+    ],
+    [
         'name' => 'Sector Momentum',
         'link' => 'strategy-library/sector-momentum',
         'sources' => [
