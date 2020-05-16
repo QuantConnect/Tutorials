@@ -55,13 +55,18 @@ print rate_return
 <p>
   From the above limitation equation, we know that if we assume continuous compounding:
 </p>
-\[e^r = 1 + r = \frac{p_t}{p_0}\]
+\[e^{r_{nominal}} = 1 + r_{effective} = \frac{p_t}{p_0}\]
 <p>
   Then we take \(ln\) on both side of the equation:
 </p>
-\[r = ln\frac{p_t}{p_0} = lnp_t - lnp_0\]
+\[r_{nominal} = ln\frac{p_t}{p_0} = lnp_t - lnp_0\]
 <p>
-  Here we got the<strong> logarithmic return, </strong>or <strong>continuously compounded return</strong>. This is frequently used when calculating returns, because once we take logarithm of asset prices, we can calculate the logarithm return by simply doing a subtraction. Here we use Apple stock prices as a example:
+  Here we got the<strong> logarithmic return, </strong>or <strong>continuously compounded return</strong>. This return is the nominal return with the interest compounding every millisecond. To see how it is close to effective interest rate, recall the equation above:
+</p>
+\[e^{r_{nominal}} = 1 + r_{effective}\]
+<p>then we have</p>
+\[r_{effective} = e^{r_{nominal}} - 1 \approx r_{nominal}\]
+<p>where the second equality holds due to Taylor Expansion and the interest rate being small. This is frequently used when calculating returns, because once we take the logarithm of asset prices, we can calculate the logarithm return by simply doing a subtraction. Here we use Apple stock prices as an example:
 </p>
 
 <div class="section-example-container">
@@ -127,7 +132,7 @@ print month_return
 <p>
   It may sounds incorrect to sum up the daily returns, but we can prove that it's mathematically correct. Let's assume the stock prices in a period of time are represented by \([p_0, p_1, p_2, p_3.....p_n]\). Then the cumulative rate of return is given by:
 </p>
-\[1+r = ln\frac{p_t}{p_0} = ln\frac{p_t}{p_{t-1}} + ln\frac{p_{t-1}}{p_{t-2}}+......+ln\frac{p_1}{p_0}\]
+\[1 + r_{effective} \approx 1+r_{nominal} = ln\frac{p_t}{p_0} = ln\frac{p_t}{p_{t-1}} + ln\frac{p_{t-1}}{p_{t-2}}+......+ln\frac{p_1}{p_0}\]
 <p>
   According to the equation above, we can simple sum up each logarithmic return in a period to get the cumulative return. The convenience of this method is also one of the reasons why we use logarithmic return in quantitative finance.
 </p>
