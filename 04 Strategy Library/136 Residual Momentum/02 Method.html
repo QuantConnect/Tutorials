@@ -15,9 +15,9 @@
 
 \[r_t = \alpha + \beta_1 * Mkt_t + \beta_2 * SMB_t + \beta_3 * HML_t + \epsilon_t \]
 
-\begin{p}
-  where \(r_t\) is the monthly return of the stock in month \(t\); \(Mkt_t\), \(SMB_t\), and \(HML_t\) are the Fama-French factor values in month \(t\); and \(epsilon_t\) is the residual return in month \(t\). After fitting, we test the model on the trailing 12 months of data (excluding the most recent month) to calculate the score. We simply sum the residuals and divide by the standard deviation of the residuals to get the score.
-\end{p}
+<p>
+  Where \(r_t\) is the monthly return of the stock in month \(t\); \(Mkt_t\), \(SMB_t\), and \(HML_t\) are the Fama-French factor values in month \(t\); and \(epsilon_t\) is the residual return in month \(t\). After fitting, we test the model on the trailing 12 months of data (excluding the most recent month) to calculate the score. We simply sum the residuals and divide by the standard deviation of the residuals to get the score.
+</p>
 
 \[score = \frac{\sum{} \epsilon}{\sigma_\epsilon} \]
 
