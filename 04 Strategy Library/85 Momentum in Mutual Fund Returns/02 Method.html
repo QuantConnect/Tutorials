@@ -1,0 +1,179 @@
+<h4>Universe Selection</h4>
+<p>
+  In coarse universe selection, we return symbols that have fundamental data and are traded in the US market.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def SelectCoarse(self, algorithm, coarse):
+    if self.month == algorithm.Time.month:
+        return Universe.Unchanged
+    filtered = [x for x in coarse if (x.HasFundamentalData) and (x.Market == "usa")]
+    return [ x.Symbol for x in filtered[:self.coarse_size] ]
+</pre>
+</div>
+
+<p>
+  In fine universe selection, we return symbols that Morningstar has classified as being in the asset management industry.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def SelectFine(self, algorithm, fine):
+    self.month = algorithm.Time.month
+    filtered = [f for f in fine if f.AssetClassification.MorningstarIndustryCode == MorningstarIndustryCode.AssetManagement]
+    return [ x.Symbol for x in filtered[:self.fine_size] ]
+</pre>
+</div>
+
+<h4>Alpha Construction</h4>
+<p>
+  When constructing the alpha model, we can provide parameters for the lookback windows and the percentage of the universe to 
+  long/short. Both of these arguments are validated in the constructor. By default, this alpha model uses the trailing 6 months to 
+  calculate the rate of change factor and the trailing 12 months to calculate the nearness to historical highs.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def __init__(self, roc_lookback_months=6, nearness_lookback_months=12, holding_months=6, pct_long_short=10):
+    if roc_lookback_months <= 0 or nearness_lookback_months <= 0 or holding_months <= 0:
+        algorithm.Error(f"Requirement violated:  roc_lookback_months > 0 and nearness_lookback_months > 0 and holding_months > 0")
+        algorithm.Quit()
+        return
+
+    if pct_long_short <= 0 or pct_long_short > 50:
+        algorithm.Error(f"Requirement violated: 0 < pct_long_short <= 50")
+        algorithm.Quit()
+        return
+
+    self.roc_lookback_months = roc_lookback_months
+    self.nearness_lookback_months = nearness_lookback_months
+    self.holding_months = holding_months
+    self.pct_long_short = pct_long_short
+</pre>
+</div>
+
+<p>
+  For each security added to the universe, we construct a ROCAndNearness indicator which warm up the lookback windows and registers 
+  a data consolidator. When a security is removed from the universe, we unsubscribe the associated consolidator.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def OnSecuritiesChanged(self, algorithm, changes):
+    for added in changes.AddedSecurities:
+        roc_and_nearness = ROCAndNearness(added.Symbol, algorithm, self.roc_lookback_months, self.nearness_lookback_months)
+        self.symbol_data_by_symbol[added.Symbol] = roc_and_nearness
+
+    for removed in changes.RemovedSecurities:
+        symbol_data = self.symbol_data_by_symbol.pop(removed.Symbol, None)
+        if symbol_data:
+            symbol_data.dispose()
+</pre>
+</div>
+
+<h4>Alpha Update</h4>
+<p>
+  On the first trading day of each month, we rank the symbols in the universe and emit insights for the portfolio construction model.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def Update(self, algorithm, data):
+    # Emit insights on a monthly basis
+    time = algorithm.Time
+    if self.month == time.month:
+        return []
+    self.month = time.month
+
+    return self.generate_insights(self.ranked_symbols, time)
+</pre>
+</div>
+
+<h4>Alpha Ranking</h4>
+<p>
+  We only rank symbols that have enough history to fill the rate of change lookback window. We start by filling a DataFrame with 
+  the rate of change and nearness to trailing high values for each symbol. We rank the symbols by both metrics and sum the ranks. 
+  The symbols with a larger final sum have a greater index in the list we return.
+</p>
+<div class="section-example-container">
+<pre class="python">
+@property
+def ranked_symbols(self):
+    ranking_df = pd.DataFrame()
+
+    for symbol, symbol_data in self.symbol_data_by_symbol.items():
+        if symbol_data.IsReady:
+            row = pd.DataFrame({'ROC': symbol_data.roc, 'Nearness': symbol_data.nearness}, index=[symbol])
+            ranking_df = ranking_df.append(row)
+
+    return ranking_df.rank().sum(axis=1).sort_values().index
+</pre>
+</div>
+
+<p>
+  We calculate the rate of change and nearness factors by slicing the historical data into the approriate lookback window size, and 
+  then computing the respective values.
+</p>
+<div class="section-example-container">
+<pre class="python">
+@property
+def roc(self):
+    lookback = self.get_lookback(self.roc_lookback_months)
+    start_price = lookback.iloc[0].open
+    end_price = lookback.iloc[-1].close
+    return (end_price - start_price) / start_price 
+
+@property
+def nearness(self):
+    lookback = self.get_lookback(self.nearness_lookback_months)
+    return lookback.iloc[-1].close / lookback.high.max()
+</pre>
+</div>
+
+<h4>Alpha Insights</h4>
+<p>
+  We return insights that instruct the portfolio construction model to form a balance long-short portfolio. The percentage of the 
+  universe we long and short is customizable in the alpha model constructor. Here, we long the 10% of symbols with the highest 
+  rank, short the 10% of symbols with the lowest ranks, and instruct the portfolio construction model to hold positions for 6 months.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def generate_insights(self, ranked_symbols, time):
+    insights = []
+
+    num_long_short = int(len(ranked_symbols) * (self.pct_long_short / 100))
+    if num_long_short > 0:
+        hold_duration = Expiry.EndOfMonth(time) + relativedelta(months=self.holding_months-1, seconds=-1)
+        for symbol in ranked_symbols[-num_long_short:]:
+            insights.append(Insight.Price(symbol, hold_duration, InsightDirection.Up))
+        for symbol in ranked_symbols[:num_long_short]:
+            insights.append(Insight.Price(symbol, hold_duration, InsightDirection.Down))
+
+    return insights
+</pre>
+</div>
+
+<h4>Portfolio Construction</h4>
+<p>
+  We utilize a custom portfolio construction model that rebalances monthly and performs allocations based on the net direction of 
+  insights for each symbol. A symbol that has two active insights with an up direction will have twice the allocation than a symbol 
+  with only one. Furthermore, a symbol that has an up active insight and a down active insight will have no position. We calculate 
+  the net direction of the symbols with the following helper method.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def get_net_direction(self, insights):
+    net_direction_by_symbol = {}
+    num_directional_insights = 0
+
+    for insight in insights:
+        symbol = insight.Symbol
+        direction = insight.Direction
+        if symbol in net_direction_by_symbol:
+            net_direction_by_symbol[symbol] += direction
+        else:
+            net_direction_by_symbol[symbol] = direction
+
+        num_directional_insights += abs(direction)
+
+    return net_direction_by_symbol, num_directional_insights
+</pre>
+</div>
+
+

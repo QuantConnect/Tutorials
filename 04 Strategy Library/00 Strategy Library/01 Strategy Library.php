@@ -338,6 +338,15 @@ $strategyMap = [
         'tags'=>'Intermediate,Long Short,Equities'
     ],
     [
+        'name' => 'Momentum in Mutual Fund Returns',
+        'link' => 'strategy-library/momentum-in-mutual-fund-returns',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/85'
+        ],
+        'description' => 'Forms a long-short portfolio of asset management firms based on trailing rate of change and nearness to trailing high.',
+        'tags'=>'Intermediate,Long Short,Equities'
+    ],
+    [
         'name' => 'Momentum and Style Rotation Effect',
         'link' => 'strategy-library/momentum-and-style-rotation-effect',
         'sources' => [
