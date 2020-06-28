@@ -50,7 +50,7 @@ $strategyMap = [
         'tags'=>'Expert,Pairs Trading,Equities'
     ],
     [
-        'name' => 'The Momentum Strategy Based on the Low Frequency Compoment of Forex Market',
+        'name' => 'The Momentum Strategy Based on the Low Frequency Component of Forex Market',
         'link' => 'strategy-library/the-momentum-strategy-based-on-the-low-frequency-Component-of-forex-market',
         'description' => 'Applies high frequency filter to the momentum strategy.',
         'tags'=>'Intermediate,Momentum,Forex'
