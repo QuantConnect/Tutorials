@@ -21,6 +21,22 @@ The mailing list for the project can be found on [Google Groups][6]
 
 Contributions are warmly very welcomed but we ask you read the existing code to see how it is formatted, commented and ensure contributions match the existing style. All code submissions must include accompanying tests. Please see the [contributor guide lines][7].
 
+## Strategy Library Development Workflow ##
+To publish a strategy to our [Strategy Library](https://www.quantconnect.com/tutorials/strategy-library/strategy-library), follow these steps:
+1. Review filtered sources like SSRN, arxiv, and other academic journals/papers for a strategy to implement. Try to adhere to the [Quant League competition](https://www.quantconnect.com/competitions/quant-league-1) criteria and the Alpha Streams [minimum criteria](https://www.quantconnect.com/docs/alpha-streams/submitting-an-alpha#Submitting-an-Alpha-Minimum-Criteria) and [review process](https://www.quantconnect.com/docs/alpha-streams/submitting-an-alpha#Submitting-an-Alpha-Subsequent-Review-Process).
+2. Post a 3-point development plan to [our Slack channel](https://www.quantconnect.com/slack) and wait for approval by @jaredbroad or @alexcatarino. See an example [here](https://cdn.quantconnect.com/i/tu/development-plan-example.png).
+3. Develop the strategy (add [license and imports](https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/BasicTemplateAlgorithm.py#L1) to main.py).
+4. Add an Issue to the [Tutorials repo](https://github.com/QuantConnect/Tutorials/issues) ([example](https://github.com/QuantConnect/Tutorials/issues/277)).
+5. Add @alexcatarino as a [collaborator](https://www.quantconnect.com/blog/collaborating-in-quantconnect/) to the project.
+6. Publish a strategy write-up in the Slack channel and wait for approval (see [Strategy Library](https://www.quantconnect.com/tutorials/strategy-library/strategy-library) for examples).
+7. Convert the strategy write-up to HTML form ([examples](https://github.com/QuantConnect/Tutorials/tree/master/04%20Strategy%20Library)).
+8. Make PR (following the [Contributor's Guidelines](https://github.com/QuantConnect/Lean/blob/master/CONTRIBUTING.md)):
+    - If the write-up includes images, upload them [here](https://www.quantconnect.com/admin/cdnUpload).
+    - Add summary HTML files to [Strategy Library directory](https://github.com/QuantConnect/Tutorials/tree/master/04%20Strategy%20Library). If it's a non-Quantpedia strategy, set the ID number (in the directory name) to the next available after 1023.
+    - If the strategy is from Quantpedia, add strategy ID and backtest ID to [quantpedia.json](https://github.com/QuantConnect/Tutorials/blob/master/quantpedia.json).
+    - Add strategy metadata to [this file](https://github.com/QuantConnect/Tutorials/blob/master/04%20Strategy%20Library/00%20Strategy%20Library/01%20Strategy%20Library.php) (Currently semi-sorted by Quantpedia strategy ID).
+9. After the PR is merged, send @jaredbroad the URL and a 1-sentence summary of what the paper/strategy is about and post the strategy to the forum with the backtest of the algorithm and a short summary of the project ([example](https://www.quantconnect.com/forum/discussion/8608/strategy-library-addition-residual-momentum/p1)).
+
 [1]: https://www.quantconnect.com/tutorials "Tutorials Viewer"
 [2]: https://www.quantconnect.com/lean/docs "Lean Documentation"
 [3]: https://github.com/QuantConnect/Lean/archive/master.zip
