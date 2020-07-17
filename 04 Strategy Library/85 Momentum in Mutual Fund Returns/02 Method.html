@@ -1,14 +1,14 @@
 <h4>Universe Selection</h4>
 <p>
-  In coarse universe selection, we return symbols that have fundamental data and are traded in the US market.
+  In coarse universe selection, we return symbols that have fundamental data.
 </p>
 <div class="section-example-container">
 <pre class="python">
 def SelectCoarse(self, algorithm, coarse):
     if self.month == algorithm.Time.month:
-        return Universe.Unchanged
-    filtered = [x for x in coarse if (x.HasFundamentalData) and (x.Market == "usa")]
-    return [ x.Symbol for x in filtered[:self.coarse_size] ]
+            return Universe.Unchanged
+            
+    return [x.Symbol for x in coarse if x.HasFundamentalData]
 </pre>
 </div>
 
@@ -19,8 +19,8 @@ def SelectCoarse(self, algorithm, coarse):
 <pre class="python">
 def SelectFine(self, algorithm, fine):
     self.month = algorithm.Time.month
-    filtered = [f for f in fine if f.AssetClassification.MorningstarIndustryCode == MorningstarIndustryCode.AssetManagement]
-    return [ x.Symbol for x in filtered[:self.fine_size] ]
+        
+    return [f.Symbol for f in fine if f.AssetClassification.MorningstarIndustryCode == MorningstarIndustryCode.AssetManagement]
 </pre>
 </div>
 
@@ -34,14 +34,10 @@ def SelectFine(self, algorithm, fine):
 <pre class="python">
 def __init__(self, roc_lookback_months=6, nearness_lookback_months=12, holding_months=6, pct_long_short=10):
     if roc_lookback_months <= 0 or nearness_lookback_months <= 0 or holding_months <= 0:
-        algorithm.Error(f"Requirement violated:  roc_lookback_months > 0 and nearness_lookback_months > 0 and holding_months > 0")
-        algorithm.Quit()
-        return
-
+        algorithm.Quit(f"Requirement violated:  roc_lookback_months > 0 and nearness_lookback_months > 0 and holding_months > 0")
+        
     if pct_long_short <= 0 or pct_long_short > 50:
-        algorithm.Error(f"Requirement violated: 0 < pct_long_short <= 50")
-        algorithm.Quit()
-        return
+        algorithm.Quit(f"Requirement violated: 0 < pct_long_short <= 50")
 
     self.roc_lookback_months = roc_lookback_months
     self.nearness_lookback_months = nearness_lookback_months
@@ -70,7 +66,8 @@ def OnSecuritiesChanged(self, algorithm, changes):
 
 <h4>Alpha Update</h4>
 <p>
-  On the first trading day of each month, we rank the symbols in the universe and emit insights for the portfolio construction model.
+  On the first trading day of each month, we rank the symbols in the universe and emit insights for the portfolio construction 
+  model. We instruct the alpha model to emit insights on a monthly basis by adding the following guard to the Update method. 
 </p>
 <div class="section-example-container">
 <pre class="python">
@@ -81,34 +78,45 @@ def Update(self, algorithm, data):
         return []
     self.month = time.month
 
-    return self.generate_insights(self.ranked_symbols, time)
+    ...
 </pre>
 </div>
 
 <h4>Alpha Ranking</h4>
 <p>
-  We only rank symbols that have enough history to fill the rate of change lookback window. We start by filling a DataFrame with 
-  the rate of change and nearness to trailing high values for each symbol. We rank the symbols by both metrics and sum the ranks. 
-  The symbols with a larger final sum have a greater index in the list we return.
+  We only rank symbols that have enough history to fill the rate of change lookback window. Therefore, we define the 
+  IsReady method of the ROCAndNearness as
 </p>
 <div class="section-example-container">
 <pre class="python">
 @property
-def ranked_symbols(self):
-    ranking_df = pd.DataFrame()
-
-    for symbol, symbol_data in self.symbol_data_by_symbol.items():
-        if symbol_data.IsReady:
-            row = pd.DataFrame({'ROC': symbol_data.roc, 'Nearness': symbol_data.nearness}, index=[symbol])
-            ranking_df = ranking_df.append(row)
-
-    return ranking_df.rank().sum(axis=1).sort_values().index
+def IsReady(self):
+    return self.get_lookback(self.roc_lookback_months).shape[0] > 1
 </pre>
 </div>
 
 <p>
-  We calculate the rate of change and nearness factors by slicing the historical data into the approriate lookback window size, and 
-  then computing the respective values.
+  To rank the symbols, we start by filling a DataFrame with the rate of change and nearness to trailing high values for each 
+  symbol. When the DataFrame is full, we rank the symbols by both metrics and sum the ranks. The symbols with a larger final 
+  sum have a greater index in the `ranked_symbols` list.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def Update(self, algorithm, data):
+    ...
+    ranking_df = pd.DataFrame()
+    for symbol, symbol_data in self.symbol_data_by_symbol.items():
+        if symbol_data.IsReady:
+            row = pd.DataFrame({'ROC': symbol_data.roc, 'Nearness': symbol_data.nearness}, index=[symbol])
+            ranking_df = ranking_df.append(row)
+    ranked_symbols =  ranking_df.rank().sum(axis=1).sort_values().index
+   ...
+</pre>
+</div>
+
+<p>
+  Calculating the rate of change and nearness factors is done by slicing the historical data into the approriate lookback window 
+  size, and then computing the respective values.
 </p>
 <div class="section-example-container">
 <pre class="python">
@@ -129,14 +137,14 @@ def nearness(self):
 <h4>Alpha Insights</h4>
 <p>
   We return insights that instruct the portfolio construction model to form a balance long-short portfolio. The percentage of the 
-  universe we long and short is customizable in the alpha model constructor. Here, we long the 10% of symbols with the highest 
-  rank, short the 10% of symbols with the lowest ranks, and instruct the portfolio construction model to hold positions for 6 months.
+  universe we long and short is customizable in the alpha model constructor. Here, we long the 25% of symbols with the highest 
+  rank, short the 25% of symbols with the lowest ranks, and instruct the portfolio construction model to hold positions for 6 months.
 </p>
 <div class="section-example-container">
 <pre class="python">
-def generate_insights(self, ranked_symbols, time):
+def Update(self, algorithm, data):
+    ...
     insights = []
-
     num_long_short = int(len(ranked_symbols) * (self.pct_long_short / 100))
     if num_long_short > 0:
         hold_duration = Expiry.EndOfMonth(time) + relativedelta(months=self.holding_months-1, seconds=-1)
@@ -144,7 +152,6 @@ def generate_insights(self, ranked_symbols, time):
             insights.append(Insight.Price(symbol, hold_duration, InsightDirection.Up))
         for symbol in ranked_symbols[:num_long_short]:
             insights.append(Insight.Price(symbol, hold_duration, InsightDirection.Down))
-
     return insights
 </pre>
 </div>
