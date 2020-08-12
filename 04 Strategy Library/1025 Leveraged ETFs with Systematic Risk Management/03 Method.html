@@ -1,0 +1,12 @@
+<p>
+    We develop hold/liquidate positions based on the 200-day Simple Moving Average (SMA) of our ETF, for which we use SSO,
+    a 2x leveraged SP500 index ETF. With 200 days instead of using fewer days, say 50, we reduce the number of trades per year,
+    thereby reducing transaction costs and the effects of slippage. Moving on, if the current price of SOO is above the 200-day SMA,
+    we hold SSO, and if SSO dips below our 200-day SMA, we sell liquidate our position and rotate our position into short-term
+    treasuries, which is done through SHY, an ETF that tracks 1-3 year U.S. Treasury Bonds. If we are holding SHY, and the
+    current price of SSO moves above the 200-day SMA, then we rotate back into SSO and liquidate SHY.
+</p>
+
+
+
+
