@@ -615,7 +615,16 @@ $strategyMap = [
 		],
 		'description' => "A simple trend following strategy on commodities futures.",
 		'tags' => 'Momentum, Futures, Commodities'
-	]
+	],
+    [
+        'name' => 'Intraday ETF Momentum',
+        'link' => 'strategy-library/intraday-etf-momentum',
+        'sources' => [
+            'NYU' => 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2440866'
+        ],
+        'description' => "A momentum strategy based on returns of the market open",
+        'tags'=>'Momentum, Stocks, Universe Selection, Equities, Anomaly'
+    ]
 ];
 
 ?>
