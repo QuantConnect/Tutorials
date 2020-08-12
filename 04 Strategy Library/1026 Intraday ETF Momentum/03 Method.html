@@ -1,0 +1,143 @@
+<h4>Universe Selection</h4>
+<p>
+  We implement a manual universe selection model that supplies a subset of the proposed ETFs in the attached research 
+  paper. Gao et al (2017) select the following tickers: DIA, QQQ, IWM, EEM, FXI, EFA, VWO, XLF, IYR, and TLT. In an 
+  effort to increase the backtest performance, we narrow our universe to SPY, IWM, and IYR.
+</p>
+<div class="section-example-container">
+<pre class="python">
+tickers = ['SPY',  # S&P 500
+           'IWM',  # Russell 2000
+           'IYR'   # Real Estate ETF
+]
+symbols = [ Symbol.Create(ticker, SecurityType.Equity, Market.USA) for ticker in tickers ]
+self.SetUniverseSelection( ManualUniverseSelectionModel(symbols) )
+self.UniverseSettings.Resolution = Resolution.Minute
+</pre>
+</div>
+
+<h4>Alpha Construction</h4>
+<p>
+  The IntradayMomentumAlphaModel emits insights to take positions for the last `return_bar_count` minutes of the day 
+  in the direction of the return for the first `return_bar_count` minutes of the day. During construction, we create 
+  a dictionary to store IntradayMomentum data for each symbol, define a method to determine the sign of returns, and 
+  specify the value of `return_bar_count`. In this tutorial, we follow Gao et al (2017) in setting `return_bar_count`
+  to 30 by default.
+</p>
+<div class="section-example-container">
+<pre class="python">
+class IntradayMomentumAlphaModel(AlphaModel):
+    intraday_momentum_by_symbol = {}
+    sign = lambda _, x: int(x and (1, -1)[x < 0])
+
+    def __init__(self, algorithm, return_bar_count = 30):
+        self.return_bar_count = return_bar_count
+</pre>
+</div>
+
+<h4>Alpha Securities Management</h4>
+<p>
+  When a new security is added to the universe, we create an IntradayMomentum object for it to store information 
+  needed to calculate morning returns. The management of the IntradayMomentum objects occurs in the alpha model's 
+  OnSecuritiesChanged method.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def OnSecuritiesChanged(self, algorithm, changes):
+    for security in changes.AddedSecurities:
+        self.intraday_momentum_by_symbol[security.Symbol] = IntradayMomentum(security, algorithm)
+
+    for security in changes.RemovedSecurities:
+        self.intraday_momentum_by_symbol.pop(security.Symbol, None)
+</pre>
+</div>
+
+<p>
+  The definition of the IntradayMomentum class is shown below. We save a reference to the security's exchange so we 
+  can access the market hours of the exchange when generating insights.
+</p>
+<div class="section-example-container">
+<pre class="python">
+class IntradayMomentum:
+    def __init__(self, security, algorithm):
+        self.symbol = security.Symbol
+        self.exchange = security.Exchange
+
+        self.bars_seen_today = 0
+        self.yesterdays_close = algorithm.History(self.symbol, 1, Resolution.Daily).loc[self.symbol].close[0]
+        self.morning_return = 0
+</pre>
+</div>
+
+<h4>Alpha Update</h4>
+<p>
+  With each call to the alpha model's Update method, we count the number of bars the algorithm has received for each 
+  symbol. If we've reached the end of the morning window, we calculate the morning return. If we are at the 
+  beginning of the close window, we emit an insight in the direction of the morning window's return. If we are at 
+  the end of the day, we save the closing price and reset the counter for the number of bars seen today.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def Update(self, algorithm, slice):
+    insights = []
+
+    for symbol, intraday_momentum in self.intraday_momentum_by_symbol.items():
+        if slice.ContainsKey(symbol) and slice[symbol] is not None:
+            intraday_momentum.bars_seen_today += 1
+            
+            # End of the morning return
+            if intraday_momentum.bars_seen_today == self.return_bar_count:
+                intraday_momentum.morning_return = (slice[symbol].Close - intraday_momentum.yesterdays_close) / intraday_momentum.yesterdays_close
+            
+            ## Beginning of the close
+            next_close_time = intraday_momentum.exchange.Hours.GetNextMarketClose(slice.Time, False)
+            mins_to_close = int((next_close_time - slice.Time).total_seconds() / 60)
+            
+            if mins_to_close == self.return_bar_count + 1:
+                insight = Insight.Price(intraday_momentum.symbol, 
+                                        next_close_time, 
+                                        self.sign(intraday_momentum.morning_return))
+                insights.append(insight)
+                continue
+            
+            # End of the day
+            if not intraday_momentum.exchange.DateTimeIsOpen(slice.Time):
+                intraday_momentum.yesterdays_close = slice[symbol].Close
+                intraday_momentum.bars_seen_today = 0
+            
+    return insights
+</pre>
+</div>
+
+<h4>Trade Execution</h4>
+<p>
+  The attached research paper holds positions for the last 30 minutes of the trading day, exiting at the market close.
+  In order to accomplish this, we create a custom execution model. The model defined below submits a market order for 
+  the entry while also submitting a market on close order in the same time step.
+</p>
+<div class="section-example-container">
+<pre class="python">
+class CloseOnCloseExecutionModel(ExecutionModel):
+    def __init__(self):
+        self.targetsCollection = PortfolioTargetCollection()
+        self.invested_symbols = []
+
+    def Execute(self, algorithm, targets):
+        # for performance we check count value, OrderByMarginImpact and ClearFulfilled are expensive to call
+        self.targetsCollection.AddRange(targets)
+        if self.targetsCollection.Count > 0:
+            for target in self.targetsCollection.OrderByMarginImpact(algorithm):
+                # calculate remaining quantity to be ordered
+                quantity = OrderSizing.GetUnorderedQuantity(algorithm, target)
+                if quantity == 0:
+                    continue
+
+                algorithm.MarketOrder(target.Symbol, quantity)
+                algorithm.MarketOnCloseOrder(target.Symbol, -quantity)
+
+            self.targetsCollection.ClearFulfilled(algorithm)
+</pre>
+</div>
+
+
+

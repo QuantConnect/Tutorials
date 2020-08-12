@@ -338,6 +338,15 @@ $strategyMap = [
         'tags'=>'Intermediate,Long Short,Equities'
     ],
     [
+        'name' => 'Momentum in Mutual Fund Returns',
+        'link' => 'strategy-library/momentum-in-mutual-fund-returns',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/85'
+        ],
+        'description' => 'Forms a long-short portfolio of asset management firms based on trailing rate of change and nearness to trailing high.',
+        'tags'=>'Intermediate,Long Short,Equities'
+    ],
+    [
         'name' => 'Momentum and Style Rotation Effect',
         'link' => 'strategy-library/momentum-and-style-rotation-effect',
         'sources' => [
@@ -607,15 +616,32 @@ $strategyMap = [
 		'description' => "A simple trend following strategy on commodities futures.",
 		'tags' => 'Momentum, Futures, Commodities'
 	],
-    [
-        'name' => 'Leveraged ETFs with Systematic Risk Management',
-        'link' => 'leveraged-etfs-with-systematic-risk-management',
-        'sources' => [
-            'The Lead-Lag Report' => 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2741701'
-        ],
-        'description' => 'We apply Simple Moving Averages to manage risk in holding leveraged ETFs in an attempt to by the S&P500',
-        'tags' => 'Simple Moving Average, Risk Management, S&P500, ETF'
-    ]
+  [
+     'name' => 'Leveraged ETFs with Systematic Risk Management',
+     'link' => 'leveraged-etfs-with-systematic-risk-management',
+     'sources' => [
+       'The Lead-Lag Report' => 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2741701'
+     ],
+     'description' => 'We apply Simple Moving Averages to manage risk in holding leveraged ETFs in an attempt to by the S&P500',
+     'tags' => 'Simple Moving Average, Risk Management, S&P500, ETF'
+  ],
+  [
+     'name' => 'Ichimoku Clouds in the Energy Sector',
+     'link' => 'strategy-library/ichimoku-clouds-in-the-energy-sector',
+     'sources' => [
+       'SSRN' => 'https://ssrn.com/abstract=3520582'
+     ],
+     'description' => 'A techincal indicator crossover strategy trading the largest energy companies.',
+     'tags'=>'Intermediate, Technical Indicator, Ichimoku Cloud, Crossover, Equities'
+  ],
+     'name' => 'Intraday ETF Momentum',
+     'link' => 'strategy-library/intraday-etf-momentum',
+     'sources' => [
+       'NYU' => 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2440866'
+     ],
+     'description' => "A momentum strategy based on returns of the market open",
+     'tags'=>'Momentum, Stocks, Universe Selection, Equities, Anomaly'
+  ]
 ];
 
 ?>
