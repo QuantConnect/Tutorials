@@ -265,6 +265,9 @@
     betting on the direction of the average of the future five closing prices, it would be intuitive to emit an Insights
     in the respective direction for <em>timedeltas</em> of one through five. However, we choose to only emit an Insight
     with a <em>timedelta</em> with a random integer between one and five to constrain the number of insights we emit.
+    <br>
+    As an additional note, we decided to set the trading fees to zero (the default fee
+    is one dollar per trade), or else our algorithm will only lose money due to the frequency at which we trade.
 </p>
 
 
