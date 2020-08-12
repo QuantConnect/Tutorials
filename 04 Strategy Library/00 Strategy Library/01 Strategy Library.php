@@ -607,15 +607,6 @@ $strategyMap = [
 		'description' => "A simple trend following strategy on commodities futures.",
 		'tags' => 'Momentum, Futures, Commodities'
 	],
-	[
-        'name' => 'Price Forecasting using a Temporal Convolutional Neural Network Model',
-        'link' => 'strategy-library/forecasting-stock-prices-using-a-temporal-cnn',
-        'sources' => [
-            'Tampere University' => 'https://arxiv.org/pdf/1901.08280.pdf'
-        ],
-        'description' => "Applying a Temporal Convolutional Neural Network to forecasting future stock prices.",
-        'tags' => 'Convolutional Neural Network, Equities, Forecasting, Deep Learning'
-    ],
     [
         'name' => 'Leveraged ETFs with Systematic Risk Management',
         'link' => 'leveraged-etfs-with-systematic-risk-management',
