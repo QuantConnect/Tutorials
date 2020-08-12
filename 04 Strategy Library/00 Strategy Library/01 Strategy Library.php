@@ -615,6 +615,15 @@ $strategyMap = [
         ],
         'description' => "Applying a Temporal Convolutional Neural Network to forecasting future stock prices.",
         'tags' => 'Convolutional Neural Network, Equities, Forecasting, Deep Learning'
+    ],
+    [
+        'name' => 'Leveraged ETFs with Systematic Risk Management',
+        'link' => 'leveraged-etfs-with-systematic-risk-management',
+        'sources' => [
+            'The Lead-Lag Report' => 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2741701'
+        ],
+        'description' => 'We apply Simple Moving Averages to manage risk in holding leveraged ETFs in an attempt to by the S&P500',
+        'tags' => 'Simple Moving Average, Risk Management, S&P500, ETF'
     ]
 ];
 
