@@ -608,8 +608,8 @@ $strategyMap = [
 		'tags' => 'Momentum, Futures, Commodities'
 	],
 	[
-        'name' => 'Price Forecasting using a Temporal Convolutional Neural Network Model',
-        'link' => 'strategy-library/forecasting-stock-prices-using-a-temporal-cnn',
+        'name' => 'Forecasting Stock Prices using a Temporal CNN Model',
+        'link' => 'strategy-library/forecasting-stock-prices-using-a-temporal-cnn-model',
         'sources' => [
             'Tampere University' => 'https://arxiv.org/pdf/1901.08280.pdf'
         ],
