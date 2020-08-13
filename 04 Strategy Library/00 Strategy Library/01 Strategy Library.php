@@ -634,6 +634,7 @@ $strategyMap = [
      'description' => 'A techincal indicator crossover strategy trading the largest energy companies.',
      'tags'=>'Intermediate, Technical Indicator, Ichimoku Cloud, Crossover, Equities'
   ],
+  [
      'name' => 'Intraday ETF Momentum',
      'link' => 'strategy-library/intraday-etf-momentum',
      'sources' => [
