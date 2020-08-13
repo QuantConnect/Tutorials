@@ -613,7 +613,7 @@ $strategyMap = [
         'sources' => [
             'The Lead-Lag Report' => 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2741701'
         ],
-        'description' => 'We apply Simple Moving Averages to manage risk in holding leveraged ETFs in an attempt to beat the S&P500',
+        'description' => 'We apply Simple Moving Averages to manage the risk of holding leveraged ETFs in an attempt to beat the S&P500',
         'tags' => 'Simple Moving Average, Risk Management, S&P500, ETF'
     ]
 ];
