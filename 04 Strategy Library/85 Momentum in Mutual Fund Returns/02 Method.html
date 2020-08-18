@@ -106,7 +106,7 @@ def Update(self, algorithm, data):
     ...
     ranking_df = pd.DataFrame()
     for symbol, symbol_data in self.symbol_data_by_symbol.items():
-        if symbol_data.IsReady:
+        if data.ContainsKey(symbol) and symbol_data.IsReady:
             row = pd.DataFrame({'ROC': symbol_data.roc, 'Nearness': symbol_data.nearness}, index=[symbol])
             ranking_df = ranking_df.append(row)
     ranked_symbols =  ranking_df.rank().sum(axis=1).sort_values().index
