@@ -642,6 +642,15 @@ $strategyMap = [
      ],
      'description' => "A momentum strategy based on returns of the market open",
      'tags'=>'Momentum, Stocks, Universe Selection, Equities, Anomaly'
+  ],
+  [
+     'name' => 'Intraday Arbitrage Between Index ETFs',
+     'link' => 'strategy-library/intraday-arbitrage-between-index-etfs',
+     'sources' => [
+       'SSRN' => 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1709599'
+     ],
+     'description' => "A strategy that tracks the price paths of two correlated ETFs and takes advantage of mis-pricings that arise when the price paths diverge",
+     'tags'=>'Intermediate, Equities, Arbitrage, Intraday'
   ]
 ];
 
