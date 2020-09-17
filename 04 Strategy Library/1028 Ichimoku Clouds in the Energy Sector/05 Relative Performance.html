@@ -1,0 +1,92 @@
+<p>
+  To analyze the value of this trading strategy, we compare its performance to buying and holding a popular ETF 
+  tracking the energy sector. In this study, we use XLE, the Energy Select Sector SPDR® Fund, as the benchmark. We 
+  can see from the plot below how the portfolio would have performed just had we had just invested in the benchmark.
+</p>
+
+<img class="img-responsive" 
+     src="https://cdn.quantconnect.com/i/tu/benchmark-performance.png" 
+     alt="Tutorial1028-ichimoku-cloud-2" />
+
+<p>
+  We now analyze the Sharpe ratio and annual standard deviation of returns for both the strategy and the benchmark. 
+  From the table below, we can see the results of the strategy and the benchmark over the entire backtest period, the 
+  Fall 2015 crisis, and the 2020 oil price war. The strategy has a lower Sharpe ratio than the benchmark across all 
+  of the time periods we tested, except for the crash during the 2020 oil price war, where it generated an impressive
+  176 Sharpe ratio. We can also see the strategy has a lower annual standard deviation accross all of the time 
+  frames, implying that the strategy has more consistent returns than the benchmark.
+</p>
+
+<table class="table qc-table">
+    <thead>
+        <tr>
+            <th>Period Name</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Strategy</th>
+            <th>Sharpe</th>
+            <th>ASD</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan="2">Backtest</td>
+            <td rowspan="2">1/1/2015</td>
+            <td rowspan="2">8/16/2020</td>
+            <td><a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_93f0df937ca928a3aae0da169142b0b5.html">Strategy</a></td>
+            <td>-0.31</td>
+            <td style="background-color: lightgrey;">0.223</td>
+        </tr>
+        <tr>
+            <td><a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_383b6e278d66af10a9b90461b61ccbc4.html">Benchmark</a></td>
+            <td style="background-color: lightgrey;">-0.083</td>
+            <td>0.312</td>
+        </tr>
+        <tr>
+            <td rowspan="2">Fall 2015</td>
+            <td rowspan="2">8/10/2015</td>
+            <td rowspan="2">10/10/2015</td>
+            <td><a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_138ea84253c4df2688a512e21917c55d.html">Strategy</a></td>
+            <td>-0.31</td>
+            <td style="background-color: lightgrey;">0.294</td>
+        </tr>
+        <tr>
+            <td><a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_383b6e278d66af10a9b90461b61ccbc4.html">Benchmark</a></td>
+            <td style="background-color: lightgrey;">0.242</td>
+            <td>0.351</td>
+        </tr>
+        <tr>
+            <td rowspan="2">2020 Crash</td>
+            <td rowspan="2">2/19/2020</td>
+            <td rowspan="2">3/23/2020</td>
+            <td><a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_5c735b89a65e453c9f0e40c41f69a314.html">Strategy</a></td>
+            <td style="background-color: lightgrey;">176.524</td>
+            <td style="background-color: lightgrey;">0.949</td>
+        </tr>
+        <tr>
+            <td><a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_0288d3b1c7b2af85c5884c86d64ed148.html">Benchmark</a></td>
+            <td>-0.902</td>
+            <td>1.108</td>
+        </tr>
+        <tr>
+            <td rowspan="2">2020 Recovery</td>
+            <td rowspan="2">3/23/2020</td>
+            <td rowspan="2">6/8/2020</td>
+            <td><a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_92bbed7c7ede0861c82d76e36d34d781.html">Strategy</a></td>
+            <td>-1.556</td>
+            <td style="background-color: lightgrey;">0.447</td>
+        </tr>
+        <tr>
+            <td><a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_022fe9ca07b14eab2f045ea1e8551d8e.html">Benchmark</a></td>
+            <td style="background-color: lightgrey;">46.068</td>
+            <td>0.703</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>
+  We find the lack of performance for this strategy is not largely attributed to the transaction costs. After 
+  ignoring the transaction fees, spread costs, and slippage, the strategy still has a lower Sharpe ratio than the 
+  benchmark and doesn't match the results found in the original research paper. See the backtest results 
+  <a href="https://www.quantconnect.com/terminal/processCache/?request=embedded_backtest_c3deb95af7014cfe2e51ffe1678b2939.html">here</a>.
+</p>

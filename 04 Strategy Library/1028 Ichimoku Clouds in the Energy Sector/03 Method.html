@@ -1,0 +1,150 @@
+<h4>Universe Selection</h4>
+<p>
+  Gurrib (2020) selects a universe of the 10 largest-weighed constituents of the S&P Composite 1500 Energy Index 
+  over the testing period. This inherently incorporates lookahead-bias into the study as the security weights are 
+  sourced over the period the trading simulation occurs. Furthermore, since the publication of Gurrib (2020), some 
+  of the securities have even been delisted. Thus, to eliminate lookahead-bias and avoid delistings, we implement a
+  universe selection model that provides the trading system with the 10 largest companies in the energy sector as of
+  the current date in the backtest. Since the largest companies change infrequently, we only refresh the universe on
+  a monthly basis.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+def SelectCoarse(self, algorithm, coarse):
+    if algorithm.Time.month == self.month:
+        return Universe.Unchanged
+    return [ x.Symbol for x in coarse if x.HasFundamentalData ]
+
+def SelectFine(self, algorithm, fine):
+    self.month = algorithm.Time.month
+    
+    energy_stocks = [ f for f in fine if f.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Energy ]
+    sorted_by_market_cap = sorted(energy_stocks, key=lambda x: x.MarketCap, reverse=True)
+    return [ x.Symbol for x in sorted_by_market_cap[:self.fine_size] ]
+</pre>
+</div>
+
+
+<h4>Alpha Construction</h4>
+<p>
+  The IchimokuCloudCrossOverAlphaModel emits insights to hold a long position after the Chikou Span crosses over the
+  top of the cloud for a given security. Additionally, the strategy is made symmetrical by entering short positions 
+  after the Chikou Span crosses below the bottom of the cloud. During construction of this alpha model, we simply 
+  set up a dictionary to hold a SymbolData object for each symbol in the universe.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+class IchimokuCloudCrossOverAlphaModel(AlphaModel):
+    symbol_data_by_symbol = {}
+</pre>
+</div>
+
+<p>
+  The SymbolData class constructor is shown below. We first set up two class variables, `previous_location` and 
+  `direction`. The former enables the algorithm to signal when the Chikou Span crosses over the boundaries of the 
+  Ichimoku Cloud. The latter is added to ensure we continue to emit daily insights in the proper direction. Inside 
+  the `__init__` method is where we create the 
+  <a href="https://www.quantconnect.com/lean/documentation/topic28736.html">IchimokuKinkoHyo</a> indicator and warm 
+  it up.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+class SymbolData:
+    previous_location = None
+    direction = None
+    
+    def __init__(self, symbol, algorithm):
+        # Create Ichimoku indicator
+        self.ichimoku = IchimokuKinkoHyo()
+        
+        # Warm up indicator
+        history = algorithm.History(symbol, self.ichimoku.WarmUpPeriod + 1, Resolution.Daily).loc[symbol]
+        for idx, row in history.iterrows():
+            if self.ichimoku.IsReady:
+                self.previous_location = self.get_location()
+            
+            tradebar = TradeBar(idx, symbol, row.open, row.high, row.low, row.close, row.volume)
+            self.ichimoku.Update(tradebar)
+</pre>
+</div>
+
+
+<h4>Determining the Indicator Location</h4>
+<p>
+  We define the following helper method to return the location of the Chikou Span with respect to the cloud. The 
+  alpha model utilizes this helper method to determine when the Chikou Span is exiting the Ichimoku Cloud.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+def get_location(self):
+    chikou = self.ichimoku.Chikou.Current.Value
+    
+    senkou_span_a = self.ichimoku.SenkouA.Current.Value
+    senkou_span_b = self.ichimoku.SenkouB.Current.Value
+    cloud_top = max(senkou_span_a, senkou_span_b)
+    cloud_bottom = min(senkou_span_a, senkou_span_b)
+    
+    if chikou > cloud_top:
+        return 1    # Above cloud
+    if chikou < cloud_bottom:
+        return -1   # Below cloud
+        
+    return 0        # Inside cloud
+</pre>
+</div>
+
+
+<h4>Alpha Update</h4>
+<p>
+  As new <a href="https://www.quantconnect.com/lean/documentation/topic24427.html">TradeBar</a>s are provided to the
+  alpha model's Update method, we update the Ichimoku indicator of each symbol. We then emit insights for the 
+  symbols that have their Chikou Span breaking out of their respective Ichimoku Cloud in a new direction. To 
+  maintain positions while we wait for another crossover in the Ichimoku Cloud, we emit insights on a daily basis 
+  with 1-day duration.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+def Update(self, algorithm, data):
+    insights = []
+    
+    for symbol, symbol_data in self.symbol_data_by_symbol.items():
+        if not data.ContainsKey(symbol) or data[symbol] is None:
+            continue
+        
+        # Update indicator with the latest TradeBar
+        symbol_data.ichimoku.Update(data[symbol])
+        
+        # Determine insight direction
+        current_location = symbol_data.get_location()
+        if symbol_data.previous_location is not None: # Indicator is ready
+            if symbol_data.previous_location != 1 and current_location == 1:
+                symbol_data.direction = InsightDirection.Up
+            if symbol_data.previous_location != -1 and current_location == -1:
+                symbol_data.direction = InsightDirection.Down
+        
+        symbol_data.previous_location = current_location
+        
+        # Emit insight
+        if symbol_data.direction:
+            insight = Insight.Price(symbol, timedelta(days=1), symbol_data.direction)
+            insights.append(insight)
+    
+    return insights
+</pre>
+</div>
+
+
+<h4>Portfolio Construction & Trade Execution</h4>
+<p>
+  Following the guidelines of <a href="https://www.quantconnect.com/docs/alpha-streams/overview">Alpha Streams</a> 
+  and the <a href="https://www.quantconnect.com/competitions/quant-league-7">Quant League</a> competition, we 
+  utilize the <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/EqualWeightingPortfolioConstructionModel.py">
+  EqualWeightingPortfolioConstructionModel</a> and the 
+  <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm/Execution/ImmediateExecutionModel.py">
+  ImmediateExecutionModel</a>.
+</p>
