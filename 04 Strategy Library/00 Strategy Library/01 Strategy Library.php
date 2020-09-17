@@ -618,6 +618,15 @@ $strategyMap = [
 	],
   [
      'name' => 'Leveraged ETFs with Systematic Risk Management',
+     'link' => 'strategy-library/leveraged-etfs-with-systematic-risk-management',
+     'sources' => [
+      'The Lead-Lag Report' => 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2741701'
+     ],
+     'description' => 'We apply Simple Moving Averages to manage the risk of holding leveraged ETFs in an attempt to beat the S&P500',
+     'tags' => 'Simple Moving Average, Risk Management, S&P500, ETF'
+  ],
+  [
+     'name' => 'Leveraged ETFs with Systematic Risk Management',
      'link' => 'leveraged-etfs-with-systematic-risk-management',
      'sources' => [
        'The Lead-Lag Report' => 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2741701'
