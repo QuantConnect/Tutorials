@@ -15,11 +15,7 @@ $\widetilde{\sigma}^2 = \sigma ^2\frac{1-e^{-2\mu\Delta t}}{2\mu}$
 
 
 <h3>Deriving the Optimal Entry and Liquidation Levels</h3>
-<<<<<<< HEAD
 <p>With the OU coefficients in hand, we can now calculate the optimal entry level, the portfolio value at which we buy, and liquidation level, the portfolio value at which we sell. We don&rsquo;t buy the portfolio of $1 of A and -$<em>&beta;*</em> of B immediately (note: to scale up a position, for each additional dollar we invest in A, we short an additional -$<em>&beta;*</em> of B). Instead, we wait until our portfolio reaches the computed entry level, before we buy the portfolio of the pair of stocks. Once we bought this portfolio, we wait until the portfolio value reaches the computed liquidation level before we liquidate our portfolio. By waiting for our optimal entry and liquidation values to be reached, we can mathematically maximize our expected gain. To compute the optimal entry and liquidation levels, we first need to define a few equations:</p>
-=======
-<p>With the OU coefficients in hand, we can now calculate the optimal entry level, the portfolio value at which we buy, and liquidation level, the portfolio value at which we sell. We don&rsquo;t buy the portfolio of $1 of A and -$<em>&beta;*</em> of B immediately (note: to scale up a position, for each additional dollar we invest in A, we short an additional -$<em>&beta;*</em> of B). Instead, we wait until our portfolio reaches the computed entry level, before we buy the portfolio of the pair of stocks. Once we bought this portfolio, we wait until the portfolio value reaches the computed liquidation level, before we liquidate our portfolio. By waiting for our optimal entry and liquidation values to be reach, we can mathematically maximize our expected gain. To compute the optimal entry and liquidation levels, we first need to define a few equations:</p>
->>>>>>> origin/feature-310-optimal-pairs-trading
 $F(x):=\int_{0}^{\infty}u^{\frac{r}{\mu}-1}e^{\sqrt{\frac{2\mu}{\sigma^2}}(x-\theta)u-\frac{u^2}{2}}du\quad(3.3)$
 $G(x):=\int_{0}^{\infty}u^{\frac{r}{\mu}-1}e^{\sqrt{\frac{2\mu}{\sigma^2}}(\theta-x)u-\frac{u^2}{2}}du\quad(3.4)$
 $V(x)=(x\in (-\infty, b^*)\ ?\ (b^*-c) \frac{F(x)}{F(b^*)}:x-c)\quad(4.2)$
