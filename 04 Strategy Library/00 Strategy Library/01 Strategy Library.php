@@ -642,6 +642,15 @@ $strategyMap = [
      ],
      'description' => "A momentum strategy based on returns of the market open",
      'tags'=>'Momentum, Stocks, Universe Selection, Equities, Anomaly'
+  ],
+  [
+     'name' => 'Optimal Pairs Trading',
+     'link' => 'strategy-library/optimal-pairs-trading',
+     'sources' => [
+       'arXiv' => 'https://arxiv.org/pdf/1411.5062.pdf'
+     ],
+     'description' => "Mathematically Deriving the Optimal Entry and Liquidation Values of a Pairs Trading Process",
+     'tags'=>'Pairs Trading, Ornstein-Uhlenbeck Process, Optimal Stopping'
   ]
 ];
 

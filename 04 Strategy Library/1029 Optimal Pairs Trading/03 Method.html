@@ -1,0 +1,50 @@
+<h3>Computing the OU Coefficients</h3>
+<p>Say there are two arbitrary stocks A and B. For each value <em>&beta;</em> in .01, .02, .03, &hellip;, 1.00:</p>
+<ol>
+    <li>We compute the portfolio values over 252 days of the pairs trade by computing the value of holding $1 of A minus the value of holding $<em>&beta;</em> B (we short B) on each of the 252 days&nbsp;</li>
+    <li>Then we compute the OU coefficients (&theta;, &micro;, &sigma;) of the 252 portfolio values using the Maximum Likelihood Estimation method, maximizing the average log-likelihood defined by this function:</li>
+</ol>
+$-\frac{1}{2}ln(2\pi)-ln(\widetilde{\sigma})-\frac{1}{2n{\widetilde{\sigma}}^2}\sum_{i=1}^{n}[x_i-x_{i-1}e^{-\mu\Delta t}-\theta(1-e^{-\mu\Delta t})]^2\quad(2.2)$
+<p>where</p>
+<p><em>x</em><em>j</em><em> is the value at the jth index of the portfolio values</em></p>
+<p>and&nbsp;</p>
+$\widetilde{\sigma}^2 = \sigma ^2\frac{1-e^{-2\mu\Delta t}}{2\mu}$
+<p>and <em>n = the number of portfolio values</em></p>
+<p>and <em>&Delta;t = 1 &divide; (days between the start and end dates of the portfolio values),</em>&nbsp;</p>
+<p>We then select the <em>&beta;</em>, which we differentiate as <em>&beta;*, </em>that maximizes the average log-likelihood defined in the equation in step 2, while keeping the corresponding <em>&theta;*, &micro;*, &sigma;* </em>values. The implementation of finding <em>&theta;*, &micro;*, </em>and<em> &sigma;* </em>can be found in <strong>ou_mle.py</strong> in the <strong>Algorithm</strong> section.</p>
+
+
+<h3>Deriving the Optimal Entry and Liquidation Levels</h3>
+<p>With the OU coefficients in hand, we can now calculate the optimal entry level, the portfolio value at which we buy, and liquidation level, the portfolio value at which we sell. We don&rsquo;t buy the portfolio of $1 of A and -$<em>&beta;*</em> of B immediately (note: to scale up a position, for each additional dollar we invest in A, we short an additional -$<em>&beta;*</em> of B). Instead, we wait until our portfolio reaches the computed entry level, before we buy the portfolio of the pair of stocks. Once we bought this portfolio, we wait until the portfolio value reaches the computed liquidation level, before we liquidate our portfolio. By waiting for our optimal entry and liquidation values to be reach, we can mathematically maximize our expected gain. To compute the optimal entry and liquidation levels, we first need to define a few equations:</p>
+$F(x):=\int_{0}^{\infty}u^{\frac{r}{\mu}-1}e^{\sqrt{\frac{2\mu}{\sigma^2}}(x-\theta)u-\frac{u^2}{2}}du\quad(3.3)$
+$G(x):=\int_{0}^{\infty}u^{\frac{r}{\mu}-1}e^{\sqrt{\frac{2\mu}{\sigma^2}}(\theta-x)u-\frac{u^2}{2}}du\quad(3.4)$
+$V(x)=(x\in (-\infty, b^*)\ ?\ (b^*-c) \frac{F(x)}{F(b^*)}:x-c)\quad(4.2)$
+<p>Where constants <em>c = the cost of transaction </em>and <em>r = investor&rsquo;s subject discount rate</em>. We choose to set <em>c = r = .05</em> as these were the values given in the paper.&nbsp;</p>
+<p>With these equations, we can now solve for the optimal liquidation level, which we denote as <em>b*</em>, as well as the optimal entry level, which we denote at <em>d*</em>. Note: the reason we derive the optimal liquidation level first is because we use <em>b*</em> in the computation of <em>d*</em>.</p>
+<p>As deriving <em>b* </em>and <em>d* </em>require the derivative of the functions given above, given an arbitrary function input <em>x</em> and an arbitrary function <em>f(x)</em>, we approximate <em>f&rsquo;(x) </em>with the following equation equation:</p>
+$f'(x) = \frac{f(x+h)-f(x)}{h}$
+<p>where <em>h</em> is some arbitrarily small value (we set <em>h = 1 x 10<sup>-4</sup></em> in our implementation).</p>
+<p>To find <em>b*</em>, we solve for <em>b </em>in the following equation:</p>
+$F(b)=(b-c)F'(b)\quad(4.3)$
+<p>We solve this equation by getting all terms to one side:</p>
+$F(b)-(b-c)F'(b)=0$
+<p>Finding the root of the above equation results in <em>b*</em>.&nbsp;</p>
+<p>Now to derive <em>d*</em>, we solve for <em>d</em> in the following equation:</p>
+$G(d)(V'(d)-1)=G'(d)(V(d)-d-c)$
+<p>Again, we will move all terms to one side:</p>
+$G(d)(V'(d)-1)-G'(d)(V(d)-d-c)=0$
+<p>And finding the root of this equation results in <em>d*</em>.</p>
+<p><br />The full method of finding <em>b*</em> and <em>d*</em> can be found in the <strong>OptimalStopping.py</strong>
+    file in the <strong>Algorithm </strong>section.</p>
+
+<h3>Trading</h3>
+<p>
+    Our trading logic is very simple. First, we feed in 252 points of the most recent data for the daily closing prices
+    for stocks A and B. We then train our model on these data points, and we get the
+    <em>b*</em>, <em>d*</em>, and <em>&beta;* </em>values. We then keep track of a hypothetical portfolio of holding $1
+    of A and -$<em>&beta;*</em> of B. Once the value of our hypothetical portfolio is less than or equal to <em>b*</em>,
+    we allocate 1.0 of our capital to long of A and short B using (<em>&beta;*</em> x capital used for A) worth of stock.
+    Once the hypothetical portfolio value we tracking reaches <em>d*</em>, we liquidate our positions. We repeat these
+    trading rules when possible. On the first day of every quarter, we retrain our model with the most recent 252 points of data to
+    update our <em>b*</em>, <em>d*</em>, and <em>&beta;*</em> values.
+</p>
