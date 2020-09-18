@@ -338,6 +338,15 @@ $strategyMap = [
         'tags'=>'Intermediate,Long Short,Equities'
     ],
     [
+        'name' => 'Momentum in Mutual Fund Returns',
+        'link' => 'strategy-library/momentum-in-mutual-fund-returns',
+        'sources' => [
+            'Quantpedia' => 'https://www.quantpedia.com/Screener/Details/85'
+        ],
+        'description' => 'Forms a long-short portfolio of asset management firms based on trailing rate of change and nearness to trailing high.',
+        'tags'=>'Intermediate,Long Short,Equities'
+    ],
+    [
         'name' => 'Momentum and Style Rotation Effect',
         'link' => 'strategy-library/momentum-and-style-rotation-effect',
         'sources' => [
@@ -608,14 +617,68 @@ $strategyMap = [
 		'tags' => 'Momentum, Futures, Commodities'
 	],
 	[
-        'name' => 'Forecasting Stock Prices using a Temporal CNN Model',
-        'link' => 'strategy-library/forecasting-stock-prices-using-a-temporal-cnn-model',
-        'sources' => [
-            'Tampere University' => 'https://arxiv.org/pdf/1901.08280.pdf'
-        ],
-        'description' => "Applying a Temporal Convolutional Neural Network to forecasting future stock prices.",
-        'tags' => 'Convolutional Neural Network, Equities, Forecasting, Deep Learning'
-    ]
+     'name' => 'Forecasting Stock Prices using a Temporal CNN Model',
+     'link' => 'strategy-library/forecasting-stock-prices-using-a-temporal-cnn-model',
+     'sources' => [
+         'Tampere University' => 'https://arxiv.org/pdf/1901.08280.pdf'
+     ],
+     'description' => "Applying a Temporal Convolutional Neural Network to forecasting future stock prices.",
+     'tags' => 'Convolutional Neural Network, Equities, Forecasting, Deep Learning'
+  ],
+  [
+     'name' => 'Leveraged ETFs with Systematic Risk Management',
+     'link' => 'strategy-library/leveraged-etfs-with-systematic-risk-management',
+     'sources' => [
+      'The Lead-Lag Report' => 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2741701'
+     ],
+     'description' => 'We apply Simple Moving Averages to manage the risk of holding leveraged ETFs in an attempt to beat the S&P500',
+     'tags' => 'Simple Moving Average, Risk Management, S&P500, ETF'
+  ],
+  [
+     'name' => 'Leveraged ETFs with Systematic Risk Management',
+     'link' => 'leveraged-etfs-with-systematic-risk-management',
+     'sources' => [
+       'The Lead-Lag Report' => 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2741701'
+     ],
+     'description' => 'We apply Simple Moving Averages to manage risk in holding leveraged ETFs in an attempt to by the S&P500',
+     'tags' => 'Simple Moving Average, Risk Management, S&P500, ETF'
+  ],
+  [
+     'name' => 'Ichimoku Clouds in the Energy Sector',
+     'link' => 'strategy-library/ichimoku-clouds-in-the-energy-sector',
+     'sources' => [
+       'SSRN' => 'https://ssrn.com/abstract=3520582'
+     ],
+     'description' => 'A techincal indicator crossover strategy trading the largest energy companies.',
+     'tags'=>'Intermediate, Technical Indicator, Ichimoku Cloud, Crossover, Equities'
+  ],
+  [
+     'name' => 'Intraday ETF Momentum',
+     'link' => 'strategy-library/intraday-etf-momentum',
+     'sources' => [
+       'NYU' => 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2440866'
+     ],
+     'description' => "A momentum strategy based on returns of the market open",
+     'tags'=>'Momentum, Stocks, Universe Selection, Equities, Anomaly'
+  ],
+  [
+     'name' => 'Intraday Arbitrage Between Index ETFs',
+     'link' => 'strategy-library/intraday-arbitrage-between-index-etfs',
+     'sources' => [
+       'SSRN' => 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1709599'
+     ],
+     'description' => "A strategy that tracks the price paths of two correlated ETFs and takes advantage of mis-pricings that arise when the price paths diverge",
+     'tags'=>'Intermediate, Equities, Arbitrage, Intraday'
+  ],
+  [
+     'name' => 'Optimal Pairs Trading',
+     'link' => 'strategy-library/optimal-pairs-trading',
+     'sources' => [
+       'arXiv' => 'https://arxiv.org/pdf/1411.5062.pdf'
+     ],
+     'description' => "Mathematically Deriving the Optimal Entry and Liquidation Values of a Pairs Trading Process",
+     'tags'=>'Pairs Trading, Ornstein-Uhlenbeck Process, Optimal Stopping'
+  ]
 ];
 
 ?>

@@ -1,0 +1,10 @@
+<p>
+  The intraday arbitrage strategy we built and tested throughout this tutorial underperforms the SPY benchmark in 
+  terms of Sharpe ratio when including trading costs. Without these costs, we found the strategy outperforms the SPY 
+  in terms of Sharpe ratio. In our implementation, we specified the alpha model to initiate trading when atleast a 
+  0.02% profit threshold is reached for 3 seconds. Both of these parameters are set lower than the strategy examined 
+  in Marshall et al (2010) for demonstration purposes. Increasing the profit threshold will lead to more profitable, 
+  but fewer, trades that may overcome the cost of trading. We leave this area of study for future research. 
+  Additional areas of future research include increasing the resolution of data from second to tick and incorportating 
+  an execution model that utilizes limit orders to reduce fees.
+</p>
