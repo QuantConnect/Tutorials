@@ -678,6 +678,15 @@ $strategyMap = [
      ],
      'description' => "Mathematically Deriving the Optimal Entry and Liquidation Values of a Pairs Trading Process",
      'tags'=>'Pairs Trading, Ornstein-Uhlenbeck Process, Optimal Stopping'
+  ],
+  [
+     'name' => 'Using News Sentiment to Predict Price Direction of Drug Manufacturers',
+     'link' => 'strategy-library/using-news-sentiment-to-predict-price-direction-of-drug-manufacturers',
+     'sources' => [
+         'arXiv' => 'https://arxiv.org/abs/1812.04199'
+     ],
+     'description' => "Analyzes the news releases of drug manufacturers and places intraday trades for the stocks with positive news.",
+     'tags'=>'Equities, NLP, News Sentiment, Drug Manufacturers, Tiingo, Intraday'
   ]
 ];
 
