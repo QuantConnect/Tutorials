@@ -1,0 +1,283 @@
+<h3>Overview</h3>
+<p>
+    Our strategy is to develop a Temporal Convolutional Neural Network model and train our model on historical OHLCV data
+    to predict the movement of future prices. Then, when trading, we take the most recent data, feed it into our model, and
+    bet on the direction of the price movement based on our model prediction. We will walk through the code required
+    for building the Neural Network Architecture and for preparing the data for our model, as this part is the harder part to understand.
+</p>
+
+<h3>Inputs/Outputs</h3>
+
+<p>
+    Before we build our Neural Network Architecture, we need to understand the inputs and outputs to our model.
+    The input to the model will be the OHLC+Volume data for t-14 to t time steps (past 15 time steps). The output is a
+    direction (Up, Down, Stationary) of the movement of the average close of the t+1 to t+5 time steps (5 future timestamps).
+    The movement is considered stationary if the abs(% change 5-step average close) < .01%. These three directions will
+    form the labels for which our model will try to classify, thus we have a <em>classification</em> problem.
+</p>
+
+
+<h3>Neural Network Model Architecture</h3>
+
+<p>
+    Now, we will need to build our Neural Network Architecture, which we will build using <a href="https://keras.io/">Keras</a>,
+    a high-level Python Deep Learning API. To begin, we will need a few import statements:
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+    import tensorflow as tf
+    from tensorflow.keras.layers import Input, Conv1D, Dense, Lambda, Flatten, Concatenate
+    from tensorflow.keras import Model
+    from tensorflow.keras import metrics
+    from tensorflow.keras.losses import CategoricalCrossentropy
+    from tensorflow.keras import utils
+    from sklearn.preprocessing import StandardScaler
+    import numpy as np
+    import math
+</pre>
+</div>
+
+
+<p>
+    We start with an Input Layer, where training and testing data are initially accepted. With 15 time steps and 5 input
+    variables (OHLCV), our input shape will be 15 x 5.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+    inputs = Input(shape=(15, 5))
+</pre>
+</div>
+
+
+<p>
+    We then feed this Layer into our Convolutional Layer, where we extract features, which will serve as
+    the Neural Network's method of extracting patterns from the time-series data.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+    feature_extraction = Conv1D(30, 4, activation='relu')(inputs)
+</pre>
+</div>
+
+
+<div class="section-example-container">
+<pre class="python">
+    long_term = Lambda( lambda x: tf.split(x, num_or_size_splits=3, axis=1)[0])(feature_extraction)
+    mid_term = Lambda( lambda x: tf.split(x, num_or_size_splits=3, axis=1)[1])(feature_extraction)
+    short_term = Lambda( lambda x: tf.split(x, num_or_size_splits=3, axis=1)[2])(feature_extraction)
+
+    long_term_conv = Conv1D(1, 1, activation='relu')(long_term)
+    mid_term_conv = Conv1D(1, 1, activation='relu')(mid_term)
+    short_term_conv = Conv1D(1, 1, activation='relu')(short_term)
+</pre>
+</div>
+
+
+<p>
+    These three layers are then combined, and since we will be working with 2D input matrices, we will then need to flatten
+    our layer.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+    combined = Concatenate(axis=1)([long_term_conv, mid_term_conv, short_term_conv])
+    flattened = Flatten()(combined)
+</pre>
+</div>
+
+
+<p>
+    Our final layer will be our output layer, and since we have three outputs (Up, Stationary, Down),
+    this layer will have three nodes.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+    outputs = Dense(3, activation='softmax')(flattened)
+</pre>
+</div>
+
+<p>
+    The resulting Neural Network Architecture is shown in the following:
+</p>
+
+<img src="https://cdn.quantconnect.com/i/tu/temporal-cnn-architecture.png" alt="temporal cnn model architecture">
+
+
+<h3>Preparing the Data for Our Model</h3>
+
+<p>
+    First, we need to define a class and a few variables:
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+    input_vars = ['open', 'high', 'low', 'close', 'volume']
+
+    class Direction:
+        UP = 0
+        DOWN = 1
+        STATIONARY = 2
+
+    rolling_avg_window_size = 5
+
+    shift = -(rolling_avg_window_size-1)
+
+    stationary_threshold = .0001
+
+    scaler = StandardScaler()
+</pre>
+</div>
+
+<p>
+    <em>input_vars</em> define the variables we want to use to make our predictions. The class <em>Direction</em>
+    defines a few integers that we will label our data with (labels are needed for classification problems). The reason
+    we use integers instead of strings is because Keras, like most ML libraries, only work with numerical data. Moving on,
+    <em>rolling_avg_window_size</em> is the number of time steps used for the calculate the average of future closing prices,
+    described earlier in
+    <b>Inputs/Outputs</b> (t+1 to t+5 is 5 time steps, thus this value accordingly is set to 5).
+    The constant <em>stationary_threshold</em> defines the threshold for a change in price to be considered
+    stationary, and this change also described in <b>Inputs/Outputs</b>. The <em>shift</em> is the shift needed to align
+    the average value (mentioned earlier), in our pandas DataFrame to make it easier for us to slice our DataFrame into pieces
+    manageable for our Neural Network model. The <em>scaler</em> object will be used later to scale our data.
+    The purpose of the variables will become clearer in use.
+<p>
+    Next, say we are at time t in the pandas DataFrame, to calculate the average closing prices of t+1 to t+5, and calculate
+    the percent change from the close at t, we use the following lines of code:
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+    df['close_avg'] = df['close'].rolling(window=rolling_avg_window_size).mean().shift(shift)
+    df['close_avg_change_pct'] = (df['close_avg'] - df['close']) / df['close']
+</pre>
+</div>
+
+<p>
+    The rolling mean should be self explanatory for those familiar with pandas (if not, I hope by now readers realize
+    this is a more advanced resource).
+    Here, <em>.shift(shift)</em> aligns the five time step rolling average <em>'close_avg'</em> column to the end of the last
+    time step we want to use as an input for prediction, and this action will make slicing up the DataFrame into input
+    and labeled data for our model much easier.
+</p>
+
+<p>
+    To label our data, we need to first define a function that we will use with the DataFrame's <em>apply()</em> method.
+    Usually, lambda functions are used for this purpose, however, our function's logic will not fit inside a lambda.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+    def label_data(row):
+        if row['close_avg_change_pct'] > stationary_threshold:
+            return Direction.UP
+        elif row['close_avg_change_pct'] < -stationary_threshold:
+            return Direction.DOWN
+        else:
+            return Direction.STATIONARY
+</pre>
+</div>
+
+<p>
+    Now, we apply the above function to our DataFrame to get a column of labels:
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+    df['movement_labels'] = df.apply(label_data, axis=1)
+</pre>
+</div>
+
+<p>
+    With our labels in place, we can now slice up our DataFrame into pieces manageable for our model and collect them into
+    lists:
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+    data = []
+    labels = []
+
+    for i in range(len(df)-self.n_tsteps+1+shift):
+        label = df['movement_labels'].iloc[i+self.n_tsteps-1]
+        data.append(df[input_vars].iloc[i:i+self.n_tsteps].values)
+        labels.append(label)
+
+    data = np.array(data)
+</pre>
+</div>
+
+<p>
+    Here, we iterate numerically through the DataFrame, with a carefully calculated value in our <em>range()</em>
+    function to make sure we do access an out-of-bounds index. We cast the list of numpy arrays to a numpy array because
+    Keras works best with numpy arrays.
+</p>
+
+<p>
+    Now, we need to scale our data. It is good practice to scale data when using Machine Learning models so that the
+    range of values is normalized across the features.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+    dim1, dim2, dim3 = data.shape
+    data = data.reshape(dim1*dim2, dim3)
+    data = scaler.fit_transform(data)
+    data = data.reshape(dim1, dim2, dim3)
+</pre>
+</div>
+
+<p>
+    The reason we reshape the data before the scaling is because sklearn is only able to handle 2D data, but right after,
+    we can return the data to the original shape with another reshaping.
+</p>
+
+<p>
+    Finally, since Keras requires the labels to be dummified (which essentially turns a list of labels into a matrix of
+    1s and 0s, where the index of the 1 is equal to the value of the integer label), we use the following:
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+    labels = utils.to_categorical(labels, num_classes=3)
+</pre>
+</div>
+
+<p>
+    Specifying <em>num_classes</em> to 3 ensures our matrix will have three columns, one for each label (Up, Down, Stationary).
+</p>
+
+<p>
+    We have now finished the walk through of the difficult parts of the code.
+</p>
+
+<h3>Trading</h3>
+
+<p>
+    After we feed in the prepared data into the model (the corresponding code, as well as the rest of the code, can be
+    found in <b>Algorithm</b>) we can
+    use our model to make predictions. We take the most recent 15 bars of OHLCV data and apply our model on it to make
+    a prediction. If the model predicts with above 55% confidence that the future direction is up (resp. down), we emit
+    an Price Insight with direction <em>InsightDirection.Up</em> (resp. <em>InsightDirection.Down</em>). Since we are
+    betting on the direction of the average of the future five closing prices, it would be intuitive to emit an Insights
+    in the respective direction for <em>timedeltas</em> of one through five. However, we choose to only emit an Insight
+    with a <em>timedelta</em> with a random integer between one and five to constrain the number of insights we emit.
+    <br>
+    As an additional note, we decided to set the trading fees to zero (the default fee
+    is one dollar per trade), or else our algorithm will only lose money due to the frequency at which we trade.
+</p>
+
+
+<h3>The Rest</h3>
+
+<p>
+    We have covered the difficult aspects of the code, as well as give an overview of our strategy. The rest of the
+    necessary code to execute the strategy can be found in <b>Algorithm</b>.
+</p>
+
+
+
+
