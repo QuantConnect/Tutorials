@@ -1,0 +1,81 @@
+<p>
+  To analyze the value of this trading strategy, we compare its performance to buying-and-holding the S&P 500 index 
+  ETF, SPY. We can see the results from the table below. The strategy has a lower Sharpe ratio than the SPY for all of 
+  the time frames we tested, except for the downfall of the 2020 stock market crash. During this time it greatly 
+  outperformed the SPY, achieving a 10.4 Sharpe ratio. We also notice that the strategy generates more consistent 
+  returns than the benchmark, documented by the lower annual standard deviation of returns throughout all the testing 
+  periods. 
+</p>
+
+<table class="table qc-table">
+    <thead>
+        <tr>
+            <th>Period Name</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Strategy</th>
+            <th>Sharpe</th>
+            <th>ASD</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan="2">Backtest</td>
+            <td rowspan="2">1/1/2015</td>
+            <td rowspan="2">8/16/2020</td>
+            <td><a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_03e550a891c8af7c23f484acd851c04b.html">Strategy</a></td>
+            <td>0.192</td>
+            <td style="background-color: lightgrey;">0.046</td>
+        </tr>
+        <tr>
+            <td><a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_19229d5f18c2cc47163a5ff910fb7870.html">Benchmark</a></td>
+            <td style="background-color: lightgrey;">0.709</td>
+            <td>0.186</td>
+        </tr>
+        <tr>
+            <td rowspan="2">Fall 2015</td>
+            <td rowspan="2">8/10/2015</td>
+            <td rowspan="2">10/10/2015</td>
+            <td><a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_03e550a891c8af7c23f484acd851c04b.html">Strategy</a></td>
+            <td>-1.448</td>
+            <td style="background-color: lightgrey;">0.052</td>
+        </tr>
+        <tr>
+            <td><a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_19229d5f18c2cc47163a5ff910fb7870.html">Benchmark</a></td>
+            <td style="background-color: lightgrey;">-0.724</td>
+            <td>0.251</td>
+        </tr>
+        <tr>
+            <td rowspan="2">2020 Crash</td>
+            <td rowspan="2">2/19/2020</td>
+            <td rowspan="2">3/23/2020</td>
+            <td><a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_e18eada3fc749e2e6caeb2b270006ea5.html">Strategy</a></td>
+            <td style="background-color: lightgrey;">10.386</td>
+            <td style="background-color: lightgrey;">0.104</td>
+        </tr>
+        <tr>
+            <td><a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_cc2afe14cbcdef1c74d0f3718cac49fc.html">Benchmark</a></td>
+            <td>-1.243</td>
+            <td>0.793</td>
+        </tr>
+        <tr>
+            <td rowspan="2">2020 Recovery</td>
+            <td rowspan="2">3/23/2020</td>
+            <td rowspan="2">6/8/2020</td>
+            <td><a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_1160727b35d074687972b3f3799c3158.html">Strategy</a></td>
+            <td>-2.942</td>
+            <td style="background-color: lightgrey;">0.177</td>
+        </tr>
+        <tr>
+            <td><a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_9f37bccb0732468f3f9ed2c09136bee4.html">Benchmark</a></td>
+            <td style="background-color: lightgrey;">13.761</td>
+            <td>0.386</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>
+  We find the lack of performance for this strategy is not largely attributed to the trading fees. After ignoring the 
+  transaction fees, spread costs, and slippage, the strategy still has a lower Sharpe ratio than the benchmark. See 
+  the backtest results <a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_954ccea020e02c6b15ae2f564fdd5da3.html">here</a>.
+</p>

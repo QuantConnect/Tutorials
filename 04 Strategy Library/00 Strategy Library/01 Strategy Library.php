@@ -618,6 +618,15 @@ $strategyMap = [
 	],
   [
      'name' => 'Leveraged ETFs with Systematic Risk Management',
+     'link' => 'strategy-library/leveraged-etfs-with-systematic-risk-management',
+     'sources' => [
+      'The Lead-Lag Report' => 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2741701'
+     ],
+     'description' => 'We apply Simple Moving Averages to manage the risk of holding leveraged ETFs in an attempt to beat the S&P500',
+     'tags' => 'Simple Moving Average, Risk Management, S&P500, ETF'
+  ],
+  [
+     'name' => 'Leveraged ETFs with Systematic Risk Management',
      'link' => 'leveraged-etfs-with-systematic-risk-management',
      'sources' => [
        'The Lead-Lag Report' => 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2741701'
@@ -651,6 +660,15 @@ $strategyMap = [
      ],
      'description' => "A strategy that tracks the price paths of two correlated ETFs and takes advantage of mis-pricings that arise when the price paths diverge",
      'tags'=>'Intermediate, Equities, Arbitrage, Intraday'
+  ],
+  [
+     'name' => 'Optimal Pairs Trading',
+     'link' => 'strategy-library/optimal-pairs-trading',
+     'sources' => [
+       'arXiv' => 'https://arxiv.org/pdf/1411.5062.pdf'
+     ],
+     'description' => "Mathematically Deriving the Optimal Entry and Liquidation Values of a Pairs Trading Process",
+     'tags'=>'Pairs Trading, Ornstein-Uhlenbeck Process, Optimal Stopping'
   ]
 ];
 
