@@ -678,6 +678,15 @@ $strategyMap = [
      ],
      'description' => "Mathematically Deriving the Optimal Entry and Liquidation Values of a Pairs Trading Process",
      'tags'=>'Pairs Trading, Ornstein-Uhlenbeck Process, Optimal Stopping'
+  ],
+  [
+     'name' => 'G-Score Investing',
+     'link' => 'strategy-library/g-score-investing',
+     'sources' => [
+       'SSRN' => 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=403180'
+     ],
+     'description' => "Applying G-Score Investing to Invest in a Portfolio of Technology Stocks",
+     'tags'=>'Fundamentals, Factor Investing, G-Score Investing, MorningStar data, equities'
   ]
 ];
 
