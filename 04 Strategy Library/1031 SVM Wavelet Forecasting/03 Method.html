@@ -27,12 +27,16 @@
 </pre>
 </div>
 
-<p>For each component beyond the first, we threshold/denoise the component, roll the values of the component one spot to the left, and replace the last value of the component with a value forecasted from an SVM. This process looks like the following in code:</p>
+<p>For each component, we threshold/denoise the component (except for the first component, the approximation coefficients),
+    roll the values of the component one spot to the left,
+    and replace the last value of the component with a value forecasted from an SVM. This process looks like the following in code:</p>
 
 <div class="section-example-container">
 <pre class="python">
-    for i in range(1, len(coeffs)):
-        coeffs[i] = pywt.threshold(coeffs[i], threshold*max(coeffs[i]))
+    for i in range(len(coeffs)):
+        if i > 0:
+            # we don't want to threshold the approximation coefficients
+            coeffs[i] = pywt.threshold(coeffs[i], threshold*max(coeffs[i]))
         forecasted = __svm_forecast(coeffs[i])
         coeffs[i] = np.roll(coeffs[i], -1)
         coeffs[i][-1] = forecasted
