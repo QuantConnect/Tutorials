@@ -1,0 +1,81 @@
+<p>
+    An ARIMA model requires a stationary time-series, that is, the mean and variance stay relatively the same over time.
+    However, Bitcoin went from a few hundred dollars to tens of thousands of dollars in just the past few years, so
+    clearly Bitcoin prices aren’t stationary. To address this, we can log then take the first-order difference of Bitcoin
+    prices. Given X as the Bitcoin closing prices, we use the following:
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+    import numpy as np
+    X = np.diff(np.log(X))
+</pre>
+</div>
+
+<p>then run the transformed series into the following function:</p>
+
+<div class="section-example-container">
+<pre class="python">
+    def __is_stationary(self, X, significance_level=.05):
+        # include above: from statsmodels.tsa.stattools import adfuller
+        result = adfuller(X)
+        p_value = result[1]
+        return p_value < significance_level
+</pre>
+</div>
+
+<p>to determine the stationarity of our time-series.</p>
+
+<p>After taking the most recent 400 points of Bitcoin closing prices and transforming them, when we test our data for stationarity, we get a p-value of 2.5e-16, far below our critical value of .05. We want to make sure that we only run our ARIMA when the transformed Bitcoin prices are stationary, so we don&rsquo;t trade if this is not the case.</p>
+
+<p>We then want to grid search different ARIMA orders to find the model that minimizes the Mean Squared Error (MSE) on unseen data. The ARIMA order is represented by (p, d, q), where p stands for the past values for Auto-Regression (hence AR in ARIMA), d stands for the degree of differencing (or the order of Integration, hence I in ARIMA), and q stands for how the past errors are accounted for in future predictions (which is a Moving Average model, hence MA in ARIMA). The possible p and q values range between 0 and 5, while the d term is kept at 1. Then, we want to iterate over each (p, d, q) combination to minimize our MSE. Before we show the code for the grid search, let&rsquo;s see how we can evaluate an ARIMA model given a single order:</p>
+
+<div class="section-example-container">
+<pre class="python">
+    def evaluate_arima_model(X, arima_order, oos_size=.2):
+        train_size = int(len(X) * (1-oos_size))
+        train_data, oos_data = X[0:train_size], X[train_size:]
+        history = deque([x for x in train_data], maxlen=len(train_data))
+
+        predictions = []
+        for i in range(len(oos_data)):
+            model = ARIMA(np.array(history), order=arima_order)
+            model_fit = model.fit(disp=0)
+            y_hat = model_fit.forecast()[0]
+            predictions.append(y_hat)
+            history.append(oos_data[i])
+        # include above: from sklearn import metrics
+        return metrics.mean_squared_error(oos_data, predictions)
+</pre>
+</div>
+
+<p>We essentially have a rolling window with 80% of the data from the left, and fit an ARIMA model using these points of data along with the specific (p, d, q) order. We forecast out one time-step into the future, record this value along with the actual value. Then, we shift this window to the right, and repeat the last step. We repeat this process until we&rsquo;ve forecasted the remaining values, and then we compute the MSE by plugging in the forecasted and actual values into sklearn&rsquo;s <strong>mean_squared_error</strong> function. Now for the grid search:</p>
+
+<div class="section-example-container">
+<pre class="python">
+    def Train(X, p_values=range(6), d_values=[1], q_values=range(6)):
+        data = transform_data(X)
+
+        if not is_stationary(data):
+            return None
+
+        best_score, best_pdq = float("inf"), None
+        for p in p_values:
+            for d in d_values:
+                for q in q_values:
+                    order = (p,d,q)
+                    try:
+                        mse = evaluate_arima_model(data, order)
+                        if mse < best_score:
+                            best_score, best_pdq = mse, order
+                    except:
+                        continue
+
+        return best_pdq
+</pre>
+</div>
+
+<p>As described earlier, we iterate over and evaluate all possible (p, d, q), and choose the best model. </p>
+
+<p>The trading logic is quite simple. At the start of each month, we take the past 70 points of data to find the ARIMA order that maximizes the MSE. Every day, we use the past 50 points of data, fit an ARIMA model, using the order of that month, to forecast one value into the future. Because our data was transformed through a logarithm and differencing, we would need to undo the transformation on the forecasted value first, and this can be seen in the <strong>__undo_forecast_transform</strong> method in <strong>Model.py</strong> under the <strong>Algorithm </strong>section. We then calculate the percent change in price using: <strong>forecasted price / current price - 1</strong>. Then, we emit an Insight based on the direction of the percent change with the weight of the Insight as the absolute value of the percent change. We use the <strong>InsightWeightPortfolioConstructionModel</strong> so that the weight of the Insight determines the portfolio allocation percentage, which means larger forecasted moves will have larger allocation.</p>
+
