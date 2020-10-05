@@ -1,8 +1,8 @@
 <p>
     An ARIMA model requires a stationary time-series, that is, the mean and variance stay relatively the same over time.
     However, Bitcoin went from a few hundred dollars to tens of thousands of dollars in just the past few years, so
-    clearly Bitcoin prices aren’t stationary. To address this, we can log then take the first-order difference of Bitcoin
-    prices. Given X as the Bitcoin closing prices, we use the following:
+    clearly Bitcoin prices aren&apos;t stationary. To transform the price data into a stationary series, we take the first order
+    difference of the log of the prices. Given X as the Bitcoin closing prices, we use the following code:
 </p>
 
 <div class="section-example-container">
@@ -12,7 +12,7 @@
 </pre>
 </div>
 
-<p>then run the transformed series into the following function:</p>
+<p>then to ensure the stationarity of our transformed data, we pass it into the following function:</p>
 
 <div class="section-example-container">
 <pre class="python">
@@ -24,9 +24,7 @@
 </pre>
 </div>
 
-<p>to determine the stationarity of our time-series.</p>
-
-<p>After taking the most recent 400 points of Bitcoin closing prices and transforming them, when we test our data for stationarity, we get a p-value of 2.5e-16, far below our critical value of .05. We want to make sure that we only run our ARIMA when the transformed Bitcoin prices are stationary, so we don&rsquo;t trade if this is not the case.</p>
+<p>After taking the most recent 400 points of Bitcoin closing prices and performing the transformation, we get a p-value of 2.5e-16 for stationarity, far below our critical value of .05. Since we only want to use stationary data with our ARIMA model, our algorithm stops trading when the recent historical data is no longer stationary after the transformation.</p>
 
 <p>We then want to grid search different ARIMA orders to find the model that minimizes the Mean Squared Error (MSE) on unseen data. The ARIMA order is represented by (p, d, q), where p stands for the past values for Auto-Regression (hence AR in ARIMA), d stands for the degree of differencing (or the order of Integration, hence I in ARIMA), and q stands for how the past errors are accounted for in future predictions (which is a Moving Average model, hence MA in ARIMA). The possible p and q values range between 0 and 5, while the d term is kept at 1. Then, we want to iterate over each (p, d, q) combination to minimize our MSE. Before we show the code for the grid search, let&rsquo;s see how we can evaluate an ARIMA model given a single order:</p>
 
