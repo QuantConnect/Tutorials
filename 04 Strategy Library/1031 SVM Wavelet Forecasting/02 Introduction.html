@@ -2,9 +2,9 @@
     Several methods have been developed to forecast time-series, from ARIMA to Neural Networks. In this strategy, we
     combine a Support Vector Machine (SVM) and Wavelets in an attempt to forecast EURJPY. Although SVMs are generally
     used for classification problems, such as classifying proteins, they can also be applied in regression problems, valued
-    for their ability to handle non-linear data. Furthermore, Wavelets are often applied in Signal Processing applications. Wavelets allows us
+    for their ability to handle non-linear data. Furthermore, Wavelets are often applied in Signal Processing applications. Wavelets allow us
     to decompose a time-series into multiple components, where each individual component can be denoised using thresholding, and this
     leads to a cleaner time-series after the components are recombined. To use these two models in conjunction, we first
     decompose the EURJPY data into components using Wavelet decomposition, then we apply the SVM to forecast one time-step
-    ahead each of the components. After we recombine the components, we get the aggregate forecast of our SVM-Wavelet model.
+    ahead of each of the components. After we recombine the components, we get the aggregate forecast of our SVM-Wavelet model.
 </p>
