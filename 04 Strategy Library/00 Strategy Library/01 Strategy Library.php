@@ -635,15 +635,6 @@ $strategyMap = [
      'tags' => 'Simple Moving Average, Risk Management, S&P500, ETF'
   ],
   [
-     'name' => 'Leveraged ETFs with Systematic Risk Management',
-     'link' => 'leveraged-etfs-with-systematic-risk-management',
-     'sources' => [
-       'The Lead-Lag Report' => 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2741701'
-     ],
-     'description' => 'We apply Simple Moving Averages to manage risk in holding leveraged ETFs in an attempt to by the S&P500',
-     'tags' => 'Simple Moving Average, Risk Management, S&P500, ETF'
-  ],
-  [
      'name' => 'Ichimoku Clouds in the Energy Sector',
      'link' => 'strategy-library/ichimoku-clouds-in-the-energy-sector',
      'sources' => [
@@ -678,6 +669,15 @@ $strategyMap = [
      ],
      'description' => "Mathematically Deriving the Optimal Entry and Liquidation Values of a Pairs Trading Process",
      'tags'=>'Pairs Trading, Ornstein-Uhlenbeck Process, Optimal Stopping'
+  ],
+  [
+     'name' => 'Forecasting Bitcoin Prices with ARIMA Models',
+     'link' => 'strategy-library/bitcoin-arima-forecasting',
+     'sources' => [
+       'arXiv' => 'https://arxiv.org/pdf/1904.05315.pdf'
+     ],
+     'description' => "We attempt to forecast the prices of Bitcoin using an ARIMA model",
+     'tags'=>'Bitcoin, ARIMA, Forecasting, Time-Series Models'
   ]
 ];
 
