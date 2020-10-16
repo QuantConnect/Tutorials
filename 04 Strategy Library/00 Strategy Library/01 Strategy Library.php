@@ -678,6 +678,15 @@ $strategyMap = [
      ],
      'description' => "Mathematically Deriving the Optimal Entry and Liquidation Values of a Pairs Trading Process",
      'tags'=>'Pairs Trading, Ornstein-Uhlenbeck Process, Optimal Stopping'
+  ],
+  [
+     'name' => 'Gradient Boosting Model',
+     'link' => 'strategy-library/gradient-boosting-model',
+     'sources' => [
+       'arXiv' => 'https://ssrn.com/abstract=2323899'
+     ],
+     'description' => "Forecasts future intraday returns with a gradient boosting model trained on technical indicators",
+     'tags'=>'Gradient Boost, Regression Trees, Equities, Machine Learning'
   ]
 ];
 
