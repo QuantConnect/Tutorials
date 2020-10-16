@@ -30,9 +30,8 @@
 
 <div class="section-example-container">
 <pre class="python">
-    def evaluate_arima_model(X, arima_order, oos_size=.2):
-        train_size = int(len(X) * (1-oos_size))
-        train_data, oos_data = X[0:train_size], X[train_size:]
+    def evaluate_arima_model(X, arima_order, oos_size=20):
+        train_data, oos_data = X[:-oos_size], X[-oos_size:]
         history = deque([x for x in train_data], maxlen=len(train_data))
 
         predictions = []
@@ -75,5 +74,16 @@
 
 <p>As described earlier, we iterate over and evaluate all possible (p, d, q), and choose the best model. </p>
 
-<p>The trading logic is quite simple. At the start of each month, we take the past 70 points of data to find the ARIMA order that maximizes the MSE. Every day, we use the past 50 points of data, fit an ARIMA model, using the order of that month, to forecast one value into the future. Because our data was transformed through a logarithm and differencing, we would need to undo the transformation on the forecasted value first, and this can be seen in the <strong>__undo_forecast_transform</strong> method in <strong>Model.py</strong> under the <strong>Algorithm </strong>section. We then calculate the percent change in price using: <strong>forecasted price / current price - 1</strong>. Then, we emit an Insight based on the direction of the percent change with the weight of the Insight as the absolute value of the percent change. We use the <strong>InsightWeightPortfolioConstructionModel</strong> so that the weight of the Insight determines the portfolio allocation percentage, which means larger forecasted moves will have larger allocation.</p>
+<p>
+    The trading logic is quite simple. At the start of each month, we take the past 70 points of data to find the ARIMA
+    order that maximizes the out-of-sample MSE. Every day, we fit 50 points of the most recent historical data to an ARIMA
+    model given our order, using the order of that month, to forecast one value into the future. Because our data was
+    transformed through a logarithm and differencing, we would need to undo the transformation on the forecasted value
+    first, and this can be seen in the <strong>__undo_forecast_transform</strong> method in <strong>Model.py</strong>
+    under the <strong>Algorithm </strong>section. We then calculate the percent change in price using:
+    <strong>forecasted price / current price - 1</strong>. Then, we emit an Insight based on the direction of the percent
+    change with the weight of the Insight as the absolute value of the percent change. We use the
+    <strong>InsightWeightPortfolioConstructionModel</strong> so that the weight of the Insight determines the portfolio
+    allocation percentage, which means larger forecasted moves will have larger allocation.
+</p>
 
