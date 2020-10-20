@@ -680,6 +680,15 @@ $strategyMap = [
      'tags'=>'Pairs Trading, Ornstein-Uhlenbeck Process, Optimal Stopping'
   ],
   [
+     'name' => 'Gradient Boosting Model',
+     'link' => 'strategy-library/gradient-boosting-model',
+     'sources' => [
+       'arXiv' => 'https://ssrn.com/abstract=2323899'
+     ],
+     'description' => "Forecasts future intraday returns with a gradient boosting model trained on technical indicators",
+     'tags'=>'Gradient Boost, Regression Trees, Equities, Machine Learning'
+  ],
+  [
      'name' => 'Using News Sentiment to Predict Price Direction of Drug Manufacturers',
      'link' => 'strategy-library/using-news-sentiment-to-predict-price-direction-of-drug-manufacturers',
      'sources' => [
