@@ -1,0 +1,183 @@
+<h4>Universe Selection</h4>
+<p>
+  We implement a universe selection model that provides the trading system with companies classified by 
+  <a href="https://www.quantconnect.com/docs/data-library/fundamentals">MorningStar</a> as being in the drug 
+  manufacturing industry group. We narrow our universe to include only the drug manufacturers with the greatest PE 
+  ratios and dollar volume.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def SelectCoarse(self, algorithm, coarse):
+    has_fundamentals = [c for c in coarse if c.HasFundamentalData]
+    sorted_by_dollar_volume = sorted(has_fundamentals, key=lambda c: c.DollarVolume, reverse=True)
+    return [ x.Symbol for x in sorted_by_dollar_volume[:self.coarse_size] ]
+
+def SelectFine(self, algorithm, fine):
+    drug_manufacturers = [f for f in fine if f.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.DrugManufacturers]
+    sorted_by_pe = sorted(drug_manufacturers, key=lambda f: f.ValuationRatios.PERatio, reverse=True)
+    return [ x.Symbol for x in sorted_by_pe[:self.fine_size] ]
+</pre>
+</div>
+
+
+<h4>Alpha Construction</h4>
+<p>
+  The DrugNewsSentimentAlphaModel emits insights to take long intraday positions for securities that have positive 
+  news sentiment. During construction of the model, we:
+</p>
+
+<ul>
+  <li>Create a dictionary to store SymbolData for each symbol</li>
+  <li>Gather the sentiment dictionary provided by Isah et al (2018)</li>
+  <li>Determine the maximum number of grams we need to analyze news articles</li>
+  <li>Define a method to determine the sign of sentiment</li>
+  <li>Specify the value of `bars_before_insight`</li>
+</ul>
+
+<p>
+  The `bars_before_insight` parameter determines how many bars the alpha model should observe after the market opens
+  before emitting insights. Isah et al (2018) batch the news released by each company into 30-minute intervals 
+  before analyzing the sentiment of the batch. In this tutorial, we follow a similar procedure by setting 
+  `bars_before_insight` to 30.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+class DrugNewsSentimentAlphaModel(AlphaModel):
+    symbol_data_by_symbol = {}
+    sentiment_by_phrase = SentimentByPhrase.dictionary
+    max_phrase_words = max([len(phrase.split()) for phrase in sentiment_by_phrase.keys()])
+    sign = lambda _, x: int(x and (1, -1)[x < 0])
+    
+    def __init__(self, bars_before_insight=30):
+        self.bars_before_insight = bars_before_insight
+</pre>
+</div>
+
+<h4>Alpha Securities Management</h4>
+<p>
+  When a new security is added to the universe, we create a SymbolData object for it to store information unique to 
+  each security. The management of the SymbolData objects occurs in the alpha model's OnSecuritiesChanged method.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+def OnSecuritiesChanged(self, algorithm, changes):
+    for security in changes.AddedSecurities:
+        self.symbol_data_by_symbol[security.Symbol] = SymbolData(security, algorithm)
+    
+    for security in changes.RemovedSecurities:
+        symbol_data = self.symbol_data_by_symbol.pop(security.Symbol, None)
+        if symbol_data:
+            algorithm.RemoveSecurity(symbol_data.tiingo_symbol)
+</pre>
+</div>
+
+<p>
+  The definition of the SymbolData class is shown below. We add properties to it to track the cumulative sentiment 
+  of news releases over time and the number of bars the alpha model has received for each security since the market 
+  open. In the constructor, we save a reference to the security's exchange so we can access the market hours of the 
+  exchange when generating insights. This is also where we initialize the 
+  <a href="https://www.quantconnect.com/docs/alternative-data/tiingo-news">Tiingo news feed</a> for each security.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+class SymbolData:
+    cumulative_sentiment = 0
+    bars_seen_today = 0
+    
+    def __init__(self, security, algorithm):
+        self.exchange = security.Exchange
+        self.tiingo_symbol = algorithm.AddData(TiingoNews, security.Symbol).Symbol
+</pre>
+</div>
+
+
+<h4>Alpha Update</h4>
+<p>
+  As new Tiingo objects are provided to the alpha model's Update method, we update the cumulative sentiment for each
+  security. The cumulative sentiment counter is reset at each market close. Therefore, when we emit insights 
+  30-minutes after the open, we are considering the sentiment of the news articles released from the previous close 
+  to the current time. We employ the findings of Berument & Kiymaz (2001), restricting the alpha model's trading to 
+  Wednesday, the most profitable day of the week. Positions are entered 30-minutes after the open and exited at the 
+  close.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+def Update(self, algorithm, data):
+    insights = []
+        
+    for symbol, symbol_data in self.symbol_data_by_symbol.items():
+    
+        # If it's after-hours or within 30-minutes of the open, update
+        # cumulative sentiment for each symbol    
+        if symbol_data.bars_seen_today < self.bars_before_insight:
+            tiingo_symbol = symbol_data.tiingo_symbol
+            if data.ContainsKey(tiingo_symbol) and data[tiingo_symbol] is not None:
+                article = data[tiingo_symbol]
+                symbol_data.cumulative_sentiment += self.CalculateSentiment(article)
+    
+        if data.ContainsKey(symbol) and data[symbol] is not None:
+            symbol_data.bars_seen_today += 1
+
+            # 30-mintes after the open, emit insights in the direction of the cumulative sentiment.
+            # Only emit insights on Wednesdays to capture the analomaly documented by Berument and 
+            # Kiymaz (2001).
+            if symbol_data.bars_seen_today == self.bars_before_insight and data.Time.weekday() == 2:
+                    next_close_time = symbol_data.exchange.Hours.GetNextMarketClose(data.Time, False)
+                    direction = self.sign(symbol_data.cumulative_sentiment)
+                    if direction == 0:
+                        continue
+                    insight = Insight.Price(symbol, 
+                                            next_close_time - timedelta(minutes=2),
+                                            direction)
+                    insights.append(insight)
+    
+            # At the close, reset the cumulative sentiment
+            if not symbol_data.exchange.DateTimeIsOpen(data.Time):
+                symbol_data.cumulative_sentiment = 0
+                symbol_data.bars_seen_today = 0
+    
+    return insights
+</pre>
+</div>
+
+
+<h4>Calculating Sentiment</h4>
+<p>
+  We define the following helper method to return the sentiment of a Tiingo news article by analyzing the article's 
+  title and description. The `sentiment_by_phrase` dictionary was retrieved from queensbamlab's 
+  <a href="https://github.com/queensbamlab/NewsSentiments">NewsSentiment GitHub repository</a>. Although we have 
+  adjusted the dictionary to lowercase and removed some redundancies, this is the same dictionary used by Isah et 
+  al (2018). "The dictionary was created by leveraging author's domain expertise and thorough analysis of news 
+  articles over the years" (p. 3).
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+def CalculateSentiment(self, article):
+    sentiment = 0
+    for content in (article.Title, article.Description):
+        words = content.lower().split()
+        for num_words in range(1, self.max_phrase_words + 1):
+            for gram in ngrams(words, num_words):
+                phrase = ' '.join(gram)
+                if phrase in self.sentiment_by_phrase.keys():
+                    sentiment += self.sentiment_by_phrase[phrase]
+    return sentiment
+</pre>
+</div>
+
+
+<h4>Portfolio Construction & Trade Execution</h4>
+<p>
+  Following the guidelines of <a href="https://www.quantconnect.com/market">Alpha Streams</a> and the 
+  <a href="https://www.quantconnect.com/competitions">Quant League competition</a>, we utilize the 
+  <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/EqualWeightingPortfolioConstructionModel.py">
+  EqualWeightingPortfolioConstructionModel</a> and the 
+  <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm/Execution/ImmediateExecutionModel.py">
+  ImmediateExecutionModel</a>.
+</p>
+

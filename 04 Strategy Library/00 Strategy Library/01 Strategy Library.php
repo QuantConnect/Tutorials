@@ -687,6 +687,15 @@ $strategyMap = [
      ],
      'description' => "Forecasts future intraday returns with a gradient boosting model trained on technical indicators",
      'tags'=>'Gradient Boost, Regression Trees, Equities, Machine Learning'
+  ],
+  [
+     'name' => 'Using News Sentiment to Predict Price Direction of Drug Manufacturers',
+     'link' => 'strategy-library/using-news-sentiment-to-predict-price-direction-of-drug-manufacturers',
+     'sources' => [
+         'arXiv' => 'https://arxiv.org/abs/1812.04199'
+     ],
+     'description' => "Analyzes the news releases of drug manufacturers and places intraday trades for the stocks with positive news.",
+     'tags'=>'Equities, NLP, News Sentiment, Drug Manufacturers, Tiingo, Intraday'
   ]
 ];
 
