@@ -680,6 +680,15 @@ $strategyMap = [
      'tags'=>'Pairs Trading, Ornstein-Uhlenbeck Process, Optimal Stopping'
   ],
   [
+     'name' => 'SVM Wavelet Forecasting',
+     'link' => 'strategy-library/svm-wavelet-forecasting',
+     'sources' => [
+       'Academia' => 'https://www.academia.edu/37180223/SVR_Wavelet_Adaptive_Model_for_Forecasting_Financial_Time_Series'
+     ],
+     'description' => "Forecasting EURJPY prices with an SVM Wavelet model",
+     'tags'=>'Support Vector Machines (SVM), Forex, Forecasting, Wavelet, Discrete Wavelet Transform'
+  ],
+  [
      'name' => 'Gradient Boosting Model',
      'link' => 'strategy-library/gradient-boosting-model',
      'sources' => [
