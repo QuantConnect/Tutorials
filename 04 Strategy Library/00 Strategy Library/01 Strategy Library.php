@@ -705,6 +705,15 @@ $strategyMap = [
      ],
      'description' => "Analyzes the news releases of drug manufacturers and places intraday trades for the stocks with positive news.",
      'tags'=>'Equities, NLP, News Sentiment, Drug Manufacturers, Tiingo, Intraday'
+  ],
+  [
+     'name' => 'Deep Learning Portfolio Optimization',
+     'link' => 'strategy-library/deep-learning-portfolio-optimization',
+     'sources' => [
+         'arXiv' => 'https://arxiv.org/abs/1812.04199'
+     ],
+     'description' => "Analyzes the news releases of drug manufacturers and places intraday trades for the stocks with positive news.",
+     'tags'=>'Equities, NLP, News Sentiment, Drug Manufacturers, Tiingo, Intraday'
   ]
 ];
 
