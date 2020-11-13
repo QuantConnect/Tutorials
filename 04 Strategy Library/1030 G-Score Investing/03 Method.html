@@ -1,0 +1,57 @@
+<p>
+    We first sort all companies that have fundamental data by their Book-to-Market ratio, and narrow our universe to the
+    bottom quartile. We measure the Book-to-Market ratio using
+    <strong>fine.FinancialStatements.BalanceSheet.NetTangibleAssets.TwelveMonths</strong> divided by
+    <strong>fine.MarketCap</strong>. In this strategy, we will use Technology as the industry of choice, thus, we further
+    narrow this universe to Technology stocks only.
+</p>
+
+<p>
+    For each of the conditions that are described below, if met, one point will be added to the G-Score.
+    Thus, with seven factors, our G-Score can range from 0 to 7. We evaluate a company based on the following:
+</p>
+
+
+<ul>
+    <li>
+        <em>The Return on Assets (ROA) is greater than the contemporaneous industry median. In other words, the ROA for
+        the analyzed company is greater than the median of the ROAs of all companies in the same industry</em> <br>
+        We measure this value using <strong>fine.OperationRatios.ROA.OneYear</strong>
+    </li>
+    <li>
+        <em>The Cash Flow Return on Assets (CFROA) is greater than the contemporaneous industry median</em> <br>
+        We measure this value using <strong>fine.FinancialStatements.CashFlowStatement.OperatingCashFlow.TwelveMonths</strong>
+        divided by<strong> fine.FinancialStatements.BalanceSheet.TotalAssets.TwelveMonths</strong>
+    </li>
+    <li>
+        <em>The CFROA is greater than the ROA</em>
+    </li>
+    <li>
+        <em>The Variance of the ROA (VARROA) is lower than the contemporaneous industry median</em> <br>
+        We measure this by storing the past twelve values of <strong>fine.OperationRatios.ROA.ThreeMonths </strong>in a
+        <strong>RollingWindow</strong> and computing the variance of the values in the <strong>RollingWindow</strong>
+    </li>
+    <li>
+        <em>The Research and Development Expenditure (R&D) is higher than the contemporaneous industry median</em> <br>
+        We measure this using <strong>fine.FinancialStatements.IncomeStatement.ResearchAndDevelopment.TwelveMonths</strong>
+    </li>
+    <li>
+        <em>The Capital Expenditure (CapEx) is higher than the contemporaneous industry median</em> <br>
+        We measure this using <strong>fine.FinancialStatements.CashFlowStatement.CapExReported.TwelveMonths</strong>
+    </li>
+    <li>
+        <em>The Advertisement Expenditure (Ad) is higher than the contemporaneous industry median</em> <br>
+        We measure this using <strong>fine.FinancialStatements.IncomeStatement.SellingGeneralAndAdministration.TwelveMonths</strong>
+    </li>
+</ul>
+
+<p>
+    The fundamental data used in our algorithms is sourced from MorningStar, and to read more about our fundamental data,
+    please visit the <a href="https://www.quantconnect.com/docs/data-library/fundamentals">Fundamentals</a> section of our
+    documentation.
+</p>
+
+<p>
+    Once we have computed the G-Scores for each of the securities, we long the securities with G-Scores of 5 or higher.
+</p>
+
