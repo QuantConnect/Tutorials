@@ -1,0 +1,127 @@
+<p>
+    Let’s start by importing the necessary packages. We use Keras to build the Model, and we require NumPy for a few manipulations of our data, so our imports are the following:
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+import numpy as np
+np.random.seed(1)
+import tensorflow as tf
+from tensorflow.keras.layers import LSTM, Flatten, Dense
+from tensorflow.keras.models import Sequential
+import tensorflow.keras.backend as K
+</pre>
+</div>
+
+<p><strong>np.random.seed(1)</strong> isn&rsquo;t actually an import, however, we call it early, even before the imports, so that our results are reproducible.</p>
+
+<p>We initialize our <strong>Model</strong> class with the following:</p>
+
+<div class="section-example-container">
+<pre class="python">
+class Model:
+    def __init__(self):
+        self.data = None
+        self.model = None
+</pre>
+</div>
+
+<p><strong>self.model </strong>is how we will store our Keras model, and <strong>self.data</strong> will be explained later, though for now think of it as a matrix of data of our asset prices stored in a TensorFlow <strong>Tensor </strong>object.</p>
+
+<p>Now inside our <strong>Model</strong>&rsquo;s <strong>__build_model</strong> function, we first build the Keras Neural Network:</p>
+
+<div class="section-example-container">
+<pre class="python">
+def __build_model(self, input_shape, outputs):
+    model = Sequential([
+                LSTM(64, input_shape=input_shape),
+                Flatten(),
+                Dense(outputs, activation='softmax')
+            ])
+</pre>
+</div>
+
+<p>The outputs of our Neural Network are the allocations ratios of the assets. Our first layer is an LSTM as LSTMs work well with financial data. Since our input is not flat, we then need to flatten the neurons in the next layer with a Flatten layer. With our output layer, a standard Dense layer, we use Softmax activation so that the allocation ratios add up to 1.</p>
+<p>Then, since we are optimizing the Sharpe Ratio, we need to create a custom loss function that computes the Sharpe Ratio:</p>
+
+<div class="section-example-container">
+<pre class="python">
+def sharpe_loss(_, y_pred):
+    # make all time-series start at 1
+    data = tf.divide(self.data, self.data[0])
+
+    # value of the portfolio after allocations applied
+    portfolio_values = tf.reduce_sum(tf.multiply(data, y_pred), axis=1)
+
+    portfolio_returns = (portfolio_values[1:] - portfolio_values[:-1]) / portfolio_values[:-1]  # % change formula
+
+    sharpe = K.mean(portfolio_returns) / K.std(portfolio_returns)
+
+    # since we want to maximize Sharpe, while gradient descent minimizes the loss,
+    #   we can negate Sharpe (the min of a negated function is its max)
+    return -sharpe
+</pre>
+</div>
+
+<p>This uses the values of <strong>y_pred</strong> as the coefficients for the allocations for the assets, weighs the time-series data accordingly to the allocation, and computes the portfolio values. Then, we calculate the Sharpe Ratio from the portfolio values. We negate the Sharpe value before returning it because gradient descent minimizes the loss, so by minimizing the negative of our function, we get the maximum of our function. Note that we do not use the first argument, the &ldquo;true y values&rdquo; parameter, because there are no &ldquo;true y values&rdquo;, as we use the architecture of the Deep Neural Network for everything except prediction.</p>
+
+<p>Finally, we need to compile our Neural Network using our custom defined loss along with the Adam solver:</p>
+
+<div class="section-example-container">
+<pre class="python">
+model.compile(loss=sharpe_loss, optimizer='adam')
+return model
+</pre>
+</div>
+
+<p>Then, we need to get the ratios computed from this model when we feed in data, and we put this functionality inside the <strong>get_allocations</strong> method, where <strong>data</strong> is a <strong>pandas DataFrame</strong> of closing prices for the different assets:</p>
+
+<div class="section-example-container">
+<pre class="python">
+def get_allocations(self, data):
+</pre>
+</div>
+
+<p>The features for the model are the original closing price time-series for each of the assets, as well as the daily returns computed from this data:</p>
+
+<div class="section-example-container">
+<pre class="python">
+data_w_ret = np.concatenate([ data.values[1:], data.pct_change().values[1:] ], axis=1)
+</pre>
+</div>
+
+<p>Because computing the returns causes the first row to be NaNs, so we skip the first row for the returns data, and to make the data even in shape, we need to skip the first row for the original data as well.</p>
+
+<p>Then, we also need to save the closing prices to <strong>self.data</strong> so we can use it to compute the Sharpe Ratio in the custom loss function we defined earlier:</p>
+
+<div class="section-example-container">
+<pre class="python">
+data = data.iloc[1:]
+self.data = tf.cast(tf.constant(data), float)
+</pre>
+</div>
+
+<p>To remain consistent with before, we remove the first row of the data. When we store this data inside <strong>self.data</strong>, we need to convert the data into a Tensorflow Tensor and cast it to the standard <strong>float</strong> so it is compatible with the matrix operations we perform inside the Sharpe loss functions.</p>
+<p>Then, to call the function we created earlier to build and compile our model, we use:</p>
+
+<div class="section-example-container">
+<pre class="python">
+if self.model is None:
+    self.model = self.__build_model(data_w_ret.shape, len(data.columns))
+</pre>
+</div>
+
+<p>We delay the building and compiling of our Neural Network model to make the logic for determining the model parameters, the input shape and the number of outputs, cleaner as we can determine these parameters from the data directly.&nbsp;</p>
+<p>Then to compute and return the allocation ratios, we use the following:</p>
+
+<div class="section-example-container">
+<pre class="python">
+fit_predict_data = data_w_ret[np.newaxis,:]
+self.model.fit(fit_predict_data, np.zeros((1, len(data.columns))), epochs=20, shuffle=False)
+return self.model.predict(fit_predict_data)[0]
+</pre>
+</div>
+
+<p>Note that we pass in zeros for the &ldquo;true y values&rdquo;. As long as the size of a row matches the size of the outputs, the values we pass in for this don&rsquo;t matter, because as we explained earlier, we don&rsquo;t use these values in our custom loss function.</p>
+<p><br />The rest of the algorithm is quite simple. We pass in the DataFrame of the past 51 closing prices for the different assets and use <strong>SetHoldings(</strong><strong><em>asset symbol, allocation</em></strong><strong>)</strong> on each asset using the allocation computed using our <strong>Model</strong>&rsquo;s <strong>get_allocations</strong> method.</p>
+
