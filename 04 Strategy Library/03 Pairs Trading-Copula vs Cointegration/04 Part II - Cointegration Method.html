@@ -9,39 +9,44 @@
 
 \[spread_t=\log(price_t^y)-\beta \log(price_t^x)\]
 
-<h3>Step 2: Compute the Threshold</h3>
+<h3>Step 2: Compute the Signals</h3>
 
 <p>
-  Using the standard deviation of spread during the rolling formation period, a threshold of two standard deviations is set up for the trading strategy as indicated in the paper.
+  Using the standard deviation of spread during the rolling formation period, a threshold of one standard deviation 
+  is set up for the trading strategy. We enter a trade whenever the spread moves more than one standard deviations 
+  away from its mean. Trades are exited when the spread reverts back to the mean trailing spread value. The position
+  sizes are scaled by the coefficient β.
 </p>
 
 <div class="section-example-container">
 
-<pre class="python">price_x = pd.Series([float(i.Close) for i in self.symbols[0].hist_window],
-                     index = [i.Time for i in self.symbols[0].hist_window])
+<pre class="python">log_close_x = np.log(self.closes_by_symbol[self.x_symbol])
+log_close_y = np.log(self.closes_by_symbol[self.y_symbol])
 
-price_y = pd.Series([float(i.Close) for i in self.symbols[1].hist_window],
-                     index = [i.Time for i in self.symbols[1].hist_window])
-if len(price_x) < 250: return
-spread = self.regr(np.log(price_x), np.log(price_y))
+spread, beta = self.regr(log_close_x, log_close_y)
+
 mean = np.mean(spread)
 std = np.std(spread)
-ratio = floor(self.Portfolio[self.symbols[1]].Price / self.Portfolio[self.symbols[0]].Price)
-if spread[-1] > mean + self.threshold * std:
-    if not self.Portfolio[self.symbols[0]].Quantity > 0 and not self.Portfolio[self.symbols[0]].Quantity < 0:
-        self.Sell(self.symbols[1], 100)
-        self.Buy(self.symbols[0],  ratio * 100)
 
-elif spread[-1] < mean - self.threshold * std:
-    if not self.Portfolio[self.symbols[0]].Quantity < 0 and not self.Portfolio[self.symbols[0]].Quantity > 0:
-        self.Sell(self.symbols[0], 100)
-        self.Buy(self.symbols[1], ratio * 100)
+x_holdings = self.Portfolio[self.x_symbol]
+
+if x_holdings.Invested:
+    if x_holdings.IsShort and spread[-1] <= mean or \
+        x_holdings.IsLong and spread[-1] >= mean:
+        self.Liquidate()
 else:
-    self.Liquidate()
+    if beta < 1:
+        x_weight = 0.5
+        y_weight = 0.5 / beta
+    else:
+        x_weight = 0.5 / beta
+        y_weight = 0.5
+    
+    if spread[-1] < mean - self.threshold * std:
+        self.SetHoldings(self.y_symbol, -y_weight) 
+        self.SetHoldings(self.x_symbol, x_weight)
+    if spread[-1] > mean + self.threshold * std:
+        self.SetHoldings(self.x_symbol, -x_weight)
+        self.SetHoldings(self.y_symbol, y_weight)
 </pre>
 </div>
-
-<h3>Step 3: Set up the Trading Signals</h3>
-<p>
-  On each trading day, we enter a trade whenever the spread moves more than two standard deviations away from its mean. In other words, we construct short positions in X and long positions in Y on the day that spread mean+2*std. We construct short positions in Y and long positions in X on the day that spread&lt;mean-2*std. The trade is exited if the spread reverts to its equilibrium (defined as less than half a standard deviation from zero spread). The value of mean and standard deviation are calculated from the rolling formation period and will be updated once a month.
-</p>

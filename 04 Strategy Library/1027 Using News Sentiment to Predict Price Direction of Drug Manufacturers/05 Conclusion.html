@@ -1,0 +1,27 @@
+<p>
+  We conclude that deploying the sentiment analysis strategy on the US drug manufacturing industry does not provide 
+  as accurate of results as found by Isah et al (2018). Only after restricting trading to the most profitable day of 
+  the week (Berument & Kiymaz, 2001) does the strategy achieve profitability over our testing period. Overall, the 
+  strategy produces a Sharpe ratio of 0.116, while the 
+  <a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_f14f15cc975842304468786dc56601d7.html">SPY benchmark</a>
+  produces a 0.971 Sharpe ratio during the same period. We attribute the decrease in performance to the commissions 
+  and spread costs simulated by LEAN.
+</p>
+
+<p>
+To continue the development of this strategy, future areas of research include:
+</p>
+
+<ul>
+  <li>Adding a threshold parameter the cumulative sentiment counter must pass to signal trades</li>
+  <li>
+    Only analyzing the sentiment of articles which contain keywords like "US, "USA", 'Q1', and others in their 
+    titles
+  </li>
+  <li>
+    <a href="https://www.datacamp.com/community/tutorials/stemming-lemmatization-python">Stemming</a> and removing 
+    punctuation from articles before calculating their sentiment
+  </li>
+  <li>Adding phrases to the sentiment dictionary or adjust the sentiment values</li>
+  <li>Adding other data feeds beside just Tiingo</li>
+</ul>

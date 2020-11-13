@@ -1,0 +1,163 @@
+<h4>Universe Selection</h4>
+<p>
+  We use a ManualUniverseSelectionModel to subscribe to the SPY ETF. The algorithm is designed to work with minute and
+  second data resolutions. In our implementation, we use data on a minute resolution.
+</p>
+<div class="section-example-container">
+<pre class="python">
+symbols = [ Symbol.Create("SPY", SecurityType.Equity, Market.USA) ]
+self.SetUniverseSelection( ManualUniverseSelectionModel(symbols) )
+self.UniverseSettings.Resolution = Resolution.Minute
+</pre>
+</div>
+
+
+<h4>Alpha Construction</h4>
+<p>
+  The GradientBoostingAlphaModel predicts the direction of the SPY at each timestep. Each position taken is held for 
+  10 minutes, although this duration is customizable in the constructor. During construction of this alpha model, we 
+  simply set up a dictionary to hold a SymbolData object for each symbol in the universe. In the case where the 
+  universe consists of multiple securities, the alpha model holds each with equal weighting.
+</p>
+<div class="section-example-container">
+<pre class="python">
+class GradientBoostingAlphaModel(AlphaModel):
+    symbol_data_by_symbol = {}
+    
+    def __init__(self, hold_duration = 10):
+        self.hold_duration = hold_duration
+        self.weight = 1
+</pre>
+</div>
+
+
+<h4>Alpha Securities Management</h4>
+<p>
+  When a new security is added to the universe, we create a SymbolData object for it to store information unique to 
+  the security. The management of the SymbolData objects occurs in the alpha model's OnSecuritiesChanged method.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def OnSecuritiesChanged(self, algorithm, changes):
+    for security in changes.AddedSecurities:
+        symbol = security.Symbol
+        self.symbol_data_by_symbol[symbol] = SymbolData(symbol, algorithm, self.hold_duration)
+            
+    for security in changes.RemovedSecurities:
+        symbol_data = self.symbol_data_by_symbol.pop(security.Symbol, None)
+        if symbol_data:
+            symbol_data.dispose()
+
+    self.weight = 1 / len(self.symbol_data_by_symbol)
+
+</pre>
+</div>
+
+
+<h4>SymbolData Class</h4>
+<p>
+  The SymbolData class is used in this algorithm to manage indicators, train the GBM, and produce trading predictions. 
+  The constructor definition is shown below. The class is designed to train at the end of each month, using the 
+  previous 4 weeks of data to fit the GBM that consists of 20 stumps (regression trees with 2 leaves). To ensure 
+  overnight holds are avoided, the class uses 
+  <a href="https://www.quantconnect.com/docs/algorithm-reference/scheduled-events">Scheduled Events</a> to stop trading
+  near the market close.
+</p>
+<div class="section-example-container">
+<pre class="python">
+class SymbolData:    
+    def __init__(self, symbol, algorithm, hold_duration, k_start=0.5, k_end=5,
+                    k_step=0.25, training_weeks=4, max_depth=1, num_leaves=2, num_trees=20,
+                    commission=0.02, spread_cost=0.03):
+        self.symbol = symbol
+        self.algorithm = algorithm
+        self.hold_duration = hold_duration
+        self.resolution = algorithm.UniverseSettings.Resolution
+        self.training_length = int(training_weeks * 5 * 6.5 * 60) # training_weeks in minutes
+        self.max_depth = max_depth
+        self.num_leaves = num_leaves
+        self.num_trees = num_trees
+        self.cost = commission + spread_cost
+
+        self.indicator_consolidators = []
+
+        # Train a model at the end of each month
+        self.model = None
+        algorithm.Train(algorithm.DateRules.MonthEnd(symbol),
+                        algorithm.TimeRules.BeforeMarketClose(symbol),
+                          self.train)
+
+        # Avoid overnight holds
+        self.allow_predictions = False
+        self.events = [
+            algorithm.Schedule.On(algorithm.DateRules.EveryDay(symbol),
+                                  algorithm.TimeRules.AfterMarketOpen(symbol, 0),
+                                  self.start_predicting),
+            algorithm.Schedule.On(algorithm.DateRules.EveryDay(symbol),
+                                  algorithm.TimeRules.BeforeMarketClose(symbol, hold_duration + 1),
+                                  self.stop_predicting)
+        ]
+
+        self.setup_indicators(k_start, k_end, k_step)
+        self.train()
+</pre>
+</div>
+
+
+<h4>GBM Predictions</h4>
+<p>
+  For brevity, we omit the model training logic. Although, the code can be seen in the attached backtest. To make 
+  predictions, we define the following method inside the SymbolData class. A position is held in the predicted 
+  direction only if the predicted return in that direction exceeds the cost of the trade.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def predict_direction(self):
+    if self.model is None or not self.allow_predictions:
+        return 0
+
+    input_data = [[]]
+    for _, indicators in self.indicators_by_indicator_type.items():
+        for indicator in indicators:
+            input_data[0].append(indicator.Current.Value)
+                
+    return_prediction = self.model.predict(input_data)
+    if return_prediction > self.cost:
+        return 1
+    if return_prediction < -self.cost:
+        return -1
+    return 0
+</pre>
+</div>
+
+
+<h4>Alpha Update</h4>
+<p>
+  As new TradeBars are provided to the alpha model's Update method, each SymbolData object makes a directional 
+  prediction for its security. If the prediction is not flat, the alpha model emits an insight in that direction with 
+  a duration of 10 minutes.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def Update(self, algorithm, data):
+    insights = []
+    for symbol, symbol_data in self.symbol_data_by_symbol.items():
+        direction = symbol_data.predict_direction()
+        if direction:
+            hold_duration = timedelta(minutes=self.hold_duration) # Should match universe resolution
+            insights.append(Insight.Price(symbol, hold_duration, direction, None, None, None, self.weight))
+
+    return insights
+</pre>
+</div>
+
+
+<h4>Portfolio Construction & Trade Execution</h4>
+<p>
+  Following the guidelines of <a href="https://www.quantconnect.com/docs/alpha-streams/overview">Alpha Streams</a> 
+  and the <a href="https://www.quantconnect.com/competitions/quant-league-7">Quant League</a> competition, we 
+  utilize the <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/InsightWeightingPortfolioConstructionModel.py">
+  InsightWeightingPortfolioConstructionModel</a> and the 
+  <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm/Execution/ImmediateExecutionModel.py">
+  ImmediateExecutionModel</a>.
+</p>

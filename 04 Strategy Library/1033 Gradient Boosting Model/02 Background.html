@@ -1,0 +1,24 @@
+<p>
+  A GBM is trained by setting the initial model prediction to the mean target value in the training set. The model then 
+  iteratively builds regression trees to predict the model’s pseudo-residuals on the training set to tighten the fit. The 
+  pseudo-residuals are the differences between the target value and the model’s prediction on the current training iteration 
+  for each sample. The model’s predictions are made by summing the mean target value and the products of the learning rate 
+  and the regression tree outputs. The full algorithm is shown here.
+</p>
+
+<div style='text-align:center'>
+  <img class="img-responsive" style='max-width:100%; max-height: 200px' src="https://cdn.quantconnect.com/i/tu/gradient-boosting-algorithm.png" alt="Tutorial1033-gradient-boost-1" />
+</div>
+
+<p>
+  We provide technical indicator values as inputs to the GBM. The model is trained to predict the security’s return over the 
+  next 10 minutes and the performance of the model’s predictions are assessed using the mean squared error loss function.
+</p>
+
+\[ MSE = \frac{\Sigma_{i=1}^n(y_i - \hat{y}_i)^2}{n}  \]
+
+<p>
+  Zhou et al (2013) utilize custom loss functions to fit their GBM in a manner that aims to maximize the profit-and-loss or 
+  Sharpe ratio over the training data set. The attached notebook shows training the GBM with these custom loss functions 
+  leads to poor model predictions.
+</p>

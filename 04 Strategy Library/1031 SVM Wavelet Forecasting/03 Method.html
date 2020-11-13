@@ -1,0 +1,56 @@
+<p>
+    Given EURJPY data, our first step is to decompose our data into multiple resolutions.
+    We work with wavelets using the <strong>pywt</strong> package. For denoising, Daubechies and
+    Symlets are good choices for Wavelets, and we use Symlets 10 in our strategy. We create a Symlets 10 Wavelet
+    using the following:&nbsp;
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+w = pywt.Wavelet('sym10')
+</pre>
+</div>
+<p>To determine the length of the data we&rsquo;d need for a certain number of levels after decomposition, we can solve for:</p>
+\[log_{2}(\frac{len(data)}{wavelength-1})=levels\]
+<p>
+    Given the length of a Symlet 10 wavelet is 20, if we want three levels, we
+    solve for <strong>len(data)</strong> to get <strong>len(data) = 152</strong>, which means <strong>data</strong> would need to have at least
+    152 values. Since we will denoise our components using thresholding,
+    we specify <strong>threshold = 0.5</strong> to indicate the strength of the thresholding.
+    This <strong>threshold</strong> value can be any number between 0 and 1.
+</p>
+<p>To decompose our data, we use:&nbsp;</p>
+
+<div class="section-example-container">
+<pre class="python">
+coeffs = pywt.wavedec(data, w)
+</pre>
+</div>
+
+<p>For each component, we threshold/denoise the component (except for the first component, the approximation coefficients),
+    roll the values of the component one spot to the left,
+    and replace the last value of the component with a value forecasted from an SVM. This process looks like the following in code:</p>
+
+<div class="section-example-container">
+<pre class="python">
+for i in range(len(coeffs)):
+    if i > 0:
+        # we don't want to threshold the approximation coefficients
+        coeffs[i] = pywt.threshold(coeffs[i], threshold*max(coeffs[i]))
+    forecasted = __svm_forecast(coeffs[i])
+    coeffs[i] = np.roll(coeffs[i], -1)
+    coeffs[i][-1] = forecasted
+</pre>
+</div>
+
+<p>The <strong>__svm_forecast</strong> method fits partitioned data to an SVM model then predicts one value into the
+    future, and can be found under <strong>SVMWavelet.py</strong> file under the <strong>Algorithm</strong>&nbsp;section</p>
+<p>Once we forecast one value into the future, we can aggregate the forecasts by recombining the components into a simple time-series. We do this with:</p>
+<div class="section-example-container">
+<pre class="python">
+datarec = pywt.waverec(coeffs, w)
+</pre>
+</div>
+<p>Since we want the aggregate forecast one time-step into the future, we return the last element of this time-series, or <strong>datarec[-1]</strong>.</p>
+
+<p>Our trading rules are simple: feed in the past 152 points of daily closing prices of EURJPY into our SVM Wavelet forecasting method, and divide that number by the current close of EURJPY to get the forecasted percent change. Then, we emit an Insight based on the direction of the percent change with the weight of the Insight as the absolute value of the percent change. We use the <strong>InsightWeightPortfolioConstructionModel</strong> so that the weight of the Insight determines the portfolio allocation percentage, which means larger forecasted moves will have a larger allocation.</p>
