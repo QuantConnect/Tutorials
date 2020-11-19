@@ -10,7 +10,10 @@
 </p>
 
 \[P(c_i | x_1, ..., x_n) = \frac{P(c_i)P(x_1, ..., x_n | c_i)}{P(x_1, ..., x_n)}\]
-where \(c_i\) represents one of the \(m\) classes and \(x_1, ..., x_n\) are the features.
+
+<p>
+  where \(c_i\) represents one of the \(m\) classes and \(x_1, ..., x_n\) are the features.
+</p>
 
 <p>
   The Naïve Bayes model assumes the features are independent, so that 
@@ -34,7 +37,7 @@ where \(c_i\) represents one of the \(m\) classes and \(x_1, ..., x_n\) are the 
   observation for the \(j\)th feature. The likelihood of the observation given the class \(c_i\) is
 </p>
 
-\[P(x_j = o | c_i) = \frac{1} {\sqrt{2 \pi{} \sigma{}_j^2 }}e^{- \frac{(o - \mu{}_j)^2} {2 \sigma{}_j^2} \]
+\[P(x_j = o | c_i) = \frac{1} {\sqrt{2 \pi{} \sigma{}_j^2 }}e^{- \frac{(o - \mu{}_j)^2} {2 \sigma{}_j^2}} \]
 
 <p>
   The mechanics of the GNB model can be seen visually in 
