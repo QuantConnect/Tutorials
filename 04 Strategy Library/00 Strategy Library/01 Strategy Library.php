@@ -721,7 +721,7 @@ $strategyMap = [
      'sources' => [
          'Academia' => 'https://www.academia.edu/7677227/Forecasting_the_direction_of_stock_market_index_movement_using_three_data_mining_techniques_the_case_of_Tehran_Stock_Exchange'
      ],
-     'description' => "Analyzes the news releases of drug manufacturers and places intraday trades for the stocks with positive news.",
+     'description' => "Forecasts the next day's return of technology stocks by fitting a gaussian naive bayes model to the historical returns of the technology sector constituents.",
      'tags'=>'Equities, Machine Learning, Naive Bayes, Gaussian'
   ]
 ];
