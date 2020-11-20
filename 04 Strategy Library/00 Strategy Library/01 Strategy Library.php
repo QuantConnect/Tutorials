@@ -714,6 +714,15 @@ $strategyMap = [
      ],
      'description' => "Analyzes the news releases of drug manufacturers and places intraday trades for the stocks with positive news.",
      'tags'=>'Equities, NLP, News Sentiment, Drug Manufacturers, Tiingo, Intraday'
+  ],
+  [
+     'name' => 'Gaussian Naive Bayes Model',
+     'link' => 'strategy-library/gaussian-naive-bayes-model',
+     'sources' => [
+         'Academia' => 'https://www.academia.edu/7677227/Forecasting_the_direction_of_stock_market_index_movement_using_three_data_mining_techniques_the_case_of_Tehran_Stock_Exchange'
+     ],
+     'description' => "Analyzes the news releases of drug manufacturers and places intraday trades for the stocks with positive news.",
+     'tags'=>'Equities, Machine Learning, Naive Bayes, Gaussian'
   ]
 ];
 

@@ -1,0 +1,44 @@
+<p>
+  Naïve Bayes models classify observations into a set of classes by utilizing 
+  <a href="https://www.youtube.com/watch?v=HZGCoVF3YvM">Bayes’ Theorem</a>
+</p>
+
+\[\text{posterior} = \frac{ \text{prior } * \text{ likelihood} } {\text{evidence}}\]
+
+<p>
+  In symbols, this translates to
+</p>
+
+\[P(c_i | x_1, ..., x_n) = \frac{P(c_i)P(x_1, ..., x_n | c_i)}{P(x_1, ..., x_n)}\]
+where \(c_i\) represents one of the \(m\) classes and \(x_1, ..., x_n\) are the features.
+
+<p>
+  The Naïve Bayes model assumes the features are independent, so that 
+</p>
+
+\[P(c_i | x_1, ..., x_n) = \frac{P(c_i)\prod_{j=1}^{n} P(x_j | c_i)}{P(x_1, ..., x_n)} \propto P(c_i)\prod_{j=1}^{n} P(x_j|c_i)\]
+
+<p>
+  The class that is most probable given the observation is then determined by solving
+</p>
+
+\[\hat{c} = \arg\max_{i \in \{1, ..., m\}} P(c_i) \prod_{j=1}^{n} P(x_j | c_i)\]
+
+
+<p>
+  In our use case, the classes in the model are: positive, negative, or flat future return for a security. The features
+  are the last 4 daily returns of the universe constituents. Since we are dealing with continuous data, we extend the 
+  model to a GNB model by replacing \(P(x_j|c_i)\) in the equation above. First, we find the mean \(\mu_j\) and standard 
+  deviation \(\sigma_j^2\) of the \(x_j\) feature vector in the training set labeled class \(c_i\). A normal distribution 
+  parameterized by \(\mu_j\) and \(\sigma_j^2\) is then used to determine the likelihood of the observations. If \(o\) is the 
+  observation for the \(j\)th feature. The likelihood of the observation given the class \(c_i\) is
+</p>
+
+\[P(x_j = o | c_i) = \frac{1} {\sqrt{2 \pi{} \sigma{}_j^2 }}e^{- \frac{(o - \mu{}_j)^2} {2 \sigma{}_j^2} \]
+
+<p>
+  The mechanics of the GNB model can be seen visually in 
+  <a href="https://www.youtube.com/watch?v=H3EjCKtlVog">this video</a>. Note that the GNB model has 2 underlying 
+  assumptions: the feature vectors are independent and normally distributed. We do not test for these properties, but 
+  rather leave it as an area of future research.
+</p>

@@ -1,0 +1,223 @@
+<h4>Universe Selection</h4>
+<p>
+  Following Lu (2016), we implement a custom universe selection model to select the largest stocks from the technology 
+  sector. We restrict our universe to have a size of 10, but this can be easily customized via the `fine_size` 
+  parameter in the constructor.
+</p>
+<div class="section-example-container">
+<pre class="python">
+class BigTechUniverseSelectionModel(FundamentalUniverseSelectionModel):
+    def __init__(self, fine_size=10):
+        self.fine_size = fine_size
+        self.month = -1
+        super().__init__(True)
+
+    def SelectCoarse(self, algorithm, coarse):
+        if algorithm.Time.month == self.month:
+            return Universe.Unchanged
+        return [ x.Symbol for x in coarse if x.HasFundamentalData ]
+    
+    def SelectFine(self, algorithm, fine):
+        self.month = algorithm.Time.month
+        
+        tech_stocks = [ f for f in fine if f.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology ]
+        sorted_by_market_cap = sorted(tech_stocks, key=lambda x: x.MarketCap, reverse=True)
+        return [ x.Symbol for x in sorted_by_market_cap[:self.fine_size] ]
+</pre>
+</div>
+
+
+<h4>Alpha Construction</h4>
+<p>
+  The GaussianNaiveBayesAlphaModel predicts the direction each security will move from a given day’s open to the next 
+  day’s open. When constructing this alpha model, we set up a dictionary to hold a SymbolData object for each symbol 
+  in the universe and a flag to show the universe has changed. 
+</p>
+<div class="section-example-container">
+<pre class="python">
+class GaussianNaiveBayesAlphaModel(AlphaModel):
+    symbol_data_by_symbol = {}
+    new_securities = False
+</pre>
+</div>
+
+
+<h4>Alpha Securities Management</h4>
+<p>
+  When a new security is added to the universe, we create a SymbolData object for it to store information unique to 
+  the security. The management of the SymbolData objects occurs in the alpha model's OnSecuritiesChanged method. In 
+  this algorithm, since we train the Gaussian Naive Bayes classifier using the historical returns of the securities 
+  in the universe, we flag to train the model every time the universe changes.
+</p>
+<div class="section-example-container">
+<pre class="python">
+class GaussianNaiveBayesAlphaModel(AlphaModel):
+    ...
+
+    def OnSecuritiesChanged(self, algorithm, changes):
+        for security in changes.AddedSecurities:
+            self.symbol_data_by_symbol[security.Symbol] = SymbolData(security, algorithm)
+            
+        for security in changes.RemovedSecurities:
+            symbol_data = self.symbol_data_by_symbol.pop(security.Symbol, None)
+            if symbol_data:
+                symbol_data.dispose()
+        
+        self.new_securities = True
+</pre>
+</div>
+
+
+<h4>SymbolData Class</h4>
+<p>
+  The SymbolData class is used to store training data for the GaussianNaiveBayesAlphaModel and manage a consolidator 
+  subscription. In the constructor, we specify the training parameters, setup the consolidator, and warm up the 
+  training data.
+</p>
+<div class="section-example-container">
+<pre class="python">
+class SymbolData:
+    def __init__(self, security, algorithm, num_days_per_sample=4, num_samples=100):
+        self.exchange = security.Exchange
+        self.symbol = security.Symbol
+        self.algorithm = algorithm
+        self.num_days_per_sample = num_days_per_sample
+        self.num_samples = num_samples
+        self.previous_open = 0
+        self.model = None
+        
+        # Setup consolidators
+        self.consolidator = TradeBarConsolidator(timedelta(days=1))
+        self.consolidator.DataConsolidated += self.CustomDailyHandler
+        algorithm.SubscriptionManager.AddConsolidator(self.symbol, self.consolidator)
+        
+        # Warm up ROC lookback
+        self.roc_window = np.array([])
+        self.labels_by_day = pd.Series()
+        
+        data = {f'{self.symbol.ID}_(t-{i})' : [] for i in range(1, num_days_per_sample + 1)}
+        self.features_by_day = pd.DataFrame(data)
+        
+        lookback = num_days_per_sample + num_samples + 1
+        history = algorithm.History(self.symbol, lookback, Resolution.Daily)
+        if history.empty or 'close' not in history:
+            algorithm.Log(f"Not enough history for {self.symbol} yet")    
+            return
+        
+        history = history.loc[self.symbol]
+        history['open_close_return'] = (history.close - history.open) / history.open
+        
+        start = history.shift(-1).open
+        end = history.shift(-2).open
+        history['future_return'] = (end - start) / start
+        
+        for day, row in history.iterrows():
+            self.previous_open = row.open
+            if self.update_features(day, row.open_close_return) and not pd.isnull(row.future_return):
+                row = pd.Series([np.sign(row.future_return)], index=[day])
+                self.labels_by_day = self.labels_by_day.append(row)[-self.num_samples:]
+</pre>
+</div>
+
+<p>
+  The update_features method is called to update our training features with the latest data passed to the algorithm. 
+  It returns True/False, representing if the features are in place to start updating the training labels.
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+class SymbolData:
+    ...
+
+    def update_features(self, day, open_close_return):
+        self.roc_window = np.append(open_close_return, self.roc_window)[:self.num_days_per_sample]
+        
+        if len(self.roc_window) < self.num_days_per_sample:
+            return False
+            
+        self.features_by_day.loc[day] = self.roc_window
+        self.features_by_day = self.features_by_day[-(self.num_samples+2):]
+        return True
+</pre>
+</div>
+
+
+
+
+<h4>Model Training</h4>
+<p>
+  The GNB model is trained each day the universe has changed. By default, it uses 100 samples to train. The features 
+  are the historical open-to-close returns of the universe constituents. The labels are the returns from the open at 
+  T+1 to the open at T+2 at each time step for each security.
+</p>
+<div class="section-example-container">
+<pre class="python">
+class GaussianNaiveBayesAlphaModel(AlphaModel):
+    ...
+
+    def train(self):
+        features = pd.DataFrame()
+        labels_by_symbol = {}
+        
+        # Gather training data
+        for symbol, symbol_data in self.symbol_data_by_symbol.items():
+            if symbol_data.IsReady:
+                features = pd.concat([features, symbol_data.features_by_day], axis=1)
+                labels_by_symbol[symbol] = symbol_data.labels_by_day
+        
+        # Train the GNB model
+        for symbol, symbol_data in self.symbol_data_by_symbol.items():
+            if symbol_data.IsReady:
+                symbol_data.model = GaussianNB().fit(features.iloc[:-2], labels_by_symbol[symbol])
+</pre>
+</div>
+
+
+<h4>Alpha Update</h4>
+<p>
+  As new TradeBars are provided to the alpha model's Update method, we collect the latest TradeBar’s open-to-close 
+  return for each security in the universe. We then predict the direction of each security using the security’s 
+  corresponding GNB model, and return insights accordingly.
+</p>
+<div class="section-example-container">
+<pre class="python">
+class GaussianNaiveBayesAlphaModel(AlphaModel):
+    ...
+
+    def Update(self, algorithm, data):
+        if self.new_securities:
+            self.train()
+            self.new_securities = False
+        
+        tradable_symbols = {}
+        features = [[]]
+        
+        for symbol, symbol_data in self.symbol_data_by_symbol.items():
+            if data.ContainsKey(symbol) and data[symbol] is not None and symbol_data.IsReady:
+                tradable_symbols[symbol] = symbol_data
+                features[0].extend(symbol_data.features_by_day.iloc[-1].values)
+
+        insights = []
+        if len(tradable_symbols) == 0:
+            return []
+        weight = 1 / len(tradable_symbols)
+        for symbol, symbol_data in tradable_symbols.items():
+            direction = symbol_data.model.predict(features)
+            if direction:
+                insights.append(Insight.Price(symbol, data.Time + timedelta(days=1, seconds=-1), 
+                                              direction, None, None, None, weight))
+
+        return insights
+</pre>
+</div>
+
+
+<h4>Portfolio Construction & Trade Execution</h4>
+<p>
+  Following the guidelines of <a href="https://www.quantconnect.com/docs/alpha-streams/overview">Alpha Streams</a> 
+  and the <a href="https://www.quantconnect.com/competitions">Quant League</a> competition, we 
+  utilize the <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/InsightWeightingPortfolioConstructionModel.py">
+  InsightWeightingPortfolioConstructionModel</a> and the 
+  <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm/Execution/ImmediateExecutionModel.py">
+  ImmediateExecutionModel</a>.
+</p>
