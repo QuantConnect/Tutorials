@@ -1,103 +1,141 @@
 <p>
-  The strategy code mainly consists of three parts: Initialization, Warm Up, and Weekly Rebalancing.
+  The strategy code mainly consists of four parts: Initialization, Universe Selection, OnData, and OnSecuritiesChanged.
 </p>
 
-<h3>Step 1: Initialization</h3>
+<h3>Algorithm Initialization</h3>
 <p>
-  In the Initialize function, we set up look-back period, beginning cash balance, the size of the investment universe, the number of traded stocks, etc. We use <em>self._numOfWeeks</em> to count?the number of weeks that have passed since the start date, and <em>self.</em>_LastDay to indicate whether it is a new week. <em>self._ifWarmUp</em> is true when the <em>self._numOfWeeks</em> is 3, which means as long as next week's data come, we can make our investment decisions.??<em>self._stocks</em> is a list containing all the symbols of the 100 stocks that are taken into consideration. <em>self._values</em> is a dictionary with keys the stock symbols and values the lists containing the prices of stock each week since 4 weeks ago.
+  When initializing the algorithm, we add a coarse universe selection method and specify several parameters to use 
+  when selecting securities.
 </p>
-
 <div class="section-example-container">
-
-<pre class="python">    def Initialize(self):
-        self.SetStartDate(2005, 1, 1)
-        self.SetEndDate(2017, 5, 10)
-        self.SetCash(1000000)
-        
-        self.UniverseSettings.Resolution = Resolution.Daily
-        self.AddUniverse(self.CoarseSelectionFunction)
-        self._numberOfSymbols = 100
-        self._numberOfTradings = int(0.1 * self._numberOfSymbols)
-        
-        self._numOfWeeks = 0
-        self._LastDay = -1
-        self._ifWarmUp = False
-        
-        self._stocks = []
-        self._values = {}
-</pre>
-</div>
-<p>
-  Also, we need to use?<em>CoarseSelectionFunction</em> to select 100 qualified stocks from the total stock universe. Here, we sort the total stock universe by each stock's DollarVolume in decreasing order. Then, we select the first 100 stocks that have the largest DollarVolume among all the stocks in the universe.
-</p>
-
-<div class="section-example-container">
-
 <pre class="python">
-def CoarseSelectionFunction(self, coarse):
-     sortedByDollarVolume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True)
-     top100 = sortedByDollarVolume[:self._numberOfSymbols]
-     return [i.Symbol for i in top100]
-</pre>
-</div>
-<h3>Step 2:Warm Up</h3>
-<p>
-  Before we are able to make our investment decisions, we must have at least 4 weeks' data to calculate the performance, i.e. the monthly return, of each stock. Hence, we need a warm up period as long as 3 weeks to accumulate price series, so that once the fourth week's data come we can calculate?the return of the whole month.
-</p>
-<div class="section-example-container">
-
-<pre class="python">self._stocks = []
-self.uni_symbol = None
-symbols = self.UniverseManager.Keys
-for i in symbols:
-        if str(i.Value) == "QC-UNIVERSE-COARSE-USA":
-                self.uni_symbol = i
-        for i in self.UniverseManager[self.uni_symbol].Members:
-                self._stocks.append(i.Value.Symbol)
-                self._values[i.Value.Symbol] = [self.Securities[i.Value.Symbol].Price]
+class ShortTimeReversal(QCAlgorithm):
+    def Initialize(self):
+        # ...
+      
+        self.UniverseSettings.Resolution = Resolution.Daily
+        self.AddUniverse(self.SelectCoarse)
+      
+        self.dollar_volume_selection_size = 100
+        self.roc_selection_size = int(0.1 * self.dollar_volume_selection_size)
+      
+        self.lookback = 22
+        self.roc_by_symbol = {}
+        self.week = 0
 
 </pre>
 </div>
+
+
+
+<h3>Universe Selection</h3>
 <p>
-  We get all the symbols of qualified stocks from UniverseManager and keep them in <em>self._stocks</em> which is a list. Then we create for each key in the dictionary <em>self._values</em> a list where its first week's price is stored. And every time new data come, we append the new price to the end of the list of each stock.
+  The coarse universe selection method creates a RateOfChange 
+  <a href="https://www.quantconnect.com/docs/algorithm-reference/indicators">indicator</a> for each of the top 100 
+  most liquid securities in the market. Upon creation, the indicator is manually warmed-up with historical closing 
+  prices. After the indicators are ready, the universe selects the securities with the 10 best and 10 worst 
+  RateOfChange values.
 </p>
-
 <div class="section-example-container">
+<pre class="python">
+class ShortTimeReversal(QCAlgorithm):
+    # ...
 
-<pre class="python">for stock in self._stocks:
-        self._values[stock].append(self.Securities[stock].Price)</pre>
-</div>
-<h3>Step 3:Weekly Rebalancing</h3>
-<p>
-  After the warm-up period, we calculate monthly returns every week and based on the returns, we make our investment decisions.
-</p>
+    def SelectCoarse(self, coarse):
+        
+        # We should keep a dictionary for all securities that have been selected
+        for cf in coarse:
+            symbol = cf.Symbol
+            if symbol in self.roc_by_symbol:
+                self.roc_by_symbol[symbol].Update(cf.EndTime, cf.AdjustedPrice)
 
-<div class="section-example-container">
+        # Refresh universe each week
+        week_number = self.Time.date().isocalendar()[1]
+        if week_number == self.week:
+            return Universe.Unchanged
+        self.week = week_number
 
-<pre class="python">returns = {}
-for stock in self._stocks:
-        newPrice = self.Securities[stock].Price
-        oldPrice = self._values[stock].pop(0)
-        self._values[stock].append(newPrice)
-        returns[stock] = newPrice/oldPrice
+        # sort and select by dollar volume
+        sortedByDollarVolume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True)
+        selected = {cf.Symbol: cf for cf in sortedByDollarVolume[:self.dollar_volume_selection_size]} 
+        
+        # New selections need a history request to warm up the indicator
+        symbols = [k for k in selected.keys()
+            if k not in self.roc_by_symbol or not self.roc_by_symbol[k].IsReady]
+
+        if symbols:
+            history = self.History(symbols, self.lookback, Resolution.Daily)
+            if history.empty:
+                self.Log(f'No history for {", ".join([x.Value for x in symbols])}')
+            history = history.close.unstack(0)
+
+            for symbol in symbols:
+
+                if symbol not in history:
+                    continue
+
+                # Create and warm-up the RateOfChange indicator
+                roc = RateOfChange(self.lookback)
+                for time, price in history[symbol].dropna().iteritems():
+                    roc.Update(time, price)
+                
+                if roc.IsReady:
+                    self.roc_by_symbol[symbol] = roc
+        
+        # Sort the symbols by their ROC values
+        selectedRateOfChange = {}
+        for symbol in selected.keys():
+            if symbol in self.roc_by_symbol:
+                selectedRateOfChange[symbol] = self.roc_by_symbol[symbol]
+        sortedByRateOfChange = sorted(selectedRateOfChange.items(), key=lambda kv: kv[1], reverse=True)
+        
+        # Define the top and the bottom to buy and sell
+        self.rocTop = [x[0] for x in sortedByRateOfChange[:self.roc_selection_size]]
+        self.rocBottom = [x[0] for x in sortedByRateOfChange[-self.roc_selection_size:]]
+        
+        return self.rocTop + self.rocBottom
 </pre>
 </div>
+
+
+<h3>The OnData Method</h3>
 <p>
-  Every week when new data come, we use them along with the data four weeks ago to calculate the monthly returns. At the same time, we remove the oldest data from our lists. This step is essential to prevent memory size exceeding the limit.
+  As new data is passed to the OnData method, we issue orders to form a long-short portfolio. We long the securities 
+  with the lowest RateOfChange values and short those with the largest values. After rebalancing, we clear the 
+  `rocTop` and `rocBottom` lists to ensure we don’t trade again until the universe is refreshed.
 </p>
-
 <div class="section-example-container">
+<pre class="python">
+class ShortTimeReversal(QCAlgorithm):
+    # ...
 
-<pre class="python">newArr = [(v,k) for k,v in returns.items()]
-newArr.sort()
-for ret, stock in newArr[self._numberOfTradings:-self._numberOfTradings]:
-        self.SetHoldings(stock, 0)
-for ret, stock in newArr[0:self._numberOfTradings]:
-        self.SetHoldings(stock, 0.5/self._numberOfTradings)
-for ret, stock in newArr[-self._numberOfTradings:]:
-        self.SetHoldings(stock, -0.5/self._numberOfTradings)
+    def OnData(self, data):
+        # Rebalance
+        for symbol in self.rocTop:
+            self.SetHoldings(symbol, -0.5/len(self.rocTop))
+        for symbol in self.rocBottom:
+            self.SetHoldings(symbol, 0.5/len(self.rocBottom))
+        
+        # Clear the list of securities we have placed orders for
+        # to avoid new trades before the next universe selection
+        self.rocTop.clear() 
+        self.rocBottom.clear()
 </pre>
 </div>
+
+<h3>The OnSecuritiesChanged Method</h3>
 <p>
-  Finally, we sort the returns in increasing order. For the stocks whose monthly returns fall into the first 10% (performed badly in last month), we long them; For those fall into the last 10% (performed well in last month), we short them. Others (between 10% and 90%) will be set to 0.
+  We are rebalancing the portfolio on a weekly basis, but securities can leave our defined universe between rebalance 
+  days. To accommodate this, we liquidate any securities that are removed from the universe in the 
+  OnSecuritiesChanged method.
 </p>
+<div class="section-example-container">
+<pre class="python">
+class ShortTimeReversal(QCAlgorithm):
+    # ...
+
+    def OnSecuritiesChanged(self, changes):
+        for security in changes.RemovedSecurities:
+            self.Liquidate(security.Symbol, 'Removed from Universe')
+</pre>
+</div>
