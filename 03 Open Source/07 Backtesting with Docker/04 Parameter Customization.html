@@ -1,0 +1,76 @@
+<p>
+Lean runs on configurations that change and hone the algorithm that you're testing. In the example above, we backtest with a test configuration that ship's with Lean's source---
+which is helpful for getting things set up, but isn't the end goal. The end goal, of course, is to backtest a different/custom algorithm.
+</p>
+<p>
+To do this, first we need to open a text editor and take a look at the file <mark>~/Lean/Launcher/.config.json</mark>. By default, it looks like this:
+<div class="section-example-container">
+<pre>
+    {
+        // this configuration file works by first loading all top-level
+        // configuration items and then will load the specified environment
+        // on top, this provides a layering affect. environment names can be
+        // anything, and just require definition in this file. There's
+        // two predefined environments, 'backtesting' and 'live', feel free
+        // to add more!
+
+        "environment": "backtesting", // "live-paper", "backtesting", "live-interactive", "live-interactive-iqfeed"
+
+        // algorithm class selector
+        "algorithm-type-name": "BasicTemplateFrameworkAlgorithm",
+
+        // Algorithm language selector - options CSharp, Python
+        "algorithm-language": "CSharp",
+
+        //Physical DLL location
+        "algorithm-location": "QuantConnect.Algorithm.CSharp.dll",
+        //"algorithm-location": "../../../Algorithm.Python/BasicTemplateFrameworkAlgorithm.py",
+
+        //Research notebook
+        //"composer-dll-directory": ".",
+
+        // engine
+        "data-folder": "../../../Data/",
+
+        ...
+</pre>
+</div>
+The part we're most interested in is this:
+<div class="section-example-container">
+<pre>
+    // algorithm class selector
+    "algorithm-type-name": "BasicTemplateFrameworkAlgorithm",
+
+    // Algorithm language selector - options CSharp, Python
+    "algorithm-language": "CSharp",
+
+    //Physical DLL location
+    "algorithm-location": "QuantConnect.Algorithm.CSharp.dll",
+    //"algorithm-location": "../../../Algorithm.Python/BasicTemplateFrameworkAlgorithm.py",
+</pre>
+</div>
+</p>
+<p>
+This tells Lean to run a strategy called <mark>DualThrustIntradayAlgorithm</mark> (an example I took from
+<a href="https://www.quantconnect.com/tutorials/strategy-library/dual-thrust-trading-algorithm">QuantConnect's documentation on various strategies</a>)
+that is written in Python, and located at a generic path (<mark>/path/of/the/algorithm/goes/here</mark>) that you'll need to replace with the path 
+of your desired strategy. This, of course, can be replaced with whatever strategy you please---just
+be sure to change the name, set the appropriate language, and set the correct path, like we did in the example above.
+</p>
+<p>
+A note for those unfamiliar with JSON: the // symbols represent comments, and ensures that the lines they are on aren't interpreted. Since we aren't using C#
+for this strategy, we can either comment the .dll line out (like I did in the example), or you can delete it altogether, it doesn't make any difference.
+</p>
+<p>
+Now, save your changes, exit your text editor, and bring a terminal back up. To run the tests again with our new changes, navigate back to <mark>~/Lean</mark> and run:
+<div class="section-example-container">
+<pre>
+    # on linux/mac:
+    sudo ./run_docker.sh
+
+    # on windows:
+    C:\path\to\the\lean\directory\run_docker.bat
+</pre>
+</div>
+and it should run through the process again with your changes!
+</p>

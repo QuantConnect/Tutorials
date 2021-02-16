@@ -1,0 +1,73 @@
+<p>
+Before we can go any further, we need to download Lean's source from its GitHub repository <a href="https://github.com/QuantConnect/Lean">located here.</a>
+To do this, you'll need to have git installed. If you don't already have it, you can follow the installations at git's website <a href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git">found here.</a> 
+</p>
+<p>
+To clone Lean's repository, open a terminal and run:
+<div class="section-example-container">
+<pre>
+    git clone https://github.com/QuantConnect/Lean.git
+</pre>
+</div>
+This downloads the repository to your current directory, under a new directory named <mark>/Lean</mark> by default.
+If you wish to download Lean into a different folder, you can append a directory name onto the back half of the command like so:
+<div class="section-example-container">
+<pre>
+    git clone https://github.com/QuantConnect/Lean.git /path/of/your/desired/directory/
+</pre>
+</div>
+where <mark>/path/...</mark> is the location of the directory you want Lean to be downloaded into.
+</p>
+<p>
+Next, to enter that new directory for the next steps:
+<div class="section-example-container">
+<pre>
+    cd /path/of/directory/from/the/previous/steps
+
+    # or, if you're using the default location:
+
+    cd Lean
+</pre>
+</div>
+</p>
+<p>
+Now, Lean ships with a script named <mark>run_docker</mark> which does exactly as the name suggests: it creates a docker container, builds Lean,
+runs it, and outputs the restults in the results folder, which is, by default, <mark>~/Lean/Results</mark> (or
+in the <mark>Results</mark> folder of whatever directory you downloaded Lean's source to).
+</p>
+<p>
+To run the aforementioned script:
+<div class="section-example-container">
+<pre>
+    # on linux/mac:
+    sudo ./run_docker.sh
+
+    # on windows:
+    C:\path\to\the\lean\directory\run_docker.bat    
+</pre>
+</div>
+(sudo is required if your user doesn't have superpuser permissions, because docker needs these to run)
+</p>
+<p>
+The script will prompt you to make some selections:
+</p>
+<img class="img-responsive" src="docker_selections_lean.png">
+<p>
+The defaults should work fine, but you can customize these if you like---for example, to customize the result's directory,
+when prompted, enter whatever directory you'd like to replace <mark>~/Lean/Results</mark>:
+<div class="section-example-container">
+<pre>
+    Path to Results directory [default: ./Results]: ~/your/results/directory/here
+</pre>
+</div>
+Press enter to get through this with any desired changes, and the script will begin downloading the image:
+</p>
+<img class="img-responsive" src="post_docker_selections_lean.png">
+<p>
+After the image is done downloading, a container will be created from it, and the output should look something like:
+</p>
+<img class="img-responsive" src="after_tests_3.png">
+<p>
+and that's all there is to it! (Note: there will be a lot more output above what's showed in that image---there were three screenshots
+worth of output on my screen. Your output may/will vary with different algorithms, etc.)
+</p>

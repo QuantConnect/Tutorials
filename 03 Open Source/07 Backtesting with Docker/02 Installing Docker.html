@@ -1,0 +1,34 @@
+<p>
+According to their website, Docker <a href="https://docs.docker.com/get-started/overview/">"is an open platform fdr developing, shipping, and running applications."</a>
+We can use Docker to isolate the backtesting process with Lean, and get started with less overhead than a local install.
+</p>
+<p>
+Docker's website lists the following system requirements:
+<ul style="list-style-type:disc;">
+    <li>a 64 bit processor with Second Level Address Translation (SLAT)</li>
+    <li>4GB of RAM</li>
+    <li>BIOS-level hardware <a href="https://docs.docker.com/docker-for-windows/troubleshoot/#virtualization-must-be-enabled">virtualization</a> support enabled</li>
+</ul>
+</p>
+<p>
+Additionally, Docker support for operating systems other than:
+<ul style="list-style-type:disc;">
+    <li>Linux</li>
+    <li>macOS</li>
+    <li>Windows</li>
+</ul>
+seems limited <i>at bset</i> as of the time of writing, so when using a different operating system,
+your mileage following this tutorial may vary.
+</p>
+<p>
+To install Docker, you can follow the instructions over at <a href="https://docs.docker.com/get-docker/">Docker's website</a>. To ensure that the installation went smoothly, you can run:
+<div class="section-example-container">
+<pre>
+    docker ps       # lists running containers (or the lack thereof)
+    # or
+    docker info     # displays some system information
+</pre>
+</div>
+If either of these runs with no errors, Docker is installed and you're good to keep working through the tutorial!
+</p>
+<p></p>
