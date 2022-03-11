@@ -22,8 +22,8 @@ fillDataForward)</td>
 <div class="section-example-container">
 
 <pre class="python">def Initialize(self):
-    self.SetStartDate(2017, 01, 01)  #Set Start Date
-    self.SetEndDate(2017, 06, 30)  #Set End Date
+    self.SetStartDate(2017, 1, 1)  #Set Start Date
+    self.SetEndDate(2017, 6, 30)  #Set End Date
     self.SetCash(50000)  #Set Strategy Cash
     equity = self.AddEquity("GOOG", Resolution.Minute) # Add the underlying stock: Google
     option = self.AddOption("GOOG", Resolution.Minute) # Add the option corresponding to underlying stock
