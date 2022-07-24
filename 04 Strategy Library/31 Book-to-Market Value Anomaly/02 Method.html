@@ -10,8 +10,6 @@
 <div class="section-example-container">
 <pre class="python">
 fine = [x for x in fine if (x.ValuationRatios.PBRatio > 0)]
-for i in fine:
-    i.MarketCap = float(i.EarningReports.BasicAverageShares.ThreeMonths * (i.EarningReports.BasicEPS.TwelveMonths*i.ValuationRatios.PERatio))
 top_market_cap = sorted(fine, key = lambda x:x.MarketCap, reverse=True)[:int(len(fine)*0.2)]
 top_bm = sorted(top_market_cap, key = lambda x: 1 / x.ValuationRatios.PBRatio, reverse=True)[:int(len(top_market_cap)*0.2)]
 self.sorted_by_bm = [i.Symbol for i in top_bm]
