@@ -15,10 +15,10 @@
 	In the initialize method we define a Scheduled Event to trigger a monthly re-balancing of the portfolio. For more details about how to use Scheduled Events, you can read the <a href="https://www.quantconnect.com/docs#Scheduled-Events">Documentation</a> or see the example <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ScheduledEventsAlgorithm.py">ScheduledEventsAlgorithm</a>.
 </p>
 <div class="section-example-container">
-<pre class="python">def Initialize(self):
-    self.Schedule.On(self.DateRules.MonthStart(self.symbols[0]),
-                     self.TimeRules.AfterMarketOpen(self.symbols[0]),
-                     self.Rebalance)</pre>
+<pre class="python">def initialize(self):
+    self.schedule.on(self.date_rules.month_start(self._symbols[0]),
+                     self.time_rules.after_market_open(self._symbols[0]),
+                     self._rebalance)</pre>
 </div>
 <h3>Step 2: History Function</h3>
 <p>
@@ -26,33 +26,33 @@
 </p>
 <div class="section-example-container">
 <pre class="python"># Fetch the historical data to perform the linear regression
-history = self.History(
-    self.symbols + [self.benchmark], 
-    self.lookback,
-    Resolution.Daily).close.unstack(level=0)</pre>
+history = self.history(
+    self._symbols + [self._benchmark], 
+    self._lookback,
+    Resolution.DAILY).close.unstack(level=0)</pre>
 </div>
 <h3>Step 3: Symbol Selection Function</h3>
 <p>
 	We aim to trade the two assets with the highest alpha to the benchmark. In order to conduct linear regression to find the alpha (linear regression intercept), we need to compute returns (percentage change of closing price) benchmark and the asset then conduct a linear regression.
 </p>
 <div class="section-example-container">
-<pre class="python">def SelectSymbols(self, history):
+<pre class="python">def _select_symbols(self, history):
     '''Select symbols with the highest intercept/alpha to the benchmark
     '''
     alphas = dict()
 
     # Get the benchmark returns
-    benchmark = history[self.benchmark].pct_change().dropna()
+    benchmark = history[self._benchmark].pct_change().dropna()
 
     # Conducts linear regression for each symbol and save the intercept/alpha
-    for symbol in self.symbols:
-
+    for symbol in self._symbols:
+        
         # Get the security returns
         returns = history[symbol].pct_change().dropna()
-        returns = np.vstack([returns, np.ones(len(returns))]).T
+        bla = np.vstack([benchmark, np.ones(len(returns))]).T
 
         # Simple linear regression function in Numpy
-        result = np.linalg.lstsq(returns, benchmark)
+        result = np.linalg.lstsq(bla , returns)
         alphas[symbol] = result[0][1]
 
     # Select symbols with the highest intercept/alpha to the benchmark
@@ -64,23 +64,23 @@ history = self.History(
 	This function is where all the action happens, it will be executed on the first trading day of each month as a scheduled event. The algorithm closes all positions of securities that were not selected using <a href="https://www.quantconnect.com/docs/algorithm-reference/trading-and-orders#Trading-and-Orders-Liquidating-Portfolio">Liquidate</a> and go 100% long for both of the selected symbols using <a href="https://www.quantconnect.com/docs/algorithm-reference/trading-and-orders#Trading-and-Orders-Automatic-Position-Sizing-SetHoldings">SetHoldings</a>.
 </p>
 <div class="section-example-container">
-<pre class="python">def Rebalance(self):
+<pre class="python">def _rebalance(self):
 
     # Fetch the historical data to perform the linear regression
-    history = self.History(
-        self.symbols + [self.benchmark], 
-        self.lookback,
-        Resolution.Daily).close.unstack(level=0)
-
-    symbols = self.SelectSymbols(history)
+    history = self.history(
+        self._symbols + [self._benchmark], 
+        self._lookback,
+        Resolution.DAILY).close.unstack(level=0)
+        
+    symbols = self._select_symbols(history)
 
     # Liquidate positions that are not held by selected symbols
-    for holdings in self.Portfolio.Values:
-        symbol = holdings.Symbol
-        if symbol not in symbols and holdings.Invested:
-            self.Liquidate(symbol)
+    for holdings in self.portfolio.values():
+        symbol = holdings.symbol
+        if symbol not in symbols and holdings.invested:
+            self.liquidate(symbol)
 
-    # Invest 100% in the each of the selected symbols
+    # Invest 100% in the selected symbols
     for symbol in symbols:
-        self.SetHoldings(symbol, 1)</pre>
+        self.set_holdings(symbol, 1)</pre>
 </div>
